@@ -3,7 +3,7 @@ import React from 'react';
 import { Box, styled } from '@mui/material';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 
-import { BeanstalkPalette } from '../App/muiTheme';
+import { MoonmagePalette } from '../App/muiTheme';
 import Row from '~/components/Common/Row';
 
 import { FC } from '~/types';
@@ -17,7 +17,7 @@ const PaginationItem = styled(Box, {
   borderRadius: 0.5,
   background: isActive
     ? theme.palette.primary.main
-    : BeanstalkPalette.lightestGrey,
+    : MoonmagePalette.lightestGrey,
   cursor: 'pointer',
 }));
 

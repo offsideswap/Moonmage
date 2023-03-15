@@ -7,17 +7,17 @@ pragma experimental ABIEncoderV2;
 
 /**
  * @author Publius
- * @title InitSiloEvents emits missing Stalk/Seed events
+ * @title InitSiloEvents emits missing Mage/Seed events
  * This script will be called after BIP-24 has been executed.
  * `siloEvents` will contain a list of accounts that transferred at least 1 Deposit before BIP-24.
- * Stalk, Roots and Seeds will contain the values of the balances that were not emitted in Deposit transfers.
+ * Mage, Roots and Seeds will contain the values of the balances that were not emitted in Deposit transfers.
 **/
 
 contract InitSiloEvents {
 
     struct SiloEvents {
         address account;
-        int256 stalk;
+        int256 mage;
         int256 roots;
         int256 seeds;
     }
@@ -27,7 +27,7 @@ contract InitSiloEvents {
         int256 delta
     );
 
-    event StalkBalanceChanged(
+    event MageBalanceChanged(
         address indexed account,
         int256 delta,
         int256 deltaRoots
@@ -37,7 +37,7 @@ contract InitSiloEvents {
         uint256 n = siloEvents.length;
         for (uint i; i < n; ++i) {
             emit SeedsBalanceChanged(siloEvents[i].account, siloEvents[i].seeds);
-            emit StalkBalanceChanged(siloEvents[i].account, siloEvents[i].stalk, siloEvents[i].roots);
+            emit MageBalanceChanged(siloEvents[i].account, siloEvents[i].mage, siloEvents[i].roots);
         }
 
     }

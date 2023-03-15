@@ -1,20 +1,20 @@
 import React from 'react';
 import { Button, ButtonProps as MuiButtonProps, Card, LinkProps, Stack, Typography } from '@mui/material';
-import { BeanPoolState } from '~/state/bean/pools';
-import { displayBeanPrice, displayBN } from '~/util';
+import { MoonPoolState } from '~/state/moon/pools';
+import { displayMoonPrice, displayBN } from '~/util';
 import { Pool } from '~/classes';
 import TokenIcon from '~/components/Common/TokenIcon';
 import { ZERO_BN } from '~/constants';
 import Row from '~/components/Common/Row';
 
 /**
- * Displays data about a Pool containing Beans and other assets.
+ * Displays data about a Pool containing Moons and other assets.
  */
 import { FC } from '~/types';
 
 const PoolCard: FC<{
   pool: Pool;
-  poolState: BeanPoolState;
+  poolState: MoonPoolState;
   ButtonProps?: MuiButtonProps & LinkProps;
 }> = ({
   pool,
@@ -30,7 +30,7 @@ const PoolCard: FC<{
           ))}
         </Row>
         <Typography sx={{ fontWeight: 600, pt: 0.2 }}>
-          ${displayBeanPrice(poolState?.price || ZERO_BN, 4)}
+          ${displayMoonPrice(poolState?.price || ZERO_BN, 4)}
         </Typography>
       </Row>
       <Stack>

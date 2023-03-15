@@ -8,14 +8,14 @@ import { FontSize } from '../App/muiTheme';
 import { FC } from '~/types';
 
 export interface FieldConditionsProps {
-  beanstalkField: AppState['_beanstalk']['field'];
-  // farmerField: AppState['_farmer']['field'];
+  moonmageField: AppState['_moonmage']['field'];
+  // cosmomageField: AppState['_cosmomage']['field'];
   // podLine: BigNumber;
 }
 
 const FieldConditions: FC<FieldConditionsProps> = ({
- beanstalkField,
- // farmerField,
+ moonmageField,
+ // cosmomageField,
  // podLine,
 }) => (
   <Card sx={{ p: 2 }}>
@@ -25,7 +25,7 @@ const FieldConditions: FC<FieldConditionsProps> = ({
         <Grid item xs={6} md={3}>
           <Stack gap={0.5}>
             <Tooltip
-              title="The number of Beans that can currently be Sown (lent to Beanstalk)."
+              title="The number of Moons that can currently be Sown (lent to Moonmage)."
               placement="top"
             >
               <Typography variant="body1">
@@ -36,13 +36,13 @@ const FieldConditions: FC<FieldConditionsProps> = ({
               </Typography>
             </Tooltip>
             <Typography variant="bodyLarge" fontWeight="400">
-              {displayBN(beanstalkField.soil)}
+              {displayBN(moonmageField.soil)}
             </Typography>
           </Stack>
         </Grid>
         <Grid item xs={6} md={3}>
           <Stack gap={0.5}>
-            <Tooltip title="The interest rate for Sowing Beans." placement="top">
+            <Tooltip title="The interest rate for Sowing Moons." placement="top">
               <Typography variant="body1">
                 Temperature&nbsp;
                 <HelpOutlineIcon
@@ -51,13 +51,13 @@ const FieldConditions: FC<FieldConditionsProps> = ({
               </Typography>
             </Tooltip>
             <Typography variant="bodyLarge" fontWeight="400">
-              {displayBN(beanstalkField.weather.yield)}%
+              {displayBN(moonmageField.weather.yield)}%
             </Typography>
           </Stack>
         </Grid>
         <Grid item xs={6} md={3}>
           <Stack gap={0.5}>
-            <Tooltip title="The number of Pods that will become Harvestable before Pods earned for newly Sown Beans, based on the FIFO Harvest schedule." placement="top">
+            <Tooltip title="The number of Pods that will become Harvestable before Pods earned for newly Sown Moons, based on the FIFO Harvest schedule." placement="top">
               <Typography variant="body1">
                 Pod Line&nbsp;
                 <HelpOutlineIcon
@@ -66,13 +66,13 @@ const FieldConditions: FC<FieldConditionsProps> = ({
               </Typography>
             </Tooltip>
             <Typography variant="bodyLarge" fontWeight="400">
-              {displayBN(beanstalkField.podLine)}
+              {displayBN(moonmageField.podLine)}
             </Typography>
           </Stack>
         </Grid>
         <Grid item xs={6} md={3}>
           <Stack gap={0.5}>
-            <Tooltip title="The number of Pods that have become redeemable for a Bean (i.e., the debt paid back by Beanstalk to date)." placement="top">
+            <Tooltip title="The number of Pods that have become redeemable for a Moon (i.e., the debt paid back by Moonmage to date)." placement="top">
               <Typography variant="body1">
                 Pods Harvested&nbsp;
                 <HelpOutlineIcon
@@ -81,7 +81,7 @@ const FieldConditions: FC<FieldConditionsProps> = ({
               </Typography>
             </Tooltip>
             <Typography variant="bodyLarge">
-              {displayBN(beanstalkField.harvestableIndex)}
+              {displayBN(moonmageField.harvestableIndex)}
             </Typography>
           </Stack>
         </Grid>

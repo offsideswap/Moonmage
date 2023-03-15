@@ -5,7 +5,7 @@ import React from 'react';
 import CondensedCard from '~/components/Common/Card/CondensedCard';
 
 import Centered from '~/components/Common/ZeroState/Centered';
-import useMarketData from '~/hooks/beanstalk/useMarketData';
+import useMarketData from '~/hooks/moonmage/useMarketData';
 import { marketBottomTabsAtom } from '../info/atom-context';
 import EntityGraph from './MarketGraph';
 

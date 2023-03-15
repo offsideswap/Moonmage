@@ -10,7 +10,7 @@ import "../interfaces/IWETH.sol";
 
 /**
  * @author publius
- * @title Barn Raiser 
+ * @title Ship Raiser 
  */
 
 contract FertilizerPreMint is Internalizer {
@@ -72,7 +72,7 @@ contract FertilizerPreMint is Internalizer {
         return START_TIMESTAMP;
     }
 
-    // These functions will be overwritten once Beanstalk has restarted.
+    // These functions will be overwritten once Moonmage has restarted.
 
     function remaining() public view returns (uint256) {
         uint128 raised = uint128(IUSDC.balanceOf(CUSTODIAN));

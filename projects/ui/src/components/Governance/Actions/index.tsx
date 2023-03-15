@@ -5,7 +5,7 @@ import { Module, ModuleContent, ModuleHeader } from '~/components/Common/Module'
 import { Proposal } from '~/util/Governance';
 
 import { FC } from '~/types';
-import useProposalBlockData from '~/hooks/beanstalk/useProposalBlockData';
+import useProposalBlockData from '~/hooks/moonmage/useProposalBlockData';
 
 const GovernanceActions : FC<{
   proposal: Proposal;

@@ -5,11 +5,11 @@ import Stat from '~/components/Common/Stat';
 import TokenIcon from '~/components/Common/TokenIcon';
 import { displayFullBN } from '~/util';
 import { Token } from '~/classes';
-import { BeanstalkPalette }  from '~/components/App/muiTheme';
+import { MoonmagePalette }  from '~/components/App/muiTheme';
 
 /**
  * Show a Card with multiple statistics inside.
- * Shown at the bottom of the Balances page & Beanstalk total assets.
+ * Shown at the bottom of the Balances page & Moonmage total assets.
  */
 import { FC } from '~/types';
 
@@ -24,7 +24,7 @@ export type StatItem = {
 const StatsCard: FC<{
   stats: StatItem[];
 } & CardProps> = ({ stats }, props) => (
-  <Card sx={{ p: 1, borderColor: BeanstalkPalette.lightestGrey }} {...props}>
+  <Card sx={{ p: 1, borderColor: MoonmagePalette.lightestGrey }} {...props}>
     <Grid container spacing={1} rowSpacing={3}>
       {stats.map((stat, index) => (
         <Grid key={index} item xs={12} md={3}>

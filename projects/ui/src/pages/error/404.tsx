@@ -5,7 +5,7 @@ import {
   Container,
   Stack, Typography
 } from '@mui/material';
-import forecast from '~/img/beanstalk/forecast-banner.svg';
+import forecast from '~/img/moonmage/forecast-banner.svg';
 
 import { FC } from '~/types';
 
@@ -16,7 +16,7 @@ const PageNotFound: FC<{}> = () => (
         <Box
           component="img"
           src={forecast}
-          alt="Barn"
+          alt="Ship"
           sx={{ maxWidth: 400, marginBottom: 20 }}
         />
         <Typography variant="h1">404 error</Typography>

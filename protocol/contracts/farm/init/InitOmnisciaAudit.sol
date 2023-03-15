@@ -8,7 +8,7 @@ pragma experimental ABIEncoderV2;
 import {AppStorage} from "../AppStorage.sol";
 /**
  * @author Publius
- * @title Init Omniscia Audit initializes the Beanstalk Diamond.
+ * @title Init Omniscia Audit initializes the Moonmage Diamond.
 **/
 contract InitOmnisciaAudit {
 
@@ -16,7 +16,7 @@ contract InitOmnisciaAudit {
     
     function init() external {
         // s.refundStatus = 1;
-        // s.beanRefundAmount = 1;
+        // s.moonRefundAmount = 1;
         // s.ethRefundAmount = 1;
     }
 

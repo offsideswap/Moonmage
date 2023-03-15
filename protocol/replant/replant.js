@@ -9,7 +9,7 @@ const { replant10 } = require('./replant10.js')
 const { replantMock } = require('./replantMock.js')
 const fs = require('fs')
 
-async function printBeanstalk() {
+async function printMoonmage() {
   console.log('\n')
   console.log('')
   const text = fs.readFileSync('./replant/data/replant.txt');
@@ -41,7 +41,7 @@ async function replant(account, deployAccount=undefined, mock=true, log=false, s
   if (mock) replants.push(replantMock)
 
   console.clear()
-  await printBeanstalk()
+  await printMoonmage()
   end = end || replants.length
   for (let i = start; i < end; i++) {
     printStage(i, end, mock, log)
@@ -60,11 +60,11 @@ function getProcessString(processed, total) {
 async function printStage(i, end, mock, log) {
   if (!log) {
     console.clear()
-    printBeanstalk()
+    printMoonmage()
   } else {
     console.log('==============================================')
   }
-  console.log("Replanting Beanstalk:")
+  console.log("Replanting Moonmage:")
   console.log(`Mocks Enabled: ${mock}`)
   console.log(`Stage ${i}/${end-1}: ${getProcessString(i, end-1)}`)
 }

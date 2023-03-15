@@ -4,10 +4,10 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Token, { ERC20Token, NativeToken } from '~/classes/Token';
 import { TokenSelectDialog } from '~/components/Common/Form';
 import { TokenSelectMode } from '~/components/Common/Form/TokenSelectDialog';
-import { BEAN, ETH, WETH } from '~/constants/tokens';
+import { MOON, ETH, WETH } from '~/constants/tokens';
 import useTokenMap from '~/hooks/chain/useTokenMap';
 import useToggle from '~/hooks/display/useToggle';
-import useFarmerBalances from '~/hooks/farmer/useFarmerBalances';
+import useCosmonautBalances from '~/hooks/cosmomage/useCosmonautBalances';
 import { fulfillAmountAtom, useFulfillTokenAtom } from '../info/atom-context';
 import AtomInputField from '~/components/Common/Atom/AtomInputField';
 import { FontSize } from '~/components/App/muiTheme';
@@ -48,13 +48,13 @@ const FulfillOrderAmount: React.FC<{}> = () => {
   const [fulfillToken, setFulfillToken] = useFulfillTokenAtom();
 
   const erc20TokenMap = useTokenMap<ERC20Token | NativeToken>([
-    BEAN,
+    MOON,
     ETH,
     WETH,
   ]);
 
-  // Farmer
-  const balances = useFarmerBalances();
+  // Cosmonaut
+  const balances = useCosmonautBalances();
 
   return (
     <>

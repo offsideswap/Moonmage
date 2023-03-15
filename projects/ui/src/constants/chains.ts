@@ -12,13 +12,13 @@
  */
 export enum SupportedChainId {
   MAINNET = 1,
-  CUJO = 31337,     // pre-exploit, beanstalk replanted
+  CUJO = 31337,     // pre-exploit, moonmage replanted
   LOCALHOST = 1337,
 }
 
 /**
- * These chains use Beanstalk Replanted, which has different
- * function signatures than the Beanstalk V1.
+ * These chains use Moonmage Replanted, which has different
+ * function signatures than the Moonmage V1.
  */
 export const REPLANTED_CHAINS = new Set([
   SupportedChainId.MAINNET,

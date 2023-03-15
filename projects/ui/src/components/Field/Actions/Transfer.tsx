@@ -8,17 +8,17 @@ import { PlotFragment, PlotSettingsFragment, SmartSubmitButton, TokenOutputField
 import TransactionToast from '~/components/Common/TxnToast';
 import PlotInputField from '~/components/Common/Form/PlotInputField';
 import { useSigner } from '~/hooks/ledger/useSigner';
-import { useBeanstalkContract } from '~/hooks/ledger/useContract';
+import { useMoonmageContract } from '~/hooks/ledger/useContract';
 import useAccount from '~/hooks/ledger/useAccount';
-import useFarmerPlots from '~/hooks/farmer/useFarmerPlots';
-import useHarvestableIndex from '~/hooks/beanstalk/useHarvestableIndex';
+import useCosmonautPlots from '~/hooks/cosmomage/useCosmonautPlots';
+import useHarvestableIndex from '~/hooks/moonmage/useHarvestableIndex';
 import { ZERO_BN } from '~/constants';
 import { PODS } from '~/constants/tokens';
 import { displayFullBN, toStringBaseUnitBN, trimAddress } from '~/util';
 import { ActionType } from '~/util/Actions';
 import StyledAccordionSummary from '~/components/Common/Accordion/AccordionSummary';
 import useFormMiddleware from '~/hooks/ledger/useFormMiddleware';
-import { useFetchFarmerField } from '~/state/farmer/field/updater';
+import { useFetchCosmonautField } from '~/state/cosmomage/field/updater';
 
 import { FC } from '~/types';
 
@@ -41,7 +41,7 @@ const TransferForm: FC<
   isSubmitting,
 }) => {
   /// Data
-  const plots = useFarmerPlots();
+  const plots = useCosmonautPlots();
   const harvestableIndex = useHarvestableIndex();
 
   /// Derived
@@ -116,10 +116,10 @@ const Transfer: FC<{}> = () => {
   /// Ledger
   const account = useAccount();
   const { data: signer } = useSigner();
-  const beanstalk = useBeanstalkContract(signer);
+  const moonmage = useMoonmageContract(signer);
 
-  /// Farmer
-  const [refetchFarmerField] = useFetchFarmerField();
+  /// Cosmonaut
+  const [refetchCosmonautField] = useFetchCosmonautField();
 
   /// Form setup
   const middleware = useFormMiddleware();
@@ -147,7 +147,7 @@ const Transfer: FC<{}> = () => {
       const { to, plot: { index, start, end, amount } } = values;
       if (!to || !index || !start || !end || !amount) throw new Error('Missing data.');
 
-      const call = beanstalk.transferPlot(
+      const call = moonmage.transferPlot(
         account,
         to.toString(),
         toStringBaseUnitBN(index, PODS.decimals),
@@ -165,7 +165,7 @@ const Transfer: FC<{}> = () => {
 
       const receipt = await txn.wait();
       await Promise.all([
-        refetchFarmerField(),
+        refetchCosmonautField(),
       ]);
 
       txToast.success(receipt);
@@ -180,8 +180,8 @@ const Transfer: FC<{}> = () => {
     }
   }, [
     account,
-    beanstalk,
-    refetchFarmerField,
+    moonmage,
+    refetchCosmonautField,
     middleware,
   ]);
 

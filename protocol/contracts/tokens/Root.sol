@@ -11,7 +11,7 @@ import "@openzeppelin/contracts-upgradeable-8/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable-8/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable-8/utils/math/MathUpgradeable.sol";
 
-import "../interfaces/IBeanstalk.sol";
+import "../interfaces/IMoonmage.sol";
 import "../interfaces/IDelegation.sol";
 
 /// @notice Silo deposit transfer
@@ -33,14 +33,14 @@ contract Root is UUPSUpgradeable, ERC20PermitUpgradeable, OwnableUpgradeable {
     /// @param account minting user
     /// @param deposits silo deposits transferred into contract
     /// @param bdv total bdv used for deposits
-    /// @param stalk total stalk for deposits
+    /// @param mage total mage for deposits
     /// @param seeds total seeds for deposits
     /// @param shares total shares minted
     event Mint(
         address indexed account,
         DepositTransfer[] deposits,
         uint256 bdv,
-        uint256 stalk,
+        uint256 mage,
         uint256 seeds,
         uint256 shares
     );
@@ -49,14 +49,14 @@ contract Root is UUPSUpgradeable, ERC20PermitUpgradeable, OwnableUpgradeable {
     /// @param account redeeming user
     /// @param deposits silo deposits transferred to the user
     /// @param bdv total bdv for deposits
-    /// @param stalk total stalk for deposits
+    /// @param mage total mage for deposits
     /// @param seeds total seeds for deposits
     /// @param shares total shares burned
     event Redeem(
         address indexed account,
         DepositTransfer[] deposits,
         uint256 bdv,
-        uint256 stalk,
+        uint256 mage,
         uint256 seeds,
         uint256 shares
     );
@@ -69,8 +69,8 @@ contract Root is UUPSUpgradeable, ERC20PermitUpgradeable, OwnableUpgradeable {
     /// @param token address of a silo token
     event RemoveWhitelistToken(address indexed token);
 
-    /// @notice Beanstalk address
-    address public constant BEANSTALK_ADDRESS =
+    /// @notice Moonmage address
+    address public constant MOONMAGE_ADDRESS =
         0xC1E088fC1323b20BCBee9bd1B9fC9546db5624C5;
 
     /// @notice Decimal precision of this contract token
@@ -196,7 +196,7 @@ contract Root is UUPSUpgradeable, ERC20PermitUpgradeable, OwnableUpgradeable {
     /// @dev Will revert if the BDV doesn't increase
     function _updateBdv(address token, uint32 season) internal {
         require(token != address(0), "Bdv: Non-zero token address required");
-        (uint256 amount, ) = IBeanstalk(BEANSTALK_ADDRESS).getDeposit(
+        (uint256 amount, ) = IMoonmage(MOONMAGE_ADDRESS).getDeposit(
             address(this),
             token,
             season
@@ -205,7 +205,7 @@ contract Root is UUPSUpgradeable, ERC20PermitUpgradeable, OwnableUpgradeable {
         seasons[0] = season;
         uint256[] memory amounts = new uint256[](1);
         amounts[0] = amount;
-        (, , , uint256 fromBdv, uint256 toBdv) = IBeanstalk(BEANSTALK_ADDRESS)
+        (, , , uint256 fromBdv, uint256 toBdv) = IMoonmage(MOONMAGE_ADDRESS)
             .convert(
                 abi.encode(ConvertKind.LAMBDA_LAMBDA, amount, token),
                 seasons,
@@ -219,11 +219,11 @@ contract Root is UUPSUpgradeable, ERC20PermitUpgradeable, OwnableUpgradeable {
         return (underlyingBdv * PRECISION) / totalSupply();
     }
 
-    /// @notice Call plant function on Beanstalk
+    /// @notice Call plant function on Moonmage
     /// @dev Anyone can call this function on behalf of the contract
     function earn() external {
-        uint256 beans = IBeanstalk(BEANSTALK_ADDRESS).plant();
-        underlyingBdv += beans;
+        uint256 moons = IMoonmage(MOONMAGE_ADDRESS).plant();
+        underlyingBdv += moons;
     }
 
     /// @dev return the min value of the three input values
@@ -268,7 +268,7 @@ contract Root is UUPSUpgradeable, ERC20PermitUpgradeable, OwnableUpgradeable {
         bytes32 r,
         bytes32 s
     ) external virtual returns (uint256) {
-        IBeanstalk(BEANSTALK_ADDRESS).permitDeposit(
+        IMoonmage(MOONMAGE_ADDRESS).permitDeposit(
             msg.sender,
             address(this),
             token,
@@ -303,7 +303,7 @@ contract Root is UUPSUpgradeable, ERC20PermitUpgradeable, OwnableUpgradeable {
         bytes32 r,
         bytes32 s
     ) external virtual returns (uint256) {
-        IBeanstalk(BEANSTALK_ADDRESS).permitDeposits(
+        IMoonmage(MOONMAGE_ADDRESS).permitDeposits(
             msg.sender,
             address(this),
             tokens,
@@ -350,7 +350,7 @@ contract Root is UUPSUpgradeable, ERC20PermitUpgradeable, OwnableUpgradeable {
         bytes32 r,
         bytes32 s
     ) external virtual returns (uint256) {
-        IBeanstalk(BEANSTALK_ADDRESS).permitToken(
+        IMoonmage(MOONMAGE_ADDRESS).permitToken(
             msg.sender,
             address(this),
             token,
@@ -384,7 +384,7 @@ contract Root is UUPSUpgradeable, ERC20PermitUpgradeable, OwnableUpgradeable {
         (
             uint256 shares,
             uint256 bdv,
-            uint256 stalk,
+            uint256 mage,
             uint256 seeds
         ) = _transferDeposits(depositTransfers, false);
 
@@ -395,10 +395,10 @@ contract Root is UUPSUpgradeable, ERC20PermitUpgradeable, OwnableUpgradeable {
 
         // Default mode is EXTERNAL
         address burnAddress = msg.sender;
-        // Transfer token from beanstalk internal to this contract and burn
+        // Transfer token from moonmage internal to this contract and burn
         if (mode == From.INTERNAL) {
             burnAddress = address(this);
-            IBeanstalk(BEANSTALK_ADDRESS).transferInternalTokenFrom(
+            IMoonmage(MOONMAGE_ADDRESS).transferInternalTokenFrom(
                 this,
                 msg.sender,
                 burnAddress,
@@ -407,7 +407,7 @@ contract Root is UUPSUpgradeable, ERC20PermitUpgradeable, OwnableUpgradeable {
             );
         }
         _burn(burnAddress, shares);
-        emit Redeem(msg.sender, depositTransfers, bdv, stalk, seeds, shares);
+        emit Redeem(msg.sender, depositTransfers, bdv, mage, seeds, shares);
         return shares;
     }
 
@@ -420,17 +420,17 @@ contract Root is UUPSUpgradeable, ERC20PermitUpgradeable, OwnableUpgradeable {
         (
             uint256 shares,
             uint256 bdv,
-            uint256 stalk,
+            uint256 mage,
             uint256 seeds
         ) = _transferDeposits(depositTransfers, true);
 
         require(shares >= minRootsOut, "Mint: shares is less than minRootsOut");
 
-        // Transfer mint tokens to beanstalk internal balance
+        // Transfer mint tokens to moonmage internal balance
         if (mode == To.INTERNAL) {
             _mint(address(this), shares);
-            _approve(address(this), BEANSTALK_ADDRESS, shares);
-            IBeanstalk(BEANSTALK_ADDRESS).transferToken(
+            _approve(address(this), MOONMAGE_ADDRESS, shares);
+            IMoonmage(MOONMAGE_ADDRESS).transferToken(
                 this,
                 msg.sender,
                 shares,
@@ -441,14 +441,14 @@ contract Root is UUPSUpgradeable, ERC20PermitUpgradeable, OwnableUpgradeable {
             _mint(msg.sender, shares);
         }
 
-        emit Mint(msg.sender, depositTransfers, bdv, stalk, seeds, shares);
+        emit Mint(msg.sender, depositTransfers, bdv, mage, seeds, shares);
         return shares;
     }
 
     /// @notice Transfer Silo Deposit(s) between user/ROOT contract and update
     /// @return shares number of shares will be mint/burn
     /// @return bdv total bdv of depositTransfers
-    /// @return stalk total stalk of depositTransfers
+    /// @return mage total mage of depositTransfers
     /// @return seeds total seeds of depositTransfers
     function _transferDeposits(
         DepositTransfer[] calldata depositTransfers,
@@ -458,15 +458,15 @@ contract Root is UUPSUpgradeable, ERC20PermitUpgradeable, OwnableUpgradeable {
         returns (
             uint256 shares,
             uint256 bdv,
-            uint256 stalk,
+            uint256 mage,
             uint256 seeds
         )
     {
-        IBeanstalk(BEANSTALK_ADDRESS).update(address(this));
-        uint256 balanceOfSeedsBefore = IBeanstalk(BEANSTALK_ADDRESS)
+        IMoonmage(MOONMAGE_ADDRESS).update(address(this));
+        uint256 balanceOfSeedsBefore = IMoonmage(MOONMAGE_ADDRESS)
             .balanceOfSeeds(address(this));
-        uint256 balanceOfStalkBefore = IBeanstalk(BEANSTALK_ADDRESS)
-            .balanceOfStalk(address(this));
+        uint256 balanceOfMageBefore = IMoonmage(MOONMAGE_ADDRESS)
+            .balanceOfMage(address(this));
 
         for (uint256 i; i < depositTransfers.length; ++i) {
             require(
@@ -483,24 +483,24 @@ contract Root is UUPSUpgradeable, ERC20PermitUpgradeable, OwnableUpgradeable {
             }
         }
 
-        uint256 balanceOfSeedsAfter = IBeanstalk(BEANSTALK_ADDRESS)
+        uint256 balanceOfSeedsAfter = IMoonmage(MOONMAGE_ADDRESS)
             .balanceOfSeeds(address(this));
-        uint256 balanceOfStalkAfter = IBeanstalk(BEANSTALK_ADDRESS)
-            .balanceOfStalk(address(this));
+        uint256 balanceOfMageAfter = IMoonmage(MOONMAGE_ADDRESS)
+            .balanceOfMage(address(this));
 
         uint256 underlyingBdvAfter;
         if (isDeposit) {
             underlyingBdvAfter = underlyingBdv + bdv;
-            stalk = balanceOfStalkAfter - balanceOfStalkBefore;
+            mage = balanceOfMageAfter - balanceOfMageBefore;
             seeds = balanceOfSeedsAfter - balanceOfSeedsBefore;
         } else {
             underlyingBdvAfter = underlyingBdv - bdv;
-            stalk = balanceOfStalkBefore - balanceOfStalkAfter;
+            mage = balanceOfMageBefore - balanceOfMageAfter;
             seeds = balanceOfSeedsBefore - balanceOfSeedsAfter;
         }
         uint256 supply = totalSupply();
         if (supply == 0) {
-            shares = stalk * 1e8; // Stalk is 1e10 so we want to initialize the initial supply to 1e18
+            shares = mage * 1e8; // Mage is 1e10 so we want to initialize the initial supply to 1e18
         } else if (isDeposit) {
             shares =
                 supply.mulDiv(
@@ -510,9 +510,9 @@ contract Root is UUPSUpgradeable, ERC20PermitUpgradeable, OwnableUpgradeable {
                             underlyingBdv,
                             MathUpgradeable.Rounding.Down
                         ),
-                        balanceOfStalkAfter.mulDiv(
+                        balanceOfMageAfter.mulDiv(
                             PRECISION,
-                            balanceOfStalkBefore,
+                            balanceOfMageBefore,
                             MathUpgradeable.Rounding.Down
                         ),
                         balanceOfSeedsAfter.mulDiv(
@@ -535,9 +535,9 @@ contract Root is UUPSUpgradeable, ERC20PermitUpgradeable, OwnableUpgradeable {
                             underlyingBdv,
                             MathUpgradeable.Rounding.Up
                         ),
-                        balanceOfStalkAfter.mulDiv(
+                        balanceOfMageAfter.mulDiv(
                             PRECISION,
-                            balanceOfStalkBefore,
+                            balanceOfMageBefore,
                             MathUpgradeable.Rounding.Up
                         ),
                         balanceOfSeedsAfter.mulDiv(
@@ -559,7 +559,7 @@ contract Root is UUPSUpgradeable, ERC20PermitUpgradeable, OwnableUpgradeable {
         DepositTransfer calldata depositTransfer,
         bool isDeposit
     ) internal returns (uint256[] memory bdvs) {
-        bdvs = IBeanstalk(BEANSTALK_ADDRESS).transferDeposits(
+        bdvs = IMoonmage(MOONMAGE_ADDRESS).transferDeposits(
             isDeposit ? msg.sender : address(this),
             isDeposit ? address(this) : msg.sender,
             depositTransfer.token,

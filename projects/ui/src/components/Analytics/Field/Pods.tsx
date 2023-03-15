@@ -1,15 +1,15 @@
 import React from 'react';
 import SeasonPlot, { SeasonPlotBaseProps } from '~/components/Common/Charts/SeasonPlot';
 import { SeasonalPodsDocument, SeasonalPodsQuery } from '~/generated/graphql';
-import { SnapshotData } from '~/hooks/beanstalk/useSeasonsQuery';
+import { SnapshotData } from '~/hooks/moonmage/useSeasonsQuery';
 import { toTokenUnitsBN } from '../../../util';
-import { BEAN } from '../../../constants/tokens';
+import { MOON } from '../../../constants/tokens';
 import { LineChartProps } from '~/components/Common/Charts/LineChart';
 import { tickFormatTruncated } from '~/components/Analytics/formatters'; 
 
 import { FC } from '~/types';
 
-const getValue = (season: SnapshotData<SeasonalPodsQuery>) => toTokenUnitsBN(season.unharvestablePods, BEAN[1].decimals).toNumber();
+const getValue = (season: SnapshotData<SeasonalPodsQuery>) => toTokenUnitsBN(season.unharvestablePods, MOON[1].decimals).toNumber();
 const formatValue = (value: number) => `${value.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
 const statProps = {
   title: 'Pods',

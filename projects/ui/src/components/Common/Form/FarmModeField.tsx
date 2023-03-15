@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Typography, TypographyProps } from '@mui/material';
-import { FarmFromMode, FarmToMode } from '~/lib/Beanstalk/Farm';
+import { FarmFromMode, FarmToMode } from '~/lib/Moonmage/Farm';
 import copy from '~/constants/copy';
 import AddressIcon from '../AddressIcon';
 import PillSelectField, { PillSelectFieldProps } from './PillSelectField';
@@ -32,12 +32,12 @@ const FarmModeField : FC<
   let infoLabel: string | undefined;
   if (baseMode === FarmToMode) {
     circDesc  = _circDesc  || 'Send assets to your wallet.';
-    farmDesc  = _farmDesc  || 'Send assets to your internal balance within Beanstalk.';
+    farmDesc  = _farmDesc  || 'Send assets to your internal balance within Moonmage.';
     label     = _label     || 'Destination';
     infoLabel = _infoLabel || undefined;
   } else {
     circDesc  = _circDesc  || 'Use assets from your wallet.';
-    farmDesc  = _farmDesc  || 'Use assets to your internal balance within Beanstalk.';
+    farmDesc  = _farmDesc  || 'Use assets to your internal balance within Moonmage.';
     label     = _label     || 'Source';
     infoLabel = _infoLabel || undefined;
   }

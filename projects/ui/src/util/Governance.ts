@@ -17,9 +17,9 @@ export type Proposal = {
   end: number;
   /** URL to the proposal on Snapshot. */
   link?: string;
-  /** The amount of STALK that has voted for each choice. */
+  /** The amount of MAGE that has voted for each choice. */
   scores: number[];
-  /** Total STALK that has voted. */
+  /** Total MAGE that has voted. */
   scores_total: number;
   /** Last time the scores were updated. */
   scores_updated?: number;

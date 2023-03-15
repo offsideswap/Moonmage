@@ -1,6 +1,6 @@
 ---
 name: BIP Template
-about: A template for proposing BIPs on the Beanstalk repo.
+about: A template for proposing BIPs on the Moonmage repo.
 title: 'BIP-X: To Do'
 labels: ''
 assignees: ''
@@ -9,7 +9,7 @@ assignees: ''
 
 ## Proposer
 
-The proposer of the BIP. Include an Etherscan verified message from an address that has at least 0.1% Stalk ownership.
+The proposer of the BIP. Include an Etherscan verified message from an address that has at least 0.1% Mage ownership.
 
 ## Summary
 
@@ -24,13 +24,13 @@ Include links to any relevant information, such as:
 
 ## Problem
 
-A paragraph on the each of the issues that Beanstalk is facing. This can be a technical problem, economic problem or something else. Order the paragraphs according to the Summary section.
+A paragraph on the each of the issues that Moonmage is facing. This can be a technical problem, economic problem or something else. Order the paragraphs according to the Summary section.
 
 ## Proposed Solution
 
 Explanations for the proposed solution to each of the stated problems. Include technical specifications where applicable. 
 
-Equations in LaTex format where applicable are appreciated, using variables defined in the Beanstalk Whitepaper. 
+Equations in LaTex format where applicable are appreciated, using variables defined in the Moonmage Whitepaper. 
 
 Order the sections according to the Summary section. Use subheadings to delineate between each of the of the proposed solutions.
 
@@ -44,11 +44,11 @@ Order the sections according to the Summary section. Use subheadings to delineat
 
 ## Contract Changes
 
-A detailed outline of the facets being added, changed or removed, as well as the function selectors and events within each affected facet. See [BIP-30](https://bean.money/bip-30#contract-changes) for a good example. Order the facets according to the Summary section.
+A detailed outline of the facets being added, changed or removed, as well as the function selectors and events within each affected facet. See [BIP-30](https://moon.money/bip-30#contract-changes) for a good example. Order the facets according to the Summary section.
 
-## Beans Minted
+## Moons Minted
 
-The number of Beans minted as part of the BIP and to what addresses.
+The number of Moons minted as part of the BIP and to what addresses.
 
 ## Audit
 

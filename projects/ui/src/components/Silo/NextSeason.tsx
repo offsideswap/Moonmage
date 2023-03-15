@@ -1,7 +1,7 @@
 import React from 'react';
 import { Accordion, AccordionDetails, Box, Divider, Grid, Stack, Typography } from '@mui/material';
 import { SupportedChainId } from '~/constants/chains';
-import { BEAN, STALK } from '~/constants/tokens';
+import { MOON, MAGE } from '~/constants/tokens';
 import AccordionWrapper from '~/components/Common/Accordion/AccordionWrapper';
 import StyledAccordionSummary from '~/components/Common/Accordion/AccordionSummary';
 import TokenIcon from '~/components/Common/TokenIcon';
@@ -48,24 +48,24 @@ const NextSeason : FC<{ title: string | JSX.Element }> = ({ title }) => (
         {/* Primary */}
         <Box sx={{ px: 2 }}>
           <Grid container columnSpacing={4}>
-            {/* Bean Rewards */}
-            <StatColumn title="Bean Rewards" icon={<TokenIcon token={BEAN[SupportedChainId.MAINNET]} />}>
-              <Stat name="New Beans">
+            {/* Moon Rewards */}
+            <StatColumn title="Moon Rewards" icon={<TokenIcon token={MOON[SupportedChainId.MAINNET]} />}>
+              <Stat name="New Moons">
                 730,012
               </Stat>
-              <Stat name="% of new Beans allocated to the Silo">
+              <Stat name="% of new Moons allocated to the Silo">
                 33.3333%
               </Stat>
-              <Stat name="My % Ownership of Stalk">
+              <Stat name="My % Ownership of Mage">
                 0.1012%
               </Stat>
             </StatColumn>
-            {/* Stalk Rewards */}
-            <StatColumn title="Stalk Rewards" icon={<TokenIcon token={STALK} />}>
+            {/* Mage Rewards */}
+            <StatColumn title="Mage Rewards" icon={<TokenIcon token={MAGE} />}>
               <Stat name="My Seed Balance">
                 730,012
               </Stat>
-              <Stat name="New Stalk per Seed">
+              <Stat name="New Mage per Seed">
                 0.0001
               </Stat>
             </StatColumn>
@@ -76,11 +76,11 @@ const NextSeason : FC<{ title: string | JSX.Element }> = ({ title }) => (
         <Box sx={{ px: 2 }}>
           <Grid container columnSpacing={4}>
             <StatColumn
-              title="My New Earned Beans"
+              title="My New Earned Moons"
               icon={(
                 <>
                   <Row gap={0.3}>
-                    <TokenIcon token={BEAN[SupportedChainId.MAINNET]} />
+                    <TokenIcon token={MOON[SupportedChainId.MAINNET]} />
                     <Typography variant="h3">
                       244.33
                     </Typography>
@@ -89,11 +89,11 @@ const NextSeason : FC<{ title: string | JSX.Element }> = ({ title }) => (
               )}
             />
             <StatColumn
-              title="My New Earned Stalk"
+              title="My New Earned Mage"
               icon={(
                 <>
                   <Row gap={0.3}>
-                    <TokenIcon token={STALK} />
+                    <TokenIcon token={MAGE} />
                     <Typography variant="h3">
                       244.33
                     </Typography>

@@ -1,5 +1,5 @@
-const { BEANSTALK } = require("../test/utils/constants")
-const { impersonateBeanstalk } = require("./impersonate")
+const { MOONMAGE } = require("../test/utils/constants")
+const { impersonateMoonmage } = require("./impersonate")
 const fs = require('fs')
 
 const FacetCutAction = {
@@ -142,8 +142,8 @@ async function deploy ({
     if (verbose) console.log(`${diamondName} deployed: ${deployedDiamond.address}`)
     if (verbose) console.log(`Diamond owner: ${owner}`)
   } else {
-    await impersonateBeanstalk(owner)
-    deployedDiamond = await ethers.getContractAt('Diamond', BEANSTALK)
+    await impersonateMoonmage(owner)
+    deployedDiamond = await ethers.getContractAt('Diamond', MOONMAGE)
   }
 
   const diamondCutFacet = await ethers.getContractAt('DiamondCutFacet', deployedDiamond.address)

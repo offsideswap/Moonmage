@@ -11,7 +11,7 @@ query ProposalQuorum(
     }
   ) {
     id
-    stalk
+    mage
     season
     createdAt
   }

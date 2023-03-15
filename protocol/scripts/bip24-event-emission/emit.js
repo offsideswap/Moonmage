@@ -1,7 +1,7 @@
-const { getBeanstalk, impersonateBeanstalkOwner, mintEth } = require("../../utils")
+const { getMoonmage, impersonateMoonmageOwner, mintEth } = require("../../utils")
 const fs = require('fs');
 const { upgradeWithNewFacets } = require("../diamond");
-const { BEANSTALK } = require("../../test/utils/constants");
+const { MOONMAGE } = require("../../test/utils/constants");
 
 const EVENTS_JSON = './scripts/bip24-event-emission/events.json'
 
@@ -9,13 +9,13 @@ async function emitEvents(mock = true, account = undefined) {
     const siloEvents = JSON.parse(await fs.readFileSync(EVENTS_JSON));
 
     if (account == undefined) {
-        account = await impersonateBeanstalkOwner()
+        account = await impersonateMoonmageOwner()
         await mintEth(account.address)
     }
 
-    beanstalk = await getBeanstalk()
+    moonmage = await getMoonmage()
     await upgradeWithNewFacets({
-        diamondAddress: BEANSTALK,
+        diamondAddress: MOONMAGE,
         facetNames: [],
         initFacetName: 'InitSiloEvents',
         initArgs: [siloEvents],

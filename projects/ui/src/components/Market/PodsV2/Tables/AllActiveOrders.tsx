@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import useMarketData from '~/hooks/beanstalk/useMarketData';
+import useMarketData from '~/hooks/moonmage/useMarketData';
 import BaseTable from './BaseTable';
 import { MarketColumns } from './columns/market-columns';
 

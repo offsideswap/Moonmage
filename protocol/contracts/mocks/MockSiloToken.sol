@@ -17,7 +17,7 @@ contract MockSiloToken is Ownable, ERC20Burnable  {
     using SafeMath for uint256;
 
     constructor()
-    ERC20("Bean3Crv", "BEAN3CRV")
+    ERC20("Moon3Crv", "MOON3CRV")
     { }
 
     function mint(address account, uint256 amount) public onlyOwner returns (bool) {
@@ -31,7 +31,7 @@ contract MockSiloToken is Ownable, ERC20Burnable  {
             _approve(
                 sender,
                 _msgSender(),
-                allowance(sender, _msgSender()).sub(amount, "Bean: Transfer amount exceeds allowance."));
+                allowance(sender, _msgSender()).sub(amount, "Moon: Transfer amount exceeds allowance."));
         }
         return true;
     }

@@ -1,7 +1,7 @@
 fragment PodListing on PodListing {
   #// Identifiers
   id
-  farmer { id }
+  cosmomage { id }
   historyID
   
   #// Configuration

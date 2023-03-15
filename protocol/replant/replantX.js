@@ -1,11 +1,11 @@
 const fs = require('fs')
 const { wrapWithRetryHandling } = require('./utils/retry.js');
-const { BEANSTALK } = require('../test/utils/constants.js');
+const { MOONMAGE } = require('../test/utils/constants.js');
 
 // Files
-const BEAN_DEPOSITS = "./replant/data/r5-beanDeposits.json"
+const MOON_DEPOSITS = "./replant/data/r5-moonDeposits.json"
 const LP_DEPOSITS = "./replant/data/r6-lpDeposits.json"
-const EARNED_BEANS = "./replant/data/r7-earnedBeans.json"
+const EARNED_MOONS = "./replant/data/r7-earnedMoons.json"
 
 const REPLANT_SEASON = '6074'
 
@@ -49,7 +49,7 @@ async function replantX(
   const initFacetAddress = receipt.contractAddress
   console.log(`${name} address: ` + initFacetAddress)
 
-  const diamondCut = await ethers.getContractAt('DiamondCutFacet', BEANSTALK)
+  const diamondCut = await ethers.getContractAt('DiamondCutFacet', MOONMAGE)
 
   if (init2) {
     functionCall = replantX.interface.encodeFunctionData('init2', initData)

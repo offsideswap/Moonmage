@@ -7,7 +7,7 @@ const GITHUB_REPOSITORY = process.env.GITHUB_REPOSITORY;
 const GITHUB_SHA = process.env.GITHUB_SHA;
 const WORKSPACE_ROOT = process.env.PROJECT_CWD;
 const PROJECT_ROOT = argv.cwd;
-const WHITELISTED_PACKAGES = ["@beanstalk/sdk", "@beanstalk/cli"];
+const WHITELISTED_PACKAGES = ["@moonmage/sdk", "@moonmage/cli"];
 let localVersion, name, isPrivate;
 
 $.verbose = true;
@@ -23,8 +23,8 @@ async function publish(localVersion, name) {
     exit("YARN_NPM_AUTH_TOKEN is not set");
   }
   // SDK needs to be built as a prerequisit for others
-  if (name !== "@beanstalk/sdk") {
-    await $`yarn workspace @beanstalk/sdk build`;
+  if (name !== "@moonmage/sdk") {
+    await $`yarn workspace @moonmage/sdk build`;
   }
   await $`yarn workspace ${name} publish`;
 }

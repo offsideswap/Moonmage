@@ -4,11 +4,11 @@ import { Box } from '@mui/material';
 import Banner from '~/components/Nav/Banner';
 import { BANNER_HEIGHT } from '~/hooks/app/usePageDimensions';
 import { AppState } from '~/state';
-import { ActiveProposal } from '~/state/beanstalk/governance';
+import { ActiveProposal } from '~/state/moonmage/governance';
 import snapshotLogo from '~/img/ecosystem/snapshot-logo.svg';
 
 const useBanner = () => {
-  const activeProposals = useSelector<AppState, ActiveProposal[]>((state) => state._beanstalk.governance.activeProposals);
+  const activeProposals = useSelector<AppState, ActiveProposal[]>((state) => state._moonmage.governance.activeProposals);
   return useMemo(() => {
     if (activeProposals.length > 1) {
       return (

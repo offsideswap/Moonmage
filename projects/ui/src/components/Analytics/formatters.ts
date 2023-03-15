@@ -12,4 +12,4 @@ export const tickFormatPercentage = (v: NumberLike) => {
   return `${n.toFixed(n < 100 ? 2 : 0)}%`;
 };
 export const tickFormatUSD = (v: NumberLike) => `$${tickFormatTruncated(v)}`;
-export const tickFormatBeanPrice = (v: NumberLike) => `$${v.valueOf().toLocaleString('en-us', { minimumFractionDigits: 4 })}`;
+export const tickFormatMoonPrice = (v: NumberLike) => `$${v.valueOf().toLocaleString('en-us', { minimumFractionDigits: 4 })}`;

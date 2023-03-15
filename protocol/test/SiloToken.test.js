@@ -2,8 +2,8 @@ const { expect } = require('chai');
 const { deploy } = require('../scripts/deploy.js');
 const { readPrune, toBN, signSiloDepositTokenPermit, signSiloDepositTokensPermit } = require('../utils');
 const { EXTERNAL, INTERNAL, INTERNAL_EXTERNAL, INTERNAL_TOLERANT } = require('./utils/balances.js')
-const { BEAN, THREE_POOL, BEAN_3_CURVE, UNRIPE_LP, UNRIPE_BEAN, THREE_CURVE } = require('./utils/constants');
-const { to18, to6, toStalk, toBean } = require('./utils/helpers.js')
+const { MOON, THREE_POOL, MOON_3_CURVE, UNRIPE_LP, UNRIPE_MOON, THREE_CURVE } = require('./utils/constants');
+const { to18, to6, toMage, toMoon } = require('./utils/helpers.js')
 const { takeSnapshot, revertToSnapshot } = require("./utils/snapshot");
 const ZERO_BYTES = ethers.utils.formatBytes32String('0x0')
 
@@ -16,7 +16,7 @@ function pruneToSeeds(value, seeds = 2) {
   return prune(value).mul(seeds)
 }
 
-function pruneToStalk(value) {
+function pruneToMage(value) {
   return prune(value).mul(toBN('10000'))
 }
 
@@ -32,15 +32,15 @@ describe('Silo Token', function () {
     user2Address = user2.address;
     const contracts = await deploy("Test", false, true);
     ownerAddress = contracts.account;
-    this.diamond = contracts.beanstalkDiamond;
+    this.diamond = contracts.moonmageDiamond;
     this.season = await ethers.getContractAt('MockSeasonFacet', this.diamond.address);
     this.silo = await ethers.getContractAt('MockSiloFacet', this.diamond.address);
     this.unripe = await ethers.getContractAt('MockUnripeFacet', this.diamond.address);
 
     this.threeCurve = await ethers.getContractAt('MockToken', THREE_CURVE);
-    this.beanMetapool = await ethers.getContractAt('IMockCurvePool', BEAN_3_CURVE);
-    await this.beanMetapool.set_supply(ethers.utils.parseUnits('2000000', 6));
-    await this.beanMetapool.set_balances([
+    this.moonMetapool = await ethers.getContractAt('IMockCurvePool', MOON_3_CURVE);
+    await this.moonMetapool.set_supply(ethers.utils.parseUnits('2000000', 6));
+    await this.moonMetapool.set_balances([
       ethers.utils.parseUnits('1000000',6),
       ethers.utils.parseEther('1000000')
     ]);
@@ -69,12 +69,12 @@ describe('Silo Token', function () {
     await this.siloToken.connect(owner).approve(this.silo.address, to18('10000')); 
     await this.siloToken.mint(ownerAddress, to18('10000'));
 
-    this.unripeBeans = await ethers.getContractAt('MockToken', UNRIPE_BEAN);
-    await this.unripeBeans.connect(user).mint(userAddress, to6('10000'))
-    await this.unripeBeans.connect(user).approve(this.silo.address, to18('10000'))
-    await this.unripe.addUnripeToken(UNRIPE_BEAN, this.siloToken.address, ZERO_BYTES)
+    this.unripeMoons = await ethers.getContractAt('MockToken', UNRIPE_MOON);
+    await this.unripeMoons.connect(user).mint(userAddress, to6('10000'))
+    await this.unripeMoons.connect(user).approve(this.silo.address, to18('10000'))
+    await this.unripe.addUnripeToken(UNRIPE_MOON, this.siloToken.address, ZERO_BYTES)
     await this.unripe.connect(owner).addUnderlying(
-      UNRIPE_BEAN,
+      UNRIPE_MOON,
       to6('10000').mul(toBN(pru)).div(to18('1'))
     )
 
@@ -87,13 +87,13 @@ describe('Silo Token', function () {
       toBN(pru).mul(toBN('10000'))
     )
 
-    this.beanThreeCurve = await ethers.getContractAt('MockMeta3Curve', BEAN_3_CURVE);
-    await this.beanThreeCurve.set_supply(ethers.utils.parseEther('2000000'));
-    await this.beanThreeCurve.set_balances([
+    this.moonThreeCurve = await ethers.getContractAt('MockMeta3Curve', MOON_3_CURVE);
+    await this.moonThreeCurve.set_supply(ethers.utils.parseEther('2000000'));
+    await this.moonThreeCurve.set_balances([
       ethers.utils.parseUnits('1000000',6),
       ethers.utils.parseEther('1000000')
     ]);
-    await this.beanThreeCurve.set_balances([
+    await this.moonThreeCurve.set_balances([
       ethers.utils.parseUnits('1200000',6),
       ethers.utils.parseEther('1000000')
     ]);
@@ -110,7 +110,7 @@ describe('Silo Token', function () {
   describe('deposit', function () {
     describe('reverts', function () {
       it('reverts if BDV is 0', async function () {
-        await expect(this.silo.connect(user).deposit(this.siloToken.address, '0', EXTERNAL)).to.revertedWith('Silo: No Beans under Token.');
+        await expect(this.silo.connect(user).deposit(this.siloToken.address, '0', EXTERNAL)).to.revertedWith('Silo: No Moons under Token.');
       });
 
       it('reverts if deposits a non whitelisted token', async function () {
@@ -126,12 +126,12 @@ describe('Silo Token', function () {
       it('properly updates the total balances', async function () {
         expect(await this.silo.getTotalDeposited(this.siloToken.address)).to.eq('1000');
         expect(await this.silo.totalSeeds()).to.eq('1000');
-        expect(await this.silo.totalStalk()).to.eq('10000000');
+        expect(await this.silo.totalMage()).to.eq('10000000');
       });
   
       it('properly updates the user balance', async function () {
         expect(await this.silo.balanceOfSeeds(userAddress)).to.eq('1000');
-        expect(await this.silo.balanceOfStalk(userAddress)).to.eq('10000000');
+        expect(await this.silo.balanceOfMage(userAddress)).to.eq('10000000');
       });
   
       it('properly adds the crate', async function () {
@@ -154,12 +154,12 @@ describe('Silo Token', function () {
       it('properly updates the total balances', async function () {
         expect(await this.silo.getTotalDeposited(this.siloToken.address)).to.eq('2000');
         expect(await this.silo.totalSeeds()).to.eq('2000');
-        expect(await this.silo.totalStalk()).to.eq('20000000');
+        expect(await this.silo.totalMage()).to.eq('20000000');
       });
   
       it('properly updates the user balance', async function () {
         expect(await this.silo.balanceOfSeeds(userAddress)).to.eq('2000');
-        expect(await this.silo.balanceOfStalk(userAddress)).to.eq('20000000');
+        expect(await this.silo.balanceOfMage(userAddress)).to.eq('20000000');
       });
   
       it('properly adds the crate', async function () {
@@ -178,16 +178,16 @@ describe('Silo Token', function () {
       it('properly updates the total balances', async function () {
         expect(await this.silo.getTotalDeposited(this.siloToken.address)).to.eq('2000');
         expect(await this.silo.totalSeeds()).to.eq('2000');
-        expect(await this.silo.totalStalk()).to.eq('20000000');
+        expect(await this.silo.totalMage()).to.eq('20000000');
       });
   
       it('properly updates the user balance', async function () {
         expect(await this.silo.balanceOfSeeds(userAddress)).to.eq('1000');
-        expect(await this.silo.balanceOfStalk(userAddress)).to.eq('10000000');
+        expect(await this.silo.balanceOfMage(userAddress)).to.eq('10000000');
       });
       it('properly updates the user2 balance', async function () {
         expect(await this.silo.balanceOfSeeds(user2Address)).to.eq('1000');
-        expect(await this.silo.balanceOfStalk(user2Address)).to.eq('10000000');
+        expect(await this.silo.balanceOfMage(user2Address)).to.eq('10000000');
       });
   
       it('properly adds the crate', async function () {
@@ -216,19 +216,19 @@ describe('Silo Token', function () {
     });
 
     describe('withdraw token by season', async function () {
-      describe('withdraw 1 Bean crate', async function () {
+      describe('withdraw 1 Moon crate', async function () {
         beforeEach(async function () {
           this.result = await this.silo.connect(user).withdrawDeposit(this.siloToken.address, 2, '1000');
         });
     
         it('properly updates the total balances', async function () {
           expect(await this.silo.getTotalDeposited(this.siloToken.address)).to.eq('0');
-          expect(await this.silo.totalStalk()).to.eq('0');
+          expect(await this.silo.totalMage()).to.eq('0');
           expect(await this.silo.totalSeeds()).to.eq('0');
           expect(await this.silo.getTotalWithdrawn(this.siloToken.address)).to.eq('1000');
         });
         it('properly updates the user balance', async function () {
-          expect(await this.silo.balanceOfStalk(userAddress)).to.eq('0');
+          expect(await this.silo.balanceOfMage(userAddress)).to.eq('0');
           expect(await this.silo.balanceOfSeeds(userAddress)).to.eq('0');
         });
 
@@ -248,19 +248,19 @@ describe('Silo Token', function () {
         });
       });
       
-      describe('withdraw part of a bean crate', function () {
+      describe('withdraw part of a moon crate', function () {
         beforeEach(async function () {
           this.result = await this.silo.connect(user).withdrawDeposit(this.siloToken.address, 2, '500');
         });
     
         it('properly updates the total balances', async function () {
           expect(await this.silo.getTotalDeposited(this.siloToken.address)).to.eq('500');
-          expect(await this.silo.totalStalk()).to.eq('5000000');
+          expect(await this.silo.totalMage()).to.eq('5000000');
           expect(await this.silo.totalSeeds()).to.eq('500');
           expect(await this.silo.getTotalWithdrawn(this.siloToken.address)).to.eq('500');
         });
         it('properly updates the user balance', async function () {
-          expect(await this.silo.balanceOfStalk(userAddress)).to.eq('5000000');
+          expect(await this.silo.balanceOfMage(userAddress)).to.eq('5000000');
           expect(await this.silo.balanceOfSeeds(userAddress)).to.eq('500');
         });
 
@@ -291,12 +291,12 @@ describe('Silo Token', function () {
     
         it('properly updates the total balances', async function () {
           expect(await this.silo.getTotalDeposited(this.siloToken.address)).to.eq('500');
-          expect(await this.silo.totalStalk()).to.eq('5000500');
+          expect(await this.silo.totalMage()).to.eq('5000500');
           expect(await this.silo.totalSeeds()).to.eq('500');
           expect(await this.silo.getTotalWithdrawn(this.siloToken.address)).to.eq('1500');
         });
         it('properly updates the user balance', async function () {
-          expect(await this.silo.balanceOfStalk(userAddress)).to.eq('5000500');
+          expect(await this.silo.balanceOfMage(userAddress)).to.eq('5000500');
           expect(await this.silo.balanceOfSeeds(userAddress)).to.eq('500');
         });
         it('properly removes the crate', async function () {
@@ -321,12 +321,12 @@ describe('Silo Token', function () {
     
         it('properly updates the total balances', async function () {
           expect(await this.silo.getTotalDeposited(this.siloToken.address)).to.eq('0');
-          expect(await this.silo.totalStalk()).to.eq('0');
+          expect(await this.silo.totalMage()).to.eq('0');
           expect(await this.silo.totalSeeds()).to.eq('0');
           expect(await this.silo.getTotalWithdrawn(this.siloToken.address)).to.eq('2000');
         });
         it('properly updates the user balance', async function () {
-          expect(await this.silo.balanceOfStalk(userAddress)).to.eq('0');
+          expect(await this.silo.balanceOfMage(userAddress)).to.eq('0');
           expect(await this.silo.balanceOfSeeds(userAddress)).to.eq('0');
         });
         it('properly removes the crate', async function () {
@@ -356,12 +356,12 @@ describe('Silo Token', function () {
       beforeEach(async function () {
         const userTokensBefore = await this.siloToken.balanceOf(userAddress);
         this.result = await this.silo.connect(user).claimWithdrawal(this.siloToken.address, 27, EXTERNAL);
-        this.deltaBeans = (await this.siloToken.balanceOf(userAddress)).sub(userTokensBefore);
+        this.deltaMoons = (await this.siloToken.balanceOf(userAddress)).sub(userTokensBefore);
       });
 
       it('properly updates the total balances', async function () {
         expect(await this.silo.getTotalWithdrawn(this.siloToken.address)).to.eq('0');
-        expect(this.deltaBeans).to.equal('1000');
+        expect(this.deltaMoons).to.equal('1000');
       });
 
       it('properly removes the withdrawal', async function () {
@@ -381,12 +381,12 @@ describe('Silo Token', function () {
 
       const userTokensBefore = await this.siloToken.balanceOf(userAddress);
         this.result = await this.silo.connect(user).claimWithdrawals(this.siloToken.address, [27, 52], EXTERNAL);
-        this.deltaBeans = (await this.siloToken.balanceOf(userAddress)).sub(userTokensBefore);
+        this.deltaMoons = (await this.siloToken.balanceOf(userAddress)).sub(userTokensBefore);
       });
 
       it('properly updates the total balances', async function () {
         expect(await this.silo.getTotalWithdrawn(this.siloToken.address)).to.eq('0');
-        expect(this.deltaBeans).to.equal('2000');
+        expect(this.deltaMoons).to.equal('2000');
       });
 
       it('properly removes the withdrawal', async function () {
@@ -403,15 +403,15 @@ describe('Silo Token', function () {
     before(async function () {
       this.threePool = await ethers.getContractAt('Mock3Curve', THREE_POOL);
       await this.threePool.set_virtual_price(ethers.utils.parseEther('1'));
-      this.beanThreeCurve = await ethers.getContractAt('MockMeta3Curve', BEAN_3_CURVE);
-      await this.beanThreeCurve.set_supply(ethers.utils.parseEther('2000000'));
-      await this.beanThreeCurve.set_A_precise('1000');
-      await this.beanThreeCurve.set_virtual_price(ethers.utils.parseEther('1'));
-      await this.beanThreeCurve.set_balances([
+      this.moonThreeCurve = await ethers.getContractAt('MockMeta3Curve', MOON_3_CURVE);
+      await this.moonThreeCurve.set_supply(ethers.utils.parseEther('2000000'));
+      await this.moonThreeCurve.set_A_precise('1000');
+      await this.moonThreeCurve.set_virtual_price(ethers.utils.parseEther('1'));
+      await this.moonThreeCurve.set_balances([
         ethers.utils.parseUnits('1000000',6),
         ethers.utils.parseEther('1000000')
       ]);
-      await this.beanThreeCurve.set_balances([
+      await this.moonThreeCurve.set_balances([
         ethers.utils.parseUnits('1200000',6),
         ethers.utils.parseEther('1000000')
       ]);
@@ -429,99 +429,99 @@ describe('Silo Token', function () {
     })
   })
 
-  describe('Withdraw Unripe Beans', async function () {
-    describe("Just legacy Bean Deposit", async function () {
+  describe('Withdraw Unripe Moons', async function () {
+    describe("Just legacy Moon Deposit", async function () {
       beforeEach(async function () {
-        await this.silo.connect(user).mockUnripeBeanDeposit('2', to6('10'))
+        await this.silo.connect(user).mockUnripeMoonDeposit('2', to6('10'))
       })
 
       it("Check mock works", async function () {
-        expect(await this.silo.getTotalDeposited(UNRIPE_BEAN)).to.eq(to6('10'));
-        expect(await this.silo.totalStalk()).to.eq(pruneToStalk(to6('10')));
+        expect(await this.silo.getTotalDeposited(UNRIPE_MOON)).to.eq(to6('10'));
+        expect(await this.silo.totalMage()).to.eq(pruneToMage(to6('10')));
         expect(await this.silo.totalSeeds()).to.eq(pruneToSeeds(to6('10')));
       })
 
       it('get Deposit', async function () {
-        const deposit = await this.silo.getDeposit(user.address, UNRIPE_BEAN, '2')
+        const deposit = await this.silo.getDeposit(user.address, UNRIPE_MOON, '2')
         expect(deposit[0]).to.equal(to6('10'))
         expect(deposit[1]).to.equal(prune(to6('10')))
       })
       
       it('revert if withdrawn too much', async function () {
-        await expect(this.silo.connect(user).withdrawDeposit(UNRIPE_BEAN, '2', to6('11'))).to.be.revertedWith('Silo: Crate balance too low.')
+        await expect(this.silo.connect(user).withdrawDeposit(UNRIPE_MOON, '2', to6('11'))).to.be.revertedWith('Silo: Crate balance too low.')
       });
       
       describe("Withdraw", async function () {
         beforeEach(async function () {
-          this.result = await this.silo.connect(user).withdrawDeposit(UNRIPE_BEAN, '2', to6('1'))
+          this.result = await this.silo.connect(user).withdrawDeposit(UNRIPE_MOON, '2', to6('1'))
         })
 
         it('properly updates the total balances', async function () {
-          expect(await this.silo.getTotalDeposited(UNRIPE_BEAN)).to.eq(to6('9'));
-          expect(await this.silo.totalStalk()).to.eq(pruneToStalk(to6('9')));
+          expect(await this.silo.getTotalDeposited(UNRIPE_MOON)).to.eq(to6('9'));
+          expect(await this.silo.totalMage()).to.eq(pruneToMage(to6('9')));
           expect(await this.silo.totalSeeds()).to.eq(pruneToSeeds(to6('9')));
-          expect(await this.silo.getTotalWithdrawn(UNRIPE_BEAN)).to.eq(to6('1'));
+          expect(await this.silo.getTotalWithdrawn(UNRIPE_MOON)).to.eq(to6('1'));
         });
         it('properly updates the user balance', async function () {
-          expect(await this.silo.balanceOfStalk(userAddress)).to.eq(pruneToStalk(to6('9')));
+          expect(await this.silo.balanceOfMage(userAddress)).to.eq(pruneToMage(to6('9')));
           expect(await this.silo.balanceOfSeeds(userAddress)).to.eq(pruneToSeeds(to6('9')));
         });
         it('properly removes the crate', async function () {
-          let dep = await this.silo.getDeposit(userAddress, UNRIPE_BEAN, 2);
+          let dep = await this.silo.getDeposit(userAddress, UNRIPE_MOON, 2);
           expect(dep[0]).to.equal(to6('9'))
           expect(dep[1]).to.equal(prune(to6('9')))
         });
         it('emits Remove and Withdrawal event', async function () {
-          await expect(this.result).to.emit(this.silo, 'RemoveDeposit').withArgs(userAddress, UNRIPE_BEAN, 2, to6('1'));
-          await expect(this.result).to.emit(this.silo, 'AddWithdrawal').withArgs(userAddress, UNRIPE_BEAN, 27, to6('1'));
+          await expect(this.result).to.emit(this.silo, 'RemoveDeposit').withArgs(userAddress, UNRIPE_MOON, 2, to6('1'));
+          await expect(this.result).to.emit(this.silo, 'AddWithdrawal').withArgs(userAddress, UNRIPE_MOON, 27, to6('1'));
         });
       })
     })
-    describe("Legacy and new Bean Deposit", async function () {
+    describe("Legacy and new Moon Deposit", async function () {
       beforeEach(async function () {
-        await this.silo.connect(user).deposit(UNRIPE_BEAN, to6('10'), EXTERNAL)
-        await this.silo.connect(user).mockUnripeBeanDeposit('2', to6('10'))
+        await this.silo.connect(user).deposit(UNRIPE_MOON, to6('10'), EXTERNAL)
+        await this.silo.connect(user).mockUnripeMoonDeposit('2', to6('10'))
       })
 
       it("Check mock works", async function () {
-        expect(await this.silo.getTotalDeposited(UNRIPE_BEAN)).to.eq(to6('20'));
-        expect(await this.silo.totalStalk()).to.eq(pruneToStalk(to6('10')).add(pruneToStalk(to6('10'))));
+        expect(await this.silo.getTotalDeposited(UNRIPE_MOON)).to.eq(to6('20'));
+        expect(await this.silo.totalMage()).to.eq(pruneToMage(to6('10')).add(pruneToMage(to6('10'))));
         expect(await this.silo.totalSeeds()).to.eq(pruneToSeeds(to6('10')).add(pruneToSeeds(to6('10'))));
       })
 
       it('get Deposit', async function () {
-        const deposit = await this.silo.getDeposit(user.address, UNRIPE_BEAN, '2')
+        const deposit = await this.silo.getDeposit(user.address, UNRIPE_MOON, '2')
         expect(deposit[0]).to.equal(to6('20'))
         expect(deposit[1]).to.equal(prune(to6('10')).add(prune(to6('10'))))
       })
       
       it('revert if withdrawn too much', async function () {
-        await expect(this.silo.connect(user).withdrawDeposit(UNRIPE_BEAN, '2', to6('21'))).to.be.revertedWith('Silo: Crate balance too low.')
+        await expect(this.silo.connect(user).withdrawDeposit(UNRIPE_MOON, '2', to6('21'))).to.be.revertedWith('Silo: Crate balance too low.')
       });
       
       describe("Withdraw", async function () {
         beforeEach(async function () {
-          this.result = await this.silo.connect(user).withdrawDeposit(UNRIPE_BEAN, '2', to6('11'))
+          this.result = await this.silo.connect(user).withdrawDeposit(UNRIPE_MOON, '2', to6('11'))
         })
 
         it('properly updates the total balances', async function () {
-          expect(await this.silo.getTotalDeposited(UNRIPE_BEAN)).to.eq(to6('9'));
-          expect(await this.silo.totalStalk()).to.eq(pruneToStalk(to6('9')));
+          expect(await this.silo.getTotalDeposited(UNRIPE_MOON)).to.eq(to6('9'));
+          expect(await this.silo.totalMage()).to.eq(pruneToMage(to6('9')));
           expect(await this.silo.totalSeeds()).to.eq(pruneToSeeds(to6('9')));
-          expect(await this.silo.getTotalWithdrawn(UNRIPE_BEAN)).to.eq(to6('11'));
+          expect(await this.silo.getTotalWithdrawn(UNRIPE_MOON)).to.eq(to6('11'));
         });
         it('properly updates the user balance', async function () {
-          expect(await this.silo.balanceOfStalk(userAddress)).to.eq(pruneToStalk(to6('9')));
+          expect(await this.silo.balanceOfMage(userAddress)).to.eq(pruneToMage(to6('9')));
           expect(await this.silo.balanceOfSeeds(userAddress)).to.eq(pruneToSeeds(to6('9')));
         });
         it('properly removes the crate', async function () {
-          let dep = await this.silo.getDeposit(userAddress, UNRIPE_BEAN, 2);
+          let dep = await this.silo.getDeposit(userAddress, UNRIPE_MOON, 2);
           expect(dep[0]).to.equal(to6('9'))
           expect(dep[1]).to.equal(prune(to6('9')))
         });
         it('emits Remove and Withdrawal event', async function () {
-          await expect(this.result).to.emit(this.silo, 'RemoveDeposit').withArgs(userAddress, UNRIPE_BEAN, 2, to6('11'));
-          await expect(this.result).to.emit(this.silo, 'AddWithdrawal').withArgs(userAddress, UNRIPE_BEAN, 27, to6('11'));
+          await expect(this.result).to.emit(this.silo, 'RemoveDeposit').withArgs(userAddress, UNRIPE_MOON, 2, to6('11'));
+          await expect(this.result).to.emit(this.silo, 'AddWithdrawal').withArgs(userAddress, UNRIPE_MOON, 27, to6('11'));
         });
       })
     })
@@ -535,7 +535,7 @@ describe('Silo Token', function () {
 
       it("Check mock works", async function () {
         expect(await this.silo.getTotalDeposited(UNRIPE_LP)).to.eq(to6('10'));
-        expect(await this.silo.totalStalk()).to.eq(pruneToStalk(to6('10')));
+        expect(await this.silo.totalMage()).to.eq(pruneToMage(to6('10')));
         expect(await this.silo.totalSeeds()).to.eq(pruneToSeeds(to6('10'), 4));
       })
 
@@ -556,13 +556,13 @@ describe('Silo Token', function () {
 
         it('properly updates the total balances', async function () {
           expect(await this.silo.getTotalDeposited(UNRIPE_LP)).to.eq(to6('9'));
-          expect(await this.silo.totalStalk()).to.eq(pruneToStalk(to6('9')));
+          expect(await this.silo.totalMage()).to.eq(pruneToMage(to6('9')));
           expect(await this.silo.totalSeeds()).to.eq(pruneToSeeds(to6('9'), 4));
           expect(await this.silo.getTotalWithdrawn(UNRIPE_LP)).to.eq(to6('1'));
         });
 
         it('properly updates the user balance', async function () {
-          expect(await this.silo.balanceOfStalk(userAddress)).to.eq(pruneToStalk(to6('9')));
+          expect(await this.silo.balanceOfMage(userAddress)).to.eq(pruneToMage(to6('9')));
           expect(await this.silo.balanceOfSeeds(userAddress)).to.eq(pruneToSeeds(to6('9'), 4));
         });
 
@@ -586,7 +586,7 @@ describe('Silo Token', function () {
 
       it("Check mock works", async function () {
         expect(await this.silo.getTotalDeposited(UNRIPE_LP)).to.eq(to6('10'));
-        expect(await this.silo.totalStalk()).to.eq(pruneToStalk(to6('10')));
+        expect(await this.silo.totalMage()).to.eq(pruneToMage(to6('10')));
         expect(await this.silo.totalSeeds()).to.eq(pruneToSeeds(to6('10'), 4));
       })
 
@@ -607,13 +607,13 @@ describe('Silo Token', function () {
 
         it('properly updates the total balances', async function () {
           expect(await this.silo.getTotalDeposited(UNRIPE_LP)).to.eq(to6('9'));
-          expect(await this.silo.totalStalk()).to.eq(pruneToStalk(to6('9')));
+          expect(await this.silo.totalMage()).to.eq(pruneToMage(to6('9')));
           expect(await this.silo.totalSeeds()).to.eq(pruneToSeeds(to6('9'), 4));
           expect(await this.silo.getTotalWithdrawn(UNRIPE_LP)).to.eq(to6('1'));
         });
 
         it('properly updates the user balance', async function () {
-          expect(await this.silo.balanceOfStalk(userAddress)).to.eq(pruneToStalk(to6('9')));
+          expect(await this.silo.balanceOfMage(userAddress)).to.eq(pruneToMage(to6('9')));
           expect(await this.silo.balanceOfSeeds(userAddress)).to.eq(pruneToSeeds(to6('9'), 4));
         });
 
@@ -630,14 +630,14 @@ describe('Silo Token', function () {
       })
     })
 
-    describe("Just BEAN:LUSD LP Deposit", async function () {
+    describe("Just MOON:LUSD LP Deposit", async function () {
       beforeEach(async function () {
         await this.silo.connect(user).mockUnripeLPDeposit('2', '2', to18('10.17182243'), to6('10'))
       })
 
       it("Check mock works", async function () {
         expect(await this.silo.getTotalDeposited(UNRIPE_LP)).to.eq(to6('10'));
-        expect(await this.silo.totalStalk()).to.eq(pruneToStalk(to6('10')));
+        expect(await this.silo.totalMage()).to.eq(pruneToMage(to6('10')));
         expect(await this.silo.totalSeeds()).to.eq(pruneToSeeds(to6('10'), 4));
       })
 
@@ -658,13 +658,13 @@ describe('Silo Token', function () {
 
         it('properly updates the total balances', async function () {
           expect(await this.silo.getTotalDeposited(UNRIPE_LP)).to.eq(to6('9'));
-          expect(await this.silo.totalStalk()).to.eq(pruneToStalk(to6('9')));
+          expect(await this.silo.totalMage()).to.eq(pruneToMage(to6('9')));
           expect(await this.silo.totalSeeds()).to.eq(pruneToSeeds(to6('9'), 4));
           expect(await this.silo.getTotalWithdrawn(UNRIPE_LP)).to.eq(to6('1'));
         });
 
         it('properly updates the user balance', async function () {
-          expect(await this.silo.balanceOfStalk(userAddress)).to.eq(pruneToStalk(to6('9')));
+          expect(await this.silo.balanceOfMage(userAddress)).to.eq(pruneToMage(to6('9')));
           expect(await this.silo.balanceOfSeeds(userAddress)).to.eq(pruneToSeeds(to6('9'), 4));
         });
 
@@ -691,7 +691,7 @@ describe('Silo Token', function () {
 
       it("Check mock works", async function () {
         expect(await this.silo.getTotalDeposited(UNRIPE_LP)).to.eq(to6('10'));
-        expect(await this.silo.totalStalk()).to.eq(pruneToStalk(to6('2.5')).mul(toBN('4')).sub(toBN('10000')));
+        expect(await this.silo.totalMage()).to.eq(pruneToMage(to6('2.5')).mul(toBN('4')).sub(toBN('10000')));
         expect(await this.silo.totalSeeds()).to.eq(pruneToSeeds(to6('2.5'), 4).mul(toBN('4')).sub(toBN('4')));
       })
 
@@ -712,13 +712,13 @@ describe('Silo Token', function () {
 
         it('properly updates the total balances', async function () {
           expect(await this.silo.getTotalDeposited(UNRIPE_LP)).to.eq(to6('1'));
-          expect(await this.silo.totalStalk()).to.eq(pruneToStalk(to6('1')).sub(toBN('10000')));
+          expect(await this.silo.totalMage()).to.eq(pruneToMage(to6('1')).sub(toBN('10000')));
           expect(await this.silo.totalSeeds()).to.eq(pruneToSeeds(to6('1'), 4).sub(toBN('4')));
           expect(await this.silo.getTotalWithdrawn(UNRIPE_LP)).to.eq(to6('9'));
         });
 
         it('properly updates the user balance', async function () {
-          expect(await this.silo.balanceOfStalk(userAddress)).to.eq(pruneToStalk(to6('1')).sub(toBN('10000')));
+          expect(await this.silo.balanceOfMage(userAddress)).to.eq(pruneToMage(to6('1')).sub(toBN('10000')));
           expect(await this.silo.balanceOfSeeds(userAddress)).to.eq(pruneToSeeds(to6('1'), 4).sub(toBN('4')));
         });
 
@@ -771,8 +771,8 @@ describe('Silo Token', function () {
         expect(deposit[0]).to.equal('50');
       })
 
-      it('updates users stalk and seeds', async function () {
-        expect(await this.silo.balanceOfStalk(userAddress)).to.be.equal('500000')
+      it('updates users mage and seeds', async function () {
+        expect(await this.silo.balanceOfMage(userAddress)).to.be.equal('500000')
         expect(await this.silo.balanceOfSeeds(userAddress)).to.be.equal('50')
       })
 
@@ -782,13 +782,13 @@ describe('Silo Token', function () {
         expect(deposit[0]).to.equal('50');
       })
 
-      it('updates users stalk and seeds', async function () {
-        expect(await this.silo.balanceOfStalk(user2Address)).to.be.equal('500000')
+      it('updates users mage and seeds', async function () {
+        expect(await this.silo.balanceOfMage(user2Address)).to.be.equal('500000')
         expect(await this.silo.balanceOfSeeds(user2Address)).to.be.equal('50')
       })
 
-      it('updates total stalk and seeds', async function () {
-        expect(await this.silo.totalStalk()).to.be.equal('1000000')
+      it('updates total mage and seeds', async function () {
+        expect(await this.silo.totalMage()).to.be.equal('1000000')
         expect(await this.silo.totalSeeds()).to.be.equal('100')
       })
     })
@@ -805,8 +805,8 @@ describe('Silo Token', function () {
         expect(deposit[0]).to.equal('0');
       })
 
-      it('updates users stalk and seeds', async function () {
-        expect(await this.silo.balanceOfStalk(userAddress)).to.be.equal('0')
+      it('updates users mage and seeds', async function () {
+        expect(await this.silo.balanceOfMage(userAddress)).to.be.equal('0')
         expect(await this.silo.balanceOfSeeds(userAddress)).to.be.equal('0')
       })
 
@@ -816,13 +816,13 @@ describe('Silo Token', function () {
         expect(deposit[0]).to.equal('100');
       })
 
-      it('updates users stalk and seeds', async function () {
-        expect(await this.silo.balanceOfStalk(user2Address)).to.be.equal('1000000')
+      it('updates users mage and seeds', async function () {
+        expect(await this.silo.balanceOfMage(user2Address)).to.be.equal('1000000')
         expect(await this.silo.balanceOfSeeds(user2Address)).to.be.equal('100')
       })
 
-      it('updates total stalk and seeds', async function () {
-        expect(await this.silo.totalStalk()).to.be.equal('1000000')
+      it('updates total mage and seeds', async function () {
+        expect(await this.silo.totalMage()).to.be.equal('1000000')
         expect(await this.silo.totalSeeds()).to.be.equal('100')
       })
     })
@@ -851,8 +851,8 @@ describe('Silo Token', function () {
         expect(deposit[0]).to.equal('75');
       })
 
-      it('updates users stalk and seeds', async function () {
-        expect(await this.silo.balanceOfStalk(userAddress)).to.be.equal('1250050')
+      it('updates users mage and seeds', async function () {
+        expect(await this.silo.balanceOfMage(userAddress)).to.be.equal('1250050')
         expect(await this.silo.balanceOfSeeds(userAddress)).to.be.equal('125')
       })
 
@@ -865,13 +865,13 @@ describe('Silo Token', function () {
         expect(deposit[0]).to.equal('25');
       })
 
-      it('updates users stalk and seeds', async function () {
-        expect(await this.silo.balanceOfStalk(user2Address)).to.be.equal('750050')
+      it('updates users mage and seeds', async function () {
+        expect(await this.silo.balanceOfMage(user2Address)).to.be.equal('750050')
         expect(await this.silo.balanceOfSeeds(user2Address)).to.be.equal('75')
       })
 
-      it('updates total stalk and seeds', async function () {
-        expect(await this.silo.totalStalk()).to.be.equal('2000100')
+      it('updates total mage and seeds', async function () {
+        expect(await this.silo.totalMage()).to.be.equal('2000100')
         expect(await this.silo.totalSeeds()).to.be.equal('200')
       })
     })
@@ -889,8 +889,8 @@ describe('Silo Token', function () {
         expect(deposit[0]).to.equal('50');
       })
 
-      it('updates users stalk and seeds', async function () {
-        expect(await this.silo.balanceOfStalk(userAddress)).to.be.equal('500000')
+      it('updates users mage and seeds', async function () {
+        expect(await this.silo.balanceOfMage(userAddress)).to.be.equal('500000')
         expect(await this.silo.balanceOfSeeds(userAddress)).to.be.equal('50')
       })
 
@@ -900,13 +900,13 @@ describe('Silo Token', function () {
         expect(deposit[0]).to.equal('50');
       })
 
-      it('updates users stalk and seeds', async function () {
-        expect(await this.silo.balanceOfStalk(user2Address)).to.be.equal('500000')
+      it('updates users mage and seeds', async function () {
+        expect(await this.silo.balanceOfMage(user2Address)).to.be.equal('500000')
         expect(await this.silo.balanceOfSeeds(user2Address)).to.be.equal('50')
       })
 
-      it('updates total stalk and seeds', async function () {
-        expect(await this.silo.totalStalk()).to.be.equal('1000000')
+      it('updates total mage and seeds', async function () {
+        expect(await this.silo.totalMage()).to.be.equal('1000000')
         expect(await this.silo.totalSeeds()).to.be.equal('100')
       })
 
@@ -938,8 +938,8 @@ describe('Silo Token', function () {
         expect(deposit[0]).to.equal('0');
       })
 
-      it('updates users stalk and seeds', async function () {
-        expect(await this.silo.balanceOfStalk(userAddress)).to.be.equal('0')
+      it('updates users mage and seeds', async function () {
+        expect(await this.silo.balanceOfMage(userAddress)).to.be.equal('0')
         expect(await this.silo.balanceOfSeeds(userAddress)).to.be.equal('0')
       })
 
@@ -949,13 +949,13 @@ describe('Silo Token', function () {
         expect(deposit[0]).to.equal('100');
       })
 
-      it('updates users stalk and seeds', async function () {
-        expect(await this.silo.balanceOfStalk(user2Address)).to.be.equal('1000000')
+      it('updates users mage and seeds', async function () {
+        expect(await this.silo.balanceOfMage(user2Address)).to.be.equal('1000000')
         expect(await this.silo.balanceOfSeeds(user2Address)).to.be.equal('100')
       })
 
-      it('updates total stalk and seeds', async function () {
-        expect(await this.silo.totalStalk()).to.be.equal('1000000')
+      it('updates total mage and seeds', async function () {
+        expect(await this.silo.totalMage()).to.be.equal('1000000')
         expect(await this.silo.totalSeeds()).to.be.equal('100')
       })
 
@@ -982,8 +982,8 @@ describe('Silo Token', function () {
         expect(deposit[0]).to.equal('75');
       })
 
-      it('updates users stalk and seeds', async function () {
-        expect(await this.silo.balanceOfStalk(userAddress)).to.be.equal('1250050')
+      it('updates users mage and seeds', async function () {
+        expect(await this.silo.balanceOfMage(userAddress)).to.be.equal('1250050')
         expect(await this.silo.balanceOfSeeds(userAddress)).to.be.equal('125')
       })
 
@@ -996,13 +996,13 @@ describe('Silo Token', function () {
         expect(deposit[0]).to.equal('25');
       })
 
-      it('updates users stalk and seeds', async function () {
-        expect(await this.silo.balanceOfStalk(user2Address)).to.be.equal('750050')
+      it('updates users mage and seeds', async function () {
+        expect(await this.silo.balanceOfMage(user2Address)).to.be.equal('750050')
         expect(await this.silo.balanceOfSeeds(user2Address)).to.be.equal('75')
       })
 
-      it('updates total stalk and seeds', async function () {
-        expect(await this.silo.totalStalk()).to.be.equal('2000100')
+      it('updates total mage and seeds', async function () {
+        expect(await this.silo.totalMage()).to.be.equal('2000100')
         expect(await this.silo.totalSeeds()).to.be.equal('200')
       })
 
@@ -1027,123 +1027,123 @@ describe('Silo Token', function () {
   describe("Update Unripe Deposit", async function () {
 
     it("enrootDeposit fails if not unripe token", async function () {
-      await expect(this.silo.connect(user).enrootDeposit(BEAN, '1', '1')).to.be.revertedWith("Silo: token not unripe")
+      await expect(this.silo.connect(user).enrootDeposit(MOON, '1', '1')).to.be.revertedWith("Silo: token not unripe")
     })
 
     it("enrootDeposits fails if not unripe token", async function () {
-      await expect(this.silo.connect(user).enrootDeposits(BEAN, ['1'], ['1'])).to.be.revertedWith("Silo: token not unripe")
+      await expect(this.silo.connect(user).enrootDeposits(MOON, ['1'], ['1'])).to.be.revertedWith("Silo: token not unripe")
     })
 
     describe("1 deposit, some", async function () {
       beforeEach(async function () {
-        await this.silo.connect(user).deposit(UNRIPE_BEAN, to6('5'), EXTERNAL)
-        await this.silo.connect(user).mockUnripeBeanDeposit('2', to6('5'))
+        await this.silo.connect(user).deposit(UNRIPE_MOON, to6('5'), EXTERNAL)
+        await this.silo.connect(user).mockUnripeMoonDeposit('2', to6('5'))
         await this.unripe.connect(owner).addUnderlying(
-          UNRIPE_BEAN,
+          UNRIPE_MOON,
           to6('1000')
         )
 
-        this.result = await this.silo.connect(user).enrootDeposit(UNRIPE_BEAN, '2', to6('5'));
+        this.result = await this.silo.connect(user).enrootDeposit(UNRIPE_MOON, '2', to6('5'));
       })
 
       it('properly updates the total balances', async function () {
-        expect(await this.silo.getTotalDeposited(UNRIPE_BEAN)).to.eq(to6('10'));
-        expect(await this.silo.totalStalk()).to.eq(pruneToStalk(to6('10')).add(toStalk('0.5')));
+        expect(await this.silo.getTotalDeposited(UNRIPE_MOON)).to.eq(to6('10'));
+        expect(await this.silo.totalMage()).to.eq(pruneToMage(to6('10')).add(toMage('0.5')));
         expect(await this.silo.totalSeeds()).to.eq(pruneToSeeds(to6('10')).add(to6('1')));
       });
 
       it('properly updates the user balance', async function () {
-        expect(await this.silo.balanceOfStalk(userAddress)).to.eq(pruneToStalk(to6('10')).add(toStalk('0.5')));
+        expect(await this.silo.balanceOfMage(userAddress)).to.eq(pruneToMage(to6('10')).add(toMage('0.5')));
         expect(await this.silo.balanceOfSeeds(userAddress)).to.eq(pruneToSeeds(to6('10')).add(to6('1')));
       });
 
       it('properly removes the crate', async function () {
-        let dep = await this.silo.getDeposit(userAddress, UNRIPE_BEAN, 2);
+        let dep = await this.silo.getDeposit(userAddress, UNRIPE_MOON, 2);
         expect(dep[0]).to.equal(to6('10'))
         expect(dep[1]).to.equal(prune(to6('10')).add(to6('0.5')))
       });
 
       it('emits Remove and Withdrawal event', async function () {
-        await expect(this.result).to.emit(this.silo, 'RemoveDeposit').withArgs(userAddress, UNRIPE_BEAN, 2, to6('5'));
-        await expect(this.result).to.emit(this.silo, 'AddDeposit').withArgs(userAddress, UNRIPE_BEAN, 2, to6('5'), prune(to6('5')).add(to6('0.5')));
+        await expect(this.result).to.emit(this.silo, 'RemoveDeposit').withArgs(userAddress, UNRIPE_MOON, 2, to6('5'));
+        await expect(this.result).to.emit(this.silo, 'AddDeposit').withArgs(userAddress, UNRIPE_MOON, 2, to6('5'), prune(to6('5')).add(to6('0.5')));
       });
     });
 
     describe("1 deposit after 1 sesaon, all", async function () {
       beforeEach(async function () {
-        await this.silo.connect(user).deposit(UNRIPE_BEAN, to6('5'), EXTERNAL)
-        await this.silo.connect(user).mockUnripeBeanDeposit('2', to6('5'))
+        await this.silo.connect(user).deposit(UNRIPE_MOON, to6('5'), EXTERNAL)
+        await this.silo.connect(user).mockUnripeMoonDeposit('2', to6('5'))
         
         await this.season.lightSunrise()
 
         await this.unripe.connect(owner).addUnderlying(
-          UNRIPE_BEAN,
+          UNRIPE_MOON,
           to6('5000').sub(to6('10000').mul(toBN(pru)).div(to18('1')))
         )
 
-        this.result = await this.silo.connect(user).enrootDeposit(UNRIPE_BEAN, '2', to6('10'));
+        this.result = await this.silo.connect(user).enrootDeposit(UNRIPE_MOON, '2', to6('10'));
       })
 
       it('properly updates the total balances', async function () {
-        expect(await this.silo.getTotalDeposited(UNRIPE_BEAN)).to.eq(to6('10'));
-        expect(await this.silo.totalStalk()).to.eq(toStalk('5.001'));
+        expect(await this.silo.getTotalDeposited(UNRIPE_MOON)).to.eq(to6('10'));
+        expect(await this.silo.totalMage()).to.eq(toMage('5.001'));
         expect(await this.silo.totalSeeds()).to.eq(to6('10'));
       });
 
       it('properly updates the user balance', async function () {
-        expect(await this.silo.balanceOfStalk(userAddress)).to.eq(toStalk('5.001'));
+        expect(await this.silo.balanceOfMage(userAddress)).to.eq(toMage('5.001'));
         expect(await this.silo.balanceOfSeeds(userAddress)).to.eq(to6('10'));
       });
 
       it('properly removes the crate', async function () {
-        let dep = await this.silo.getDeposit(userAddress, UNRIPE_BEAN, 2);
+        let dep = await this.silo.getDeposit(userAddress, UNRIPE_MOON, 2);
         expect(dep[0]).to.equal(to6('10'))
         expect(dep[1]).to.equal(to6('5'))
       });
 
       it('emits Remove and Withdrawal event', async function () {
-        await expect(this.result).to.emit(this.silo, 'RemoveDeposit').withArgs(userAddress, UNRIPE_BEAN, 2, to6('10'));
-        await expect(this.result).to.emit(this.silo, 'AddDeposit').withArgs(userAddress, UNRIPE_BEAN, 2, to6('10'), to6('5'));
+        await expect(this.result).to.emit(this.silo, 'RemoveDeposit').withArgs(userAddress, UNRIPE_MOON, 2, to6('10'));
+        await expect(this.result).to.emit(this.silo, 'AddDeposit').withArgs(userAddress, UNRIPE_MOON, 2, to6('10'), to6('5'));
       });
     });
 
     describe("2 deposit, all", async function () {
       beforeEach(async function () {
-        await this.silo.connect(user).mockUnripeBeanDeposit('2', to6('5'))
+        await this.silo.connect(user).mockUnripeMoonDeposit('2', to6('5'))
 
         await this.season.lightSunrise()
-        await this.silo.connect(user).deposit(UNRIPE_BEAN, to6('5'), EXTERNAL)
+        await this.silo.connect(user).deposit(UNRIPE_MOON, to6('5'), EXTERNAL)
         
         
         await this.unripe.connect(owner).addUnderlying(
-          UNRIPE_BEAN,
+          UNRIPE_MOON,
           to6('5000').sub(to6('10000').mul(toBN(pru)).div(to18('1')))
         )
 
-        this.result = await this.silo.connect(user).enrootDeposits(UNRIPE_BEAN, ['2', '3'], [to6('5'), to6('5')]);
+        this.result = await this.silo.connect(user).enrootDeposits(UNRIPE_MOON, ['2', '3'], [to6('5'), to6('5')]);
       })
 
       it('properly updates the total balances', async function () {
-        expect(await this.silo.getTotalDeposited(UNRIPE_BEAN)).to.eq(to6('10'));
-        expect(await this.silo.totalStalk()).to.eq(toStalk('5.0005'));
+        expect(await this.silo.getTotalDeposited(UNRIPE_MOON)).to.eq(to6('10'));
+        expect(await this.silo.totalMage()).to.eq(toMage('5.0005'));
         expect(await this.silo.totalSeeds()).to.eq(to6('10'));
       });
 
       it('properly updates the user balance', async function () {
-        expect(await this.silo.balanceOfStalk(userAddress)).to.eq(toStalk('5.0005'));
+        expect(await this.silo.balanceOfMage(userAddress)).to.eq(toMage('5.0005'));
         expect(await this.silo.balanceOfSeeds(userAddress)).to.eq(to6('10'));
       });
 
       it('properly removes the crate', async function () {
-        let dep = await this.silo.getDeposit(userAddress, UNRIPE_BEAN, 2);
+        let dep = await this.silo.getDeposit(userAddress, UNRIPE_MOON, 2);
         expect(dep[0]).to.equal(to6('5'))
         expect(dep[1]).to.equal(to6('2.5'))
       });
 
       it('emits Remove and Withdrawal event', async function () {
-        await expect(this.result).to.emit(this.silo, 'RemoveDeposits').withArgs(userAddress, UNRIPE_BEAN, [2,3], [to6('5'), to6('5')], to6('10'));
-        await expect(this.result).to.emit(this.silo, 'AddDeposit').withArgs(userAddress, UNRIPE_BEAN, 2, to6('5'), to6('2.5'));
-        await expect(this.result).to.emit(this.silo, 'AddDeposit').withArgs(userAddress, UNRIPE_BEAN, 3, to6('5'), to6('2.5'));
+        await expect(this.result).to.emit(this.silo, 'RemoveDeposits').withArgs(userAddress, UNRIPE_MOON, [2,3], [to6('5'), to6('5')], to6('10'));
+        await expect(this.result).to.emit(this.silo, 'AddDeposit').withArgs(userAddress, UNRIPE_MOON, 2, to6('5'), to6('2.5'));
+        await expect(this.result).to.emit(this.silo, 'AddDeposit').withArgs(userAddress, UNRIPE_MOON, 3, to6('5'), to6('2.5'));
       });
     });
   });

@@ -16,7 +16,7 @@ export class DecimalBigNumber {
    *
    * The constructor accepts the following as inputs to the number parameter:
    * - `BigNumber` (from @ethersproject/bignumber): to easily shift from `BigNumber` used in smart contracts to `DecimalBigNumber`
-   * - `BigNumber` (from @beanstalk/sdk/BigNumber): a clone of @ethersproject/bignumber with some utilities used in @beanstalk/sdk
+   * - `BigNumber` (from @moonmage/sdk/BigNumber): a clone of @ethersproject/bignumber with some utilities used in @moonmage/sdk
    * - `string`: to take input from the user
    *
    * Given these design decisions, there are some recommended approaches:

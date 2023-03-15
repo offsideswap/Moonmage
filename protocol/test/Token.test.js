@@ -1,11 +1,11 @@
-const { to18, toBean } = require('./utils/helpers.js')
+const { to18, toMoon } = require('./utils/helpers.js')
 const { EXTERNAL, INTERNAL, INTERNAL_EXTERNAL, INTERNAL_TOLERANT } = require('./utils/balances.js')
-const { WETH, BEANSTALK } = require('./utils/constants');
+const { WETH, MOONMAGE } = require('./utils/constants');
 const { signERC2612Permit } = require("eth-permit");
 const { expect } = require('chai');
 const { deploy } = require('../scripts/deploy.js')
 const { takeSnapshot, revertToSnapshot } = require("./utils/snapshot");
-const { signTokenPermit, getBeanstalk } = require('../utils');
+const { signTokenPermit, getMoonmage } = require('../utils');
 
 describe('Token', function () {
 
@@ -19,8 +19,8 @@ describe('Token', function () {
         let [u1, u2, r] = await ethers.getSigners();
         this.user = u1; this.user2 = u2; this.recipient = r;
         const contracts = await deploy("Test", false, true)
-        this.tokenFacet = await ethers.getContractAt('TokenFacet', contracts.beanstalkDiamond.address)
-        this.farm = await ethers.getContractAt('FarmFacet', contracts.beanstalkDiamond.address)
+        this.tokenFacet = await ethers.getContractAt('TokenFacet', contracts.moonmageDiamond.address)
+        this.farm = await ethers.getContractAt('FarmFacet', contracts.moonmageDiamond.address)
 
         const MockToken = await ethers.getContractFactory('MockToken')
         this.token = await MockToken.connect(this.user).deploy('Mock', 'MOCK')

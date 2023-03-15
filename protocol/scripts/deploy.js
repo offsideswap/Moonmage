@@ -2,7 +2,7 @@ const MAX_INT = '115792089237316195423570985008687907853269984665640564039457584
 
 const diamond = require('./diamond.js')
 const { 
-  impersonateBean, 
+  impersonateMoon, 
   impersonateCurve,
   impersonateCurveMetapool, 
   impersonateWeth, 
@@ -48,7 +48,7 @@ async function main(scriptName, verbose = true, mock = false, reset = true) {
   let tx
   let totalGasUsed = ethers.BigNumber.from('0')
   let receipt
-  const name = 'Beanstalk'
+  const name = 'Moonmage'
 
 
   async function deployFacets(verbose,
@@ -160,7 +160,7 @@ async function main(scriptName, verbose = true, mock = false, reset = true) {
 
   let args = []
   if (mock) {
-    await impersonateBean()
+    await impersonateMoon()
     await impersonatePrice()
     if (reset) {
       await impersonateCurve()
@@ -171,8 +171,8 @@ async function main(scriptName, verbose = true, mock = false, reset = true) {
     await impersonateFertilizer()
   }
 
-  const [beanstalkDiamond, diamondCut] = await diamond.deploy({
-    diamondName: 'BeanstalkDiamond',
+  const [moonmageDiamond, diamondCut] = await diamond.deploy({
+    diamondName: 'MoonmageDiamond',
     initDiamond: initDiamondArg,
     facets: [
       ['BDVFacet', bdvFacet],
@@ -199,26 +199,26 @@ async function main(scriptName, verbose = true, mock = false, reset = true) {
     impersonate: mock && reset
   });
 
-  tx = beanstalkDiamond.deployTransaction
+  tx = moonmageDiamond.deployTransaction
   if (!!tx) {
     receipt = await tx.wait()
-    if (verbose) console.log('Beanstalk diamond deploy gas used: ' + strDisplay(receipt.gasUsed))
-    if (verbose) console.log('Beanstalk diamond cut gas used: ' + strDisplay(diamondCut.gasUsed))
+    if (verbose) console.log('Moonmage diamond deploy gas used: ' + strDisplay(receipt.gasUsed))
+    if (verbose) console.log('Moonmage diamond cut gas used: ' + strDisplay(diamondCut.gasUsed))
     totalGasUsed = totalGasUsed.add(receipt.gasUsed).add(diamondCut.gasUsed)
   }
 
   if (verbose) {
     console.log("--");
-    console.log('Beanstalk diamond address:' + beanstalkDiamond.address)
+    console.log('Moonmage diamond address:' + moonmageDiamond.address)
     console.log("--");
   }
 
-  const diamondLoupeFacet = await ethers.getContractAt('DiamondLoupeFacet', beanstalkDiamond.address)
+  const diamondLoupeFacet = await ethers.getContractAt('DiamondLoupeFacet', moonmageDiamond.address)
 
   if (verbose) console.log('Total gas used: ' + strDisplay(totalGasUsed))
   return {
     account: account,
-    beanstalkDiamond: beanstalkDiamond,
+    moonmageDiamond: moonmageDiamond,
     diamondLoupeFacet: diamondLoupeFacet,
     bdvFacet,
     convertFacet,

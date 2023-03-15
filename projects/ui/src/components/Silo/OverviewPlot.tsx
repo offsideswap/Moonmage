@@ -9,8 +9,8 @@ import Row from '~/components/Common/Row';
 import TokenIcon from '~/components/Common/TokenIcon';
 import BlurComponent from '~/components/Common/ZeroState/BlurComponent';
 import MockPlot from '~/components/Silo/MockPlot';
-import { SEEDS, STALK } from '~/constants/tokens';
-import { SeasonAggregation, SeasonRange, SEASON_RANGE_TO_COUNT } from '~/hooks/beanstalk/useSeasonsQuery';
+import { SEEDS, MAGE } from '~/constants/tokens';
+import { SeasonAggregation, SeasonRange, SEASON_RANGE_TO_COUNT } from '~/hooks/moonmage/useSeasonsQuery';
 
 import { FC } from '~/types';
 import { BaseDataPoint } from '~/components/Common/Charts/ChartPropProvider';
@@ -110,7 +110,7 @@ const OverviewPlot: FC<OverviewPlotProps> = ({
                   <CircularProgress variant="indeterminate" thickness={4} color="primary" />
                 ) : empty ? (
                   <Typography variant="body1" color="text.tertiary">
-                    Receive <TokenIcon token={STALK} />Stalk and <TokenIcon token={SEEDS} />Seeds for Depositing whitelisted assets in the Silo. Stalkholders earn a portion of new Bean mints. Seeds grow into Stalk every Season.
+                    Receive <TokenIcon token={MAGE} />Mage and <TokenIcon token={SEEDS} />Seeds for Depositing whitelisted assets in the Silo. Mageholders earn a portion of new Moon mints. Seeds grow into Mage every Season.
                   </Typography>
                 ) : null}
               </Stack>

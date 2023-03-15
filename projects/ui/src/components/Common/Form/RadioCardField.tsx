@@ -1,7 +1,7 @@
 import React from 'react';
 import { Field, FieldProps } from 'formik';
 import { Button, CardProps, Grid, GridProps, Stack, StackProps, Typography } from '@mui/material';
-import { BeanstalkPalette } from '../../App/muiTheme';
+import { MoonmagePalette } from '../../App/muiTheme';
 
 import { FC } from '~/types';
 
@@ -35,7 +35,7 @@ const RadioCardField: FC<(
       <Grid container direction={direction} spacing={spacing}>
         {options.map((opt, index) => {
             const selected = fieldProps.field.value === opt.value;
-            const color    = selected ? BeanstalkPalette.logoGreen : BeanstalkPalette.lightGrey;
+            const color    = selected ? MoonmagePalette.logoGreen : MoonmagePalette.lightGrey;
             return (
               <Grid key={index} item xs={xs} md={md}>
                 <Button
@@ -51,7 +51,7 @@ const RadioCardField: FC<(
                     px: 1,
                     py: 1,
                     // backgroundColor: selected ? 'primary.light' : 'inherit',
-                    borderColor: selected ? `${BeanstalkPalette.logoGreen} !important` : 'gray',
+                    borderColor: selected ? `${MoonmagePalette.logoGreen} !important` : 'gray',
                     outlineColor: 'primary',
                     outlineWidth: selected ? 0.5 : 0,
                     outlineStyle: 'solid',

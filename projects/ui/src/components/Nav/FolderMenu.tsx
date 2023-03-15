@@ -12,7 +12,7 @@ import { useTheme } from '@mui/material/styles';
 import DropdownIcon from '~/components/Common/DropdownIcon';
 import useToggle from '~/hooks/display/useToggle';
 import useAnchor from '~/hooks/display/useAnchor';
-import { BeanstalkPalette, PAGE_BORDER_COLOR } from '~/components/App/muiTheme';
+import { MoonmagePalette, PAGE_BORDER_COLOR } from '~/components/App/muiTheme';
 
 /**
  * Show a "Folder". A folder is a button that shows a popup;
@@ -150,7 +150,7 @@ const FolderMenu: FC<{
       >
         <Box
           sx={(_theme) => ({
-            background: BeanstalkPalette.white,
+            background: MoonmagePalette.white,
             width: popperWidth !== undefined ? popperWidth : '325px',
             borderBottomLeftRadius: _theme.shape.borderRadius,
             borderBottomRightRadius: _theme.shape.borderRadius,

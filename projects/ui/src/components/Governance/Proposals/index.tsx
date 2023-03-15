@@ -4,13 +4,13 @@ import ProposalList from '~/components/Governance/Proposals/ProposalList';
 import { useProposalsQuery } from '~/generated/graphql';
 import { Proposal } from '~/util/Governance';
 import { Module, ModuleContent, ModuleTabs } from '~/components/Common/Module';
-import { SNAPSHOT_SPACES } from '~/lib/Beanstalk/Governance';
+import { SNAPSHOT_SPACES } from '~/lib/Moonmage/Governance';
 
 import { FC } from '~/types';
 import { ChipLabel, StyledTab } from '~/components/Common/Tabs';
 
 /// Variables
-const SLUGS = ['dao', 'beanstalk-farms', 'bean-sprout'];
+const SLUGS = ['dao', 'moonmage-farms', 'moon-sprout'];
 
 const Proposals: FC<{}> = () => {
   const [tab, handleChange] = useTabs(SLUGS, 'type');
@@ -65,8 +65,8 @@ const Proposals: FC<{}> = () => {
   }, [filterBySpace]);
 
   const daoProposals = filterProposals(0);
-  const beanstalkFarmsProposals = filterProposals(1);
-  const beanSproutProposals = filterProposals(2);
+  const moonmageFarmsProposals = filterProposals(1);
+  const moonSproutProposals = filterProposals(2);
 
   return (
     <Module>
@@ -80,23 +80,23 @@ const Proposals: FC<{}> = () => {
         />
         <StyledTab
           label={
-            <ChipLabel name="Beanstalk Farms">
-              {beanstalkFarmsProposals.activeProposals || null}
+            <ChipLabel name="Moonmage Farms">
+              {moonmageFarmsProposals.activeProposals || null}
             </ChipLabel>
           }
         />
         <StyledTab
           label={
-            <ChipLabel name="Bean Sprout">
-              {beanSproutProposals.activeProposals || null}
+            <ChipLabel name="Moon Sprout">
+              {moonSproutProposals.activeProposals || null}
             </ChipLabel>
           }
         />
       </ModuleTabs>
       <ModuleContent>
         {tab === 0 && <ProposalList proposals={daoProposals.allProposals} />}
-        {tab === 1 && <ProposalList proposals={beanstalkFarmsProposals.allProposals} />}
-        {tab === 2 && <ProposalList proposals={beanSproutProposals.allProposals} />}
+        {tab === 1 && <ProposalList proposals={moonmageFarmsProposals.allProposals} />}
+        {tab === 2 && <ProposalList proposals={moonSproutProposals.allProposals} />}
       </ModuleContent>
     </Module>
   );

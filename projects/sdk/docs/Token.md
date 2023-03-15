@@ -2,7 +2,7 @@
 
 A utility class for handling tokens. Token is a baseclass used by the following:
 
-- `BeanstalkToken` - for internal tokens with no ERC20; ex Seed and Stalk
+- `MoonmageToken` - for internal tokens with no ERC20; ex Seed and Mage
 - `ERC20Token` - standard ERC20 token
 - `NativeToken` - for representing chain native token that isn't an ERCO20; ex ETH or AVAX or MATIC
 
@@ -16,7 +16,7 @@ Constructor options:
 ```typescript
 type TokenConstructor = {
   new (
-    sdk: BeanstalkSDK,
+    sdk: MoonmageSDK,
     address: string,
     decimals: number,
     metadata: {
@@ -29,7 +29,7 @@ type TokenConstructor = {
       isUnripe?: boolean;
     },
     rewards?: {
-      stalk: number;
+      mage: number;
       seeds: number;
     }
   ): Token;

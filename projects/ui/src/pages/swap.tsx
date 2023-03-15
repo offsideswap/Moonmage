@@ -5,7 +5,7 @@ import {
 import SwapActions from '~/components/Swap/Actions';
 import PageHeader from '~/components/Common/PageHeader';
 import GuideButton from '~/components/Common/Guide/GuideButton';
-import { HOW_TO_TRANSFER_BALANCES, HOW_TO_TRADE_BEANS } from '~/util/Guides';
+import { HOW_TO_TRANSFER_BALANCES, HOW_TO_TRADE_MOONS } from '~/util/Guides';
 
 import { FC } from '~/types';
 
@@ -14,13 +14,13 @@ const SwapPage: FC<{}> = () => (
     <Stack gap={2}>
       <PageHeader
         title="Swap"
-        description="Trade Beans and transfer Beanstalk assets"
-        href="https://docs.bean.money/almanac/guides/swap"
+        description="Trade Moons and transfer Moonmage assets"
+        href="https://docs.moon.money/almanac/guides/swap"
         control={
           <GuideButton
-            title="The Farmers' Almanac: Swap Guides"
+            title="The Cosmonauts' Almanac: Swap Guides"
             guides={[
-              HOW_TO_TRADE_BEANS,
+              HOW_TO_TRADE_MOONS,
               HOW_TO_TRANSFER_BALANCES,
             ]}
           />

@@ -21,25 +21,25 @@ import {
   TxnSettings
 } from '~/components/Common/Form';
 import Token, { ERC20Token, NativeToken } from '~/classes/Token';
-import { Beanstalk } from '~/generated/index';
+import { Moonmage } from '~/generated/index';
 import useToggle from '~/hooks/display/useToggle';
-import { useBeanstalkContract } from '~/hooks/ledger/useContract';
-import useFarmerBalances from '~/hooks/farmer/useFarmerBalances';
+import { useMoonmageContract } from '~/hooks/ledger/useContract';
+import useCosmonautBalances from '~/hooks/cosmomage/useCosmonautBalances';
 import useGetChainToken from '~/hooks/chain/useGetChainToken';
-import usePreferredToken, { PreferredToken } from '~/hooks/farmer/usePreferredToken';
+import usePreferredToken, { PreferredToken } from '~/hooks/cosmomage/usePreferredToken';
 import { QuoteHandler } from '~/hooks/ledger/useQuote';
 import useTokenMap from '~/hooks/chain/useTokenMap';
-import Farm, { ChainableFunction, FarmFromMode, FarmToMode } from '~/lib/Beanstalk/Farm';
+import Farm, { ChainableFunction, FarmFromMode, FarmToMode } from '~/lib/Moonmage/Farm';
 import { displayBN, displayFullBN, MinBN, toStringBaseUnitBN, toTokenUnitsBN } from '~/util';
 import { useSigner } from '~/hooks/ledger/useSigner';
-import usePrice from '~/hooks/beanstalk/usePrice';
+import usePrice from '~/hooks/moonmage/usePrice';
 import { optimizeFromMode } from '~/util/Farm';
-import { useFetchFarmerField } from '~/state/farmer/field/updater';
-import { useFetchFarmerBalances } from '~/state/farmer/balances/updater';
-import { useFetchBeanstalkField } from '~/state/beanstalk/field/updater';
-import { useFetchPools } from '~/state/bean/pools/updater';
+import { useFetchCosmonautField } from '~/state/cosmomage/field/updater';
+import { useFetchCosmonautBalances } from '~/state/cosmomage/balances/updater';
+import { useFetchMoonmageField } from '~/state/moonmage/field/updater';
+import { useFetchPools } from '~/state/moon/pools/updater';
 import { AppState } from '~/state';
-import { BEAN, ETH, PODS, WETH } from '~/constants/tokens';
+import { MOON, ETH, PODS, WETH } from '~/constants/tokens';
 import { ZERO_BN } from '~/constants';
 import StyledAccordionSummary from '~/components/Common/Accordion/AccordionSummary';
 import { ActionType } from '~/util/Actions';
@@ -59,8 +59,8 @@ const SowForm : FC<
   FormikProps<SowFormValues>
   & {
     handleQuote: QuoteHandler;
-    balances: ReturnType<typeof useFarmerBalances>;
-    beanstalk: Beanstalk;
+    balances: ReturnType<typeof useCosmonautBalances>;
+    moonmage: Moonmage;
     weather: BigNumber;
     soil: BigNumber;
     farm: Farm;
@@ -71,7 +71,7 @@ const SowForm : FC<
   setFieldValue,
   //
   balances,
-  beanstalk,
+  moonmage,
   weather,
   soil,
   farm,
@@ -81,31 +81,31 @@ const SowForm : FC<
 
   /// Chain
   const getChainToken = useGetChainToken();
-  const Bean          = getChainToken(BEAN);
+  const Moon          = getChainToken(MOON);
   const Eth           = getChainToken<NativeToken>(ETH);
   const Weth          = getChainToken<ERC20Token>(WETH);
-  const erc20TokenMap = useTokenMap<ERC20Token | NativeToken>([BEAN, ETH, WETH]);
+  const erc20TokenMap = useTokenMap<ERC20Token | NativeToken>([MOON, ETH, WETH]);
 
   ///
-  const beanPrice      = usePrice();
-  const beanstalkField = useSelector<AppState, AppState['_beanstalk']['field']>((state) => state._beanstalk.field);
+  const moonPrice      = usePrice();
+  const moonmageField = useSelector<AppState, AppState['_moonmage']['field']>((state) => state._moonmage.field);
 
   /// Derived
   const tokenIn   = values.tokens[0].token;     // converting from token
   const amountIn  = values.tokens[0].amount;    // amount of from token
-  const tokenOut  = Bean;                       // converting to token
+  const tokenOut  = Moon;                       // converting to token
   const amountOut = values.tokens[0].amountOut; // amount of to token
   const maxAmountIn    = values.maxAmountIn;
   const tokenInBalance = balances[tokenIn.address];
 
   /// Calculations
   const hasSoil = soil.gt(0);
-  const beans   = (tokenIn === Bean)
+  const moons   = (tokenIn === Moon)
     ? amountIn  || ZERO_BN
     : amountOut || ZERO_BN;
-  const isSubmittable = hasSoil && beans?.gt(0);
-  const numPods       = beans.multipliedBy(weather.div(100).plus(1));
-  const podLineLength = beanstalkField.podIndex.minus(beanstalkField.harvestableIndex);
+  const isSubmittable = hasSoil && moons?.gt(0);
+  const numPods       = moons.multipliedBy(weather.div(100).plus(1));
+  const podLineLength = moonmageField.podIndex.minus(moonmageField.harvestableIndex);
 
   const maxAmountUsed = (amountIn && maxAmountIn) 
     ? amountIn.div(maxAmountIn) 
@@ -133,16 +133,16 @@ const SowForm : FC<
   useEffect(() => {
     (async () => {
       if (hasSoil) {
-        if (tokenIn === Bean) {
-          /// 1 SOIL is consumed by 1 BEAN
+        if (tokenIn === Moon) {
+          /// 1 SOIL is consumed by 1 MOON
           setFieldValue('maxAmountIn', soil);
         } else if (tokenIn === Eth || tokenIn === Weth) {
-          /// Estimate how many ETH it will take to buy `soil` BEAN.
+          /// Estimate how many ETH it will take to buy `soil` MOON.
           /// TODO: across different forms of `tokenIn`.
           /// This (obviously) only works for Eth and Weth.
           const estimate = await Farm.estimate(
-            farm.buyBeans(),
-            [ethers.BigNumber.from(Bean.stringify(soil))],
+            farm.buyMoons(),
+            [ethers.BigNumber.from(Moon.stringify(soil))],
             false, // forward = false -> run the calc backwards
           );
           setFieldValue(
@@ -159,7 +159,7 @@ const SowForm : FC<
         setFieldValue('maxAmountIn', ZERO_BN);
       }
     })();
-  }, [Bean, Eth, Weth, beanstalk, hasSoil, farm, setFieldValue, soil, tokenIn, tokenOut]);
+  }, [Moon, Eth, Weth, moonmage, hasSoil, farm, setFieldValue, soil, tokenIn, tokenOut]);
 
   return (
     <Form autoComplete="off">
@@ -176,7 +176,7 @@ const SowForm : FC<
         <TokenQuoteProvider
           key="tokens.0"
           name="tokens.0"
-          tokenOut={Bean}
+          tokenOut={Moon}
           disabled={!hasSoil || !values.maxAmountIn}
           max={MinBN(
             values.maxAmountIn || ZERO_BN,
@@ -190,7 +190,7 @@ const SowForm : FC<
         {!hasSoil ? (
           <Box>
             <Alert color="warning" icon={<IconWrapper boxSize={IconSize.medium}><WarningAmberIcon sx={{ fontSize: IconSize.small }} /></IconWrapper>} sx={{ color: 'black' }}>
-              There is currently no Soil. <Link href="https://docs.bean.money/almanac/farm/field#soil" target="_blank" rel="noreferrer">Learn more</Link>
+              There is currently no Soil. <Link href="https://docs.moon.money/almanac/farm/field#soil" target="_blank" rel="noreferrer">Learn more</Link>
             </Alert>
           </Box>
         ) : null}
@@ -221,7 +221,7 @@ const SowForm : FC<
                   icon={<IconWrapper boxSize={IconSize.medium}><WarningAmberIcon sx={{ fontSize: IconSize.small }} /></IconWrapper>}
                   sx={{ color: 'black' }}
                 >
-                  If there is less Soil at the time of execution, this transaction will Sow Beans into the remaining Soil and send any unused Beans to your Farm Balance.
+                  If there is less Soil at the time of execution, this transaction will Sow Moons into the remaining Soil and send any unused Moons to your Farm Balance.
                   {/* You are Sowing {displayFullBN(maxAmountUsed.times(100), 4, 0)}% of remaining Soil.  */}
                 </Alert>
               </Box>
@@ -233,15 +233,15 @@ const SowForm : FC<
                   <TxnPreview
                     actions={[
                       {
-                        type: ActionType.BUY_BEANS,
-                        beanAmount: beans,
-                        beanPrice: beanPrice,
+                        type: ActionType.BUY_MOONS,
+                        moonAmount: moons,
+                        moonPrice: moonPrice,
                         token: tokenIn,
                         tokenAmount: amountIn || ZERO_BN
                       },
                       {
-                        type: ActionType.BURN_BEANS,
-                        amount: beans
+                        type: ActionType.BURN_MOONS,
+                        amount: moons
                       },
                       {
                         type: ActionType.RECEIVE_PODS,
@@ -253,7 +253,7 @@ const SowForm : FC<
                   <Divider sx={{ my: 2, opacity: 0.4 }} />
                   <Box pb={1}>
                     <Typography variant="body2" alignItems="center">
-                      Pods become <strong>Harvestable</strong> on a first in, first out <Link href="https://docs.bean.money/almanac/protocol/glossary#fifo" target="_blank" rel="noreferrer" underline="hover">(FIFO)</Link> basis. Upon <strong>Harvest</strong>, each Pod is redeemed for <span><TokenIcon token={BEAN[1]} css={{ height: IconSize.xs, marginTop: 2.6 }} /></span>1.
+                      Pods become <strong>Harvestable</strong> on a first in, first out <Link href="https://docs.moon.money/almanac/protocol/glossary#fifo" target="_blank" rel="noreferrer" underline="hover">(FIFO)</Link> basis. Upon <strong>Harvest</strong>, each Pod is redeemed for <span><TokenIcon token={MOON[1]} css={{ height: IconSize.xs, marginTop: 2.6 }} /></span>1.
                     </Typography>
                   </Box>
                 </AccordionDetails>
@@ -267,7 +267,7 @@ const SowForm : FC<
           color="primary"
           size="large"
           disabled={!isSubmittable}
-          contract={beanstalk}
+          contract={moonmage}
           tokens={values.tokens}
           mode="auto"
         >
@@ -282,7 +282,7 @@ const SowForm : FC<
 
 const PREFERRED_TOKENS : PreferredToken[] = [
   {
-    token: BEAN,
+    token: MOON,
     minimum: new BigNumber(1),    // $1
   },
   {
@@ -298,28 +298,28 @@ const PREFERRED_TOKENS : PreferredToken[] = [
 const Sow : FC<{}> = () => {
   /// Tokens
   const getChainToken = useGetChainToken();
-  const Bean          = getChainToken(BEAN);
+  const Moon          = getChainToken(MOON);
   const Eth           = getChainToken(ETH);
   const Weth          = getChainToken(WETH);
 
   /// Ledger
   const { data: signer } = useSigner();
   const provider  = useProvider();
-  const beanstalk = useBeanstalkContract(signer);
+  const moonmage = useMoonmageContract(signer);
 
   /// Farm
   const farm      = useMemo(() => new Farm(provider), [provider]);
 
-  /// Beanstalk
-  const weather = useSelector<AppState, AppState['_beanstalk']['field']['weather']['yield']>((state) => state._beanstalk.field.weather.yield);
-  const soil    = useSelector<AppState, AppState['_beanstalk']['field']['soil']>((state) => state._beanstalk.field.soil);
+  /// Moonmage
+  const weather = useSelector<AppState, AppState['_moonmage']['field']['weather']['yield']>((state) => state._moonmage.field.weather.yield);
+  const soil    = useSelector<AppState, AppState['_moonmage']['field']['soil']>((state) => state._moonmage.field.soil);
   
-  /// Farmer
-  const balances                = useFarmerBalances();
-  const [refetchBeanstalkField] = useFetchBeanstalkField();
+  /// Cosmonaut
+  const balances                = useCosmonautBalances();
+  const [refetchMoonmageField] = useFetchMoonmageField();
   const [refetchPools]          = useFetchPools();
-  const [refetchFarmerField]    = useFetchFarmerField();
-  const [refetchFarmerBalances] = useFetchFarmerBalances();
+  const [refetchCosmonautField]    = useFetchCosmonautField();
+  const [refetchCosmonautBalances] = useFetchCosmonautBalances();
 
   /// Form
   const middleware = useFormMiddleware();
@@ -339,7 +339,7 @@ const Sow : FC<{}> = () => {
 
   /// Handlers
   // This handler does not run when _tokenIn = _tokenOut
-  // _tokenOut === Bean 
+  // _tokenOut === Moon 
   const handleQuote = useCallback<QuoteHandler>(
     async (_tokenIn, _amountIn, _tokenOut) => {
       const steps : ChainableFunction[] = [];
@@ -347,11 +347,11 @@ const Sow : FC<{}> = () => {
       if (_tokenIn === Eth) {
         steps.push(...[
           farm.wrapEth(FarmToMode.INTERNAL),       // wrap ETH to WETH (internal)
-          ...farm.buyBeans(FarmFromMode.INTERNAL)  // buy Beans using internal WETH
+          ...farm.buyMoons(FarmFromMode.INTERNAL)  // buy Moons using internal WETH
         ]);
       } else if (_tokenIn === Weth) {
         steps.push(
-          ...farm.buyBeans(
+          ...farm.buyMoons(
             optimizeFromMode(_amountIn, balances[Weth.address]),
           )
         );
@@ -381,27 +381,27 @@ const Sow : FC<{}> = () => {
 
       const formData = values.tokens[0];
       const tokenIn = formData.token;
-      const amountBeans = tokenIn === Bean ? formData.amount : formData.amountOut;
+      const amountMoons = tokenIn === Moon ? formData.amount : formData.amountOut;
       if (values.tokens.length > 1) throw new Error('Only one token supported at this time');
-      if (!amountBeans || amountBeans.eq(0)) throw new Error('No amount set');
+      if (!amountMoons || amountMoons.eq(0)) throw new Error('No amount set');
       
       const data : string[] = [];
-      const amountPods = amountBeans.times(weather.div(100).plus(1));
+      const amountPods = amountMoons.times(weather.div(100).plus(1));
       let finalFromMode : FarmFromMode;
       
       txToast = new TransactionToast({
-        loading: `Sowing ${displayFullBN(amountBeans, Bean.decimals)} Beans for ${displayFullBN(amountPods, PODS.decimals)} Pods...`,
+        loading: `Sowing ${displayFullBN(amountMoons, Moon.decimals)} Moons for ${displayFullBN(amountPods, PODS.decimals)} Pods...`,
         success: 'Sow successful.',
       });
       
-      /// Sow directly from BEAN
-      if (tokenIn === Bean) {
-        // No swap occurs, so we know exactly how many beans are going in.
+      /// Sow directly from MOON
+      if (tokenIn === Moon) {
+        // No swap occurs, so we know exactly how many moons are going in.
         // We can select from INTERNAL, EXTERNAL, INTERNAL_EXTERNAL.
-        finalFromMode = optimizeFromMode(amountBeans, balances[Bean.address]);
+        finalFromMode = optimizeFromMode(amountMoons, balances[Moon.address]);
       }
       
-      /// Swap to BEAN and Sow
+      /// Swap to MOON and Sow
       else if (tokenIn === Eth || tokenIn === Weth) {
         // Require a quote
         if (!formData.steps || !formData.amountOut) throw new Error(`No quote available for ${formData.token.symbol}`);
@@ -420,22 +420,22 @@ const Sow : FC<{}> = () => {
       }
       
       data.push(
-        beanstalk.interface.encodeFunctionData('sow', [
-          toStringBaseUnitBN(amountBeans, Bean.decimals),
+        moonmage.interface.encodeFunctionData('sow', [
+          toStringBaseUnitBN(amountMoons, Moon.decimals),
           finalFromMode,
         ])
       );
  
       const overrides = { value: formData.value };
-      const txn = await beanstalk.farm(data, overrides);
+      const txn = await moonmage.farm(data, overrides);
       txToast.confirming(txn);
       
       const receipt = await txn.wait();
       await Promise.all([
-        refetchFarmerField(),     // get farmer's plots
-        refetchFarmerBalances(),  // get farmer's token balances
-        refetchBeanstalkField(),  // get beanstalk field data (ex. amount of Soil left)
-        refetchPools(),           // get price data [TODO: optimize if we bought beans]
+        refetchCosmonautField(),     // get cosmomage's plots
+        refetchCosmonautBalances(),  // get cosmomage's token balances
+        refetchMoonmageField(),  // get moonmage field data (ex. amount of Soil left)
+        refetchPools(),           // get price data [TODO: optimize if we bought moons]
       ]);  
       txToast.success(receipt);
       formActions.resetForm();
@@ -451,15 +451,15 @@ const Sow : FC<{}> = () => {
       formActions.setSubmitting(false);
     }
   }, [
-    beanstalk,
+    moonmage,
     weather,
-    Bean,
+    Moon,
     Eth,
     Weth,
     balances,
-    refetchFarmerField,
-    refetchFarmerBalances,
-    refetchBeanstalkField,
+    refetchCosmonautField,
+    refetchCosmonautBalances,
+    refetchMoonmageField,
     refetchPools,
     middleware,
   ]);
@@ -477,7 +477,7 @@ const Sow : FC<{}> = () => {
           <SowForm
             handleQuote={handleQuote}
             balances={balances}
-            beanstalk={beanstalk}
+            moonmage={moonmage}
             weather={weather}
             soil={soil}
             farm={farm}

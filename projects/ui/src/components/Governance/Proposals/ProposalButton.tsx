@@ -5,7 +5,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import { useVotesQuery } from '~/generated/graphql';
 import useAccount from '~/hooks/ledger/useAccount';
 import ProposalStats from '~/components/Governance/Proposals/ProposalStats';
-import { BeanstalkPalette, IconSize } from '~/components/App/muiTheme';
+import { MoonmagePalette, IconSize } from '~/components/App/muiTheme';
 import { Proposal } from '~/util/Governance';
 import Row from '~/components/Common/Row';
 
@@ -42,7 +42,7 @@ const ProposalButton: FC<{ proposal: Proposal }> = ({ proposal }) => {
         height: 'auto',
         color: 'text.primary',
         borderColor: 'divider',
-        background: BeanstalkPalette.white,
+        background: MoonmagePalette.white,
         '&:hover': {
           borderColor: 'primary.main'
         }
@@ -60,7 +60,7 @@ const ProposalButton: FC<{ proposal: Proposal }> = ({ proposal }) => {
           {/* Show if user has voted */}
           {(account && voteData?.votes?.length) ? (
             <Row gap={0.5}>
-              <CheckIcon sx={{ color: BeanstalkPalette.logoGreen, width: IconSize.small }} />
+              <CheckIcon sx={{ color: MoonmagePalette.logoGreen, width: IconSize.small }} />
               <Typography variant="body1">Voted</Typography>
             </Row>
           ) : null}
@@ -69,7 +69,7 @@ const ProposalButton: FC<{ proposal: Proposal }> = ({ proposal }) => {
         <Stack direction={{ xs: 'column', lg: 'row' }} justifyContent="space-between">
           <ProposalStats
             proposal={proposal}
-            // totalStalk={totalStalk}
+            // totalMage={totalMage}
             // quorum={quorum}
             differenceInTime={differenceInTime}
           />

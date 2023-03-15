@@ -1,1 +1,1 @@
-rm -rf Bean*
+rm -rf Moon*

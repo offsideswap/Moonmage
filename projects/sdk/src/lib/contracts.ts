@@ -1,14 +1,14 @@
-import type { BeanstalkSDK } from "./BeanstalkSDK";
+import type { MoonmageSDK } from "./MoonmageSDK";
 import {
   Curve3Pool__factory,
   CurveTriCrypto2Pool__factory,
   CurveMetaPool__factory,
-  Beanstalk__factory,
+  Moonmage__factory,
   CurveCryptoFactory__factory,
   CurveMetaFactory__factory,
   CurveRegistry__factory,
   CurveZap__factory,
-  Beanstalk,
+  Moonmage,
   Curve3Pool,
   CurveCryptoFactory,
   CurveMetaFactory,
@@ -16,16 +16,16 @@ import {
   CurveRegistry,
   CurveTriCrypto2Pool,
   CurveZap,
-  BeanstalkFertilizer__factory,
+  MoonmageFertilizer__factory,
   Root,
   Root__factory,
   Pipeline,
   Pipeline__factory,
-  BeanstalkFertilizer,
+  MoonmageFertilizer,
   Depot__factory,
   Depot,
-  BeanstalkPrice__factory,
-  BeanstalkPrice,
+  MoonmagePrice__factory,
+  MoonmagePrice,
   Math,
   Math__factory
 } from "src/constants/generated";
@@ -35,7 +35,7 @@ type CurveContracts = {
   pools: {
     pool3: Curve3Pool;
     tricrypto2: CurveTriCrypto2Pool;
-    beanCrv3: CurveMetaPool;
+    moonCrv3: CurveMetaPool;
     [k: string]: BaseContract;
   };
   registries: {
@@ -48,11 +48,11 @@ type CurveContracts = {
 };
 
 export class Contracts {
-  static sdk: BeanstalkSDK;
+  static sdk: MoonmageSDK;
 
-  public readonly beanstalk: Beanstalk;
-  public readonly beanstalkPrice: BeanstalkPrice;
-  public readonly fertilizer: BeanstalkFertilizer;
+  public readonly moonmage: Moonmage;
+  public readonly moonmagePrice: MoonmagePrice;
+  public readonly fertilizer: MoonmageFertilizer;
 
   public readonly pipeline: Pipeline;
   public readonly depot: Depot; // temp
@@ -63,20 +63,20 @@ export class Contracts {
 
   // private chain: string;
 
-  constructor(sdk: BeanstalkSDK) {
+  constructor(sdk: MoonmageSDK) {
     Contracts.sdk = sdk;
 
     // Addressses
-    const beanstalkAddress = sdk.addresses.BEANSTALK.get(sdk.chainId);
-    const beanstalkFertilizerAddress = sdk.addresses.BEANSTALK_FERTILIZER.get(sdk.chainId);
-    const beanstalkPriceAddress = sdk.addresses.BEANSTALK_PRICE.get(sdk.chainId);
+    const moonmageAddress = sdk.addresses.MOONMAGE.get(sdk.chainId);
+    const moonmageFertilizerAddress = sdk.addresses.MOONMAGE_FERTILIZER.get(sdk.chainId);
+    const moonmagePriceAddress = sdk.addresses.MOONMAGE_PRICE.get(sdk.chainId);
 
     const pipelineAddress = sdk.addresses.PIPELINE.get(sdk.chainId);
     const depotAddress = sdk.addresses.DEPOT.get(sdk.chainId);
     const mathAddress = sdk.addresses.MATH.get(sdk.chainId);
     const rootAddress = sdk.addresses.ROOT.get(sdk.chainId);
 
-    const beancrv3Address = sdk.addresses.BEAN_CRV3.get(sdk.chainId);
+    const mooncrv3Address = sdk.addresses.MOON_CRV3.get(sdk.chainId);
     const pool3Address = sdk.addresses.POOL3.get(sdk.chainId);
     const tricrypto2Address = sdk.addresses.TRICRYPTO2.get(sdk.chainId);
     const poolRegistryAddress = sdk.addresses.POOL_REGISTRY.get(sdk.chainId);
@@ -85,16 +85,16 @@ export class Contracts {
     const zapAddress = sdk.addresses.CURVE_ZAP.get(sdk.chainId);
 
     // Instances
-    this.beanstalk = Beanstalk__factory.connect(beanstalkAddress, sdk.providerOrSigner);
-    this.beanstalkPrice = BeanstalkPrice__factory.connect(beanstalkPriceAddress, sdk.providerOrSigner);
-    this.fertilizer = BeanstalkFertilizer__factory.connect(beanstalkFertilizerAddress, sdk.providerOrSigner);
+    this.moonmage = Moonmage__factory.connect(moonmageAddress, sdk.providerOrSigner);
+    this.moonmagePrice = MoonmagePrice__factory.connect(moonmagePriceAddress, sdk.providerOrSigner);
+    this.fertilizer = MoonmageFertilizer__factory.connect(moonmageFertilizerAddress, sdk.providerOrSigner);
 
     this.pipeline = Pipeline__factory.connect(pipelineAddress, sdk.providerOrSigner);
     this.depot = Depot__factory.connect(depotAddress, sdk.providerOrSigner);
     this.math = Math__factory.connect(mathAddress, sdk.providerOrSigner);
     this.root = Root__factory.connect(rootAddress, sdk.providerOrSigner);
 
-    const beanCrv3 = CurveMetaPool__factory.connect(beancrv3Address, sdk.providerOrSigner);
+    const moonCrv3 = CurveMetaPool__factory.connect(mooncrv3Address, sdk.providerOrSigner);
     const pool3 = Curve3Pool__factory.connect(pool3Address, sdk.providerOrSigner);
     const tricrypto2 = CurveTriCrypto2Pool__factory.connect(tricrypto2Address, sdk.providerOrSigner);
     const poolRegistry = CurveRegistry__factory.connect(poolRegistryAddress, sdk.providerOrSigner);
@@ -104,8 +104,8 @@ export class Contracts {
 
     this.curve = {
       pools: {
-        beanCrv3,
-        [beancrv3Address]: beanCrv3,
+        moonCrv3,
+        [mooncrv3Address]: moonCrv3,
         pool3,
         [pool3Address]: pool3,
         tricrypto2,

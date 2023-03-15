@@ -1,18 +1,18 @@
 import BigNumber from 'bignumber.js';
 import Token from '~/classes/Token';
 import { TokenMap, ZERO_BN } from '~/constants';
-import { Beanstalk } from '~/generated';
-import { Crate, DepositCrate, FarmerSiloBalance, WithdrawalCrate } from '~/state/farmer/silo';
+import { Moonmage } from '~/generated';
+import { Crate, DepositCrate, CosmonautSiloBalance, WithdrawalCrate } from '~/state/cosmomage/silo';
 import { SeasonMap } from '~/util';
 
-export const STALK_PER_SEED_PER_SEASON = 1 / 10_000;
+export const MAGE_PER_SEED_PER_SEASON = 1 / 10_000;
 
-export function calculateGrownStalk(
+export function calculateGrownMage(
   currentSeason: BigNumber,
   depositSeeds: BigNumber,
   depositSeason: BigNumber,
 ) {
-  return currentSeason.minus(depositSeason).times(depositSeeds).times(STALK_PER_SEED_PER_SEASON);
+  return currentSeason.minus(depositSeason).times(depositSeeds).times(MAGE_PER_SEED_PER_SEASON);
 }
 
 /**
@@ -28,8 +28,8 @@ export function parseWithdrawals(
   withdrawals:    SeasonMap<BigNumber>,
   currentSeason:  BigNumber
 ) : {
-  withdrawn: FarmerSiloBalance['withdrawn'];
-  claimable: FarmerSiloBalance['claimable'];
+  withdrawn: CosmonautSiloBalance['withdrawn'];
+  claimable: CosmonautSiloBalance['claimable'];
 } {
   let transitBalance    = ZERO_BN;
   let receivableBalance = ZERO_BN;
@@ -70,16 +70,16 @@ export function parseWithdrawals(
 
 /**
  * 
- * @param beanstalk 
+ * @param moonmage 
  * @param unripeTokens 
  * @param siloBalances 
  * @param getBDV 
  * @returns 
  */
 export const selectCratesForEnroot = (
-  beanstalk:    Beanstalk,
+  moonmage:    Moonmage,
   unripeTokens: TokenMap<Token>,
-  siloBalances: TokenMap<FarmerSiloBalance>,
+  siloBalances: TokenMap<CosmonautSiloBalance>,
   getBDV:       (_token: Token) => BigNumber,
 ) => (
   Object.keys(unripeTokens).reduce<{ [addr: string]: { crates: DepositCrate[]; encoded: string; } }>((prev, addr) => {
@@ -96,7 +96,7 @@ export const selectCratesForEnroot = (
       if (crates.length === 1) {
         prev[addr] = {
           crates,
-          encoded: beanstalk.interface.encodeFunctionData('enrootDeposit', [
+          encoded: moonmage.interface.encodeFunctionData('enrootDeposit', [
             addr,
             crates[0].season.toString(), // season
             unripeTokens[addr].stringify(crates[0].amount), // amount
@@ -105,7 +105,7 @@ export const selectCratesForEnroot = (
       } else {
         prev[addr] = {
           crates,
-          encoded: beanstalk.interface.encodeFunctionData('enrootDeposits', [
+          encoded: moonmage.interface.encodeFunctionData('enrootDeposits', [
             addr,
             // fixme: not sure why TS doesn't pick up the type of `crates` here
             crates.map((crate: Crate) => crate.season.toString()), // seasons

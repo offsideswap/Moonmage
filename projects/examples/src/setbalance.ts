@@ -1,4 +1,4 @@
-import { Token } from "@beanstalk/sdk";
+import { Token } from "@moonmage/sdk";
 import chalk from "chalk";
 import { sdk, account as _account, chain } from "./setup";
 
@@ -29,9 +29,9 @@ async function main() {
     console.log(`Setting ${chalk.bold(token)} to ${chalk.greenBright(amount)}`);
 
     let t = sdk.tokens[token] as Token;
-    if (token === "urBEAN") t = sdk.tokens.UNRIPE_BEAN;
-    if (token === "urBEAN3CRV") t = sdk.tokens.UNRIPE_BEAN_CRV3;
-    if (token === "BEAN3CRV") t = sdk.tokens.BEAN_CRV3_LP;
+    if (token === "urMOON") t = sdk.tokens.UNRIPE_MOON;
+    if (token === "urMOON3CRV") t = sdk.tokens.UNRIPE_MOON_CRV3;
+    if (token === "MOON3CRV") t = sdk.tokens.MOON_CRV3_LP;
 
     await chain[`set${token}Balance`](account, t.amount(amount));
   } else {

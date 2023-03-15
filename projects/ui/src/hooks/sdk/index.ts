@@ -1,10 +1,10 @@
 import { useContext, useMemo } from 'react';
-import { BeanstalkSDKContext } from '~/components/App/SdkProvider';
+import { MoonmageSDKContext } from '~/components/App/SdkProvider';
 
 export default function useSdk() {
-  const sdk = useContext(BeanstalkSDKContext);
+  const sdk = useContext(MoonmageSDKContext);
   if (!sdk) {
-    throw new Error('Expected sdk to be used within BeanstalkSDK context');
+    throw new Error('Expected sdk to be used within MoonmageSDK context');
   }
   return useMemo(() => sdk, [sdk]);
 }

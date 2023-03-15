@@ -1,5 +1,5 @@
 import { sdk } from "../setup";
-import { Clipboard } from "@beanstalk/sdk";
+import { Clipboard } from "@moonmage/sdk";
 import { ethers } from "ethers";
 
 function log(x: string[]) {

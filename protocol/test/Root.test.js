@@ -14,16 +14,16 @@ const {
   INTERNAL_TOLERANT,
 } = require("./utils/balances.js");
 const {
-  BEAN,
+  MOON,
   THREE_POOL,
-  BEAN_3_CURVE,
+  MOON_3_CURVE,
   UNRIPE_LP,
-  UNRIPE_BEAN,
+  UNRIPE_MOON,
   THREE_CURVE,
   STABLE_FACTORY,
   ZERO_ADDRESS,
 } = require("./utils/constants");
-const { to18, to6, toStalk, toBean } = require("./utils/helpers.js");
+const { to18, to6, toMage, toMoon } = require("./utils/helpers.js");
 const { takeSnapshot, revertToSnapshot } = require("./utils/snapshot");
 const ZERO_BYTES = ethers.utils.formatBytes32String("0x0");
 
@@ -36,7 +36,7 @@ function pruneToSeeds(value, seeds = 2) {
   return prune(value).mul(seeds);
 }
 
-function pruneToStalk(value) {
+function pruneToMage(value) {
   return prune(value).mul(toBN("10000"));
 }
 
@@ -53,7 +53,7 @@ describe("Root", function () {
     user3Address = user3.address;
     const contracts = await deploy("Test", false, true);
     ownerAddress = contracts.account;
-    this.diamond = contracts.beanstalkDiamond;
+    this.diamond = contracts.moonmageDiamond;
     this.season = await ethers.getContractAt(
       "MockSeasonFacet",
       this.diamond.address
@@ -78,7 +78,7 @@ describe("Root", function () {
       this.diamond.address
     );
 
-    this.siloToken = await ethers.getContractAt("MockToken", BEAN);
+    this.siloToken = await ethers.getContractAt("MockToken", MOON);
 
     const SiloToken = await ethers.getContractFactory("MockToken");
 
@@ -135,7 +135,7 @@ describe("Root", function () {
   describe("init", function () {
     it("check if init value set correctly", async function () {
       expect(
-        await this.rootToken.connect(user).BEANSTALK_ADDRESS()
+        await this.rootToken.connect(user).MOONMAGE_ADDRESS()
       ).to.be.equal(this.diamond.address);
 
       expect(await this.rootToken.connect(user).name()).to.be.equal("Root");
@@ -914,7 +914,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("0");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("0");
           });
 
@@ -928,7 +928,7 @@ describe("Root", function () {
 
           it("properly updates the user balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq("0");
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq("0");
             expect(await this.rootToken.balanceOf(userAddress)).to.eq("0");
           });
 
@@ -989,7 +989,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("0");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("0");
           });
 
@@ -1003,7 +1003,7 @@ describe("Root", function () {
 
           it("properly updates the user balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("1000");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq(
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq(
               "10000000"
             );
             expect(
@@ -1076,7 +1076,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("0");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("0");
           });
 
@@ -1090,7 +1090,7 @@ describe("Root", function () {
 
           it("properly updates the user balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("1000");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq(
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq(
               "10000000"
             );
             expect(
@@ -1144,7 +1144,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("0");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("0");
           });
 
@@ -1158,7 +1158,7 @@ describe("Root", function () {
 
           it("properly updates the user balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("1000");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq(
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq(
               "10000000"
             );
             expect(await this.rootToken.balanceOf(userAddress)).to.eq("0");
@@ -1209,7 +1209,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("0");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("0");
           });
 
@@ -1223,7 +1223,7 @@ describe("Root", function () {
 
           it("properly updates the user balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("1000");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq(
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq(
               "10010000"
             );
             expect(await this.rootToken.balanceOf(userAddress)).to.eq("0");
@@ -1297,7 +1297,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("1000");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("10000000");
           });
 
@@ -1311,11 +1311,11 @@ describe("Root", function () {
 
           it("properly updates the user balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("1000");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq(
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq(
               "10100000"
             );
             expect(await this.silo.balanceOfSeeds(user2Address)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(user2Address)).to.eq(
+            expect(await this.silo.balanceOfMage(user2Address)).to.eq(
               "0"
             );
 
@@ -1393,7 +1393,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("1000");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("10000000");
           });
 
@@ -1407,11 +1407,11 @@ describe("Root", function () {
 
           it("properly updates the user balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq(
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq(
               "0"
             );
             expect(await this.silo.balanceOfSeeds(user2Address)).to.eq("1000");
-            expect(await this.silo.balanceOfStalk(user2Address)).to.eq(
+            expect(await this.silo.balanceOfMage(user2Address)).to.eq(
               "10000000"
             );
 
@@ -1484,7 +1484,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("0");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("0");
           });
 
@@ -1498,7 +1498,7 @@ describe("Root", function () {
 
           it("properly updates the user balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("2000");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq(
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq(
               "20100000"
             );
             expect(await this.rootToken.balanceOf(userAddress)).to.eq("0");
@@ -1564,7 +1564,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("1000");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("10000000");
           });
 
@@ -1578,7 +1578,7 @@ describe("Root", function () {
 
           it("properly updates the user balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("1000");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq(
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq(
               "10100000"
             );
             expect(await this.rootToken.balanceOf(userAddress)).to.eq(
@@ -1646,7 +1646,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("0");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("0");
           });
 
@@ -1660,7 +1660,7 @@ describe("Root", function () {
 
           it("properly updates the user balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("2000");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq(
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq(
               "20100000"
             );
             expect(await this.rootToken.balanceOf(userAddress)).to.eq("0");
@@ -1832,7 +1832,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("0");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("0");
           });
 
@@ -1846,7 +1846,7 @@ describe("Root", function () {
 
           it("properly updates the user balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("1000");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq(
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq(
               "10000000"
             );
             expect(await this.rootToken.balanceOf(userAddress)).to.eq("0");
@@ -1890,7 +1890,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("1000");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("10000000");
           });
 
@@ -1904,7 +1904,7 @@ describe("Root", function () {
 
           it("properly updates the user balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq("0");
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq("0");
             expect(
               await this.tokenFacet.getInternalBalance(
                 userAddress,
@@ -1945,7 +1945,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("1000");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("10000000");
           });
 
@@ -1959,7 +1959,7 @@ describe("Root", function () {
 
           it("properly updates the user balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq("0");
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq("0");
             expect(await this.rootToken.balanceOf(userAddress)).to.eq(
               "1000000000000000"
             );
@@ -1989,7 +1989,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("900");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("9000000");
           });
 
@@ -2003,7 +2003,7 @@ describe("Root", function () {
 
           it("properly updates the user balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("100");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq(
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq(
               "1000000"
             );
             expect(await this.rootToken.balanceOf(userAddress)).to.eq(
@@ -2041,7 +2041,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("1000");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("10002500");
           });
 
@@ -2055,7 +2055,7 @@ describe("Root", function () {
 
           it("properly updates the user balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("1000");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq(
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq(
               "10002500"
             );
             expect(await this.rootToken.balanceOf(userAddress)).to.eq(
@@ -2102,7 +2102,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("2000");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("20000000");
           });
 
@@ -2116,13 +2116,13 @@ describe("Root", function () {
 
           it("properly updates the users balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq("0");
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq("0");
             expect(await this.rootToken.balanceOf(userAddress)).to.eq(
               "1000000000000000"
             );
 
             expect(await this.silo.balanceOfSeeds(user2Address)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(user2Address)).to.eq("0");
+            expect(await this.silo.balanceOfMage(user2Address)).to.eq("0");
             expect(await this.rootToken.balanceOf(user2Address)).to.eq(
               "1000000000000000"
             );
@@ -2169,7 +2169,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("2000");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("20010000");
           });
 
@@ -2183,13 +2183,13 @@ describe("Root", function () {
 
           it("properly updates the users balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq("0");
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq("0");
             expect(await this.rootToken.balanceOf(userAddress)).to.eq(
               "1001000000000000"
             );
 
             expect(await this.silo.balanceOfSeeds(user2Address)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(user2Address)).to.eq("0");
+            expect(await this.silo.balanceOfMage(user2Address)).to.eq("0");
             expect(await this.rootToken.balanceOf(user2Address)).to.eq(
               "999999999999999"
             );
@@ -2236,7 +2236,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("2000");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("20010000");
           });
 
@@ -2250,13 +2250,13 @@ describe("Root", function () {
 
           it("properly updates the users balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq("0");
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq("0");
             expect(await this.rootToken.balanceOf(userAddress)).to.eq(
               "1000000000000000"
             );
 
             expect(await this.silo.balanceOfSeeds(user2Address)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(user2Address)).to.eq("0");
+            expect(await this.silo.balanceOfMage(user2Address)).to.eq("0");
             expect(await this.rootToken.balanceOf(user2Address)).to.eq(
               "1000000000000000"
             );
@@ -2320,7 +2320,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("3000");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("30030000");
           });
 
@@ -2334,19 +2334,19 @@ describe("Root", function () {
 
           it("properly updates the users balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq("0");
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq("0");
             expect(await this.rootToken.balanceOf(userAddress)).to.eq(
               "1000000000000000"
             );
 
             expect(await this.silo.balanceOfSeeds(user2Address)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(user2Address)).to.eq("0");
+            expect(await this.silo.balanceOfMage(user2Address)).to.eq("0");
             expect(await this.rootToken.balanceOf(user2Address)).to.eq(
               "1000000000000000"
             );
 
             expect(await this.silo.balanceOfSeeds(user3Address)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(user3Address)).to.eq("0");
+            expect(await this.silo.balanceOfMage(user3Address)).to.eq("0");
             expect(await this.rootToken.balanceOf(user3Address)).to.eq(
               "1000000000000000"
             );
@@ -2410,7 +2410,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("3000");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("30030000");
           });
 
@@ -2424,19 +2424,19 @@ describe("Root", function () {
 
           it("properly updates the users balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq("0");
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq("0");
             expect(await this.rootToken.balanceOf(userAddress)).to.eq(
               "1002000000000000"
             );
 
             expect(await this.silo.balanceOfSeeds(user2Address)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(user2Address)).to.eq("0");
+            expect(await this.silo.balanceOfMage(user2Address)).to.eq("0");
             expect(await this.rootToken.balanceOf(user2Address)).to.eq(
               "1000999999999999"
             );
 
             expect(await this.silo.balanceOfSeeds(user3Address)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(user3Address)).to.eq("0");
+            expect(await this.silo.balanceOfMage(user3Address)).to.eq("0");
             expect(await this.rootToken.balanceOf(user3Address)).to.eq(
               "999999999999999"
             );
@@ -2798,7 +2798,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("1000");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("10000000");
           });
 
@@ -2812,7 +2812,7 @@ describe("Root", function () {
 
           it("properly updates the user balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq("0");
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq("0");
             expect(await this.rootToken.balanceOf(userAddress)).to.eq(
               "1000000000000000"
             );
@@ -2850,7 +2850,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("900");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("9000000");
           });
 
@@ -2864,7 +2864,7 @@ describe("Root", function () {
 
           it("properly updates the user balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("100");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq(
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq(
               "1000000"
             );
             expect(await this.rootToken.balanceOf(userAddress)).to.eq(
@@ -2910,7 +2910,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("1000");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("10002500");
           });
 
@@ -2924,7 +2924,7 @@ describe("Root", function () {
 
           it("properly updates the user balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("1000");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq(
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq(
               "10002500"
             );
             expect(await this.rootToken.balanceOf(userAddress)).to.eq(
@@ -2988,7 +2988,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("2000");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("20000000");
           });
 
@@ -3002,13 +3002,13 @@ describe("Root", function () {
 
           it("properly updates the users balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq("0");
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq("0");
             expect(await this.rootToken.balanceOf(userAddress)).to.eq(
               "1000000000000000"
             );
 
             expect(await this.silo.balanceOfSeeds(user2Address)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(user2Address)).to.eq("0");
+            expect(await this.silo.balanceOfMage(user2Address)).to.eq("0");
             expect(await this.rootToken.balanceOf(user2Address)).to.eq(
               "1000000000000000"
             );
@@ -3071,7 +3071,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("2000");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("20010000");
           });
 
@@ -3085,13 +3085,13 @@ describe("Root", function () {
 
           it("properly updates the users balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq("0");
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq("0");
             expect(await this.rootToken.balanceOf(userAddress)).to.eq(
               "1001000000000000"
             );
 
             expect(await this.silo.balanceOfSeeds(user2Address)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(user2Address)).to.eq("0");
+            expect(await this.silo.balanceOfMage(user2Address)).to.eq("0");
             expect(await this.rootToken.balanceOf(user2Address)).to.eq(
               "999999999999999"
             );
@@ -3153,7 +3153,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("2000");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("20010000");
           });
 
@@ -3167,13 +3167,13 @@ describe("Root", function () {
 
           it("properly updates the users balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq("0");
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq("0");
             expect(await this.rootToken.balanceOf(userAddress)).to.eq(
               "1000000000000000"
             );
 
             expect(await this.silo.balanceOfSeeds(user2Address)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(user2Address)).to.eq("0");
+            expect(await this.silo.balanceOfMage(user2Address)).to.eq("0");
             expect(await this.rootToken.balanceOf(user2Address)).to.eq(
               "1000000000000000"
             );
@@ -3261,7 +3261,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("3000");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("30030000");
           });
 
@@ -3275,19 +3275,19 @@ describe("Root", function () {
 
           it("properly updates the users balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq("0");
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq("0");
             expect(await this.rootToken.balanceOf(userAddress)).to.eq(
               "1000000000000000"
             );
 
             expect(await this.silo.balanceOfSeeds(user2Address)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(user2Address)).to.eq("0");
+            expect(await this.silo.balanceOfMage(user2Address)).to.eq("0");
             expect(await this.rootToken.balanceOf(user2Address)).to.eq(
               "1000000000000000"
             );
 
             expect(await this.silo.balanceOfSeeds(user3Address)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(user3Address)).to.eq("0");
+            expect(await this.silo.balanceOfMage(user3Address)).to.eq("0");
             expect(await this.rootToken.balanceOf(user3Address)).to.eq(
               "1000000000000000"
             );
@@ -3375,7 +3375,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("3000");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("30030000");
           });
 
@@ -3389,19 +3389,19 @@ describe("Root", function () {
 
           it("properly updates the users balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq("0");
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq("0");
             expect(await this.rootToken.balanceOf(userAddress)).to.eq(
               "1002000000000000"
             );
 
             expect(await this.silo.balanceOfSeeds(user2Address)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(user2Address)).to.eq("0");
+            expect(await this.silo.balanceOfMage(user2Address)).to.eq("0");
             expect(await this.rootToken.balanceOf(user2Address)).to.eq(
               "1000999999999999"
             );
 
             expect(await this.silo.balanceOfSeeds(user3Address)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(user3Address)).to.eq("0");
+            expect(await this.silo.balanceOfMage(user3Address)).to.eq("0");
             expect(await this.rootToken.balanceOf(user3Address)).to.eq(
               "999999999999999"
             );
@@ -3759,7 +3759,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("0");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("0");
           });
 
@@ -3773,7 +3773,7 @@ describe("Root", function () {
 
           it("properly updates the user balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("1000");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq(
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq(
               "10000000"
             );
             expect(await this.rootToken.balanceOf(userAddress)).to.eq("0");
@@ -3825,7 +3825,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("1000000000");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("10000000000000");
           });
 
@@ -3843,7 +3843,7 @@ describe("Root", function () {
 
           it("properly updates the user balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq("0");
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq("0");
             expect(await this.rootToken.balanceOf(userAddress)).to.eq(
               "1000000000000000000000"
             );
@@ -3883,7 +3883,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("900");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("9000000");
           });
 
@@ -3901,7 +3901,7 @@ describe("Root", function () {
 
           it("properly updates the user balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("100");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq(
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq(
               "1000000"
             );
             expect(await this.rootToken.balanceOf(userAddress)).to.eq(
@@ -3949,7 +3949,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("1000");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("10002500");
           });
 
@@ -3963,7 +3963,7 @@ describe("Root", function () {
 
           it("properly updates the user balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("1000");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq(
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq(
               "10002500"
             );
             expect(await this.rootToken.balanceOf(userAddress)).to.eq(
@@ -4030,7 +4030,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("2000");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("20000000");
           });
 
@@ -4048,13 +4048,13 @@ describe("Root", function () {
 
           it("properly updates the users balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq("0");
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq("0");
             expect(await this.rootToken.balanceOf(userAddress)).to.eq(
               "1000000000000000"
             );
 
             expect(await this.silo.balanceOfSeeds(user2Address)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(user2Address)).to.eq("0");
+            expect(await this.silo.balanceOfMage(user2Address)).to.eq("0");
             expect(await this.rootToken.balanceOf(user2Address)).to.eq(
               "1000000000000000"
             );
@@ -4121,7 +4121,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("2000");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("20010000");
           });
 
@@ -4135,13 +4135,13 @@ describe("Root", function () {
 
           it("properly updates the users balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq("0");
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq("0");
             expect(await this.rootToken.balanceOf(userAddress)).to.eq(
               "1001000000000000"
             );
 
             expect(await this.silo.balanceOfSeeds(user2Address)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(user2Address)).to.eq("0");
+            expect(await this.silo.balanceOfMage(user2Address)).to.eq("0");
             expect(await this.rootToken.balanceOf(user2Address)).to.eq(
               "999999999999999"
             );
@@ -4207,7 +4207,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("2000");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("20010000");
           });
 
@@ -4221,13 +4221,13 @@ describe("Root", function () {
 
           it("properly updates the users balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq("0");
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq("0");
             expect(await this.rootToken.balanceOf(userAddress)).to.eq(
               "1000000000000000"
             );
 
             expect(await this.silo.balanceOfSeeds(user2Address)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(user2Address)).to.eq("0");
+            expect(await this.silo.balanceOfMage(user2Address)).to.eq("0");
             expect(await this.rootToken.balanceOf(user2Address)).to.eq(
               "1000000000000000"
             );
@@ -4321,7 +4321,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("3000");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("30030000");
           });
 
@@ -4335,19 +4335,19 @@ describe("Root", function () {
 
           it("properly updates the users balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq("0");
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq("0");
             expect(await this.rootToken.balanceOf(userAddress)).to.eq(
               "1000000000000000"
             );
 
             expect(await this.silo.balanceOfSeeds(user2Address)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(user2Address)).to.eq("0");
+            expect(await this.silo.balanceOfMage(user2Address)).to.eq("0");
             expect(await this.rootToken.balanceOf(user2Address)).to.eq(
               "1000000000000000"
             );
 
             expect(await this.silo.balanceOfSeeds(user3Address)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(user3Address)).to.eq("0");
+            expect(await this.silo.balanceOfMage(user3Address)).to.eq("0");
             expect(await this.rootToken.balanceOf(user3Address)).to.eq(
               "1000000000000000"
             );
@@ -4441,7 +4441,7 @@ describe("Root", function () {
               await this.silo.balanceOfSeeds(this.rootToken.address)
             ).to.eq("3000");
             expect(
-              await this.silo.balanceOfStalk(this.rootToken.address)
+              await this.silo.balanceOfMage(this.rootToken.address)
             ).to.eq("30030000");
           });
 
@@ -4455,19 +4455,19 @@ describe("Root", function () {
 
           it("properly updates the users balance", async function () {
             expect(await this.silo.balanceOfSeeds(userAddress)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(userAddress)).to.eq("0");
+            expect(await this.silo.balanceOfMage(userAddress)).to.eq("0");
             expect(await this.rootToken.balanceOf(userAddress)).to.eq(
               "1002000000000000"
             );
 
             expect(await this.silo.balanceOfSeeds(user2Address)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(user2Address)).to.eq("0");
+            expect(await this.silo.balanceOfMage(user2Address)).to.eq("0");
             expect(await this.rootToken.balanceOf(user2Address)).to.eq(
               "1000999999999999"
             );
 
             expect(await this.silo.balanceOfSeeds(user3Address)).to.eq("0");
-            expect(await this.silo.balanceOfStalk(user3Address)).to.eq("0");
+            expect(await this.silo.balanceOfMage(user3Address)).to.eq("0");
             expect(await this.rootToken.balanceOf(user3Address)).to.eq(
               "999999999999999"
             );

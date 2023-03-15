@@ -1,15 +1,15 @@
 // import { useEffect } from '@storybook/addons';
-// import { useBeanstalkContract } from '~/hooks/useContract';
+// import { useMoonmageContract } from '~/hooks/useContract';
 import React from 'react';
 
 import { FC } from '~/types';
 
 const AboutPage : FC<{}> = () => 
-  // const beanstalk = useBeanstalkContract();
+  // const moonmage = useMoonmageContract();
 
   // const [] = useState(null)
   // useEffect(() => {
-  //   beanstalk.callStatic.
+  //   moonmage.callStatic.
   // }, []);
    (
      <div>About</div>

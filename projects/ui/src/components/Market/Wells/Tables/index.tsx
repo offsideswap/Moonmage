@@ -4,12 +4,12 @@ import { DataGridProps } from '@mui/x-data-grid';
 import { useTheme } from '@mui/material/styles';
 import BigNumber from 'bignumber.js';
 import useTabs from '~/hooks/display/useTabs';
-import { PodListing } from '~/state/farmer/market';
+import { PodListing } from '~/state/cosmomage/market';
 import COLUMNS from '~/components/Common/Table/cells';
-import useMarketData from '~/hooks/beanstalk/useMarketData';
+import useMarketData from '~/hooks/moonmage/useMarketData';
 import TabTable from '~/components/Common/Table/TabTable';
 import { Module, ModuleContent } from '~/components/Common/Module';
-import { BEAN, PODS } from '~/constants/tokens';
+import { MOON, PODS } from '~/constants/tokens';
 import { FC } from '~/types';
 
 // TODO: dummy type
@@ -27,7 +27,7 @@ const SLUGS = ['all', 'swaps', 'adds', 'removes'];
 
 const WellActivity: FC<{}> = () => {
   const theme = useTheme();
-  const [tab, handleChangeTab] = useTabs(SLUGS, 'bean');
+  const [tab, handleChangeTab] = useTabs(SLUGS, 'moon');
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const data = useMarketData();
 
@@ -51,7 +51,7 @@ const WellActivity: FC<{}> = () => {
         </Tabs>
       ),
       COLUMNS.totalValue(1),
-      COLUMNS.tokenAmount('tokenAmount0', BEAN[1], 1),
+      COLUMNS.tokenAmount('tokenAmount0', MOON[1], 1),
       COLUMNS.tokenAmount('tokenAmount1', PODS, 1),
       COLUMNS.account(1),
       COLUMNS.time(1),
@@ -60,7 +60,7 @@ const WellActivity: FC<{}> = () => {
 
   const N = 30;
   const mockWellActivityData = new Array(N).fill(null).map((_, i) => ({
-    label: 'Swap ETH for BEAN',
+    label: 'Swap ETH for MOON',
     totalValue: new BigNumber(3000 * Math.random()),
     tokenAmount0: new BigNumber(Math.random()),
     tokenAmount1: new BigNumber(3000 * Math.random()),

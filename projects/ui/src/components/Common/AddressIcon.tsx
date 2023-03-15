@@ -3,11 +3,11 @@ import { BoxProps } from '@mui/material';
 import Jazzicon, { jsNumberForAddress } from 'react-jazzicon';
 import useAccount from '~/hooks/ledger/useAccount';
 import { IconSize } from '~/components/App/muiTheme';
-import { BEANSTALK_ADDRESSES } from '~/constants';
+import { MOONMAGE_ADDRESSES } from '~/constants';
 
 import { FC } from '~/types';
 
-const FALLBACK_ADDRESS = BEANSTALK_ADDRESSES[1];
+const FALLBACK_ADDRESS = MOONMAGE_ADDRESSES[1];
 
 const AddressIcon : FC<BoxProps & {
   size?: number;

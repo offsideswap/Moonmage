@@ -1,9 +1,9 @@
 const fs = require('fs')
-const { getBeanstalk, impersonateBeanstalkOwner, mintEth, strDisplay } = require("../utils")
+const { getMoonmage, impersonateMoonmageOwner, mintEth, strDisplay } = require("../utils")
 
 async function ebip6(mock = true, account = undefined) {
     if (account == undefined) {
-        account = await impersonateBeanstalkOwner()
+        account = await impersonateMoonmageOwner()
         await mintEth(account.address)
     }
     const tokenFacet = await (await ethers.getContractFactory("TokenFacet", account)).deploy()
@@ -31,7 +31,7 @@ async function ebip6(mock = true, account = undefined) {
 
 async function ebip7(mock = true, account = undefined) {
     if (account == undefined) {
-        account = await impersonateBeanstalkOwner()
+        account = await impersonateMoonmageOwner()
         await mintEth(account.address)
     }
 
@@ -52,13 +52,13 @@ async function ebip7(mock = true, account = undefined) {
 }
 
 async function bipDiamondCut(name, dc, account, mock = true) {
-    beanstalk = await getBeanstalk()
+    moonmage = await getMoonmage()
     if (mock) {
-        const receipt = await beanstalk.connect(account).diamondCut(...Object.values(dc))
+        const receipt = await moonmage.connect(account).diamondCut(...Object.values(dc))
         console.log(`Diamond Cut Successful.`)
         console.log(`Gas Used: ${strDisplay((await receipt.wait()).gasUsed)}`)
     } else {
-        const encodedDiamondCut = await beanstalk.interface.encodeFunctionData('diamondCut', Object.values(dc))
+        const encodedDiamondCut = await moonmage.interface.encodeFunctionData('diamondCut', Object.values(dc))
         console.log(JSON.stringify(dc, null, 4))
         console.log("Encoded: -------------------------------------------------------------")
         console.log(encodedDiamondCut)

@@ -7,7 +7,7 @@ const { expect, use } = require("chai");
 const { waffleChai } = require("@ethereum-waffle/chai");
 use(waffleChai);
 const { deploy } = require('../scripts/deploy.js')
-const { BEAN, ZERO_ADDRESS } = require('./utils/constants')
+const { MOON, ZERO_ADDRESS } = require('./utils/constants')
 const { takeSnapshot, revertToSnapshot } = require("./utils/snapshot");
 const { ethers } = require('hardhat');
 
@@ -27,20 +27,20 @@ describe('Marketplace', function () {
     provider = ethers.getDefaultProvider();
 
     ownerAddress = contracts.account;
-    this.diamond = contracts.beanstalkDiamond
+    this.diamond = contracts.moonmageDiamond
     this.field = await ethers.getContractAt('MockFieldFacet', this.diamond.address);
     this.season = await ethers.getContractAt('MockSeasonFacet', this.diamond.address);
     this.marketplace = await ethers.getContractAt('MockMarketplaceFacet', this.diamond.address);
     this.token = await ethers.getContractAt('TokenFacet', this.diamond.address);
-    this.bean = await ethers.getContractAt('MockToken', BEAN);
+    this.moon = await ethers.getContractAt('MockToken', MOON);
 
-    await this.bean.mint(userAddress, '500000')
-    await this.bean.mint(user2Address, '500000')
+    await this.moon.mint(userAddress, '500000')
+    await this.moon.mint(user2Address, '500000')
 
     await this.season.siloSunrise(0)
 
-    await this.bean.connect(user).approve(this.field.address, '100000000000')
-    await this.bean.connect(user2).approve(this.field.address, '100000000000')
+    await this.moon.connect(user).approve(this.field.address, '100000000000')
+    await this.moon.connect(user2).approve(this.field.address, '100000000000')
 
     await this.field.incrementTotalSoilE('100000');
     await this.season.setYieldE('0');
@@ -408,36 +408,36 @@ describe('Marketplace', function () {
           it("first to second interval", async function () {
             const startPlaceInLine = 1000;
             const amountPodsFromOrder = 4500;
-            const orderBeanAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
-            expect(await this.marketplace.connect(user).getAmountBeansToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderBeanAmount);
+            const orderMoonAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
+            expect(await this.marketplace.connect(user).getAmountMoonsToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderMoonAmount);
           })
   
           it("second to third interval", async function () {
             const startPlaceInLine = 5000;
             const amountPodsFromOrder = 1500;
-            const orderBeanAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
-            expect(await this.marketplace.connect(user).getAmountBeansToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderBeanAmount);
+            const orderMoonAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
+            expect(await this.marketplace.connect(user).getAmountMoonsToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderMoonAmount);
           })
           
           it("fourth to fifth interval", async function () {
             const startPlaceInLine = 7000;
             const amountPodsFromOrder = 1500;
-            const orderBeanAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
-            expect(await this.marketplace.connect(user).getAmountBeansToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderBeanAmount);
+            const orderMoonAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
+            expect(await this.marketplace.connect(user).getAmountMoonsToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderMoonAmount);
           })
 
           it("eleventh to twelfth interval", async function () {
             const startPlaceInLine = 14000;
             const amountPodsFromOrder = 4500;
-            const orderBeanAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
-            expect(await this.marketplace.connect(user).getAmountBeansToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderBeanAmount);
+            const orderMoonAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
+            expect(await this.marketplace.connect(user).getAmountMoonsToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderMoonAmount);
           })
 
           it("twelfth to past last interval", async function () {
             const startPlaceInLine = 18000;
             const amountPodsFromOrder = 4500;
-            const orderBeanAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
-            expect(await this.marketplace.connect(user).getAmountBeansToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderBeanAmount);
+            const orderMoonAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
+            expect(await this.marketplace.connect(user).getAmountMoonsToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderMoonAmount);
           })
         })
 
@@ -449,36 +449,36 @@ describe('Marketplace', function () {
           it("first to third interval", async function () {
             const startPlaceInLine = 1000;
             const amountPodsFromOrder = 5500;
-            const orderBeanAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
-            expect(await this.marketplace.connect(user).getAmountBeansToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderBeanAmount);
+            const orderMoonAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
+            expect(await this.marketplace.connect(user).getAmountMoonsToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderMoonAmount);
           })
   
           it("second to fourth interval", async function () {
             const startPlaceInLine = 5000;
             const amountPodsFromOrder = 2500;
-            const orderBeanAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
-            expect(await this.marketplace.connect(user).getAmountBeansToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderBeanAmount);
+            const orderMoonAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
+            expect(await this.marketplace.connect(user).getAmountMoonsToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderMoonAmount);
           })
           
           it("fourth to sixth interval", async function () {
             const startPlaceInLine = 7000;
             const amountPodsFromOrder = 2500;
-            const orderBeanAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
-            expect(await this.marketplace.connect(user).getAmountBeansToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderBeanAmount);
+            const orderMoonAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
+            expect(await this.marketplace.connect(user).getAmountMoonsToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderMoonAmount);
           })
 
           it("tenth to twelfth interval", async function () {
             const startPlaceInLine = 13000;
             const amountPodsFromOrder = 5500;
-            const orderBeanAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
-            expect(await this.marketplace.connect(user).getAmountBeansToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderBeanAmount);
+            const orderMoonAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
+            expect(await this.marketplace.connect(user).getAmountMoonsToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderMoonAmount);
           })
 
           it("eleventh to past last interval", async function () {
             const startPlaceInLine = 14000;
             const amountPodsFromOrder = 8500;
-            const orderBeanAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
-            expect(await this.marketplace.connect(user).getAmountBeansToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderBeanAmount);
+            const orderMoonAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
+            expect(await this.marketplace.connect(user).getAmountMoonsToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderMoonAmount);
           })
         })
 
@@ -490,15 +490,15 @@ describe('Marketplace', function () {
           it("first to last interval", async function () {
             const startPlaceInLine = 1000;
             const amountPodsFromOrder = 18500;
-            const orderBeanAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
-            expect(await this.marketplace.connect(user).getAmountBeansToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderBeanAmount);
+            const orderMoonAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
+            expect(await this.marketplace.connect(user).getAmountMoonsToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderMoonAmount);
           })
   
           it("first to past last interval", async function () {
             const startPlaceInLine = 1000;
             const amountPodsFromOrder = 19500;
-            const orderBeanAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
-            expect(await this.marketplace.connect(user).getAmountBeansToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderBeanAmount);
+            const orderMoonAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
+            expect(await this.marketplace.connect(user).getAmountMoonsToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderMoonAmount);
           })
         })
       })
@@ -512,22 +512,22 @@ describe('Marketplace', function () {
           it("first to second interval", async function () {
             const startPlaceInLine = 10000000000000;
             const amountPodsFromOrder = 45000000000000;
-            const orderBeanAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
-            expect(await this.marketplace.connect(user).getAmountBeansToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderBeanAmount);
+            const orderMoonAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
+            expect(await this.marketplace.connect(user).getAmountMoonsToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderMoonAmount);
           })
   
           it("second to third interval", async function () {
             const startPlaceInLine = 50000000000000;
             const amountPodsFromOrder = 15000000000000;
-            const orderBeanAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
-            expect(await this.marketplace.connect(user).getAmountBeansToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderBeanAmount);
+            const orderMoonAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
+            expect(await this.marketplace.connect(user).getAmountMoonsToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderMoonAmount);
           })
           
           it("eleventh to twelfth interval", async function () {
             const startPlaceInLine = 130000000000000;
             const amountPodsFromOrder = 15000000000000;
-            const orderBeanAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
-            expect(await this.marketplace.connect(user).getAmountBeansToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderBeanAmount);
+            const orderMoonAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
+            expect(await this.marketplace.connect(user).getAmountMoonsToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderMoonAmount);
           })
         })
 
@@ -539,22 +539,22 @@ describe('Marketplace', function () {
           it("first to third interval", async function () {
             const startPlaceInLine = 10000000000000;
             const amountPodsFromOrder = 55000000000000;
-            const orderBeanAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
-            expect(await this.marketplace.connect(user).getAmountBeansToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderBeanAmount);
+            const orderMoonAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
+            expect(await this.marketplace.connect(user).getAmountMoonsToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderMoonAmount);
           })
   
           it("third to fifth interval", async function () {
             const startPlaceInLine = 60000000000000;
             const amountPodsFromOrder = 25000000000000;
-            const orderBeanAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
-            expect(await this.marketplace.connect(user).getAmountBeansToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderBeanAmount);
+            const orderMoonAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
+            expect(await this.marketplace.connect(user).getAmountMoonsToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderMoonAmount);
           })
           
           it("eleventh to last interval", async function () {
             const startPlaceInLine = 130000000000000;
             const amountPodsFromOrder = 55000000000000;
-            const orderBeanAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
-            expect(await this.marketplace.connect(user).getAmountBeansToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderBeanAmount);
+            const orderMoonAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
+            expect(await this.marketplace.connect(user).getAmountMoonsToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderMoonAmount);
           })
         })
 
@@ -566,8 +566,8 @@ describe('Marketplace', function () {
           it("first to last interval", async function () {
             const startPlaceInLine = 10000000000000;
             const amountPodsFromOrder = 185000000000000;
-            const orderBeanAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
-            expect(await this.marketplace.connect(user).getAmountBeansToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderBeanAmount);
+            const orderMoonAmount = getAmountOrder(this.f, startPlaceInLine, amountPodsFromOrder);
+            expect(await this.marketplace.connect(user).getAmountMoonsToFillOrderV2(startPlaceInLine, amountPodsFromOrder, this.f.packedFunction)).to.be.equal(orderMoonAmount);
           })
         })
       })
@@ -739,21 +739,21 @@ describe('Marketplace', function () {
         beforeEach(async function () {
           this.listing = [userAddress, '0', '0', '1000', '500000', '0', '0', EXTERNAL]
           await this.marketplace.connect(user).createPodListing('0', '0', '1000', '500000', '0', '0', EXTERNAL);
-          this.amountBeansBuyingWith = 500;
+          this.amountMoonsBuyingWith = 500;
 
-          this.userBeanBalance = await this.bean.balanceOf(userAddress)
-          this.user2BeanBalance = await this.bean.balanceOf(user2Address)
+          this.userMoonBalance = await this.moon.balanceOf(userAddress)
+          this.user2MoonBalance = await this.moon.balanceOf(user2Address)
 
-          this.result = await this.marketplace.connect(user2).fillPodListing(this.listing, this.amountBeansBuyingWith, EXTERNAL);
+          this.result = await this.marketplace.connect(user2).fillPodListing(this.listing, this.amountMoonsBuyingWith, EXTERNAL);
 
-          this.user2BeanBalanceAfter = await this.bean.balanceOf(user2Address)
-          this.userBeanBalanceAfter = await this.bean.balanceOf(userAddress)
+          this.user2MoonBalanceAfter = await this.moon.balanceOf(user2Address)
+          this.userMoonBalanceAfter = await this.moon.balanceOf(userAddress)
         })
 
-        it('Transfer Beans properly', async function () {
-          expect(this.user2BeanBalance.sub(this.user2BeanBalanceAfter)).to.equal(this.amountBeansBuyingWith);
-          expect(this.userBeanBalanceAfter.sub(this.userBeanBalance)).to.equal(this.amountBeansBuyingWith);
-          expect(await this.token.getInternalBalance(user.address, this.bean.address)).to.equal(0);
+        it('Transfer Moons properly', async function () {
+          expect(this.user2MoonBalance.sub(this.user2MoonBalanceAfter)).to.equal(this.amountMoonsBuyingWith);
+          expect(this.userMoonBalanceAfter.sub(this.userMoonBalance)).to.equal(this.amountMoonsBuyingWith);
+          expect(await this.token.getInternalBalance(user.address, this.moon.address)).to.equal(0);
         })
 
         it('Deletes Pod Listing', async function () {
@@ -774,21 +774,21 @@ describe('Marketplace', function () {
         beforeEach(async function () {
           this.listing = [userAddress, '0', '0', '1000', '500000', '0', '0', EXTERNAL]
           await this.marketplace.connect(user).createPodListing('0', '0', '1000', '500000', '0', '0', EXTERNAL);
-          this.amountBeansBuyingWith = 250;
+          this.amountMoonsBuyingWith = 250;
 
-          this.userBeanBalance = await this.bean.balanceOf(userAddress)
-          this.user2BeanBalance = await this.bean.balanceOf(user2Address)
+          this.userMoonBalance = await this.moon.balanceOf(userAddress)
+          this.user2MoonBalance = await this.moon.balanceOf(user2Address)
 
-          this.result = await this.marketplace.connect(user2).fillPodListing(this.listing, this.amountBeansBuyingWith, EXTERNAL);
+          this.result = await this.marketplace.connect(user2).fillPodListing(this.listing, this.amountMoonsBuyingWith, EXTERNAL);
 
-          this.user2BeanBalanceAfter = await this.bean.balanceOf(user2Address)
-          this.userBeanBalanceAfter = await this.bean.balanceOf(userAddress)
+          this.user2MoonBalanceAfter = await this.moon.balanceOf(user2Address)
+          this.userMoonBalanceAfter = await this.moon.balanceOf(userAddress)
         })
 
-        it('Transfer Beans properly', async function () {
-          expect(this.user2BeanBalance.sub(this.user2BeanBalanceAfter)).to.equal(this.amountBeansBuyingWith);
-          expect(this.userBeanBalanceAfter.sub(this.userBeanBalance)).to.equal(this.amountBeansBuyingWith);
-          expect(await this.token.getInternalBalance(user.address, this.bean.address)).to.equal(0);
+        it('Transfer Moons properly', async function () {
+          expect(this.user2MoonBalance.sub(this.user2MoonBalanceAfter)).to.equal(this.amountMoonsBuyingWith);
+          expect(this.userMoonBalanceAfter.sub(this.userMoonBalance)).to.equal(this.amountMoonsBuyingWith);
+          expect(await this.token.getInternalBalance(user.address, this.moon.address)).to.equal(0);
         })
 
         it('Deletes Pod Listing', async function () {
@@ -811,21 +811,21 @@ describe('Marketplace', function () {
         beforeEach(async function () {
           this.listing = [userAddress, '0', '500', '500', '500000', '0', '0', EXTERNAL];
           await this.marketplace.connect(user).createPodListing('0', '500', '500', '500000', '0', '0', EXTERNAL);
-          this.amountBeansBuyingWith = 100;
+          this.amountMoonsBuyingWith = 100;
 
-          this.userBeanBalance = await this.bean.balanceOf(userAddress)
-          this.user2BeanBalance = await this.bean.balanceOf(user2Address)
+          this.userMoonBalance = await this.moon.balanceOf(userAddress)
+          this.user2MoonBalance = await this.moon.balanceOf(user2Address)
 
-          this.result = await this.marketplace.connect(user2).fillPodListing(this.listing, this.amountBeansBuyingWith, EXTERNAL);
+          this.result = await this.marketplace.connect(user2).fillPodListing(this.listing, this.amountMoonsBuyingWith, EXTERNAL);
 
-          this.user2BeanBalanceAfter = await this.bean.balanceOf(user2Address)
-          this.userBeanBalanceAfter = await this.bean.balanceOf(userAddress)
+          this.user2MoonBalanceAfter = await this.moon.balanceOf(user2Address)
+          this.userMoonBalanceAfter = await this.moon.balanceOf(userAddress)
         })
 
-        it('Transfer Beans properly', async function () {
-          expect(this.user2BeanBalance.sub(this.user2BeanBalanceAfter)).to.equal(this.amountBeansBuyingWith);
-          expect(this.userBeanBalanceAfter.sub(this.userBeanBalance)).to.equal(this.amountBeansBuyingWith);
-          expect(await this.token.getInternalBalance(user.address, this.bean.address)).to.equal(0);
+        it('Transfer Moons properly', async function () {
+          expect(this.user2MoonBalance.sub(this.user2MoonBalanceAfter)).to.equal(this.amountMoonsBuyingWith);
+          expect(this.userMoonBalanceAfter.sub(this.userMoonBalance)).to.equal(this.amountMoonsBuyingWith);
+          expect(await this.token.getInternalBalance(user.address, this.moon.address)).to.equal(0);
         })
 
         it('Deletes Pod Listing', async function () {
@@ -849,14 +849,14 @@ describe('Marketplace', function () {
 
           this.listing = [userAddress, '0', '500', '500', '500000', '0', '0', EXTERNAL];
           await this.marketplace.connect(user).createPodListing('0', '500', '500', '500000', '0', '0', EXTERNAL);
-          this.amountBeansBuyingWith = 100;
+          this.amountMoonsBuyingWith = 100;
 
-          this.userBeanBalance = await this.bean.balanceOf(userAddress)
-          this.user2BeanBalance = await this.bean.balanceOf(user2Address)
-          this.result = await this.marketplace.connect(user2).fillPodListing(this.listing, this.amountBeansBuyingWith, EXTERNAL);
+          this.userMoonBalance = await this.moon.balanceOf(userAddress)
+          this.user2MoonBalance = await this.moon.balanceOf(user2Address)
+          this.result = await this.marketplace.connect(user2).fillPodListing(this.listing, this.amountMoonsBuyingWith, EXTERNAL);
 
-          this.user2BeanBalanceAfter = await this.bean.balanceOf(user2Address)
-          this.userBeanBalanceAfter = await this.bean.balanceOf(userAddress)
+          this.user2MoonBalanceAfter = await this.moon.balanceOf(user2Address)
+          this.userMoonBalanceAfter = await this.moon.balanceOf(userAddress)
           this.listing = [userAddress, '700', '0', '300', '500000', '0', '0', EXTERNAL];
 
           this.result = await this.marketplace.connect(user2).fillPodListing(this.listing, 100, EXTERNAL);
@@ -884,21 +884,21 @@ describe('Marketplace', function () {
 
           this.listing = [userAddress, '0', '0', '1000', '500000', '0', '0', INTERNAL];
           await this.marketplace.connect(user).createPodListing('0', '0', '1000', '500000', '0', '0', INTERNAL);
-          this.amountBeansBuyingWith = 250;
+          this.amountMoonsBuyingWith = 250;
 
-          this.userBeanBalance = await this.bean.balanceOf(userAddress)
-          this.user2BeanBalance = await this.bean.balanceOf(user2Address)
+          this.userMoonBalance = await this.moon.balanceOf(userAddress)
+          this.user2MoonBalance = await this.moon.balanceOf(user2Address)
 
-          this.result = await this.marketplace.connect(user2).fillPodListing(this.listing, this.amountBeansBuyingWith, EXTERNAL);
+          this.result = await this.marketplace.connect(user2).fillPodListing(this.listing, this.amountMoonsBuyingWith, EXTERNAL);
 
-          this.user2BeanBalanceAfter = await this.bean.balanceOf(user2Address)
-          this.userBeanBalanceAfter = await this.bean.balanceOf(userAddress)
+          this.user2MoonBalanceAfter = await this.moon.balanceOf(user2Address)
+          this.userMoonBalanceAfter = await this.moon.balanceOf(userAddress)
         })
 
-        it('Transfer Beans properly', async function () {
-          expect(this.user2BeanBalance.sub(this.user2BeanBalanceAfter)).to.equal(this.amountBeansBuyingWith);
-          expect(this.userBeanBalanceAfter.sub(this.userBeanBalance)).to.equal(0);
-          expect(await this.token.getInternalBalance(user.address, this.bean.address)).to.equal(this.amountBeansBuyingWith);
+        it('Transfer Moons properly', async function () {
+          expect(this.user2MoonBalance.sub(this.user2MoonBalanceAfter)).to.equal(this.amountMoonsBuyingWith);
+          expect(this.userMoonBalanceAfter.sub(this.userMoonBalance)).to.equal(0);
+          expect(await this.token.getInternalBalance(user.address, this.moon.address)).to.equal(this.amountMoonsBuyingWith);
         })
 
         it('Deletes Pod Listing', async function () {
@@ -1074,20 +1074,20 @@ describe('Marketplace', function () {
           beforeEach(async function () {
             this.listing = [userAddress, '0', '0', '1000', '0', '0', '0', EXTERNAL]
             await this.marketplace.connect(user).createPodListingV2( '0', '0', '1000', '0', '0', this.f.packedFunction, EXTERNAL);
-            this.amountBeansBuyingWith = 500;
-            this.userBeanBalance = await this.bean.balanceOf(userAddress)
-            this.user2BeanBalance = await this.bean.balanceOf(user2Address)
+            this.amountMoonsBuyingWith = 500;
+            this.userMoonBalance = await this.moon.balanceOf(userAddress)
+            this.user2MoonBalance = await this.moon.balanceOf(user2Address)
 
-            this.result = await this.marketplace.connect(user2).fillPodListingV2(this.listing, this.amountBeansBuyingWith, this.f.packedFunction, EXTERNAL);
+            this.result = await this.marketplace.connect(user2).fillPodListingV2(this.listing, this.amountMoonsBuyingWith, this.f.packedFunction, EXTERNAL);
 
-            this.user2BeanBalanceAfter = await this.bean.balanceOf(user2Address)
-            this.userBeanBalanceAfter = await this.bean.balanceOf(userAddress)
+            this.user2MoonBalanceAfter = await this.moon.balanceOf(user2Address)
+            this.userMoonBalanceAfter = await this.moon.balanceOf(userAddress)
           })
 
-          it('Transfer Beans properly', async function () {
-            expect(this.user2BeanBalance.sub(this.user2BeanBalanceAfter)).to.equal(this.amountBeansBuyingWith);
-            expect(this.userBeanBalanceAfter.sub(this.userBeanBalance)).to.equal(this.amountBeansBuyingWith);
-            expect(await this.token.getInternalBalance(user.address, this.bean.address)).to.equal(0);
+          it('Transfer Moons properly', async function () {
+            expect(this.user2MoonBalance.sub(this.user2MoonBalanceAfter)).to.equal(this.amountMoonsBuyingWith);
+            expect(this.userMoonBalanceAfter.sub(this.userMoonBalance)).to.equal(this.amountMoonsBuyingWith);
+            expect(await this.token.getInternalBalance(user.address, this.moon.address)).to.equal(0);
           })
 
           it('Deletes Pod Listing', async function () {
@@ -1108,20 +1108,20 @@ describe('Marketplace', function () {
           beforeEach(async function () {
             this.listing = [userAddress, '0', '0', '1000', '0', '0', '0', EXTERNAL]
             await this.marketplace.connect(user).createPodListingV2('0', '0', '1000', '0', '0', this.f.packedFunction, EXTERNAL);
-            this.amountBeansBuyingWith = 250;
-            this.userBeanBalance = await this.bean.balanceOf(userAddress)
-            this.user2BeanBalance = await this.bean.balanceOf(user2Address)
+            this.amountMoonsBuyingWith = 250;
+            this.userMoonBalance = await this.moon.balanceOf(userAddress)
+            this.user2MoonBalance = await this.moon.balanceOf(user2Address)
 
-            this.result = await this.marketplace.connect(user2).fillPodListingV2(this.listing, this.amountBeansBuyingWith, this.f.packedFunction, EXTERNAL);
+            this.result = await this.marketplace.connect(user2).fillPodListingV2(this.listing, this.amountMoonsBuyingWith, this.f.packedFunction, EXTERNAL);
 
-            this.user2BeanBalanceAfter = await this.bean.balanceOf(user2Address)
-            this.userBeanBalanceAfter = await this.bean.balanceOf(userAddress)
+            this.user2MoonBalanceAfter = await this.moon.balanceOf(user2Address)
+            this.userMoonBalanceAfter = await this.moon.balanceOf(userAddress)
           })
 
-          it('Transfer Beans properly', async function () {
-            expect(this.user2BeanBalance.sub(this.user2BeanBalanceAfter)).to.equal(this.amountBeansBuyingWith);
-            expect(this.userBeanBalanceAfter.sub(this.userBeanBalance)).to.equal(this.amountBeansBuyingWith);
-            expect(await this.token.getInternalBalance(user.address, this.bean.address)).to.equal(0);
+          it('Transfer Moons properly', async function () {
+            expect(this.user2MoonBalance.sub(this.user2MoonBalanceAfter)).to.equal(this.amountMoonsBuyingWith);
+            expect(this.userMoonBalanceAfter.sub(this.userMoonBalance)).to.equal(this.amountMoonsBuyingWith);
+            expect(await this.token.getInternalBalance(user.address, this.moon.address)).to.equal(0);
           })
 
           it('Deletes Pod Listing', async function () {
@@ -1144,21 +1144,21 @@ describe('Marketplace', function () {
           beforeEach(async function () {
             this.listing = [userAddress, '0', '500', '500', '0', '0', '0', EXTERNAL]
             await this.marketplace.connect(user).createPodListingV2('0', '500', '500', '0', '0', this.f.packedFunction, EXTERNAL);
-            this.amountBeansBuyingWith = 100;
+            this.amountMoonsBuyingWith = 100;
 
-            this.userBeanBalance = await this.bean.balanceOf(userAddress)
-            this.user2BeanBalance = await this.bean.balanceOf(user2Address)
+            this.userMoonBalance = await this.moon.balanceOf(userAddress)
+            this.user2MoonBalance = await this.moon.balanceOf(user2Address)
 
-            this.result = await this.marketplace.connect(user2).fillPodListingV2(this.listing, this.amountBeansBuyingWith, this.f.packedFunction, EXTERNAL);
+            this.result = await this.marketplace.connect(user2).fillPodListingV2(this.listing, this.amountMoonsBuyingWith, this.f.packedFunction, EXTERNAL);
 
-            this.user2BeanBalanceAfter = await this.bean.balanceOf(user2Address)
-            this.userBeanBalanceAfter = await this.bean.balanceOf(userAddress)
+            this.user2MoonBalanceAfter = await this.moon.balanceOf(user2Address)
+            this.userMoonBalanceAfter = await this.moon.balanceOf(userAddress)
           })
 
-          it('Transfer Beans properly', async function () {
-            expect(this.user2BeanBalance.sub(this.user2BeanBalanceAfter)).to.equal(this.amountBeansBuyingWith);
-            expect(this.userBeanBalanceAfter.sub(this.userBeanBalance)).to.equal(this.amountBeansBuyingWith);
-            expect(await this.token.getInternalBalance(user.address, this.bean.address)).to.equal(0);
+          it('Transfer Moons properly', async function () {
+            expect(this.user2MoonBalance.sub(this.user2MoonBalanceAfter)).to.equal(this.amountMoonsBuyingWith);
+            expect(this.userMoonBalanceAfter.sub(this.userMoonBalance)).to.equal(this.amountMoonsBuyingWith);
+            expect(await this.token.getInternalBalance(user.address, this.moon.address)).to.equal(0);
           })
 
           it('Deletes Pod Listing', async function () {
@@ -1181,14 +1181,14 @@ describe('Marketplace', function () {
           beforeEach(async function () {
             this.listing = [userAddress, '0', '500', '500', '0', '0', '0', EXTERNAL]
             await this.marketplace.connect(user).createPodListingV2('0', '500', '500', '0', '0', this.f.packedFunction, EXTERNAL);
-            this.amountBeansBuyingWith = 100;
+            this.amountMoonsBuyingWith = 100;
 
-            this.userBeanBalance = await this.bean.balanceOf(userAddress)
-            this.user2BeanBalance = await this.bean.balanceOf(user2Address)
-            this.result = await this.marketplace.connect(user2).fillPodListingV2(this.listing, this.amountBeansBuyingWith, this.f.packedFunction, EXTERNAL);
+            this.userMoonBalance = await this.moon.balanceOf(userAddress)
+            this.user2MoonBalance = await this.moon.balanceOf(user2Address)
+            this.result = await this.marketplace.connect(user2).fillPodListingV2(this.listing, this.amountMoonsBuyingWith, this.f.packedFunction, EXTERNAL);
 
-            this.user2BeanBalanceAfter = await this.bean.balanceOf(user2Address)
-            this.userBeanBalanceAfter = await this.bean.balanceOf(userAddress)
+            this.user2MoonBalanceAfter = await this.moon.balanceOf(user2Address)
+            this.userMoonBalanceAfter = await this.moon.balanceOf(userAddress)
             this.listing = [userAddress, '700', '0', '300', '0', '0', '0', EXTERNAL]
 
             this.result = await this.marketplace.connect(user2).fillPodListingV2(this.listing, 100, this.f.packedFunction, EXTERNAL);
@@ -1215,20 +1215,20 @@ describe('Marketplace', function () {
           beforeEach(async function () {
             this.listing = [userAddress, '0', '0', '1000', '0', '0', '0', INTERNAL]
             await this.marketplace.connect(user).createPodListingV2('0', '0', '1000', '0', '0', this.f.packedFunction, INTERNAL);
-            this.amountBeansBuyingWith = 250;
-            this.userBeanBalance = await this.bean.balanceOf(userAddress)
-            this.user2BeanBalance = await this.bean.balanceOf(user2Address)
+            this.amountMoonsBuyingWith = 250;
+            this.userMoonBalance = await this.moon.balanceOf(userAddress)
+            this.user2MoonBalance = await this.moon.balanceOf(user2Address)
 
-            this.result = await this.marketplace.connect(user2).fillPodListingV2(this.listing, this.amountBeansBuyingWith, this.f.packedFunction, EXTERNAL);
+            this.result = await this.marketplace.connect(user2).fillPodListingV2(this.listing, this.amountMoonsBuyingWith, this.f.packedFunction, EXTERNAL);
 
-            this.user2BeanBalanceAfter = await this.bean.balanceOf(user2Address)
-            this.userBeanBalanceAfter = await this.bean.balanceOf(userAddress)
+            this.user2MoonBalanceAfter = await this.moon.balanceOf(user2Address)
+            this.userMoonBalanceAfter = await this.moon.balanceOf(userAddress)
           })
 
-          it('Transfer Beans properly', async function () {
-            expect(this.user2BeanBalance.sub(this.user2BeanBalanceAfter)).to.equal(this.amountBeansBuyingWith);
-            expect(this.userBeanBalanceAfter.sub(this.userBeanBalance)).to.equal(0);
-            expect(await this.token.getInternalBalance(user.address, this.bean.address)).to.equal(this.amountBeansBuyingWith);
+          it('Transfer Moons properly', async function () {
+            expect(this.user2MoonBalance.sub(this.user2MoonBalanceAfter)).to.equal(this.amountMoonsBuyingWith);
+            expect(this.userMoonBalanceAfter.sub(this.userMoonBalance)).to.equal(0);
+            expect(await this.token.getInternalBalance(user.address, this.moon.address)).to.equal(this.amountMoonsBuyingWith);
           })
 
           it('Deletes Pod Listing', async function () {
@@ -1293,25 +1293,25 @@ describe('Marketplace', function () {
   
         describe("create order", async function () {
           beforeEach(async function () {
-            this.userBeanBalance = await this.bean.balanceOf(userAddress);
-            this.beanstalkBeanBalance = await this.bean.balanceOf(
+            this.userMoonBalance = await this.moon.balanceOf(userAddress);
+            this.moonmageMoonBalance = await this.moon.balanceOf(
               this.marketplace.address
             );
             this.result = await this.marketplace
               .connect(user)
               .createPodOrder("500", "100000", "1000", '0', EXTERNAL);
             this.id = await getOrderId(this.result);
-            this.userBeanBalanceAfter = await this.bean.balanceOf(userAddress);
-            this.beanstalkBeanBalanceAfter = await this.bean.balanceOf(
+            this.userMoonBalanceAfter = await this.moon.balanceOf(userAddress);
+            this.moonmageMoonBalanceAfter = await this.moon.balanceOf(
               this.marketplace.address
             );
           });
   
-          it("Transfer Beans properly", async function () {
+          it("Transfer Moons properly", async function () {
             expect(
-              this.beanstalkBeanBalanceAfter.sub(this.beanstalkBeanBalance)
+              this.moonmageMoonBalanceAfter.sub(this.moonmageMoonBalance)
             ).to.equal("500");
-            expect(this.userBeanBalance.sub(this.userBeanBalanceAfter)).to.equal(
+            expect(this.userMoonBalance.sub(this.userMoonBalanceAfter)).to.equal(
               "500"
             );
           });
@@ -1338,25 +1338,25 @@ describe('Marketplace', function () {
 
         describe("create order with min amount", async function () {
           beforeEach(async function () {
-            this.userBeanBalance = await this.bean.balanceOf(userAddress);
-            this.beanstalkBeanBalance = await this.bean.balanceOf(
+            this.userMoonBalance = await this.moon.balanceOf(userAddress);
+            this.moonmageMoonBalance = await this.moon.balanceOf(
               this.marketplace.address
             );
             this.result = await this.marketplace
               .connect(user)
               .createPodOrder("500", "100000", "1000", '100', EXTERNAL);
             this.id = await getOrderId(this.result);
-            this.userBeanBalanceAfter = await this.bean.balanceOf(userAddress);
-            this.beanstalkBeanBalanceAfter = await this.bean.balanceOf(
+            this.userMoonBalanceAfter = await this.moon.balanceOf(userAddress);
+            this.moonmageMoonBalanceAfter = await this.moon.balanceOf(
               this.marketplace.address
             );
           });
   
-          it("Transfer Beans properly", async function () {
+          it("Transfer Moons properly", async function () {
             expect(
-              this.beanstalkBeanBalanceAfter.sub(this.beanstalkBeanBalance)
+              this.moonmageMoonBalanceAfter.sub(this.moonmageMoonBalance)
             ).to.equal("500");
-            expect(this.userBeanBalance.sub(this.userBeanBalanceAfter)).to.equal(
+            expect(this.userMoonBalance.sub(this.userMoonBalanceAfter)).to.equal(
               "500"
             );
           });
@@ -1413,7 +1413,7 @@ describe('Marketplace', function () {
               this.marketplace
                 .connect(user2)
                 .fillPodOrder(this.order, 1000, 0, 1000, INTERNAL)
-            ).to.revertedWith("Marketplace: Not enough beans in order.");
+            ).to.revertedWith("Marketplace: Not enough moons in order.");
           });
 
           it("under minimum amount of pods", async function () {
@@ -1427,30 +1427,30 @@ describe('Marketplace', function () {
   
         describe("Full order", async function () {
           beforeEach(async function () {
-            this.beanstalkBalance = await this.bean.balanceOf(
+            this.moonmageBalance = await this.moon.balanceOf(
               this.marketplace.address
             );
-            this.user2BeanBalance = await this.bean.balanceOf(user2Address);
+            this.user2MoonBalance = await this.moon.balanceOf(user2Address);
             this.result = await this.marketplace
               .connect(user2)
               .fillPodOrder(this.order, 1000, 0, 500, EXTERNAL);
-            this.beanstalkBalanceAfter = await this.bean.balanceOf(
+            this.moonmageBalanceAfter = await this.moon.balanceOf(
               this.marketplace.address
             );
-            this.user2BeanBalanceAfter = await this.bean.balanceOf(user2Address);
+            this.user2MoonBalanceAfter = await this.moon.balanceOf(user2Address);
           });
   
-          it("Transfer Beans properly", async function () {
+          it("Transfer Moons properly", async function () {
             expect(
-              this.user2BeanBalanceAfter.sub(this.user2BeanBalance)
+              this.user2MoonBalanceAfter.sub(this.user2MoonBalance)
             ).to.equal("50");
             expect(
-              this.beanstalkBalance.sub(this.beanstalkBalanceAfter)
+              this.moonmageBalance.sub(this.moonmageBalanceAfter)
             ).to.equal("50");
             expect(
               await this.token.getInternalBalance(
                 user2.address,
-                this.bean.address
+                this.moon.address
               )
             ).to.equal(0);
           });
@@ -1474,28 +1474,28 @@ describe('Marketplace', function () {
   
         describe("Partial fill order", async function () {
           beforeEach(async function () {
-            this.beanstalkBalance = await this.bean.balanceOf(this.marketplace.address);
-            this.user2BeanBalance = await this.bean.balanceOf(user2Address);
+            this.moonmageBalance = await this.moon.balanceOf(this.marketplace.address);
+            this.user2MoonBalance = await this.moon.balanceOf(user2Address);
             this.result = await this.marketplace
               .connect(user2)
               .fillPodOrder(this.order, 1000, 250, 250, EXTERNAL);
-            this.beanstalkBalanceAfter = await this.bean.balanceOf(
+            this.moonmageBalanceAfter = await this.moon.balanceOf(
               this.marketplace.address
             );
-            this.user2BeanBalanceAfter = await this.bean.balanceOf(user2Address);
+            this.user2MoonBalanceAfter = await this.moon.balanceOf(user2Address);
           });
   
-          it("Transfer Beans properly", async function () {
+          it("Transfer Moons properly", async function () {
             expect(
-              this.user2BeanBalanceAfter.sub(this.user2BeanBalance)
+              this.user2MoonBalanceAfter.sub(this.user2MoonBalance)
             ).to.equal("25");
             expect(
-              this.beanstalkBalance.sub(this.beanstalkBalanceAfter)
+              this.moonmageBalance.sub(this.moonmageBalanceAfter)
             ).to.equal("25");
             expect(
               await this.token.getInternalBalance(
                 user2.address,
-                this.bean.address
+                this.moon.address
               )
             ).to.equal(0);
           });
@@ -1519,30 +1519,30 @@ describe('Marketplace', function () {
   
         describe("Full order to wallet", async function () {
           beforeEach(async function () {
-            this.beanstalkBalance = await this.bean.balanceOf(
+            this.moonmageBalance = await this.moon.balanceOf(
               this.marketplace.address
             );
-            this.user2BeanBalance = await this.bean.balanceOf(user2Address);
+            this.user2MoonBalance = await this.moon.balanceOf(user2Address);
             this.result = await this.marketplace
               .connect(user2)
               .fillPodOrder(this.order, 1000, 0, 500, INTERNAL);
-            this.beanstalkBalanceAfter = await this.bean.balanceOf(
+            this.moonmageBalanceAfter = await this.moon.balanceOf(
               this.marketplace.address
             );
-            this.user2BeanBalanceAfter = await this.bean.balanceOf(user2Address);
+            this.user2MoonBalanceAfter = await this.moon.balanceOf(user2Address);
           });
   
-          it("Transfer Beans properly", async function () {
+          it("Transfer Moons properly", async function () {
             expect(
-              this.user2BeanBalanceAfter.sub(this.user2BeanBalance)
+              this.user2MoonBalanceAfter.sub(this.user2MoonBalance)
             ).to.equal(0);
             expect(
-              this.beanstalkBalance.sub(this.beanstalkBalanceAfter)
+              this.moonmageBalance.sub(this.moonmageBalanceAfter)
             ).to.equal(0);
             expect(
               await this.token.getInternalBalance(
                 user2.address,
-                this.bean.address
+                this.moon.address
               )
             ).to.equal("50");
           });
@@ -1569,30 +1569,30 @@ describe('Marketplace', function () {
             await this.marketplace
               .connect(user2)
               .createPodListing("1000", "500", "500", "50000", "5000", '0', EXTERNAL);
-            this.beanstalkBalance = await this.bean.balanceOf(
+            this.moonmageBalance = await this.moon.balanceOf(
               this.marketplace.address
             );
-            this.user2BeanBalance = await this.bean.balanceOf(user2Address);
+            this.user2MoonBalance = await this.moon.balanceOf(user2Address);
             this.result = await this.marketplace
               .connect(user2)
               .fillPodOrder(this.order, 1000, 0, 500, INTERNAL);
-            this.beanstalkBalanceAfter = await this.bean.balanceOf(
+            this.moonmageBalanceAfter = await this.moon.balanceOf(
               this.marketplace.address
             );
-            this.user2BeanBalanceAfter = await this.bean.balanceOf(user2Address);
+            this.user2MoonBalanceAfter = await this.moon.balanceOf(user2Address);
           });
   
-          it("Transfer Beans properly", async function () {
+          it("Transfer Moons properly", async function () {
             expect(
-              this.user2BeanBalanceAfter.sub(this.user2BeanBalance)
+              this.user2MoonBalanceAfter.sub(this.user2MoonBalance)
             ).to.equal(0);
             expect(
-              this.beanstalkBalance.sub(this.beanstalkBalanceAfter)
+              this.moonmageBalance.sub(this.moonmageBalanceAfter)
             ).to.equal(0);
             expect(
               await this.token.getInternalBalance(
                 user2.address,
-                this.bean.address
+                this.moon.address
               )
             ).to.equal("50");
           });
@@ -1630,21 +1630,21 @@ describe('Marketplace', function () {
   
         describe('Cancel owner', async function () {
           beforeEach(async function () {
-            this.userBeanBalance = await this.bean.balanceOf(userAddress)
-            this.beanstalkBeanBalance = await this.bean.balanceOf(this.marketplace.address)
+            this.userMoonBalance = await this.moon.balanceOf(userAddress)
+            this.moonmageMoonBalance = await this.moon.balanceOf(this.marketplace.address)
             this.result = await this.marketplace.connect(user).cancelPodOrder('100000', '1000', '0', EXTERNAL);
-            this.userBeanBalanceAfter = await this.bean.balanceOf(userAddress)
-            this.beanstalkBeanBalanceAfter = await this.bean.balanceOf(this.marketplace.address)
+            this.userMoonBalanceAfter = await this.moon.balanceOf(userAddress)
+            this.moonmageMoonBalanceAfter = await this.moon.balanceOf(this.marketplace.address)
           })
   
           it('deletes the offer', async function () {
             expect(await this.marketplace.podOrderById(this.id)).to.equal('0');
           })
   
-          it('transfer beans', async function () {
-            expect(this.beanstalkBeanBalance.sub(this.beanstalkBeanBalanceAfter)).to.equal('500');
-            expect(this.userBeanBalanceAfter.sub(this.userBeanBalance)).to.equal('500');
-            expect(await this.token.getInternalBalance(user.address, this.bean.address)).to.equal('0');
+          it('transfer moons', async function () {
+            expect(this.moonmageMoonBalance.sub(this.moonmageMoonBalanceAfter)).to.equal('500');
+            expect(this.userMoonBalanceAfter.sub(this.userMoonBalance)).to.equal('500');
+            expect(await this.token.getInternalBalance(user.address, this.moon.address)).to.equal('0');
           })
   
           it('Emits an event', async function () {
@@ -1654,21 +1654,21 @@ describe('Marketplace', function () {
   
         describe('Cancel to wrapped', async function () {
           beforeEach(async function () {
-            this.userBeanBalance = await this.bean.balanceOf(userAddress)
-            this.beanstalkBeanBalance = await this.bean.balanceOf(this.marketplace.address)
+            this.userMoonBalance = await this.moon.balanceOf(userAddress)
+            this.moonmageMoonBalance = await this.moon.balanceOf(this.marketplace.address)
             this.result = await this.marketplace.connect(user).cancelPodOrder('100000', '1000', '0', INTERNAL);
-            this.userBeanBalanceAfter = await this.bean.balanceOf(userAddress)
-            this.beanstalkBeanBalanceAfter = await this.bean.balanceOf(this.marketplace.address)
+            this.userMoonBalanceAfter = await this.moon.balanceOf(userAddress)
+            this.moonmageMoonBalanceAfter = await this.moon.balanceOf(this.marketplace.address)
           })
   
           it('deletes the offer', async function () {
             expect(await this.marketplace.podOrderById(this.id)).to.equal('0');
           })
   
-          it('transfer beans', async function () {
-            expect(this.beanstalkBeanBalance.sub(this.beanstalkBeanBalanceAfter)).to.equal('0');
-            expect(this.userBeanBalanceAfter.sub(this.userBeanBalance)).to.equal('0');
-            expect(await this.token.getInternalBalance(user.address, this.bean.address)).to.equal('500');
+          it('transfer moons', async function () {
+            expect(this.moonmageMoonBalance.sub(this.moonmageMoonBalanceAfter)).to.equal('0');
+            expect(this.userMoonBalanceAfter.sub(this.userMoonBalance)).to.equal('0');
+            expect(await this.token.getInternalBalance(user.address, this.moon.address)).to.equal('500');
           })
   
           it('Emits an event', async function () {
@@ -1697,23 +1697,23 @@ describe('Marketplace', function () {
 
         describe("create order", async function () {
           beforeEach(async function () {
-            this.userBeanBalance = await this.bean.balanceOf(userAddress);
-            this.beanstalkBeanBalance = await this.bean.balanceOf(
+            this.userMoonBalance = await this.moon.balanceOf(userAddress);
+            this.moonmageMoonBalance = await this.moon.balanceOf(
               this.marketplace.address
             );
             this.result = await this.marketplace.connect(user).createPodOrderV2("500","1000",'0',this.f.packedFunction,EXTERNAL);
             this.id = await getOrderId(this.result);
-            this.userBeanBalanceAfter = await this.bean.balanceOf(userAddress);
-            this.beanstalkBeanBalanceAfter = await this.bean.balanceOf(
+            this.userMoonBalanceAfter = await this.moon.balanceOf(userAddress);
+            this.moonmageMoonBalanceAfter = await this.moon.balanceOf(
               this.marketplace.address
             );
           });
 
-          it("Transfer Beans properly", async function () {
+          it("Transfer Moons properly", async function () {
             expect(
-              this.beanstalkBeanBalanceAfter.sub(this.beanstalkBeanBalance)
+              this.moonmageMoonBalanceAfter.sub(this.moonmageMoonBalance)
             ).to.equal("500");
-            expect(this.userBeanBalance.sub(this.userBeanBalanceAfter)).to.equal(
+            expect(this.userMoonBalance.sub(this.userMoonBalanceAfter)).to.equal(
               "500"
             );
           });
@@ -1783,23 +1783,23 @@ describe('Marketplace', function () {
           it("sell too much", async function () {
             await expect(
               this.marketplace.connect(user2).fillPodOrderV2(this.order,1000, 0, 1000, this.f.packedFunction, INTERNAL)
-            ).to.revertedWith("Marketplace: Not enough beans in order.");
+            ).to.revertedWith("Marketplace: Not enough moons in order.");
           });
         });
 
         describe("Full order", async function () {
           beforeEach(async function () {
-            this.beanstalkBalance = await this.bean.balanceOf(this.marketplace.address);
-            this.user2BeanBalance = await this.bean.balanceOf(user2Address);
+            this.moonmageBalance = await this.moon.balanceOf(this.marketplace.address);
+            this.user2MoonBalance = await this.moon.balanceOf(user2Address);
             this.result = await this.marketplace.connect(user2).fillPodOrderV2(this.order, 1000, 0, 500, this.f.packedFunction, EXTERNAL);
-            this.beanstalkBalanceAfter = await this.bean.balanceOf(this.marketplace.address);
-            this.user2BeanBalanceAfter = await this.bean.balanceOf(user2Address);
+            this.moonmageBalanceAfter = await this.moon.balanceOf(this.marketplace.address);
+            this.user2MoonBalanceAfter = await this.moon.balanceOf(user2Address);
           });
 
-          it("Transfer Beans properly", async function () {
-            expect(this.user2BeanBalanceAfter.sub(this.user2BeanBalance)).to.equal("50");
-            expect(this.beanstalkBalance.sub(this.beanstalkBalanceAfter)).to.equal("50");
-            expect(await this.token.getInternalBalance(user2.address, this.bean.address)).to.equal(0);
+          it("Transfer Moons properly", async function () {
+            expect(this.user2MoonBalanceAfter.sub(this.user2MoonBalance)).to.equal("50");
+            expect(this.moonmageBalance.sub(this.moonmageBalanceAfter)).to.equal("50");
+            expect(await this.token.getInternalBalance(user2.address, this.moon.address)).to.equal(0);
           });
 
           it("transfer the plot", async function () {
@@ -1819,17 +1819,17 @@ describe('Marketplace', function () {
 
         describe("Partial fill order", async function () {
           beforeEach(async function () {
-            this.beanstalkBalance = await this.bean.balanceOf(this.marketplace.address);
-            this.user2BeanBalance = await this.bean.balanceOf(user2Address);
+            this.moonmageBalance = await this.moon.balanceOf(this.marketplace.address);
+            this.user2MoonBalance = await this.moon.balanceOf(user2Address);
             this.result = await this.marketplace.connect(user2).fillPodOrderV2(this.order, 1000, 250, 250, this.f.packedFunction, EXTERNAL);
-            this.beanstalkBalanceAfter = await this.bean.balanceOf(this.marketplace.address);
-            this.user2BeanBalanceAfter = await this.bean.balanceOf(user2Address);
+            this.moonmageBalanceAfter = await this.moon.balanceOf(this.marketplace.address);
+            this.user2MoonBalanceAfter = await this.moon.balanceOf(user2Address);
           });
 
-          it("Transfer Beans properly", async function () {
-            expect(this.user2BeanBalanceAfter.sub(this.user2BeanBalance)).to.equal("25");
-            expect(this.beanstalkBalance.sub(this.beanstalkBalanceAfter)).to.equal("25");
-            expect(await this.token.getInternalBalance(user2.address, this.bean.address)).to.equal(0);
+          it("Transfer Moons properly", async function () {
+            expect(this.user2MoonBalanceAfter.sub(this.user2MoonBalance)).to.equal("25");
+            expect(this.moonmageBalance.sub(this.moonmageBalanceAfter)).to.equal("25");
+            expect(await this.token.getInternalBalance(user2.address, this.moon.address)).to.equal(0);
           });
 
           it("transfer the plot", async function () {
@@ -1849,28 +1849,28 @@ describe('Marketplace', function () {
 
         describe("Full order to wallet", async function () {
           beforeEach(async function () {
-            this.beanstalkBalance = await this.bean.balanceOf(
+            this.moonmageBalance = await this.moon.balanceOf(
               this.marketplace.address
             );
-            this.user2BeanBalance = await this.bean.balanceOf(user2Address);
+            this.user2MoonBalance = await this.moon.balanceOf(user2Address);
             this.result = await this.marketplace.connect(user2).fillPodOrderV2(this.order, 1000, 0, 500, this.f.packedFunction, INTERNAL);
-            this.beanstalkBalanceAfter = await this.bean.balanceOf(
+            this.moonmageBalanceAfter = await this.moon.balanceOf(
               this.marketplace.address
             );
-            this.user2BeanBalanceAfter = await this.bean.balanceOf(user2Address);
+            this.user2MoonBalanceAfter = await this.moon.balanceOf(user2Address);
           });
 
-          it("Transfer Beans properly", async function () {
+          it("Transfer Moons properly", async function () {
             expect(
-              this.user2BeanBalanceAfter.sub(this.user2BeanBalance)
+              this.user2MoonBalanceAfter.sub(this.user2MoonBalance)
             ).to.equal(0);
             expect(
-              this.beanstalkBalance.sub(this.beanstalkBalanceAfter)
+              this.moonmageBalance.sub(this.moonmageBalanceAfter)
             ).to.equal(0);
             expect(
               await this.token.getInternalBalance(
                 user2.address,
-                this.bean.address
+                this.moon.address
               )
             ).to.equal("50");
           });
@@ -1905,30 +1905,30 @@ describe('Marketplace', function () {
                 this.f.packedFunction,
                 EXTERNAL
               );
-            this.beanstalkBalance = await this.bean.balanceOf(
+            this.moonmageBalance = await this.moon.balanceOf(
               this.marketplace.address
             );
-            this.user2BeanBalance = await this.bean.balanceOf(user2Address);
+            this.user2MoonBalance = await this.moon.balanceOf(user2Address);
             this.result = await this.marketplace
               .connect(user2)
               .fillPodOrderV2(this.order, 1000, 0, 500, this.f.packedFunction, INTERNAL);
-            this.beanstalkBalanceAfter = await this.bean.balanceOf(
+            this.moonmageBalanceAfter = await this.moon.balanceOf(
               this.marketplace.address
             );
-            this.user2BeanBalanceAfter = await this.bean.balanceOf(user2Address);
+            this.user2MoonBalanceAfter = await this.moon.balanceOf(user2Address);
           });
 
-          it("Transfer Beans properly", async function () {
+          it("Transfer Moons properly", async function () {
             expect(
-              this.user2BeanBalanceAfter.sub(this.user2BeanBalance)
+              this.user2MoonBalanceAfter.sub(this.user2MoonBalance)
             ).to.equal(0);
             expect(
-              this.beanstalkBalance.sub(this.beanstalkBalanceAfter)
+              this.moonmageBalance.sub(this.moonmageBalanceAfter)
             ).to.equal(0);
             expect(
               await this.token.getInternalBalance(
                 user2.address,
-                this.bean.address
+                this.moon.address
               )
             ).to.equal("50");
           });
@@ -1966,21 +1966,21 @@ describe('Marketplace', function () {
 
         describe('Cancel owner', async function () {
           beforeEach(async function () {
-            this.userBeanBalance = await this.bean.balanceOf(userAddress)
-            this.beanstalkBeanBalance = await this.bean.balanceOf(this.marketplace.address)
+            this.userMoonBalance = await this.moon.balanceOf(userAddress)
+            this.moonmageMoonBalance = await this.moon.balanceOf(this.marketplace.address)
             this.result = await this.marketplace.connect(user).cancelPodOrderV2('1000', '0', this.f.packedFunction, EXTERNAL);
-            this.userBeanBalanceAfter = await this.bean.balanceOf(userAddress)
-            this.beanstalkBeanBalanceAfter = await this.bean.balanceOf(this.marketplace.address)
+            this.userMoonBalanceAfter = await this.moon.balanceOf(userAddress)
+            this.moonmageMoonBalanceAfter = await this.moon.balanceOf(this.marketplace.address)
           })
 
           it('deletes the offer', async function () {
             expect(await this.marketplace.podOrderById(this.id)).to.equal('0');
           })
 
-          it('transfer beans', async function () {
-            expect(this.beanstalkBeanBalance.sub(this.beanstalkBeanBalanceAfter)).to.equal('500');
-            expect(this.userBeanBalanceAfter.sub(this.userBeanBalance)).to.equal('500');
-            expect(await this.token.getInternalBalance(user.address, this.bean.address)).to.equal('0');
+          it('transfer moons', async function () {
+            expect(this.moonmageMoonBalance.sub(this.moonmageMoonBalanceAfter)).to.equal('500');
+            expect(this.userMoonBalanceAfter.sub(this.userMoonBalance)).to.equal('500');
+            expect(await this.token.getInternalBalance(user.address, this.moon.address)).to.equal('0');
           })
 
           it('Emits an event', async function () {
@@ -1990,21 +1990,21 @@ describe('Marketplace', function () {
 
         describe('Cancel to wrapped', async function () {
           beforeEach(async function () {
-            this.userBeanBalance = await this.bean.balanceOf(userAddress)
-            this.beanstalkBeanBalance = await this.bean.balanceOf(this.marketplace.address)
+            this.userMoonBalance = await this.moon.balanceOf(userAddress)
+            this.moonmageMoonBalance = await this.moon.balanceOf(this.marketplace.address)
             this.result = await this.marketplace.connect(user).cancelPodOrderV2('1000', '0', this.f.packedFunction, INTERNAL);
-            this.userBeanBalanceAfter = await this.bean.balanceOf(userAddress)
-            this.beanstalkBeanBalanceAfter = await this.bean.balanceOf(this.marketplace.address)
+            this.userMoonBalanceAfter = await this.moon.balanceOf(userAddress)
+            this.moonmageMoonBalanceAfter = await this.moon.balanceOf(this.marketplace.address)
           })
 
           it('deletes the offer', async function () {
             expect(await this.marketplace.podOrderById(this.id)).to.equal('0');
           })
 
-          it('transfer beans', async function () {
-            expect(this.beanstalkBeanBalance.sub(this.beanstalkBeanBalanceAfter)).to.equal('0');
-            expect(this.userBeanBalanceAfter.sub(this.userBeanBalance)).to.equal('0');
-            expect(await this.token.getInternalBalance(user.address, this.bean.address)).to.equal('500');
+          it('transfer moons', async function () {
+            expect(this.moonmageMoonBalance.sub(this.moonmageMoonBalanceAfter)).to.equal('0');
+            expect(this.userMoonBalanceAfter.sub(this.userMoonBalance)).to.equal('0');
+            expect(await this.token.getInternalBalance(user.address, this.moon.address)).to.equal('500');
           })
 
           it('Emits an event', async function () {

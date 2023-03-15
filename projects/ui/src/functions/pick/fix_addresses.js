@@ -9,20 +9,20 @@ const fix_addresses = (o) => {
 };
 
 fs.writeFileSync(
-  './unripe-beans-merkle.json',
+  './unripe-moons-merkle.json',
   JSON.stringify(fix_addresses(
     JSON.parse(
-      fs.readFileSync('./unripe-beans-merkle-raw.json', 'utf-8')
+      fs.readFileSync('./unripe-moons-merkle-raw.json', 'utf-8')
     )
   )),
   'utf-8'
 );
 
 fs.writeFileSync(
-  './unripe-bean3crv-merkle.json',
+  './unripe-moon3crv-merkle.json',
   JSON.stringify(fix_addresses(
     JSON.parse(
-      fs.readFileSync('./unripe-bean3crv-merkle-raw.json', 'utf-8')
+      fs.readFileSync('./unripe-moon3crv-merkle-raw.json', 'utf-8')
     )
   )),
   'utf-8'

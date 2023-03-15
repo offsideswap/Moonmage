@@ -18,15 +18,15 @@ export class UnwrapEth extends StepClass<BasicPreparedResult> {
       prepare: () => {
         UnwrapEth.sdk.debug(`[${this.name}.encode()]`, { fromMode: this.fromMode, _amountInStep, context });
         return {
-          target: UnwrapEth.sdk.contracts.beanstalk.address,
-          callData: UnwrapEth.sdk.contracts.beanstalk.interface.encodeFunctionData("unwrapEth", [
+          target: UnwrapEth.sdk.contracts.moonmage.address,
+          callData: UnwrapEth.sdk.contracts.moonmage.interface.encodeFunctionData("unwrapEth", [
             _amountInStep, // ignore minAmountOut since there is no slippage
             this.fromMode
           ])
         };
       },
-      decode: (data: string) => UnwrapEth.sdk.contracts.beanstalk.interface.decodeFunctionData("unwrapEth", data),
-      decodeResult: (result: string) => UnwrapEth.sdk.contracts.beanstalk.interface.decodeFunctionResult("unwrapEth", result)
+      decode: (data: string) => UnwrapEth.sdk.contracts.moonmage.interface.decodeFunctionData("unwrapEth", data),
+      decodeResult: (result: string) => UnwrapEth.sdk.contracts.moonmage.interface.decodeFunctionResult("unwrapEth", result)
     };
   }
 }

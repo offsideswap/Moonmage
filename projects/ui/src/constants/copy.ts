@@ -1,4 +1,4 @@
-import { FarmFromMode, FarmToMode } from '~/lib/Beanstalk/Farm';
+import { FarmFromMode, FarmToMode } from '~/lib/Moonmage/Farm';
 
 const MODES = {
   [FarmToMode.INTERNAL]:    'Farm Balance',

@@ -6,24 +6,24 @@ import { useSelector } from 'react-redux';
 import { Pool, Token } from '~/classes';
 import { AppState } from '~/state';
 import TokenIcon from '~/components/Common/TokenIcon';
-import { BEAN, SEEDS, STALK, UNRIPE_BEAN, UNRIPE_BEAN_CRV3 } from '~/constants/tokens';
+import { MOON, SEEDS, MAGE, UNRIPE_MOON, UNRIPE_MOON_CRV3 } from '~/constants/tokens';
 import { AddressMap, ONE_BN, ZERO_BN } from '~/constants';
 import { displayFullBN, displayTokenAmount } from '~/util/Tokens';
-import useBDV from '~/hooks/beanstalk/useBDV';
-import { BeanstalkPalette, FontSize, IconSize } from '~/components/App/muiTheme';
+import useBDV from '~/hooks/moonmage/useBDV';
+import { MoonmagePalette, FontSize, IconSize } from '~/components/App/muiTheme';
 import Fiat from '~/components/Common/Fiat';
 import useGetChainToken from '~/hooks/chain/useGetChainToken';
 import useSetting from '~/hooks/app/useSetting';
 import Row from '~/components/Common/Row';
 import Stat from '~/components/Common/Stat';
-import useUnripeUnderlyingMap from '~/hooks/beanstalk/useUnripeUnderlying';
-import useAPY from '~/hooks/beanstalk/useAPY';
-import stalkIconBlue from '~/img/beanstalk/stalk-icon-blue.svg';
+import useUnripeUnderlyingMap from '~/hooks/moonmage/useUnripeUnderlying';
+import useAPY from '~/hooks/moonmage/useAPY';
+import mageIconBlue from '~/img/moonmage/mage-icon-blue.svg';
 import SiloAssetApyChip from './SiloAssetApyChip';
 
 /**
  * Display a pseudo-table of Whitelisted Silo Tokens.
- * This table is the entry point to deposit Beans, LP, etc.
+ * This table is the entry point to deposit Moons, LP, etc.
  */
 import { FC } from '~/types';
 
@@ -38,13 +38,13 @@ const TOOLTIP_COMPONENT_PROPS = {
 };
 
 const Whitelist : FC<{
-  farmerSilo: AppState['_farmer']['silo'];
+  cosmomageSilo: AppState['_cosmomage']['silo'];
   config: {
     whitelist: Token[];
     poolsByAddress: AddressMap<Pool>;
   };
 }> = ({
-  farmerSilo,
+  cosmomageSilo,
   config,
 }) => {
   /// Settings
@@ -52,16 +52,16 @@ const Whitelist : FC<{
 
   /// Chain
   const getChainToken = useGetChainToken();
-  const Bean          = getChainToken(BEAN);
-  const urBean        = getChainToken(UNRIPE_BEAN);
-  const urBeanCrv3    = getChainToken(UNRIPE_BEAN_CRV3);
+  const Moon          = getChainToken(MOON);
+  const urMoon        = getChainToken(UNRIPE_MOON);
+  const urMoonCrv3    = getChainToken(UNRIPE_MOON_CRV3);
   const unripeUnderlyingTokens = useUnripeUnderlyingMap();
 
   /// State
   const apyQuery      = useAPY();
   const getBDV        = useBDV();
-  const beanstalkSilo = useSelector<AppState, AppState['_beanstalk']['silo']>((state) => state._beanstalk.silo);
-  const unripeTokens  = useSelector<AppState, AppState['_bean']['unripe']>((state) => state._bean.unripe);
+  const moonmageSilo = useSelector<AppState, AppState['_moonmage']['silo']>((state) => state._moonmage.silo);
+  const unripeTokens  = useSelector<AppState, AppState['_moon']['unripe']>((state) => state._moon.unripe);
 
   return (
     <Card>
@@ -85,7 +85,7 @@ const Whitelist : FC<{
               <Tooltip
                 title={
                   <>
-                    The amount of Stalk and Seeds earned for each 1 Bean
+                    The amount of Mage and Seeds earned for each 1 Moon
                     Denominated Value (BDV) Deposited in the Silo.
                   </>
                 }
@@ -97,11 +97,11 @@ const Whitelist : FC<{
                 title={
                   <>
                     <strong>vAPY</strong> (Variable APY) uses historical data
-                    about Beans earned by Stalkholders to estimate future
+                    about Moons earned by Mageholders to estimate future
                     returns for Depositing assets in the Silo.&nbsp;
                     <Link
                       underline="hover"
-                      href="https://docs.bean.money/almanac/guides/silo/understand-vapy"
+                      href="https://docs.moon.money/almanac/guides/silo/understand-vapy"
                       target="_blank"
                       rel="noreferrer"
                       onClick={(e) => e.stopPropagation()}
@@ -110,11 +110,11 @@ const Whitelist : FC<{
                     </Link>
                     <Divider sx={{ my: 1, borderColor: 'divider' }} />
                     <Typography fontSize={FontSize.sm}>
-                      <strong>Bean vAPY:</strong> Estimated annual Beans earned
-                      by a Stalkholder for Depositing an asset.
+                      <strong>Moon vAPY:</strong> Estimated annual Moons earned
+                      by a Mageholder for Depositing an asset.
                       <br />
-                      <strong>Stalk vAPY:</strong> Estimated annual growth in
-                      Stalk for Depositing an asset.
+                      <strong>Mage vAPY:</strong> Estimated annual growth in
+                      Mage for Depositing an asset.
                     </Typography>
                   </>
                 }
@@ -126,7 +126,7 @@ const Whitelist : FC<{
                       color="primary"
                       label={
                         <Row gap={0.5}>
-                          <TokenIcon token={BEAN[1]} /> vAPY
+                          <TokenIcon token={MOON[1]} /> vAPY
                         </Row>
                       }
                       onClick={undefined}
@@ -139,7 +139,7 @@ const Whitelist : FC<{
                         <Row gap={0.5}>
                           <TokenIcon
                             token={
-                              { symbol: 'Stalk', logo: stalkIconBlue } as Token
+                              { symbol: 'Mage', logo: mageIconBlue } as Token
                             }
                           />{' '}
                           vAPY
@@ -182,14 +182,14 @@ const Whitelist : FC<{
               title={
                 <>
                   The value of your Silo deposits for each whitelisted token,
-                  denominated in {denomination === 'bdv' ? 'Beans' : 'USD'}.
+                  denominated in {denomination === 'bdv' ? 'Moons' : 'USD'}.
                   <br />
                   <Typography
                     color="text.secondary"
                     fontSize={FontSize.sm}
                     fontStyle="italic"
                   >
-                    Switch to {denomination === 'bdv' ? 'USD' : 'Beans'}: Option
+                    Switch to {denomination === 'bdv' ? 'USD' : 'Moons'}: Option
                     + F
                   </Typography>
                 </>
@@ -202,15 +202,15 @@ const Whitelist : FC<{
       </Box>
       <Stack gap={1} p={1}>
         {config.whitelist.map((token) => {
-          const deposited = farmerSilo.balances[token.address]?.deposited;
-          const isUnripe = token === urBean || token === urBeanCrv3;
+          const deposited = cosmomageSilo.balances[token.address]?.deposited;
+          const isUnripe = token === urMoon || token === urMoonCrv3;
           // Unripe data
           const underlyingToken = isUnripe
             ? unripeUnderlyingTokens[token.address]
             : null;
           const pctUnderlyingDeposited = isUnripe
             ? (
-                beanstalkSilo.balances[token.address]?.deposited.amount ||
+                moonmageSilo.balances[token.address]?.deposited.amount ||
                 ZERO_BN
               ).div(unripeTokens[token.address]?.supply || ONE_BN)
             : ONE_BN;
@@ -230,10 +230,10 @@ const Whitelist : FC<{
                   py: 1.5,
                   borderColor: 'divider',
                   borderWidth: '0.5px',
-                  background: BeanstalkPalette.white,
+                  background: MoonmagePalette.white,
                   '&:hover': {
                     borderColor: 'primary.main',
-                    backgroundColor: BeanstalkPalette.theme.winter.primaryHover,
+                    backgroundColor: MoonmagePalette.theme.winter.primaryHover,
                   },
                 }}
               >
@@ -276,11 +276,11 @@ const Whitelist : FC<{
                         <Box>
                           <Row gap={0.2}>
                             <TokenIcon
-                              token={STALK}
+                              token={MAGE}
                               css={{ height: '0.8em', marginTop: '-1px' }}
                             />
                             <Typography color="text.primary" mr={0.2}>
-                              {token.rewards?.stalk}
+                              {token.rewards?.mage}
                             </Typography>
                             <TokenIcon token={SEEDS} />
                             <Typography color="text.primary">
@@ -290,8 +290,8 @@ const Whitelist : FC<{
                         </Box>
                       </Tooltip>
                       <Row gap={0.25}>
-                        <SiloAssetApyChip token={token} metric="bean" />
-                        <SiloAssetApyChip token={token} metric="stalk" />
+                        <SiloAssetApyChip token={token} metric="moon" />
+                        <SiloAssetApyChip token={token} metric="mage" />
                       </Row>
                     </Row>
                   </Grid>
@@ -369,7 +369,7 @@ const Whitelist : FC<{
                               >
                                 Total Amount Deposited:{' '}
                                 {displayFullBN(
-                                  beanstalkSilo.balances[token.address]
+                                  moonmageSilo.balances[token.address]
                                     ?.deposited.amount || ZERO_BN,
                                   token.displayDecimals
                                 )}{' '}
@@ -402,7 +402,7 @@ const Whitelist : FC<{
                                 gap={0.25}
                                 variant="h4"
                                 amount={displayTokenAmount(
-                                  beanstalkSilo.balances[token.address]
+                                  moonmageSilo.balances[token.address]
                                     ?.deposited.amount || ZERO_BN,
                                   token,
                                   { showName: false }
@@ -443,7 +443,7 @@ const Whitelist : FC<{
                             />
                             <Typography
                               display="inline"
-                              color={BeanstalkPalette.theme.winter.red}
+                              color={MoonmagePalette.theme.winter.red}
                             >
                               *
                             </Typography>
@@ -452,7 +452,7 @@ const Whitelist : FC<{
                           <Fiat
                             token={token}
                             amount={
-                              beanstalkSilo.balances[token.address]?.deposited
+                              moonmageSilo.balances[token.address]?.deposited
                                 .amount
                             }
                             truncate
@@ -472,10 +472,10 @@ const Whitelist : FC<{
                     display={{ xs: 'none', md: 'block' }}
                   >
                     <Typography color="text.primary">
-                      {/* If this is the entry for Bean deposits,
-                       * display Earned Beans and Deposited Beans separately.
+                      {/* If this is the entry for Moon deposits,
+                       * display Earned Moons and Deposited Moons separately.
                        * Internally they are both considered "Deposited". */}
-                      {token === Bean ? (
+                      {token === Moon ? (
                         <Tooltip
                           title={
                             <>
@@ -483,16 +483,16 @@ const Whitelist : FC<{
                                 deposited?.amount || ZERO_BN,
                                 token.displayDecimals
                               )}{' '}
-                              Deposited BEAN
+                              Deposited MOON
                               <br />
                               +&nbsp;
                               <Typography display="inline" color="primary">
                                 {displayFullBN(
-                                  farmerSilo.beans.earned || ZERO_BN,
+                                  cosmomageSilo.moons.earned || ZERO_BN,
                                   token.displayDecimals
                                 )}
                               </Typography>{' '}
-                              Earned BEAN
+                              Earned MOON
                               <br />
                               <Divider
                                 sx={{
@@ -504,12 +504,12 @@ const Whitelist : FC<{
                               />
                               ={' '}
                               {displayFullBN(
-                                farmerSilo.beans.earned.plus(
+                                cosmomageSilo.moons.earned.plus(
                                   deposited?.amount || ZERO_BN
                                 ),
                                 token.displayDecimals
                               )}{' '}
-                              BEAN
+                              MOON
                               <br />
                             </>
                           }
@@ -519,11 +519,11 @@ const Whitelist : FC<{
                               deposited?.amount || ZERO_BN,
                               token.displayDecimals
                             )}
-                            {farmerSilo.beans.earned.gt(0) ? (
+                            {cosmomageSilo.moons.earned.gt(0) ? (
                               <Typography component="span" color="primary.main">
                                 {' + '}
                                 {displayFullBN(
-                                  farmerSilo.beans.earned,
+                                  cosmomageSilo.moons.earned,
                                   token.displayDecimals
                                 )}
                               </Typography>
@@ -601,7 +601,7 @@ const Whitelist : FC<{
                                       }
                                       .{' '}
                                       <Link
-                                        href="https://docs.bean.money/almanac/farm/barn#chopping"
+                                        href="https://docs.moon.money/almanac/farm/ship#chopping"
                                         target="_blank"
                                         rel="noreferrer"
                                         underline="hover"
@@ -656,7 +656,7 @@ const Whitelist : FC<{
                             {isUnripe ? (
                               <Typography
                                 display="inline"
-                                color={BeanstalkPalette.theme.winter.red}
+                                color={MoonmagePalette.theme.winter.red}
                               >
                                 *
                               </Typography>

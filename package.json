@@ -23,20 +23,20 @@
     "build": "yarn sdk:build",
     "test": "yarn sdk:test",
     "format": "yarn sdk:prettier",
-    "protocol:generate": "yarn workspace @beanstalk/protocol generate",
-    "sdk:generate": "yarn workspace @beanstalk/sdk generate",
-    "sdk:dev": "yarn workspace @beanstalk/sdk dev",
-    "sdk:build": "yarn workspace @beanstalk/sdk build",
+    "protocol:generate": "yarn workspace @moonmage/protocol generate",
+    "sdk:generate": "yarn workspace @moonmage/sdk generate",
+    "sdk:dev": "yarn workspace @moonmage/sdk dev",
+    "sdk:build": "yarn workspace @moonmage/sdk build",
     "sdk:test": "jest --selectProjects sdk --silent --runInBand --",
     "sdk:testdev": "jest --selectProjects sdk --watch --runInBand --",
     "sdk:prettier": "yarn prettier projects/sdk -w",
-    "sdk:publish": "yarn workspace @beanstalk/sdk publish",
-    "sdk:version": "yarn workspace @beanstalk/sdk version",
+    "sdk:publish": "yarn workspace @moonmage/sdk publish",
+    "sdk:version": "yarn workspace @moonmage/sdk version",
     "ui:generate": "yarn workspace ui generate",
     "ui:start": "yarn workspace ui start",
     "ui:build": "yarn workspace ui build",
     "ui:test": "yarn workspace ui test",
     "test:browser": "yarn workspace tests test:browser",
-    "ex": "yarn workspace @beanstalk/examples x"
+    "ex": "yarn workspace @moonmage/examples x"
   }
 }

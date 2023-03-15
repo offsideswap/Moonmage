@@ -1,6 +1,6 @@
 const { upgradeWithNewFacets } = require('../scripts/diamond.js');
 const fs = require('fs')
-const { BEANSTALK } = require('../test/utils/constants.js');
+const { MOONMAGE } = require('../test/utils/constants.js');
 
 // Files
 const V1_LP_WITHDRAWALS = "./replant/data/r4-v1LpWithdrawals.json"
@@ -15,7 +15,7 @@ async function replant4 (
     const v2LPWithdrawals = JSON.parse(await fs.readFileSync(V2_LP_WITHDRAWALS));
     
     await upgradeWithNewFacets({
-      diamondAddress: BEANSTALK,
+      diamondAddress: MOONMAGE,
       facetNames: [],
       initFacetName: 'Replant4',
       initArgs: [v1LPWithdrawals, v2LPWithdrawals],

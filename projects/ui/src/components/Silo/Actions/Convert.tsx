@@ -14,30 +14,30 @@ import Pool from '~/classes/Pool';
 import TxnSeparator from '~/components/Common/Form/TxnSeparator';
 import PillRow from '~/components/Common/Form/PillRow';
 import TokenSelectDialog, { TokenSelectMode } from '~/components/Common/Form/TokenSelectDialog';
-import { BEAN, BEAN_CRV3_LP, SEEDS, STALK, UNRIPE_BEAN, UNRIPE_BEAN_CRV3 } from '~/constants/tokens';
-import BeanstalkSDK from '~/lib/Beanstalk';
-import { useBeanstalkContract } from '~/hooks/ledger/useContract';
+import { MOON, MOON_CRV3_LP, SEEDS, MAGE, UNRIPE_MOON, UNRIPE_MOON_CRV3 } from '~/constants/tokens';
+import MoonmageSDK from '~/lib/Moonmage';
+import { useMoonmageContract } from '~/hooks/ledger/useContract';
 import { displayFullBN, MaxBN, MinBN, toStringBaseUnitBN } from '~/util/Tokens';
-import { Beanstalk } from '~/generated/index';
+import { Moonmage } from '~/generated/index';
 import { QuoteHandler } from '~/hooks/ledger/useQuote';
 import { ZERO_BN } from '~/constants';
-import Farm from '~/lib/Beanstalk/Farm';
+import Farm from '~/lib/Moonmage/Farm';
 import useGetChainToken from '~/hooks/chain/useGetChainToken';
 import useToggle from '~/hooks/display/useToggle';
 import { useSigner } from '~/hooks/ledger/useSigner';
-import { useFetchFarmerSilo } from '~/state/farmer/silo/updater';
+import { useFetchCosmonautSilo } from '~/state/cosmomage/silo/updater';
 import { tokenResult } from '~/util';
-import { FarmerSilo } from '~/state/farmer/silo';
-import useSeason from '~/hooks/beanstalk/useSeason';
-import { convert, Encoder as ConvertEncoder } from '~/lib/Beanstalk/Silo/Convert';
+import { CosmonautSilo } from '~/state/cosmomage/silo';
+import useSeason from '~/hooks/moonmage/useSeason';
+import { convert, Encoder as ConvertEncoder } from '~/lib/Moonmage/Silo/Convert';
 import TransactionToast from '~/components/Common/TxnToast';
-import useBDV from '~/hooks/beanstalk/useBDV';
+import useBDV from '~/hooks/moonmage/useBDV';
 import TokenIcon from '~/components/Common/TokenIcon';
-import { useFetchPools } from '~/state/bean/pools/updater';
+import { useFetchPools } from '~/state/moon/pools/updater';
 import { ActionType } from '~/util/Actions';
 import { IconSize } from '~/components/App/muiTheme';
 import IconWrapper from '~/components/Common/IconWrapper';
-import useFarmerSilo from '~/hooks/farmer/useFarmerSilo';
+import useCosmonautSilo from '~/hooks/cosmomage/useCosmonautSilo';
 import { FC } from '~/types';
 import useFormMiddleware from '~/hooks/ledger/useFormMiddleware';
 
@@ -56,7 +56,7 @@ type ConvertFormValues = FormState & {
 const INIT_CONVERSION = {
   amount: ZERO_BN,
   bdv:    ZERO_BN,
-  stalk:  ZERO_BN,
+  mage:  ZERO_BN,
   seeds:  ZERO_BN,
   actions: []
 };
@@ -65,16 +65,16 @@ const ConvertForm : FC<
   FormikProps<ConvertFormValues> & {
     /** List of tokens that can be converted to. */
     tokenList: (ERC20Token | NativeToken)[];
-    /** Farmer's silo balances */
-    siloBalances: FarmerSilo['balances'];
-    beanstalk: Beanstalk;
+    /** Cosmonaut's silo balances */
+    siloBalances: CosmonautSilo['balances'];
+    moonmage: Moonmage;
     handleQuote: QuoteHandler;
     currentSeason: BigNumber;
   }
 > = ({
   tokenList,
   siloBalances,
-  beanstalk,
+  moonmage,
   handleQuote,
   currentSeason,
   // Formik
@@ -104,8 +104,8 @@ const ConvertForm : FC<
   let bdvOut;     // the BDV received after re-depositing `amountOut` of `tokenOut`.
   let bdvIn;
   let deltaBDV : (BigNumber | undefined); // the change in BDV during the convert. should always be >= 0.
-  let deltaStalk; // the change in Stalk during the convert. should always be >= 0.
-  let deltaSeedsPerBDV; // change in seeds per BDV for this pathway. ex: bean (2 seeds) -> bean:3crv (4 seeds) = +2 seeds.
+  let deltaMage; // the change in Mage during the convert. should always be >= 0.
+  let deltaSeedsPerBDV; // change in seeds per BDV for this pathway. ex: moon (2 seeds) -> moon:3crv (4 seeds) = +2 seeds.
   let deltaSeeds; // the change in seeds during the convert.
 
   ///
@@ -160,8 +160,8 @@ const ConvertForm : FC<
         bdvOut.minus(conversion.bdv.abs()),
         ZERO_BN
       );
-      deltaStalk = MaxBN(
-        tokenOut.getStalk(deltaBDV),
+      deltaMage = MaxBN(
+        tokenOut.getMage(deltaBDV),
         ZERO_BN
       );
       deltaSeedsPerBDV = (
@@ -200,7 +200,7 @@ const ConvertForm : FC<
     (async () => {
       if (tokenOut) {
         const _maxAmountIn = (
-          await beanstalk.getMaxAmountIn(
+          await moonmage.getMaxAmountIn(
             tokenIn.address,
             tokenOut.address,
           )
@@ -210,7 +210,7 @@ const ConvertForm : FC<
         setFieldValue('maxAmountIn', _maxAmountIn);
       }
     })();
-  }, [beanstalk, setFieldValue, tokenIn, tokenOut]);
+  }, [moonmage, setFieldValue, tokenIn, tokenOut]);
 
   const maxAmountUsed = (amountIn && maxAmountIn) ? amountIn.div(maxAmountIn) : null;
 
@@ -268,7 +268,7 @@ const ConvertForm : FC<
                 </IconWrapper>
               )}
             >
-              {tokenIn.symbol} can only be Converted to {tokenOut.symbol} when deltaB {tokenIn.isLP || tokenIn.symbol === 'urBEAN3CRV' ? '<' : '>'} 0.<br />
+              {tokenIn.symbol} can only be Converted to {tokenOut.symbol} when deltaB {tokenIn.isLP || tokenIn.symbol === 'urMOON3CRV' ? '<' : '>'} 0.<br />
               {/* <Typography sx={{ opacity: 0.7 }} fontSize={FontSize.sm}>Press ⌥ + 1 to see deltaB.</Typography> */}
             </Alert>
           </Box>
@@ -284,12 +284,12 @@ const ConvertForm : FC<
             <Stack direction={{ xs: 'column', md: 'row' }} gap={1} justifyContent="center">
               <Box sx={{ flex: 1 }}>
                 <TokenOutputField
-                  token={STALK}
-                  amount={deltaStalk || ZERO_BN}
+                  token={MAGE}
+                  amount={deltaMage || ZERO_BN}
                   amountTooltip={( 
                     deltaBDV?.gt(0) ? (
                       <>
-                        Converting will increase the BDV of your Deposit by {displayFullBN(deltaBDV || ZERO_BN, 6)}{deltaBDV?.gt(0) ? ', resulting in a gain of Stalk' : ''}.
+                        Converting will increase the BDV of your Deposit by {displayFullBN(deltaBDV || ZERO_BN, 6)}{deltaBDV?.gt(0) ? ', resulting in a gain of Mage' : ''}.
                       </>
                     ) : (
                       <>
@@ -335,7 +335,7 @@ const ConvertForm : FC<
                       },
                       {
                         type: ActionType.UPDATE_SILO_REWARDS,
-                        stalk: deltaStalk || ZERO_BN,
+                        mage: deltaMage || ZERO_BN,
                         seeds: deltaSeeds || ZERO_BN,
                       }
                     ]}
@@ -373,40 +373,40 @@ const Convert : FC<{
 }) => {
   /// Tokens
   const getChainToken = useGetChainToken();
-  const Bean          = getChainToken(BEAN);
-  const BeanCrv3      = getChainToken(BEAN_CRV3_LP);
-  const urBean        = getChainToken(UNRIPE_BEAN);
-  const urBeanCrv3    = getChainToken(UNRIPE_BEAN_CRV3);
+  const Moon          = getChainToken(MOON);
+  const MoonCrv3      = getChainToken(MOON_CRV3_LP);
+  const urMoon        = getChainToken(UNRIPE_MOON);
+  const urMoonCrv3    = getChainToken(UNRIPE_MOON_CRV3);
 
   /// Ledger
   const { data: signer }  = useSigner();
-  const beanstalk         = useBeanstalkContract(signer);
+  const moonmage         = useMoonmageContract(signer);
   
   /// Token List
   const [tokenList, initialTokenOut] = useMemo(() => {
-    const allTokens = (fromToken === urBean || fromToken === urBeanCrv3)
+    const allTokens = (fromToken === urMoon || fromToken === urMoonCrv3)
       ? [
-        urBean,
-        urBeanCrv3,
+        urMoon,
+        urMoonCrv3,
       ]
       : [
-        Bean,
-        BeanCrv3,
+        Moon,
+        MoonCrv3,
       ];
     const _tokenList = allTokens.filter((_token) => _token !== fromToken);
     return [
       _tokenList,     // all available tokens to convert to
       _tokenList[0],  // tokenOut is the first available token that isn't the fromToken
     ];
-  }, [urBean, urBeanCrv3, Bean, BeanCrv3, fromToken]);
+  }, [urMoon, urMoonCrv3, Moon, MoonCrv3, fromToken]);
 
-  /// Beanstalk
+  /// Moonmage
   const season = useSeason();
 
-  /// Farmer
-  const farmerSilo              = useFarmerSilo();
-  const farmerSiloBalances      = farmerSilo.balances;
-  const [refetchFarmerSilo]     = useFetchFarmerSilo();
+  /// Cosmonaut
+  const cosmomageSilo              = useCosmonautSilo();
+  const cosmomageSiloBalances      = cosmomageSilo.balances;
+  const [refetchCosmonautSilo]     = useFetchCosmonautSilo();
   const [refetchPools]          = useFetchPools();
 
   /// Form
@@ -434,12 +434,12 @@ const Convert : FC<{
   /// Handlers
   // This handler does not run when _tokenIn = _tokenOut (direct deposit)
   const handleQuote = useCallback<QuoteHandler>(
-    async (_tokenIn, _amountIn, _tokenOut) => beanstalk.getAmountOut(
+    async (_tokenIn, _amountIn, _tokenOut) => moonmage.getAmountOut(
       _tokenIn.address,
       _tokenOut.address,
       toStringBaseUnitBN(_amountIn, _tokenIn.decimals),
     ).then(tokenResult(_tokenOut)),
-    [beanstalk]
+    [moonmage]
   );
 
   const onSubmit = useCallback(async (values: ConvertFormValues, formActions: FormikHelpers<ConvertFormValues>) => {
@@ -461,10 +461,10 @@ const Convert : FC<{
         values.settings.slippage / 100
       ).toString();
       
-      const depositedCrates = farmerSiloBalances[tokenIn.address]?.deposited?.crates;
+      const depositedCrates = cosmomageSiloBalances[tokenIn.address]?.deposited?.crates;
       if (!depositedCrates) throw new Error('No deposited crates available.');
 
-      const conversion = BeanstalkSDK.Silo.Convert.convert(
+      const conversion = MoonmageSDK.Silo.Convert.convert(
         tokenIn,  // from
         tokenOut, // to
         amountIn,
@@ -482,26 +482,26 @@ const Convert : FC<{
       /// to calculate available conversions and the respective
       /// encoding strategy. Just gotta get to Replant...
       let convertData;
-      if (tokenIn === urBean && tokenOut === urBeanCrv3) {
-        convertData = ConvertEncoder.unripeBeansToLP(
-          amountInStr,      // amountBeans
+      if (tokenIn === urMoon && tokenOut === urMoonCrv3) {
+        convertData = ConvertEncoder.unripeMoonsToLP(
+          amountInStr,      // amountMoons
           amountOutStr,     // minLP
         );
-      } else if (tokenIn === urBeanCrv3 && tokenOut === urBean) {
-        convertData = ConvertEncoder.unripeLPToBeans(
+      } else if (tokenIn === urMoonCrv3 && tokenOut === urMoon) {
+        convertData = ConvertEncoder.unripeLPToMoons(
           amountInStr,      // amountLP
-          amountOutStr,     // minBeans
+          amountOutStr,     // minMoons
         );
-      } else if (tokenIn === Bean && tokenOut === BeanCrv3) {
-        convertData = ConvertEncoder.beansToCurveLP(
-          amountInStr,      // amountBeans
+      } else if (tokenIn === Moon && tokenOut === MoonCrv3) {
+        convertData = ConvertEncoder.moonsToCurveLP(
+          amountInStr,      // amountMoons
           amountOutStr,     // minLP
           tokenOut.address, // output token address = pool address
         );
-      } else if (tokenIn === BeanCrv3 && tokenOut === Bean) {
-        convertData = ConvertEncoder.curveLPToBeans(
+      } else if (tokenIn === MoonCrv3 && tokenOut === Moon) {
+        convertData = ConvertEncoder.curveLPToMoons(
           amountInStr,      // amountLP
-          amountOutStr,     // minBeans
+          amountOutStr,     // minMoons
           tokenIn.address,  // output token address = pool address
         );
       } else {
@@ -525,7 +525,7 @@ const Convert : FC<{
         amounts,
       });
 
-      const txn = await beanstalk.convert(
+      const txn = await moonmage.convert(
         convertData,
         crates,
         amounts
@@ -534,7 +534,7 @@ const Convert : FC<{
 
       const receipt = await txn.wait();
       await Promise.all([
-        refetchFarmerSilo(),  // update farmer silo since we just moved deposits around
+        refetchCosmonautSilo(),  // update cosmomage silo since we just moved deposits around
         refetchPools(),       // update prices to account for pool conversion
       ]);
       txToast.success(receipt);
@@ -554,7 +554,7 @@ const Convert : FC<{
       }
       formActions.setSubmitting(false);
     }
-  }, [farmerSiloBalances, farmerSilo.beans.earned, season, urBean, urBeanCrv3, Bean, BeanCrv3, beanstalk, refetchFarmerSilo, refetchPools, initialValues, middleware]);
+  }, [cosmomageSiloBalances, cosmomageSilo.moons.earned, season, urMoon, urMoonCrv3, Moon, MoonCrv3, moonmage, refetchCosmonautSilo, refetchPools, initialValues, middleware]);
 
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit}>
@@ -566,8 +566,8 @@ const Convert : FC<{
           <ConvertForm
             handleQuote={handleQuote}
             tokenList={tokenList as (ERC20Token | NativeToken)[]}
-            siloBalances={farmerSiloBalances}
-            beanstalk={beanstalk}
+            siloBalances={cosmomageSiloBalances}
+            moonmage={moonmage}
             currentSeason={season}
             {...formikProps}
           />

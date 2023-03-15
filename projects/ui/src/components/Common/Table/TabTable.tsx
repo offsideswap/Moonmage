@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Box } from '@mui/material';
 import { DataGrid, DataGridProps } from '@mui/x-data-grid';
-import { BeanstalkPalette, FontSize } from '~/components/App/muiTheme';
+import { MoonmagePalette, FontSize } from '~/components/App/muiTheme';
 
 import { FC } from '~/types';
 
@@ -45,7 +45,7 @@ const wellTableBaseStyle = {
       // border: 1,
       // borderTop: 1,
       borderBottom: 1,
-      borderColor: BeanstalkPalette.blue,
+      borderColor: MoonmagePalette.blue,
       py: 2.8,
       // mb: 0.8,
       alignItems: 'center',
@@ -64,7 +64,7 @@ const wellTableBaseStyle = {
     '& .MuiDataGrid-columnHeaders': {
       outline: 'none',
       borderBottom: 2,
-      borderColor: BeanstalkPalette.blue,
+      borderColor: MoonmagePalette.blue,
       fontSize: '18px',
       color: '#000000',
       '&:hover' : {

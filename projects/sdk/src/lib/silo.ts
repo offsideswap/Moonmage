@@ -1,6 +1,6 @@
 import { BigNumber, ContractTransaction } from "ethers";
 import { Token } from "src/classes/Token";
-import { BeanstalkSDK, DataSource } from "./BeanstalkSDK";
+import { MoonmageSDK, DataSource } from "./MoonmageSDK";
 import EventProcessor from "src/lib/events/processor";
 import { EIP712TypedData } from "./permit";
 import * as utils from "./silo/utils";
@@ -17,18 +17,18 @@ import { Transfer } from "./silo/Transfer";
 import { Convert, ConvertDetails } from "./silo/Convert";
 
 export class Silo {
-  static sdk: BeanstalkSDK;
+  static sdk: MoonmageSDK;
   private depositBuilder: DepositBuilder;
   siloWithdraw: Withdraw;
   siloClaim: Claim;
   siloTransfer: Transfer;
   siloConvert: Convert;
-  // 1 Seed grows 1 / 10_000 Stalk per Season.
+  // 1 Seed grows 1 / 10_000 Mage per Season.
   // 1/10_000 = 1E-4
   // FIXME
-  static STALK_PER_SEED_PER_SEASON = TokenValue.fromHuman(1e-4, 10);
+  static MAGE_PER_SEED_PER_SEASON = TokenValue.fromHuman(1e-4, 10);
 
-  constructor(sdk: BeanstalkSDK) {
+  constructor(sdk: MoonmageSDK) {
     Silo.sdk = sdk;
     this.depositBuilder = new DepositBuilder(sdk);
     this.siloWithdraw = new Withdraw(sdk);
@@ -38,19 +38,19 @@ export class Silo {
   }
 
   /**
-   * Mowing adds Grown Stalk to stalk balance
+   * Mowing adds Grown Mage to mage balance
    * @param _account
    */
   async mow(_account?: string): Promise<ContractTransaction> {
     const account = _account ? _account : await Silo.sdk.getAccount();
-    return Silo.sdk.contracts.beanstalk.update(account);
+    return Silo.sdk.contracts.moonmage.update(account);
   }
 
   /**
-   * Claims Earned Beans, Earned Stalk, Plantable Seeds and also mows any Grown Stalk
+   * Claims Earned Moons, Earned Mage, Plantable Seeds and also mows any Grown Mage
    */
   async plant(): Promise<ContractTransaction> {
-    return Silo.sdk.contracts.beanstalk.plant();
+    return Silo.sdk.contracts.moonmage.plant();
   }
 
   /**
@@ -94,7 +94,7 @@ export class Silo {
    * deposits, aka crates. A user's deposits are not summarized into one large bucket, from
    * which we can withdraw at will. Each deposit is independently tracked, so each withdraw must
    * calculate how many crates it must span to attain the desired `amount`.
-   * @param token The whitelisted token to withdraw. ex, BEAN vs BEAN_3CRV_LP
+   * @param token The whitelisted token to withdraw. ex, MOON vs MOON_3CRV_LP
    * @param amount The desired amount to withdraw. Must be 0 < amount <= total deposits for token
    * @returns Promise of Transaction
    */
@@ -104,7 +104,7 @@ export class Silo {
 
   /**
    * Initates a transfer of a token from the silo.
-   * @param token The whitelisted token to withdraw. ex, BEAN vs BEAN_3CRV_LP
+   * @param token The whitelisted token to withdraw. ex, MOON vs MOON_3CRV_LP
    * @param amount The desired amount to transfer. Must be 0 < amount <= total deposits for token
    * @param destinationAddress The destination address for the transfer
    * @returns Promise of Transaction
@@ -116,7 +116,7 @@ export class Silo {
   /**
    * This methods figures out which deposits, or crates, the withdraw must take from
    * in order to reach the desired amount. It returns extra information that may be useful
-   * in a UI to show the user how much stalk and seed they will forfeit as a result of the withdraw
+   * in a UI to show the user how much mage and seed they will forfeit as a result of the withdraw
    */
   async calculateWithdraw(token: Token, amount: TokenValue, crates: DepositCrate[], season: number) {
     return this.siloWithdraw.calculateWithdraw(token, amount, crates, season);
@@ -181,7 +181,7 @@ export class Silo {
   }
 
   /**
-   * Return the Farmer's balance of a single whitelisted token.
+   * Return the Cosmonaut's balance of a single whitelisted token.
    */
   public async getBalance(
     _token: Token,
@@ -251,9 +251,9 @@ export class Silo {
         account,
         season: currentSeason
       }); // crates ordered in asc order
-      if (!query.farmer) return balance;
+      if (!query.cosmomage) return balance;
 
-      const { deposited, withdrawn, claimable } = query.farmer!;
+      const { deposited, withdrawn, claimable } = query.cosmomage!;
       deposited.forEach((crate) => utils.applyDeposit(balance.deposited, _token, crate, currentSeason));
       withdrawn.forEach((crate) => utils.applyWithdrawal(balance.withdrawn, _token, crate));
       claimable.forEach((crate) => utils.applyWithdrawal(balance.claimable, _token, crate));
@@ -265,7 +265,7 @@ export class Silo {
   }
 
   /**
-   * Return a Farmer's Silo balances.
+   * Return a Cosmonaut's Silo balances.
    *
    * ```
    * [Token] => {
@@ -277,7 +277,7 @@ export class Silo {
    *
    * @note EventProcessor requires a known whitelist and returns
    *       an object (possibly empty) for every whitelisted token.
-   * @note To process a Deposit, we must know how many Stalk & Seeds
+   * @note To process a Deposit, we must know how many Mage & Seeds
    *       are given to it. If a token is dewhitelisted and removed from
    *       `tokens` (or from the on-chain whitelist)
    * @fixme "deposits" vs "deposited"
@@ -306,7 +306,7 @@ export class Silo {
       const { deposits, withdrawals } = processor.ingestAll(events);
 
       // Handle deposits.
-      // Attach stalk & seed counts for each crate.
+      // Attach mage & seed counts for each crate.
       deposits.forEach((_crates, token) => {
         if (!balances.has(token)) {
           balances.set(token, utils.makeTokenSiloBalance());
@@ -351,8 +351,8 @@ export class Silo {
     /// SUBGRAPH
     if (source === DataSource.SUBGRAPH) {
       const query = await Silo.sdk.queries.getSiloBalances({ account, season: currentSeason }); // crates ordered in asc order
-      if (!query.farmer) return balances;
-      const { deposited, withdrawn, claimable } = query.farmer!;
+      if (!query.cosmomage) return balances;
+      const { deposited, withdrawn, claimable } = query.cosmomage!;
 
       // Lookup token by address and create a TokenSiloBalance entity.
       // @fixme private member of Silo?
@@ -393,14 +393,14 @@ export class Silo {
   }
 
   /**
-   * Get a Farmer's stalk, grown stalk, earned stalk.
-   * Does NOT currently include revitalized stalk
+   * Get a Cosmonaut's mage, grown mage, earned mage.
+   * Does NOT currently include revitalized mage
    */
-  async getAllStalk(_account?: string) {
+  async getAllMage(_account?: string) {
     const [active, earned, grown] = await Promise.all([
-      this.getStalk(_account),
-      this.getEarnedStalk(_account),
-      this.getGrownStalk(_account)
+      this.getMage(_account),
+      this.getEarnedMage(_account),
+      this.getGrownMage(_account)
     ]);
     // TODO: add revitalized
     return {
@@ -411,63 +411,63 @@ export class Silo {
   }
 
   /**
-   * Get a Farmer's current Stalk. This already includes Earned Stalk
+   * Get a Cosmonaut's current Mage. This already includes Earned Mage
    * @param _account
    * @returns
    */
-  async getStalk(_account?: string) {
+  async getMage(_account?: string) {
     const account = await Silo.sdk.getAccount(_account);
-    return Silo.sdk.contracts.beanstalk.balanceOfStalk(account).then((v) => Silo.sdk.tokens.STALK.fromBlockchain(v));
+    return Silo.sdk.contracts.moonmage.balanceOfMage(account).then((v) => Silo.sdk.tokens.MAGE.fromBlockchain(v));
   }
 
   /**
-   * Get a Farmer's current Seeds. Does not include Plantable or Revitalized Seeds
+   * Get a Cosmonaut's current Seeds. Does not include Plantable or Revitalized Seeds
    * @param _account
    * @returns
    */
   async getSeeds(_account?: string) {
     const account = await Silo.sdk.getAccount(_account);
-    return Silo.sdk.contracts.beanstalk.balanceOfSeeds(account).then((v) => Silo.sdk.tokens.SEEDS.fromBlockchain(v));
+    return Silo.sdk.contracts.moonmage.balanceOfSeeds(account).then((v) => Silo.sdk.tokens.SEEDS.fromBlockchain(v));
   }
 
   /**
-   * Get a Farmer's Earned Beans since last Plant.
+   * Get a Cosmonaut's Earned Moons since last Plant.
    *
    * @param _account
    * @returns
    */
-  async getEarnedBeans(_account?: string) {
+  async getEarnedMoons(_account?: string) {
     const account = await Silo.sdk.getAccount(_account);
-    return Silo.sdk.contracts.beanstalk.balanceOfEarnedBeans(account).then((v) => Silo.sdk.tokens.BEAN.fromBlockchain(v));
+    return Silo.sdk.contracts.moonmage.balanceOfEarnedMoons(account).then((v) => Silo.sdk.tokens.MOON.fromBlockchain(v));
   }
 
   /**
-   * Get a Farmer's Earned Stalk since last Plant. This is already included in getStalk() balance
+   * Get a Cosmonaut's Earned Mage since last Plant. This is already included in getMage() balance
    */
-  async getEarnedStalk(_account?: string) {
+  async getEarnedMage(_account?: string) {
     const account = await Silo.sdk.getAccount(_account);
-    return Silo.sdk.contracts.beanstalk.balanceOfEarnedStalk(account).then((v) => Silo.sdk.tokens.STALK.fromBlockchain(v));
+    return Silo.sdk.contracts.moonmage.balanceOfEarnedMage(account).then((v) => Silo.sdk.tokens.MAGE.fromBlockchain(v));
   }
 
   /**
-   * Get a Farmer's Plantable Seeds since last Plant. These are seeds earned from current Earned Stalk.
+   * Get a Cosmonaut's Plantable Seeds since last Plant. These are seeds earned from current Earned Mage.
    * @param _account
    * @returns
    */
   async getPlantableSeeds(_account?: string) {
     const account = await Silo.sdk.getAccount(_account);
     // TODO: this is wrong
-    return Silo.sdk.contracts.beanstalk.balanceOfEarnedSeeds(account).then((v) => Silo.sdk.tokens.SEEDS.fromBlockchain(v));
+    return Silo.sdk.contracts.moonmage.balanceOfEarnedSeeds(account).then((v) => Silo.sdk.tokens.SEEDS.fromBlockchain(v));
   }
 
   /**
-   * Get a Farmer's Grown Stalk since last Mow.
+   * Get a Cosmonaut's Grown Mage since last Mow.
    * @param _account
    * @returns
    */
-  async getGrownStalk(_account?: string) {
+  async getGrownMage(_account?: string) {
     const account = await Silo.sdk.getAccount(_account);
-    return Silo.sdk.contracts.beanstalk.balanceOfGrownStalk(account).then((v) => Silo.sdk.tokens.STALK.fromBlockchain(v));
+    return Silo.sdk.contracts.moonmage.balanceOfGrownMage(account).then((v) => Silo.sdk.tokens.MAGE.fromBlockchain(v));
   }
 
   /**
@@ -476,12 +476,12 @@ export class Silo {
    *
    * @fixme `permitDepositToken` -> `getPermitForToken`
    *
-   * @param owner the Farmer whose Silo deposit can be transferred
+   * @param owner the Cosmonaut whose Silo deposit can be transferred
    * @param spender the account authorized to make a transfer
    * @param token the whitelisted token that can be transferred
    * @param value the amount of the token that can be transferred
    * @param _nonce a nonce to include when signing permit.
-   * Defaults to `beanstalk.depositPermitNonces(owner)`.
+   * Defaults to `moonmage.depositPermitNonces(owner)`.
    * @param _deadline the permit deadline.
    * Defaults to `MAX_UINT256` (effectively no deadline).
    * @returns typed permit data. This can be signed with `sdk.permit.sign()`.
@@ -497,7 +497,7 @@ export class Silo {
     const deadline = _deadline || MAX_UINT256;
     const [domain, nonce] = await Promise.all([
       permitUtils.getEIP712Domain(),
-      _nonce || Silo.sdk.contracts.beanstalk.depositPermitNonces(owner).then((nonce) => nonce.toString())
+      _nonce || Silo.sdk.contracts.moonmage.depositPermitNonces(owner).then((nonce) => nonce.toString())
     ]);
 
     return permitUtils.createTypedDepositTokenPermitData(domain, {
@@ -516,13 +516,13 @@ export class Silo {
    *
    * @fixme `permitDepositTokens` -> `getPermitForTokens`
    *
-   * @param owner the Farmer whose Silo deposit can be transferred
+   * @param owner the Cosmonaut whose Silo deposit can be transferred
    * @param spender the account authorized to make a transfer
    * @param tokens the whitelisted tokens that can be transferred.
    * @param values the amount of each token in `tokens` that can be transferred.
    * `values[0]` = how much of `tokens[0]` can be transferred, etc.
    * @param _nonce a nonce to include when signing permit.
-   * Defaults to `beanstalk.depositPermitNonces(owner)`.
+   * Defaults to `moonmage.depositPermitNonces(owner)`.
    * @param _deadline the permit deadline.
    * Defaults to `MAX_UINT256` (effectively no deadline).
    * @returns typed permit data. This can be signed with `sdk.permit.sign()`.
@@ -541,7 +541,7 @@ export class Silo {
     const deadline = _deadline || MAX_UINT256;
     const [domain, nonce] = await Promise.all([
       permitUtils.getEIP712Domain(),
-      _nonce || Silo.sdk.contracts.beanstalk.depositPermitNonces(owner).then((nonce) => nonce.toString())
+      _nonce || Silo.sdk.contracts.moonmage.depositPermitNonces(owner).then((nonce) => nonce.toString())
     ]);
 
     return permitUtils.createTypedDepositTokensPermitData(domain, {

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useProvider } from 'wagmi';
-import Farm from '~/lib/Beanstalk/Farm';
+import Farm from '~/lib/Moonmage/Farm';
 
 const useFarm = () => {
   const provider = useProvider();

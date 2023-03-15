@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import { useAtom } from 'jotai';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { BeanstalkPalette } from '~/components/App/muiTheme';
+import { MoonmagePalette } from '~/components/App/muiTheme';
 import Row from '~/components/Common/Row';
 import { ZERO_BN } from '~/constants';
 import { AppState } from '~/state';
@@ -35,10 +35,10 @@ const sliderSx = (canSlide?: boolean) => ({
   },
   '& .MuiSlider-track': {
     height: '8px',
-    color: canSlide ? 'primary.main' : BeanstalkPalette.lightYellow,
+    color: canSlide ? 'primary.main' : MoonmagePalette.lightYellow,
   },
   '& .MuiSlider-rail': {
-    color: BeanstalkPalette.lightYellow,
+    color: MoonmagePalette.lightYellow,
     opacity: 1,
     height: '8px',
     borderRadius: '2px',
@@ -63,11 +63,11 @@ const PlaceInLineSlider: React.FC<{
 }> = ({ disabled, canSlide = true, isRange = true }) => {
   // state
   const [index, setIndex] = useAtom(placeInLineAtom);
-  const beanstalkField = useSelector<AppState, AppState['_beanstalk']['field']>(
-    (state) => state._beanstalk.field
+  const moonmageField = useSelector<AppState, AppState['_moonmage']['field']>(
+    (state) => state._moonmage.field
   );
 
-  const fieldMaxIndex = beanstalkField?.podLine || ZERO_BN;
+  const fieldMaxIndex = moonmageField?.podLine || ZERO_BN;
 
   return (
     <Stack>

@@ -2,15 +2,15 @@
 // import { Button } from '@mui/material';
 // import CachedIcon from '@mui/icons-material/Cached';
 // import { useAccount } from 'wagmi';
-// import { Beanstalk } from '~/generated';
-// import { useBeanstalkContract } from '~/hooks/ledger/useContract';
+// import { Moonmage } from '~/generated';
+// import { useMoonmageContract } from '~/hooks/ledger/useContract';
 // import useTokenMap from '~/hooks/chain/useTokenMap';
 // import { getAccount } from '~/util/Account';
 // import { toTokenUnitsBN } from '~/util/Tokens';
 // import { ERC20_TOKENS } from '~/constants/tokens';
 
 // export default function DevButton(props: any) {
-//   const b = (useBeanstalkContract() as unknown) as Beanstalk;
+//   const b = (useMoonmageContract() as unknown) as Moonmage;
 //   const { data: account } = useAccount();
 //   const erc20Tokens = useTokenMap(ERC20_TOKENS);
 //   const tokenAddresses = Object.keys(erc20Tokens);

@@ -14,11 +14,11 @@ query SeasonalAPY(
   ) {
     id
     season
-    twoSeedBeanAPY
-    twoSeedStalkAPY
-    fourSeedBeanAPY
-    fourSeedStalkAPY
-    beansPerSeasonEMA
+    twoSeedMoonAPY
+    twoSeedMageAPY
+    fourSeedMoonAPY
+    fourSeedMageAPY
+    moonsPerSeasonEMA
     createdAt
   }
 }

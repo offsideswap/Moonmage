@@ -4,11 +4,11 @@ import { EventProcessorData } from "src/lib/events/processor";
 import { Silo } from "../silo";
 import { TokenValue } from "src/classes/TokenValue";
 import { Crate, TokenSiloBalance, WithdrawalCrate, DepositCrate, MapValueType } from "./types";
-import { BeanstalkSDK } from "src/lib/BeanstalkSDK";
+import { MoonmageSDK } from "src/lib/MoonmageSDK";
 import { assert } from "src/utils";
 
 /**
- * Beanstalk doesn't automatically re-categorize withdrawals as "claimable".
+ * Moonmage doesn't automatically re-categorize withdrawals as "claimable".
  * "Claimable" just means that the `season` parameter stored in the withdrawal
  * event is less than or equal to the current `season()`.
  *
@@ -95,7 +95,7 @@ export function sortCratesByBDVRatio<T extends DepositCrate<TokenValue>>(crates:
 export function pickCrates(crates: DepositCrate[], amount: TokenValue, token: Token, currentSeason: number) {
   let totalAmount = TokenValue.ZERO;
   let totalBDV = TokenValue.ZERO;
-  let totalStalk = TokenValue.ZERO;
+  let totalMage = TokenValue.ZERO;
   const cratesToWithdrawFrom: DepositCrate[] = [];
 
   crates.some((crate) => {
@@ -104,21 +104,21 @@ export function pickCrates(crates: DepositCrate[], amount: TokenValue, token: To
     const cratePct = amountToRemoveFromCrate.div(crate.amount);
     const crateBDV = cratePct.mul(crate.bdv);
     const crateSeeds = cratePct.mul(crate.seeds);
-    const baseStalk = token.getStalk(crateBDV);
-    const grownStalk = crateSeeds.mul(elapsedSeasons).mul(Silo.STALK_PER_SEED_PER_SEASON);
-    const crateStalk = baseStalk.add(grownStalk);
+    const baseMage = token.getMage(crateBDV);
+    const grownMage = crateSeeds.mul(elapsedSeasons).mul(Silo.MAGE_PER_SEED_PER_SEASON);
+    const crateMage = baseMage.add(grownMage);
 
     totalAmount = totalAmount.add(amountToRemoveFromCrate);
     totalBDV = totalBDV.add(crateBDV);
-    totalStalk = totalStalk.add(crateStalk);
+    totalMage = totalMage.add(crateMage);
 
     cratesToWithdrawFrom.push({
       season: crate.season,
       amount: amountToRemoveFromCrate,
       bdv: crateBDV,
-      stalk: crateStalk,
-      baseStalk: baseStalk,
-      grownStalk: grownStalk,
+      mage: crateMage,
+      baseMage: baseMage,
+      grownMage: grownMage,
       seeds: crateSeeds
     });
 
@@ -132,7 +132,7 @@ export function pickCrates(crates: DepositCrate[], amount: TokenValue, token: To
   return {
     totalAmount,
     totalBDV,
-    totalStalk,
+    totalMage,
     crates: cratesToWithdrawFrom
   };
 }
@@ -142,8 +142,8 @@ export function pickCrates(crates: DepositCrate[], amount: TokenValue, token: To
  * they appear on the Silo Whitelist.
  *
  * @note the Silo Whitelist is sorted by the order in which tokens were
- * whitelisted in Beanstalk. Unclear if the ordering shown on the
- * Beanstalk UI will change at some point in the future.
+ * whitelisted in Moonmage. Unclear if the ordering shown on the
+ * Moonmage UI will change at some point in the future.
  */
 export function sortTokenMapByWhitelist<T extends any>(whitelist: Set<Token>, map: Map<Token, T>) {
   const copy = new Map<Token, T>(map);
@@ -188,7 +188,7 @@ export function makeTokenSiloBalance(): TokenSiloBalance {
  * @param _season The season of deposit
  * @param _amount The amount of deposit
  * @param _bdv The bdv of deposit
- * @param currentSeason The current season, for calculation of grownStalk.
+ * @param currentSeason The current season, for calculation of grownMage.
  * @returns DepositCrate<TokenValue>
  */
 export function makeDepositCrate(
@@ -203,41 +203,41 @@ export function makeDepositCrate(
   const amount = token.fromBlockchain(_amount);
 
   // Deposit-specific
-  const bdv = Silo.sdk.tokens.BEAN.fromBlockchain(_bdv);
+  const bdv = Silo.sdk.tokens.MOON.fromBlockchain(_bdv);
   const seeds = token.getSeeds(bdv);
-  const baseStalk = token.getStalk(bdv);
-  const grownStalk = calculateGrownStalk(currentSeason, season, seeds);
-  const stalk = baseStalk.add(grownStalk);
+  const baseMage = token.getMage(bdv);
+  const grownMage = calculateGrownMage(currentSeason, season, seeds);
+  const mage = baseMage.add(grownMage);
 
   return {
     season,
     amount,
     bdv,
-    stalk,
-    baseStalk,
-    grownStalk,
+    mage,
+    baseMage,
+    grownMage,
     seeds
   };
 }
 
 /**
- * Calculate the amount Stalk grown since `depositSeason`.
+ * Calculate the amount Mage grown since `depositSeason`.
  * Depends on the `currentSeason` and the `depositSeeds` awarded
  * for a particular deposit.
  *
  * @param currentSeason
  * @param depositSeason
  * @param depositSeeds
- * @returns TokenValue<STALK>
+ * @returns TokenValue<MAGE>
  */
-export function calculateGrownStalk(
+export function calculateGrownMage(
   currentSeason: ethers.BigNumberish,
   depositSeason: ethers.BigNumberish,
   depositSeeds: TokenValue
 ): TokenValue {
   const deltaSeasons = ethers.BigNumber.from(currentSeason).sub(depositSeason);
-  assert(deltaSeasons.gte(0), "Silo: Cannot calculate grown stalk when `currentSeason < depositSeason`.");
-  return Silo.STALK_PER_SEED_PER_SEASON.mul(depositSeeds).mul(deltaSeasons.toNumber());
+  assert(deltaSeasons.gte(0), "Silo: Cannot calculate grown mage when `currentSeason < depositSeason`.");
+  return Silo.MAGE_PER_SEED_PER_SEASON.mul(depositSeeds).mul(deltaSeasons.toNumber());
 }
 
 /**
@@ -294,16 +294,16 @@ export function sumDeposits(token: ERC20Token, crates: DepositCrate[]) {
   return crates.reduce(
     (prev, curr) => {
       prev.amount = prev.amount.add(curr.amount);
-      prev.stalk = prev.stalk.add(curr.stalk);
+      prev.mage = prev.mage.add(curr.mage);
       prev.seeds = prev.seeds.add(curr.seeds);
       prev.bdv = prev.bdv.add(curr.bdv);
       return prev;
     },
     {
       amount: token.amount(0),
-      stalk: Silo.sdk.tokens.STALK.amount(0),
+      mage: Silo.sdk.tokens.MAGE.amount(0),
       seeds: Silo.sdk.tokens.SEEDS.amount(0),
-      bdv: Silo.sdk.tokens.BEAN.amount(0)
+      bdv: Silo.sdk.tokens.MOON.amount(0)
     }
   );
 }

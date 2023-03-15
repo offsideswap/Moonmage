@@ -4,7 +4,7 @@ import { Box, Button, ButtonProps, lighten, Stack } from '@mui/material';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import { FC } from '~/types';
 
-import { BeanstalkPalette, FontSize } from '~/components/App/muiTheme';
+import { MoonmagePalette, FontSize } from '~/components/App/muiTheme';
 
 export type SelectionCardProps = {
   selected: boolean;
@@ -35,7 +35,7 @@ const SelectionCard: FC<SelectionCardProps> = ({
         '&:hover': {
           backgroundColor: selected 
             ? 'primary.light' 
-            : lighten(BeanstalkPalette.theme.winter.primaryHover, 0.4),
+            : lighten(MoonmagePalette.theme.winter.primaryHover, 0.4),
         },
       },
       '&.Mui-disabled': {

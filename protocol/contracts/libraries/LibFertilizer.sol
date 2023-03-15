@@ -36,7 +36,7 @@ library LibFertilizer {
     ) internal returns (uint128 id) {
         AppStorage storage s = LibAppStorage.diamondStorage();
         uint256 _amount = uint256(amount);
-        // Calculate Beans Per Fertilizer and add to total owed
+        // Calculate Moons Per Fertilizer and add to total owed
         uint128 bpf = getBpf(season);
         s.unfertilizedIndex = s.unfertilizedIndex.add(
             _amount.mul(uint128(bpf))
@@ -46,11 +46,11 @@ library LibFertilizer {
         // Update Total and Season supply
         s.fertilizer[id] = s.fertilizer[id].add(amount);
         s.activeFertilizer = s.activeFertilizer.add(_amount);
-        // Add underlying to Unripe Beans and Unripe LP
+        // Add underlying to Unripe Moons and Unripe LP
         addUnderlying(_amount.mul(DECIMALS), minLP);
         // If not first time adding Fertilizer with this id, return
         if (s.fertilizer[id] > amount) return id;
-        // If first time, log end Beans Per Fertilizer and add to Season queue.
+        // If first time, log end Moons Per Fertilizer and add to Season queue.
         LibFertilizer.push(id);
         emit SetFertilizer(id, bpf);
     }
@@ -68,37 +68,37 @@ library LibFertilizer {
 
     function addUnderlying(uint256 amount, uint256 minAmountOut) internal {
         AppStorage storage s = LibAppStorage.diamondStorage();
-        // Calculate how many new Deposited Beans will be minted
+        // Calculate how many new Deposited Moons will be minted
         uint256 percentToFill = amount.mul(C.precision()).div(
             remainingRecapitalization()
         );
-        uint256 newDepositedBeans;
-        if (C.unripeBean().totalSupply() > s.u[C.unripeBeanAddress()].balanceOfUnderlying) {
-            newDepositedBeans = (C.unripeBean().totalSupply()).sub(
-                s.u[C.unripeBeanAddress()].balanceOfUnderlying
+        uint256 newDepositedMoons;
+        if (C.unripeMoon().totalSupply() > s.u[C.unripeMoonAddress()].balanceOfUnderlying) {
+            newDepositedMoons = (C.unripeMoon().totalSupply()).sub(
+                s.u[C.unripeMoonAddress()].balanceOfUnderlying
             );
-            newDepositedBeans = newDepositedBeans.mul(percentToFill).div(
+            newDepositedMoons = newDepositedMoons.mul(percentToFill).div(
                 C.precision()
             );
         }
 
-        // Calculate how many Beans to add as LP
-        uint256 newDepositedLPBeans = amount.mul(C.exploitAddLPRatio()).div(
+        // Calculate how many Moons to add as LP
+        uint256 newDepositedLPMoons = amount.mul(C.exploitAddLPRatio()).div(
             DECIMALS
         );
-        // Mint the Beans
-        C.bean().mint(
+        // Mint the Moons
+        C.moon().mint(
             address(this),
-            newDepositedBeans.add(newDepositedLPBeans)
+            newDepositedMoons.add(newDepositedLPMoons)
         );
         // Add Liquidity
         uint256 newLP = C.curveZap().add_liquidity(
             C.curveMetapoolAddress(),
-            [newDepositedLPBeans, 0, amount, 0],
+            [newDepositedLPMoons, 0, amount, 0],
             minAmountOut
         );
         // Increment underlying balances of Unripe Tokens
-        LibUnripe.incrementUnderlying(C.unripeBeanAddress(), newDepositedBeans);
+        LibUnripe.incrementUnderlying(C.unripeMoonAddress(), newDepositedMoons);
         LibUnripe.incrementUnderlying(C.unripeLPAddress(), newLP);
 
         s.recapitalized = s.recapitalized.add(amount);
@@ -154,7 +154,7 @@ library LibFertilizer {
         s.activeFertilizer = s.activeFertilizer.sub(getAmount(first));
         uint128 next = getNext(first);
         if (next == 0) {
-            // If all Unfertilized Beans have been fertilized, delete line.
+            // If all Unfertilized Moons have been fertilized, delete line.
             require(s.activeFertilizer == 0, "Still active fertilizer");
             s.fFirst = 0;
             s.fLast = 0;

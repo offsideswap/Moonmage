@@ -1,0 +1,19 @@
+#import "../../PodOrder.fragment.graphql"
+
+query CosmonautPodOrders(
+  $first: Int = 100,
+  $createdAt_gt: BigInt,
+  $account: String!
+) {
+  podOrders(
+    first: $first,
+    orderBy: createdAt,
+    orderDirection: desc
+    where: {
+     	cosmomage: $account,
+      createdAt_gt: $createdAt_gt 
+    }
+  ) {
+    ...PodOrder
+  }
+}

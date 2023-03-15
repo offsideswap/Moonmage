@@ -14,7 +14,7 @@ import { Proposal } from '~/util/Governance';
 import PageNotFound from '~/pages/error/404';
 
 import { FC } from '~/types';
-import useProposalBlockData from '~/hooks/beanstalk/useProposalBlockData';
+import useProposalBlockData from '~/hooks/moonmage/useProposalBlockData';
 import useAccount from '~/hooks/ledger/useAccount';
 import { ZERO_BN } from '~/constants';
 import PagePath from '~/components/Common/PagePath';
@@ -31,7 +31,7 @@ const ProposalPageInner : FC<{ proposal: Proposal }> = ({ proposal }) => {
   /// Query: Quorum
   const quorum = useProposalBlockData(proposal, account);
   const score = (
-    proposal.space.id === 'wearebeansprout.eth'
+    proposal.space.id === 'wearemoonsprout.eth'
       ? new BigNumber(proposal.scores_total || ZERO_BN)
       : new BigNumber(proposal.scores[0] || ZERO_BN)
   );

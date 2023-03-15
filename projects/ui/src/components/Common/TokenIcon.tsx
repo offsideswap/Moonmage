@@ -1,5 +1,5 @@
 import React from 'react';
-import { Token } from '@beanstalk/sdk';
+import { Token } from '@moonmage/sdk';
 import TokenOld from '~/classes/Token';
 
 import { FC } from '~/types';

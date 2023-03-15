@@ -4,7 +4,7 @@ import { tickFormatTruncated } from '~/components/Analytics/formatters';
 import { LineChartProps } from '~/components/Common/Charts/LineChart';
 import SeasonPlot, { SeasonPlotBaseProps } from '~/components/Common/Charts/SeasonPlot';
 import { SeasonalDepositedSiloAssetDocument, SeasonalDepositedSiloAssetQuery } from '~/generated/graphql';
-import { SnapshotData } from '~/hooks/beanstalk/useSeasonsQuery';
+import { SnapshotData } from '~/hooks/moonmage/useSeasonsQuery';
 import { toTokenUnitsBN } from '~/util'; 
 
 import { FC } from '~/types';
@@ -29,7 +29,7 @@ const DepositedAsset: FC<{
   );
   const statProps = useMemo(() => ({
     title: `Total Deposited ${asset.symbol}`,
-    titleTooltip: `The total number of Deposited ${asset.symbol === 'BEAN' ? 'Beans' : asset.symbol === 'urBEAN' ? 'Unripe Beans' : asset.name} at the end of each Season.`,
+    titleTooltip: `The total number of Deposited ${asset.symbol === 'MOON' ? 'Moons' : asset.symbol === 'urMOON' ? 'Unripe Moons' : asset.name} at the end of each Season.`,
     gap: 0.5,
   }), [asset]);
   const queryConfig = useMemo(() => ({

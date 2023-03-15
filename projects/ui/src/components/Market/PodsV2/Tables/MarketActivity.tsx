@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import BaseTable from './BaseTable';
-import { MarketEvent } from '~/hooks/beanstalk/useMarketActivityData';
+import { MarketEvent } from '~/hooks/moonmage/useMarketActivityData';
 import { MarketColumns } from '~/components/Market/PodsV2/Tables/columns/market-columns';
 
 const columns = [
@@ -10,7 +10,7 @@ const columns = [
   MarketColumns.Shared.placeInLine(undefined, 1),
   MarketColumns.Shared.pricePerPod(1),
   MarketColumns.HistoryItem.amountPods(1),
-  MarketColumns.HistoryItem.amountBeans(0.75, 'left'),
+  MarketColumns.HistoryItem.amountMoons(0.75, 'left'),
 ];
 
 /**

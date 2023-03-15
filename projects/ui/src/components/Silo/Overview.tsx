@@ -1,17 +1,17 @@
 import { Box, Typography } from '@mui/material';
 import BigNumber from 'bignumber.js';
 import React, { useCallback, useMemo } from 'react';
-import useFarmerBalancesBreakdown from '~/hooks/farmer/useFarmerBalancesBreakdown';
+import useCosmonautBalancesBreakdown from '~/hooks/cosmomage/useCosmonautBalancesBreakdown';
 import { AppState } from '~/state';
 
 import useTabs from '~/hooks/display/useTabs';
 import TokenIcon from '~/components/Common/TokenIcon';
-import { SEEDS, STALK } from '~/constants/tokens';
+import { SEEDS, MAGE } from '~/constants/tokens';
 import {
   displayPercentage,
-  displayStalk,
+  displayMage,
   displayUSD,
-  STALK_PER_SEED_PER_SEASON,
+  MAGE_PER_SEED_PER_SEASON,
 } from '~/util';
 import { ChipLabel, StyledTab } from '~/components/Common/Tabs';
 import { ZERO_BN } from '~/constants';
@@ -20,12 +20,12 @@ import useAccount from '~/hooks/ledger/useAccount';
 import { Module, ModuleTabs } from '~/components/Common/Module';
 import OverviewPlot from '~/components/Silo/OverviewPlot';
 import Stat from '~/components/Common/Stat';
-import useFarmerSiloHistory from '~/hooks/farmer/useFarmerSiloHistory';
+import useCosmonautSiloHistory from '~/hooks/cosmomage/useCosmonautSiloHistory';
 import { FC } from '~/types';
 import { BaseDataPoint } from '~/components/Common/Charts/ChartPropProvider';
 
-import stalkIconWinter from '~/img/beanstalk/stalk-icon-green.svg';
-import seedIconWinter from '~/img/beanstalk/seed-icon-green.svg';
+import mageIconWinter from '~/img/moonmage/mage-icon-green.svg';
+import seedIconWinter from '~/img/moonmage/seed-icon-green.svg';
 
 const depositStats = (s: BigNumber, v: BigNumber[]) => (
   <Stat
@@ -35,7 +35,7 @@ const depositStats = (s: BigNumber, v: BigNumber[]) => (
         Shows the historical value of your Silo Deposits. <br />
         <Typography variant="bodySmall">
           Note: Unripe assets are valued based on the current Chop Rate. Earned
-          Beans are shown upon Plant.
+          Moons are shown upon Plant.
         </Typography>
       </>
     }
@@ -51,59 +51,59 @@ const depositStats = (s: BigNumber, v: BigNumber[]) => (
 const seedsStats = (s: BigNumber, v: BigNumber[]) => (
   <Stat
     title="Seed Balance"
-    titleTooltip="Seeds are illiquid tokens that yield 1/10,000 Stalk each Season."
+    titleTooltip="Seeds are illiquid tokens that yield 1/10,000 Mage each Season."
     subtitle={`Season ${s.toString()}`}
-    amount={displayStalk(v[0])}
+    amount={displayMage(v[0])}
     sx={{ minWidth: 180, ml: 0 }}
     amountIcon={undefined}
     gap={0.25}
   />
 );
 
-const SLUGS = ['deposits', 'stalk', 'seeds'];
+const SLUGS = ['deposits', 'mage', 'seeds'];
 
 const Overview: FC<{
-  farmerSilo: AppState['_farmer']['silo'];
-  beanstalkSilo: AppState['_beanstalk']['silo'];
-  breakdown: ReturnType<typeof useFarmerBalancesBreakdown>;
+  cosmomageSilo: AppState['_cosmomage']['silo'];
+  moonmageSilo: AppState['_moonmage']['silo'];
+  breakdown: ReturnType<typeof useCosmonautBalancesBreakdown>;
   season: BigNumber;
-}> = ({ farmerSilo, beanstalkSilo, breakdown, season }) => {
+}> = ({ cosmomageSilo, moonmageSilo, breakdown, season }) => {
   const [tab, handleChange] = useTabs(SLUGS, 'view');
 
   //
   const account = useAccount();
-  const { data, loading } = useFarmerSiloHistory(account, false, true);
+  const { data, loading } = useCosmonautSiloHistory(account, false, true);
 
   //
   const ownership =
-    farmerSilo.stalk.active?.gt(0) && beanstalkSilo.stalk.total?.gt(0)
-      ? farmerSilo.stalk.active.div(beanstalkSilo.stalk.total)
+    cosmomageSilo.mage.active?.gt(0) && moonmageSilo.mage.total?.gt(0)
+      ? cosmomageSilo.mage.active.div(moonmageSilo.mage.total)
       : ZERO_BN;
-  const stalkStats = useCallback(
+  const mageStats = useCallback(
     (s: BigNumber, v: BigNumber[]) => (
       <>
         <Stat
-          title="Stalk Balance"
-          titleTooltip="Stalk is the governance token of the Beanstalk DAO. Stalk entitles holders to passive interest in the form of a share of future Bean mints, and the right to propose and vote on BIPs. Your Stalk is forfeited when you Withdraw your Deposited assets from the Silo."
+          title="Mage Balance"
+          titleTooltip="Mage is the governance token of the Moonmage DAO. Mage entitles holders to passive interest in the form of a share of future Moon mints, and the right to propose and vote on BIPs. Your Mage is forfeited when you Withdraw your Deposited assets from the Silo."
           subtitle={`Season ${s.toString()}`}
-          amount={displayStalk(v[0])}
+          amount={displayMage(v[0])}
           color="text.primary"
           sx={{ minWidth: 220, ml: 0 }}
           gap={0.25}
         />
         <Stat
-          title="Stalk Ownership"
-          titleTooltip="Your current ownership of Beanstalk is displayed as a percentage. Ownership is determined by your proportional ownership of the total Stalk supply."
+          title="Mage Ownership"
+          titleTooltip="Your current ownership of Moonmage is displayed as a percentage. Ownership is determined by your proportional ownership of the total Mage supply."
           amount={displayPercentage(ownership.multipliedBy(100))}
           color="text.primary"
           gap={0.25}
           sx={{ minWidth: 200, ml: 0 }}
         />
         <Stat
-          title="Stalk Grown per Day"
-          titleTooltip="The number of Stalk your Seeds will grow every 24 Seasons based on your current Seed balance."
-          amount={displayStalk(
-            farmerSilo.seeds.active.times(STALK_PER_SEED_PER_SEASON).times(24)
+          title="Mage Grown per Day"
+          titleTooltip="The number of Mage your Seeds will grow every 24 Seasons based on your current Seed balance."
+          amount={displayMage(
+            cosmomageSilo.seeds.active.times(MAGE_PER_SEED_PER_SEASON).times(24)
           )}
           color="text.primary"
           gap={0.25}
@@ -111,7 +111,7 @@ const Overview: FC<{
         />
       </>
     ),
-    [farmerSilo, ownership]
+    [cosmomageSilo, ownership]
   );
 
   return (
@@ -126,10 +126,10 @@ const Overview: FC<{
         />
         <StyledTab
           label={
-            <ChipLabel name="Stalk">
+            <ChipLabel name="Mage">
               <Row alignItems="center">
-                <TokenIcon token={STALK} logoOverride={stalkIconWinter} />{' '}
-                {displayStalk(farmerSilo.stalk.active, 0)}
+                <TokenIcon token={MAGE} logoOverride={mageIconWinter} />{' '}
+                {displayMage(cosmomageSilo.mage.active, 0)}
               </Row>
             </ChipLabel>
           }
@@ -139,7 +139,7 @@ const Overview: FC<{
             <ChipLabel name="Seeds">
               <Row alignItems="center">
                 <TokenIcon token={SEEDS} logoOverride={seedIconWinter} />{' '}
-                {displayStalk(farmerSilo.seeds.active, 0)}
+                {displayMage(cosmomageSilo.seeds.active, 0)}
               </Row>
             </ChipLabel>
           }
@@ -164,27 +164,27 @@ const Overview: FC<{
       </Box>
       <Box sx={{ display: tab === 1 ? 'block' : 'none' }}>
         <OverviewPlot
-          label="Stalk Ownership"
+          label="Mage Ownership"
           account={account}
           current={useMemo(
             () => [
-              farmerSilo.stalk.active,
+              cosmomageSilo.mage.active,
               // Show zero while these data points are loading
               ownership,
             ],
-            [farmerSilo.stalk.active, ownership]
+            [cosmomageSilo.mage.active, ownership]
           )}
           series={useMemo(
             () => [
-              data.stalk,
+              data.mage,
               // mockOwnershipPctData
             ],
-            [data.stalk]
+            [data.mage]
           )}
           season={season}
-          stats={stalkStats}
+          stats={mageStats}
           loading={loading}
-          empty={farmerSilo.stalk.total.lte(0)}
+          empty={cosmomageSilo.mage.total.lte(0)}
         />
       </Box>
       <Box sx={{ display: tab === 2 ? 'block' : 'none' }}>
@@ -192,14 +192,14 @@ const Overview: FC<{
           label="Seeds Ownership"
           account={account}
           current={useMemo(
-            () => [farmerSilo.seeds.active],
-            [farmerSilo.seeds.active]
+            () => [cosmomageSilo.seeds.active],
+            [cosmomageSilo.seeds.active]
           )}
           series={useMemo(() => [data.seeds], [data.seeds])}
           season={season}
           stats={seedsStats}
           loading={loading}
-          empty={farmerSilo.seeds.total.lte(0)}
+          empty={cosmomageSilo.seeds.total.lte(0)}
         />
       </Box>
     </Module>

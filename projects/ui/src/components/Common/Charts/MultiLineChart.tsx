@@ -4,7 +4,7 @@ import { Group } from '@visx/group';
 import { useTooltip, useTooltipInPortal } from '@visx/tooltip';
 import ParentSize from '@visx/responsive/lib/components/ParentSize';
 import { Axis, Orientation } from '@visx/axis';
-import { BeanstalkPalette } from '~/components/App/muiTheme';
+import { MoonmagePalette } from '~/components/App/muiTheme';
 import ChartPropProvider, {
   BaseChartProps,
   BaseDataPoint,
@@ -174,7 +174,7 @@ const MultiLineChartInner: React.FC<Props> = (props) => {
             <Line
               from={{ x: 0, y: scales[0].yScale(1) }}
               to={{ x: width - common.yAxisWidth, y: scales[0].yScale(1) }}
-              stroke={BeanstalkPalette.grey}
+              stroke={MoonmagePalette.grey}
               strokeWidth={0.5}
             />
           )}
@@ -230,7 +230,7 @@ const MultiLineChartInner: React.FC<Props> = (props) => {
             <Line
               from={{ x: tooltipLeft, y: dataRegion.yTop }}
               to={{ x: tooltipLeft, y: dataRegion.yBottom }}
-              stroke={BeanstalkPalette.lightGrey}
+              stroke={MoonmagePalette.lightGrey}
               strokeWidth={1}
               pointerEvents="none"
             />
@@ -279,7 +279,7 @@ const MultiLineChart: React.FC<BaseChartProps> = (props) => (
                       x: childProps.width - providerProps.common.yAxisWidth,
                       y: childProps.scales[0].yScale(props.horizontalLineNumber) as number,
                     }}
-                    stroke={BeanstalkPalette.logoGreen}
+                    stroke={MoonmagePalette.logoGreen}
                     strokeDasharray={4}
                     strokeDashoffset={2}
                     strokeWidth={1}

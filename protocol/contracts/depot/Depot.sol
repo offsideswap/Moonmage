@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "../farm/facets/DepotFacet.sol";
 import "../farm/facets/TokenSupportFacet.sol";
-import "../interfaces/IBeanstalkTransfer.sol";
+import "../interfaces/IMoonmageTransfer.sol";
 import "../interfaces/IERC4494.sol";
 import "../libraries/LibFunction.sol";
 
@@ -25,8 +25,8 @@ contract Depot is DepotFacet, TokenSupportFacet {
 
     using SafeERC20 for IERC20;
 
-    IBeanstalkTransfer private constant beanstalk =
-        IBeanstalkTransfer(0xC1E088fC1323b20BCBee9bd1B9fC9546db5624C5);
+    IMoonmageTransfer private constant moonmage =
+        IMoonmageTransfer(0xC1E088fC1323b20BCBee9bd1B9fC9546db5624C5);
 
     /**
      * 
@@ -60,7 +60,7 @@ contract Depot is DepotFacet, TokenSupportFacet {
     **/
 
     /**
-     * @notice Execute a Beanstalk ERC-20 token transfer.
+     * @notice Execute a Moonmage ERC-20 token transfer.
      * @dev See {TokenFacet-transferToken}.
      * @dev Only supports INTERNAL and EXTERNAL From modes.
     **/
@@ -74,14 +74,14 @@ contract Depot is DepotFacet, TokenSupportFacet {
         if (fromMode == From.EXTERNAL) {
             token.safeTransferFrom(msg.sender, recipient, amount);
         } else if (fromMode == From.INTERNAL) {
-            beanstalk.transferInternalTokenFrom(token, msg.sender, recipient, amount, toMode);
+            moonmage.transferInternalTokenFrom(token, msg.sender, recipient, amount, toMode);
         } else {
             revert("Mode not supported");
         }
     }
 
     /**
-     * @notice Execute a single Beanstalk Deposit transfer.
+     * @notice Execute a single Moonmage Deposit transfer.
      * @dev See {SiloFacet-transferDeposit}.
     **/
     function transferDeposit(
@@ -92,11 +92,11 @@ contract Depot is DepotFacet, TokenSupportFacet {
         uint256 amount
     ) external payable returns (uint256 bdv) {
         require(sender == msg.sender, "invalid sender");
-        bdv = beanstalk.transferDeposit(msg.sender, recipient, token, season, amount);
+        bdv = moonmage.transferDeposit(msg.sender, recipient, token, season, amount);
     }
 
     /**
-     * @notice Execute multiple Beanstalk Deposit transfers of a single Whitelisted Tokens.
+     * @notice Execute multiple Moonmage Deposit transfers of a single Whitelisted Tokens.
      * @dev See {SiloFacet-transferDeposits}.
     **/
     function transferDeposits(
@@ -107,7 +107,7 @@ contract Depot is DepotFacet, TokenSupportFacet {
         uint256[] calldata amounts
     ) external payable returns (uint256[] memory bdvs) {
         require(sender == msg.sender, "invalid sender");
-        bdvs = beanstalk.transferDeposits(msg.sender, recipient, token, seasons, amounts);
+        bdvs = moonmage.transferDeposits(msg.sender, recipient, token, seasons, amounts);
     }
 
     /**
@@ -117,7 +117,7 @@ contract Depot is DepotFacet, TokenSupportFacet {
     **/
 
     /**
-     * @notice Execute a permit for an ERC-20 Token stored in a Beanstalk Farm balance.
+     * @notice Execute a permit for an ERC-20 Token stored in a Moonmage Farm balance.
      * @dev See {TokenFacet-permitToken}.
     **/
     function permitToken(
@@ -130,11 +130,11 @@ contract Depot is DepotFacet, TokenSupportFacet {
         bytes32 r,
         bytes32 s
     ) external payable {
-        beanstalk.permitToken(owner, spender, token, value, deadline, v, r, s);
+        moonmage.permitToken(owner, spender, token, value, deadline, v, r, s);
     }
 
     /**
-     * @notice Execute a permit for Beanstalk Deposits of a single Whitelisted Token.
+     * @notice Execute a permit for Moonmage Deposits of a single Whitelisted Token.
      * @dev See {SiloFacet-permitDeposit}.
     **/
     function permitDeposit(
@@ -147,11 +147,11 @@ contract Depot is DepotFacet, TokenSupportFacet {
         bytes32 r,
         bytes32 s
     ) external payable {
-        beanstalk.permitDeposit(owner, spender, token, value, deadline, v, r, s);
+        moonmage.permitDeposit(owner, spender, token, value, deadline, v, r, s);
     }
 
     /**
-     * @notice Execute a permit for a Beanstalk Deposits of a multiple Whitelisted Tokens.
+     * @notice Execute a permit for a Moonmage Deposits of a multiple Whitelisted Tokens.
      * @dev See {SiloFacet-permitDeposits}.
     **/
     function permitDeposits(
@@ -164,6 +164,6 @@ contract Depot is DepotFacet, TokenSupportFacet {
         bytes32 r,
         bytes32 s
     ) external payable {
-        beanstalk.permitDeposits(owner, spender, tokens, values, deadline, v, r, s);
+        moonmage.permitDeposits(owner, spender, tokens, values, deadline, v, r, s);
     }
 }

@@ -14,13 +14,13 @@ import {
 } from '../info/atom-context';
 import DropdownIcon from '~/components/Common/DropdownIcon';
 import MarketActivityTable from '../Tables/MarketActivity';
-import FarmerMarketActivityTable from '../Tables/FarmerOrders';
+import CosmomageStationActivityTable from '../Tables/CosmonautOrders';
 import CondensedCard from '~/components/Common/Card/CondensedCard';
 import AllActiveListings from '../Tables/AllActiveListings';
 import AllActiveOrders from '../Tables/AllActiveOrders';
-import useMarketActivityData from '~/hooks/beanstalk/useMarketActivityData';
-import useFarmerMarket from '~/hooks/farmer/market/useFarmerMarket2';
-import useMarketData from '~/hooks/beanstalk/useMarketData';
+import useMarketActivityData from '~/hooks/moonmage/useMarketActivityData';
+import useCosmomageStation from '~/hooks/cosmomage/market/useCosmomageStation2';
+import useMarketData from '~/hooks/moonmage/useMarketData';
 
 const sx = {
   tabs: {
@@ -49,7 +49,7 @@ const MarketTables: React.FC<{}> = () => {
   // DATA
   // pull queries out of their respecitive hooks to avoid re-fetching
   const marketData = useMarketData(); // "BUY NOW" and "SELL NOW"
-  const { data: farmerMarket } = useFarmerMarket(); // "YOUR ORDERS"
+  const { data: cosmomageMarket } = useCosmomageStation(); // "YOUR ORDERS"
   const { data: eventsData, harvestableIndex, fetchMoreData } = useMarketActivityData(); // "MARKET ACTIVITY"
 
   // FUNCTIONS
@@ -120,9 +120,9 @@ const MarketTables: React.FC<{}> = () => {
             <AllActiveOrders data={marketData} />
           )}
           {openState !== 0 && tab === 2 && (
-            <FarmerMarketActivityTable
-              data={farmerMarket}
-              initializing={!farmerMarket.length || harvestableIndex.lte(0)}
+            <CosmomageStationActivityTable
+              data={cosmomageMarket}
+              initializing={!cosmomageMarket.length || harvestableIndex.lte(0)}
             />
           )}
           {openState !== 0 && tab === 3 && (

@@ -5,9 +5,9 @@ import { StyledDialog, StyledDialogActions, StyledDialogContent, StyledDialogTit
 import Token from '~/classes/Token';
 import { displayBN } from '~/util';
 import { ZERO_BN } from '~/constants';
-import { FarmerBalances } from '~/state/farmer/balances';
-import { FarmerSilo } from '~/state/farmer/silo';
-import { BeanstalkPalette, FontSize, IconSize } from '../../App/muiTheme';
+import { CosmonautBalances } from '~/state/cosmomage/balances';
+import { CosmonautSilo } from '~/state/cosmomage/silo';
+import { MoonmagePalette, FontSize, IconSize } from '../../App/muiTheme';
 import Row from '~/components/Common/Row';
 import BalanceFromRow, { BalanceFrom } from './BalanceFromRow';
 import { ETH } from '~/constants/tokens';
@@ -16,8 +16,8 @@ import useGetChainToken from '~/hooks/chain/useGetChainToken';
 export enum TokenSelectMode { MULTI, SINGLE }
 
 export type TokenBalanceMode = {
-  'farm': FarmerBalances;
-  'silo-deposits': FarmerSilo['balances'];
+  'farm': CosmonautBalances;
+  'silo-deposits': CosmonautSilo['balances'];
 }
 
 export type TokenSelectDialogProps<K extends keyof TokenBalanceMode> = {
@@ -42,11 +42,11 @@ export type TokenSelectDialogProps<K extends keyof TokenBalanceMode> = {
    * 
    */
   balancesType?: K;
-  /** The Farmer's current balances. Displayed alongside each token.
+  /** The Cosmonaut's current balances. Displayed alongside each token.
    * Shows 0 for missing balances if `balances` is an object.
    * Shows nothing if `balances` is undefined`. */
   balances?: TokenBalanceMode[K] | undefined;
-  // balances: FarmerSiloBalance['deposited'] | FarmerBalances | undefined;
+  // balances: CosmonautSiloBalance['deposited'] | CosmonautBalances | undefined;
   /** A list of tokens to show in the Dialog. */
   tokenList: Token[];
   /** Single or multi-select */
@@ -193,7 +193,7 @@ const TokenSelectDialog : TokenSelectDialogC = React.memo(({
                   '& .MuiListItemText-secondary': {
                     fontSize: FontSize.base,
                     lineHeight: '1.25rem',
-                    color: BeanstalkPalette.lightGrey
+                    color: MoonmagePalette.lightGrey
                   }
                 }}
               >
@@ -237,7 +237,7 @@ const TokenSelectDialog : TokenSelectDialogC = React.memo(({
           {_balances ? (
             <Typography ml={1} pt={0.5} textAlign="center" fontSize={FontSize.sm} color="gray">
               {balanceFromText[balanceFrom]}&nbsp;
-              <Link href="https://docs.bean.money/almanac/protocol/asset-states" target="_blank" rel="noreferrer" underline="none">
+              <Link href="https://docs.moon.money/almanac/protocol/asset-states" target="_blank" rel="noreferrer" underline="none">
                 Learn more &rarr;
               </Link>
             </Typography>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, CircularProgress, Stack } from '@mui/material';
-import { BASE_IPFS_LINK, BEANFT_GENESIS_ADDRESSES, BEANFT_WINTER_ADDRESSES } from '../../constants';
-import { BeanstalkPalette } from '~/components/App/muiTheme';
+import { BASE_IPFS_LINK, MOONFT_GENESIS_ADDRESSES, MOONFT_WINTER_ADDRESSES } from '../../constants';
+import { MoonmagePalette } from '~/components/App/muiTheme';
 import { Nft } from '~/util';
 
 import { FC } from '~/types';
@@ -12,8 +12,8 @@ export interface NFTContentProps {
 
 /** Maps an NFT collection to its ETH address. */
 export const nftCollections: {[c: string]: string} = {
-  Genesis: BEANFT_GENESIS_ADDRESSES[1],
-  Winter: BEANFT_WINTER_ADDRESSES[1]
+  Genesis: MOONFT_GENESIS_ADDRESSES[1],
+  Winter: MOONFT_WINTER_ADDRESSES[1]
 };
 
 const NFTImage: FC<NFTContentProps> = ({
@@ -39,7 +39,7 @@ const NFTImage: FC<NFTContentProps> = ({
             width: '100%',
             aspectRatio: '1/1',
             borderRadius: '7px',
-            backgroundColor: BeanstalkPalette.lightestBlue
+            backgroundColor: MoonmagePalette.lightestBlue
           }}>
           <CircularProgress />
         </Stack>

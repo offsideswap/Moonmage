@@ -10,7 +10,7 @@ module.exports = {
     './libraries/LibDiamond.sol',
     './facets/DiamondLoupeFacet.sol',
     './libraries/Convert/LibPlainCurveConvert.sol',
-    './libraries/Curve/LibBeanLUSDCurve.sol'
+    './libraries/Curve/LibMoonLUSDCurve.sol'
   ]
 
 };

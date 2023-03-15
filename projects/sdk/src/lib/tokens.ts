@@ -1,6 +1,6 @@
 import { addresses, ZERO_BN } from "src/constants";
-import { Token, BeanstalkToken, ERC20Token, NativeToken } from "src/classes/Token";
-import { BeanstalkSDK } from "./BeanstalkSDK";
+import { Token, MoonmageToken, ERC20Token, NativeToken } from "src/classes/Token";
+import { MoonmageSDK } from "./MoonmageSDK";
 import { EIP2612PermitMessage, EIP712Domain, EIP712TypedData, Permit } from "./permit";
 import { TokenValue } from "src/classes/TokenValue";
 import { BigNumber } from "ethers";
@@ -12,25 +12,25 @@ export type TokenBalance = {
 };
 
 export class Tokens {
-  private sdk: BeanstalkSDK;
+  private sdk: MoonmageSDK;
   public readonly ETH: NativeToken;
   public readonly WETH: ERC20Token;
-  public readonly BEAN: ERC20Token;
+  public readonly MOON: ERC20Token;
   public readonly ROOT: ERC20Token;
   public readonly CRV3: ERC20Token;
   public readonly DAI: ERC20Token;
   public readonly USDC: ERC20Token;
   public readonly USDT: ERC20Token;
   public readonly LUSD: ERC20Token;
-  public readonly BEAN_ETH_UNIV2_LP: ERC20Token;
-  public readonly BEAN_CRV3_LP: ERC20Token;
-  public readonly UNRIPE_BEAN: ERC20Token;
-  public readonly UNRIPE_BEAN_CRV3: ERC20Token;
-  public readonly STALK: BeanstalkToken;
-  public readonly SEEDS: BeanstalkToken;
-  public readonly PODS: BeanstalkToken;
-  public readonly SPROUTS: BeanstalkToken;
-  public readonly RINSABLE_SPROUTS: BeanstalkToken;
+  public readonly MOON_ETH_UNIV2_LP: ERC20Token;
+  public readonly MOON_CRV3_LP: ERC20Token;
+  public readonly UNRIPE_MOON: ERC20Token;
+  public readonly UNRIPE_MOON_CRV3: ERC20Token;
+  public readonly MAGE: MoonmageToken;
+  public readonly SEEDS: MoonmageToken;
+  public readonly PODS: MoonmageToken;
+  public readonly SPROUTS: MoonmageToken;
+  public readonly RINSABLE_SPROUTS: MoonmageToken;
 
   public unripeTokens: Set<Token>;
   public unripeUnderlyingTokens: Set<Token>;
@@ -41,7 +41,7 @@ export class Tokens {
 
   private map: Map<string, Token>;
 
-  constructor(sdk: BeanstalkSDK) {
+  constructor(sdk: MoonmageSDK) {
     this.sdk = sdk;
     this.map = new Map();
 
@@ -61,113 +61,113 @@ export class Tokens {
     this.map.set("eth", this.ETH);
     this.map.set(addresses.WETH.get(this.sdk.chainId), this.WETH);
 
-    ////////// Beanstalk //////////
+    ////////// Moonmage //////////
 
-    this.STALK = new BeanstalkToken(this.sdk, null, 10, {
-      name: "Stalk",
-      symbol: "STALK"
+    this.MAGE = new MoonmageToken(this.sdk, null, 10, {
+      name: "Mage",
+      symbol: "MAGE"
     });
 
-    this.SEEDS = new BeanstalkToken(this.sdk, null, 6, {
+    this.SEEDS = new MoonmageToken(this.sdk, null, 6, {
       name: "Seeds",
       symbol: "SEED"
     });
 
-    this.BEAN = new ERC20Token(
+    this.MOON = new ERC20Token(
       this.sdk,
-      addresses.BEAN.get(this.sdk.chainId),
+      addresses.MOON.get(this.sdk.chainId),
       6,
       {
-        name: "Bean",
-        displayName: "Bean",
-        symbol: "BEAN"
+        name: "Moon",
+        displayName: "Moon",
+        symbol: "MOON"
       },
       {
-        stalk: this.STALK.amount(1),
+        mage: this.MAGE.amount(1),
         seeds: this.SEEDS.amount(2)
       }
     );
 
-    this.BEAN_CRV3_LP = new ERC20Token(
+    this.MOON_CRV3_LP = new ERC20Token(
       this.sdk,
-      addresses.BEAN_CRV3.get(this.sdk.chainId),
+      addresses.MOON_CRV3.get(this.sdk.chainId),
       18,
       {
-        name: "Curve.fi Factory USD Metapool: Bean", // see .name()
-        displayName: "BEAN:3CRV LP",
-        symbol: "BEAN3CRV",
+        name: "Curve.fi Factory USD Metapool: Moon", // see .name()
+        displayName: "MOON:3CRV LP",
+        symbol: "MOON3CRV",
         isLP: true,
         color: "#DFB385"
       },
       {
-        stalk: this.STALK.amount(1),
+        mage: this.MAGE.amount(1),
         seeds: this.SEEDS.amount(4)
       }
     );
 
-    this.UNRIPE_BEAN = new ERC20Token(
+    this.UNRIPE_MOON = new ERC20Token(
       this.sdk,
-      addresses.UNRIPE_BEAN.get(this.sdk.chainId),
+      addresses.UNRIPE_MOON.get(this.sdk.chainId),
       6,
       {
-        name: "Unripe Bean", // see `.name()`
-        displayName: "Unripe Bean",
-        symbol: "urBEAN",
+        name: "Unripe Moon", // see `.name()`
+        displayName: "Unripe Moon",
+        symbol: "urMOON",
         displayDecimals: 2,
         isUnripe: true
       },
       {
-        stalk: this.STALK.amount(1),
+        mage: this.MAGE.amount(1),
         seeds: this.SEEDS.amount(2)
       }
     );
 
-    this.UNRIPE_BEAN_CRV3 = new ERC20Token(
+    this.UNRIPE_MOON_CRV3 = new ERC20Token(
       this.sdk,
-      addresses.UNRIPE_BEAN_CRV3.get(this.sdk.chainId),
+      addresses.UNRIPE_MOON_CRV3.get(this.sdk.chainId),
       6,
       {
-        name: "Unripe BEAN3CRV", // see `.name()`
-        displayName: "Unripe BEAN:3CRV LP",
-        symbol: "urBEAN3CRV",
+        name: "Unripe MOON3CRV", // see `.name()`
+        displayName: "Unripe MOON:3CRV LP",
+        symbol: "urMOON3CRV",
         displayDecimals: 2,
         isUnripe: true
       },
       {
-        stalk: this.STALK.amount(1),
+        mage: this.MAGE.amount(1),
         seeds: this.SEEDS.amount(4)
       }
     );
 
-    this.map.set(addresses.BEAN.get(this.sdk.chainId), this.BEAN);
-    this.map.set(addresses.BEAN_CRV3.get(this.sdk.chainId), this.BEAN_CRV3_LP);
-    this.map.set(addresses.UNRIPE_BEAN.get(this.sdk.chainId), this.UNRIPE_BEAN);
-    this.map.set(addresses.UNRIPE_BEAN_CRV3.get(this.sdk.chainId), this.UNRIPE_BEAN_CRV3);
+    this.map.set(addresses.MOON.get(this.sdk.chainId), this.MOON);
+    this.map.set(addresses.MOON_CRV3.get(this.sdk.chainId), this.MOON_CRV3_LP);
+    this.map.set(addresses.UNRIPE_MOON.get(this.sdk.chainId), this.UNRIPE_MOON);
+    this.map.set(addresses.UNRIPE_MOON_CRV3.get(this.sdk.chainId), this.UNRIPE_MOON_CRV3);
 
-    ////////// Beanstalk "Tokens" (non ERC-20) //////////
+    ////////// Moonmage "Tokens" (non ERC-20) //////////
 
-    this.PODS = new BeanstalkToken(this.sdk, null, 6, {
+    this.PODS = new MoonmageToken(this.sdk, null, 6, {
       name: "Pods",
       symbol: "PODS"
     });
 
-    this.SPROUTS = new BeanstalkToken(this.sdk, null, 6, {
+    this.SPROUTS = new MoonmageToken(this.sdk, null, 6, {
       name: "Sprouts",
       symbol: "SPROUT"
     });
 
-    this.RINSABLE_SPROUTS = new BeanstalkToken(this.sdk, null, 6, {
+    this.RINSABLE_SPROUTS = new MoonmageToken(this.sdk, null, 6, {
       name: "Rinsable Sprouts",
       symbol: "rSPROUT"
     });
 
-    this.map.set("STALK", this.STALK);
+    this.map.set("MAGE", this.MAGE);
     this.map.set("SEED", this.SEEDS);
     this.map.set("PODS", this.PODS);
     this.map.set("SPROUT", this.SPROUTS);
     this.map.set("rSPROUT", this.RINSABLE_SPROUTS);
 
-    ////////// Beanstalk Ecosystem Tokens //////////
+    ////////// Moonmage Ecosystem Tokens //////////
 
     this.ROOT = new ERC20Token(this.sdk, addresses.ROOT.get(this.sdk.chainId), 18, {
       name: "Root",
@@ -212,32 +212,32 @@ export class Tokens {
 
     ////////// Legacy //////////
 
-    // Keep the old BEAN_ETH and BEAN_LUSD tokens to let
+    // Keep the old MOON_ETH and MOON_LUSD tokens to let
     // the Pick dialog properly display pickable assets.
-    this.BEAN_ETH_UNIV2_LP = new ERC20Token(
+    this.MOON_ETH_UNIV2_LP = new ERC20Token(
       this.sdk,
-      addresses.BEAN_ETH_UNIV2_LP.get(this.sdk.chainId),
+      addresses.MOON_ETH_UNIV2_LP.get(this.sdk.chainId),
       18,
       {
-        name: "BEAN:ETH LP",
-        symbol: "BEAN:ETH",
+        name: "MOON:ETH LP",
+        symbol: "MOON:ETH",
 
         displayDecimals: 9,
         isLP: true
       },
       {
-        stalk: this.STALK.amount(1),
+        mage: this.MAGE.amount(1),
         seeds: this.SEEDS.amount(4)
       }
     );
 
-    this.map.set(addresses.BEAN_ETH_UNIV2_LP.get(this.sdk.chainId), this.BEAN_ETH_UNIV2_LP);
+    this.map.set(addresses.MOON_ETH_UNIV2_LP.get(this.sdk.chainId), this.MOON_ETH_UNIV2_LP);
 
     ////////// Groups //////////
 
-    this.unripeTokens = new Set([this.UNRIPE_BEAN, this.UNRIPE_BEAN_CRV3]);
-    this.unripeUnderlyingTokens = new Set([this.BEAN, this.BEAN_CRV3_LP]);
-    this.siloWhitelist = new Set([this.BEAN, this.BEAN_CRV3_LP, this.UNRIPE_BEAN, this.UNRIPE_BEAN_CRV3]);
+    this.unripeTokens = new Set([this.UNRIPE_MOON, this.UNRIPE_MOON_CRV3]);
+    this.unripeUnderlyingTokens = new Set([this.MOON, this.MOON_CRV3_LP]);
+    this.siloWhitelist = new Set([this.MOON, this.MOON_CRV3_LP, this.UNRIPE_MOON, this.UNRIPE_MOON_CRV3]);
     this.erc20Tokens = new Set([...this.siloWhitelist, this.WETH, this.CRV3, this.DAI, this.USDC, this.USDT]);
     this.balanceTokens = new Set([this.ETH, ...this.erc20Tokens]);
     this.crv3Underlying = new Set([this.DAI, this.USDC, this.USDT]);
@@ -311,8 +311,8 @@ export class Tokens {
 
   /**
    * Return a TokenBalance for a requested token.
-   * Includes the Farmer's INTERNAL and EXTERNAL balance in one item.
-   * This is the typical representation of balances within Beanstalk.
+   * Includes the Cosmonaut's INTERNAL and EXTERNAL balance in one item.
+   * This is the typical representation of balances within Moonmage.
    */
   public async getBalance(_token: string | Token, _account?: string): Promise<TokenBalance> {
     const account = await this.sdk.getAccount(_account);
@@ -331,15 +331,15 @@ export class Tokens {
     // FIXME: use the ERC20 token contract directly to load decimals for parsing?
     const [token, tokenAddress] = this.deriveToken(_token);
 
-    const balance = await this.sdk.contracts.beanstalk.getAllBalance(account, tokenAddress);
+    const balance = await this.sdk.contracts.moonmage.getAllBalance(account, tokenAddress);
 
     return this.makeTokenBalance(token, balance);
   }
 
   /**
    * Return a TokenBalance struct for each requested token.
-   * Includes the Farmer's INTERNAL and EXTERNAL balance in one item.
-   * This is the typical representation of balances within Beanstalk.
+   * Includes the Cosmonaut's INTERNAL and EXTERNAL balance in one item.
+   * This is the typical representation of balances within Moonmage.
    *
    * @todo discuss parameter inversion between getBalance() and getBalances().
    */
@@ -351,7 +351,7 @@ export class Tokens {
     // FIXME: only allow ERC20 tokens with getBalance() method, or
     // override if token is NativeToken
     const balances = new Map<Token, TokenBalance>();
-    const results = await this.sdk.contracts.beanstalk.getAllBalances(account, tokenAddresses);
+    const results = await this.sdk.contracts.moonmage.getAllBalances(account, tokenAddresses);
 
     results.forEach((result, index) => {
       const token = this.findByAddress(tokenAddresses[index]);

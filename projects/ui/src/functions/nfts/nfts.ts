@@ -28,5 +28,5 @@ const _handler: Handler = async (event) => {
 };
 
 export const handler = middy(_handler)
-  .use(cors({ origin: '*.bean.money' }))
+  .use(cors({ origin: '*.moon.money' }))
   .use(rateLimit());

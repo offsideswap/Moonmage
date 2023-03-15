@@ -69,7 +69,7 @@ describe("UnripeClaim", function () {
   before(async function () {
     [owner, user, user2, user3, user4, user5] = await ethers.getSigners();
     const contracts = await deploy("Test", false, true);
-    this.diamond = contracts.beanstalkDiamond;
+    this.diamond = contracts.moonmageDiamond;
     this.unripeClaim = await ethers.getContractAt(
       "MockUnripeFacet",
       this.diamond.address

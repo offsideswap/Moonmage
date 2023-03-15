@@ -7,10 +7,10 @@ import { ethers } from 'ethers';
 import { useSigner } from '~/hooks/ledger/useSigner';
 import { Token } from '~/classes';
 import StyledAccordionSummary from '~/components/Common/Accordion/AccordionSummary';
-import { useBeanstalkContract } from '~/hooks/ledger/useContract';
-import { FarmerSiloBalance } from '~/state/farmer/silo';
+import { useMoonmageContract } from '~/hooks/ledger/useContract';
+import { CosmonautSiloBalance } from '~/state/cosmomage/silo';
 import { ActionType } from '~/util/Actions';
-import usePools from '~/hooks/beanstalk/usePools';
+import usePools from '~/hooks/moonmage/usePools';
 import { ERC20Token } from '~/classes/Token';
 import {
   FormTokenState,
@@ -23,7 +23,7 @@ import {
   SettingInput,
   SmartSubmitButton
 } from '~/components/Common/Form';
-import Farm, { FarmFromMode, FarmToMode } from '~/lib/Beanstalk/Farm';
+import Farm, { FarmFromMode, FarmToMode } from '~/lib/Moonmage/Farm';
 import { ZERO_BN } from '~/constants';
 import { displayTokenAmount, toStringBaseUnitBN, toTokenUnitsBN } from '~/util';
 import FarmModeField from '~/components/Common/Form/FarmModeField';
@@ -33,10 +33,10 @@ import { TokenSelectMode } from '~/components/Common/Form/TokenSelectDialog';
 import PillRow from '~/components/Common/Form/PillRow';
 import { QuoteHandler } from '~/hooks/ledger/useQuote';
 import TransactionToast from '~/components/Common/TxnToast';
-import { useFetchFarmerSilo } from '~/state/farmer/silo/updater';
-import { useFetchFarmerBalances } from '~/state/farmer/balances/updater';
+import { useFetchCosmonautSilo } from '~/state/cosmomage/silo/updater';
+import { useFetchCosmonautBalances } from '~/state/cosmomage/balances/updater';
 import useChainConstant from '~/hooks/chain/useChainConstant';
-import { BEAN_CRV3_LP } from '~/constants/tokens';
+import { MOON_CRV3_LP } from '~/constants/tokens';
 import copy from '~/constants/copy';
 import { FC } from '~/types';
 import useFormMiddleware from '~/hooks/ledger/useFormMiddleware';
@@ -78,7 +78,7 @@ const ClaimForm : FC<
   setFieldValue,
 }) => {
   const pools = usePools();
-  const BeanCrv3 = useChainConstant(BEAN_CRV3_LP);
+  const MoonCrv3 = useChainConstant(MOON_CRV3_LP);
   
   // ASSUMPTION: Pool address === LP Token address
   // Lazy way to do this. Should key pools by lpToken.address.
@@ -228,7 +228,7 @@ const ClaimForm : FC<
                         token: token,
                         // message: `Claim ${displayTokenAmount(amount, token)}.`
                       },
-                      token === BeanCrv3 && values.tokenOut !== token ? {
+                      token === MoonCrv3 && values.tokenOut !== token ? {
                         type: ActionType.BASE,
                         message: `Unpack ${displayTokenAmount(amount, token)} into ${displayTokenAmount(values.token.amountOut || ZERO_BN, tokenOut)}.`
                       } : undefined,
@@ -266,7 +266,7 @@ const ClaimForm : FC<
 
 const Claim : FC<{
   token: ERC20Token;
-  siloBalance: FarmerSiloBalance;
+  siloBalance: CosmonautSiloBalance;
 }> = ({
   token,
   siloBalance
@@ -278,11 +278,11 @@ const Claim : FC<{
   const middleware = useFormMiddleware();
 
   /// Contracts
-  const beanstalk = useBeanstalkContract(signer);
+  const moonmage = useMoonmageContract(signer);
 
   /// Data
-  const [refetchFarmerSilo]     = useFetchFarmerSilo();
-  const [refetchFarmerBalances] = useFetchFarmerBalances();
+  const [refetchCosmonautSilo]     = useFetchCosmonautSilo();
+  const [refetchCosmonautBalances] = useFetchCosmonautBalances();
   const claimableBalance = siloBalance?.claimable.amount;
 
   // Form
@@ -331,7 +331,7 @@ const Claim : FC<{
       if (crates.length > 1) {
         console.debug(`[Claim] claiming ${crates.length} withdrawals`);
         data.push(
-          beanstalk.interface.encodeFunctionData('claimWithdrawals', [
+          moonmage.interface.encodeFunctionData('claimWithdrawals', [
             token.address,
             crates.map((crate) => crate.season.toString()),
             claimDestination,
@@ -343,7 +343,7 @@ const Claim : FC<{
       else {
         console.debug('[Claim] claiming a single withdrawal');
         data.push(
-          beanstalk.interface.encodeFunctionData('claimWithdrawal', [
+          moonmage.interface.encodeFunctionData('claimWithdrawal', [
             token.address,
             crates[0].season.toString(),
             claimDestination,
@@ -361,11 +361,11 @@ const Claim : FC<{
         data.push(...encoded);
       }
 
-      const txn = await beanstalk.farm(data, {});
+      const txn = await moonmage.farm(data, {});
       txToast.confirming(txn);
 
       const receipt = await txn.wait();
-      await Promise.all([refetchFarmerSilo(), refetchFarmerBalances()]);
+      await Promise.all([refetchCosmonautSilo(), refetchCosmonautBalances()]);
       txToast.success(receipt);
       formActions.resetForm();
     } catch (err) {
@@ -378,12 +378,12 @@ const Claim : FC<{
       formActions.setSubmitting(false);
     }
   }, [
-    beanstalk,
+    moonmage,
     siloBalance?.claimable,
     claimableBalance,
     token,
-    refetchFarmerSilo,
-    refetchFarmerBalances,
+    refetchCosmonautSilo,
+    refetchCosmonautBalances,
     middleware
   ]);
 

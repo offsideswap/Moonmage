@@ -3,7 +3,7 @@ const { expect, use } = require("chai");
 const { waffleChai } = require("@ethereum-waffle/chai");
 use(waffleChai);
 const { deploy } = require('../scripts/deploy.js')
-const { BEAN, ZERO_ADDRESS } = require('./utils/constants')
+const { MOON, ZERO_ADDRESS } = require('./utils/constants')
 const { takeSnapshot, revertToSnapshot } = require("./utils/snapshot");
 
 let snapshotId;
@@ -19,7 +19,7 @@ describe('Ownership', function () {
     provider = ethers.getDefaultProvider();
 
     ownerAddress = contracts.account;
-    this.diamond = contracts.beanstalkDiamond
+    this.diamond = contracts.moonmageDiamond
     this.pause = await ethers.getContractAt('PauseFacet', this.diamond.address);
     this.ownership = await ethers.getContractAt('OwnershipFacet', this.diamond.address);
     this.whitelist = await ethers.getContractAt('WhitelistFacet', this.diamond.address);

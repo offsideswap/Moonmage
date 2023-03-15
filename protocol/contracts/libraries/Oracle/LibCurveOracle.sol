@@ -5,13 +5,13 @@
 pragma solidity =0.7.6;
 pragma experimental ABIEncoderV2;
 
-import "../Curve/LibBeanMetaCurve.sol";
+import "../Curve/LibMoonMetaCurve.sol";
 import "../LibAppStorage.sol";
 import "../LibSafeMath32.sol";
 
 /**
  * @author Publius
- * @title Oracle tracks the TWAP price of the USDC/ETH and BEAN/ETH Uniswap pairs.
+ * @title Oracle tracks the TWAP price of the USDC/ETH and MOON/ETH Uniswap pairs.
  **/
 
 interface IMeta3CurveOracle {
@@ -102,8 +102,8 @@ library LibCurveOracle {
     {
         uint256[2] memory balances;
         (balances, cum_balances) = twap();
-        uint256 d = LibBeanMetaCurve.getDFroms(balances);
-        deltaB = LibBeanMetaCurve.getDeltaBWithD(balances[0], d);
+        uint256 d = LibMoonMetaCurve.getDFroms(balances);
+        deltaB = LibMoonMetaCurve.getDeltaBWithD(balances[0], d);
     }
 
     function twap()
@@ -150,7 +150,7 @@ library LibCurveOracle {
     }
 
     function checkForMaxDeltaB(int256 deltaB) private view returns (int256) {
-        int256 maxDeltaB = int256(C.bean().totalSupply().div(MAX_DELTA_B_DENOMINATOR));
+        int256 maxDeltaB = int256(C.moon().totalSupply().div(MAX_DELTA_B_DENOMINATOR));
         if (deltaB < 0) return deltaB > -maxDeltaB ? deltaB : -maxDeltaB;
         return deltaB < maxDeltaB ? deltaB : maxDeltaB;
     }

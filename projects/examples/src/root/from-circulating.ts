@@ -1,4 +1,4 @@
-import { ERC20Token, FarmFromMode, FarmToMode, TokenValue, TokenBalance, TestUtils, Clipboard, DataSource } from "@beanstalk/sdk";
+import { ERC20Token, FarmFromMode, FarmToMode, TokenValue, TokenBalance, TestUtils, Clipboard, DataSource } from "@moonmage/sdk";
 import { ethers } from "ethers";
 import { sdk, chain, account } from "../setup";
 
@@ -6,18 +6,18 @@ import { sdk, chain, account } from "../setup";
  * Running this example (November 2022)
  *
  * 1. Turn on a local Anvil node, ideally with --fork-block-number set to a recent block.
- * 2. Deploy Beanstalk V2.1 (includes Pipeline, Roots, etc.):
+ * 2. Deploy Moonmage V2.1 (includes Pipeline, Roots, etc.):
  *
  *    ```
  *    const { deployV2_1 } = require("./utils/mocks")
- *    task('beanstalkV2_1', async function () {
+ *    task('moonmageV2_1', async function () {
  *      await deployV2_1()
  *    })
  *    ```
  *
  *    then:
  *
- *    `npx hardhat beanstalkV2_1 --network localhost`
+ *    `npx hardhat moonmageV2_1 --network localhost`
  *
  * 3. Make sure the SDK is built: `yarn sdk:build` from root of this monorepo.
  * 4. `cd ./projects/examples`
@@ -55,7 +55,7 @@ export async function roots_from_circulating(token: ERC20Token, amount: TokenVal
     account,
     sdk.tokens.permitERC2612(
       account, // owner
-      sdk.contracts.beanstalk.address, // spender
+      sdk.contracts.moonmage.address, // spender
       token, // token
       amountStr // amount
     )
@@ -72,14 +72,14 @@ export async function roots_from_circulating(token: ERC20Token, amount: TokenVal
     pipe.add([
       (amountInStep) =>
         pipe.wrap(
-          sdk.tokens.BEAN.getContract(),
+          sdk.tokens.MOON.getContract(),
           "approve",
-          [sdk.contracts.beanstalk.address, ethers.constants.MaxUint256],
+          [sdk.contracts.moonmage.address, ethers.constants.MaxUint256],
           amountInStep // pass-thru
         ),
       (amountInStep) =>
         pipe.wrap(
-          sdk.contracts.beanstalk,
+          sdk.contracts.moonmage,
           "approveDeposit",
           [sdk.contracts.root.address, token.address, ethers.constants.MaxUint256],
           amountInStep // pass-thru
@@ -88,11 +88,11 @@ export async function roots_from_circulating(token: ERC20Token, amount: TokenVal
         pipe.wrap(
           sdk.tokens.ROOT.getContract(),
           "approve",
-          [sdk.contracts.beanstalk.address, ethers.constants.MaxUint256],
+          [sdk.contracts.moonmage.address, ethers.constants.MaxUint256],
           amountInStep // pass-thru
         ),
       async (amountInStep) => {
-        return pipe.wrap(sdk.contracts.beanstalk, "deposit", [token.address, amountInStep, FarmFromMode.EXTERNAL], amountInStep);
+        return pipe.wrap(sdk.contracts.moonmage, "deposit", [token.address, amountInStep, FarmFromMode.EXTERNAL], amountInStep);
       },
       async (amountInStep) => {
         const season = await sdk.sun.getSeason();
@@ -117,7 +117,7 @@ export async function roots_from_circulating(token: ERC20Token, amount: TokenVal
       },
       (amountInStep) =>
         pipe.wrap(
-          sdk.contracts.beanstalk,
+          sdk.contracts.moonmage,
           "transferToken",
           [
             /*  36 */ sdk.tokens.ROOT.address,
@@ -157,26 +157,26 @@ export async function roots_from_circulating(token: ERC20Token, amount: TokenVal
   const receipt = await txn.wait();
   console.log("Transaction executed");
 
-  TestUtils.Logger.printReceipt([sdk.contracts.beanstalk, sdk.tokens.BEAN.getContract(), sdk.contracts.root], receipt);
+  TestUtils.Logger.printReceipt([sdk.contracts.moonmage, sdk.tokens.MOON.getContract(), sdk.contracts.root], receipt);
 
-  const accountBalanceOfBEAN = await sdk.tokens.getBalance(sdk.tokens.BEAN);
+  const accountBalanceOfMOON = await sdk.tokens.getBalance(sdk.tokens.MOON);
   const accountBalanceOfROOT = await sdk.tokens.getBalance(sdk.tokens.ROOT);
-  const pipelineBalanceOfBEAN = await sdk.tokens.getBalance(sdk.tokens.BEAN, sdk.contracts.pipeline.address);
+  const pipelineBalanceOfMOON = await sdk.tokens.getBalance(sdk.tokens.MOON, sdk.contracts.pipeline.address);
   const pipelineBalanceOfROOT = await sdk.tokens.getBalance(sdk.tokens.ROOT, sdk.contracts.pipeline.address);
 
-  console.log(`(1) BEAN balance for Account :`, accountBalanceOfBEAN.total.toHuman());
+  console.log(`(1) MOON balance for Account :`, accountBalanceOfMOON.total.toHuman());
   console.log(`(2) ROOT balance for Account :`, accountBalanceOfROOT.total.toHuman());
-  console.log(`(3) BEAN balance for Pipeline:`, pipelineBalanceOfBEAN.total.toHuman());
+  console.log(`(3) MOON balance for Pipeline:`, pipelineBalanceOfMOON.total.toHuman());
   console.log(`(4) ROOT balance for Pipeline:`, pipelineBalanceOfROOT.total.toHuman());
   console.log(` ^ 3 and 4 should be 0 if Pipeline was properly unloaded.`);
 
-  const siloBalance = await sdk.silo.getBalance(sdk.tokens.BEAN, sdk.contracts.pipeline.address, { source: DataSource.LEDGER });
+  const siloBalance = await sdk.silo.getBalance(sdk.tokens.MOON, sdk.contracts.pipeline.address, { source: DataSource.LEDGER });
   console.log(siloBalance.deposited.crates);
 
   return accountBalanceOfROOT;
 }
 
 (async () => {
-  await chain.setBEANBalance(account, sdk.tokens.BEAN.amount(150));
-  await roots_from_circulating(sdk.tokens.BEAN, sdk.tokens.BEAN.amount(124));
+  await chain.setMOONBalance(account, sdk.tokens.MOON.amount(150));
+  await roots_from_circulating(sdk.tokens.MOON, sdk.tokens.MOON.amount(124));
 })();

@@ -5,7 +5,7 @@
 pragma solidity =0.7.6;
 pragma experimental ABIEncoderV2;
 
-import {IBean} from "../../interfaces/IBean.sol";
+import {IMoon} from "../../interfaces/IMoon.sol";
 import {AppStorage} from "../AppStorage.sol";
 
 /**
@@ -17,7 +17,7 @@ contract InitBip11 {
 
     AppStorage internal s;
 
-    address private constant BEAN_ADDRESS = address(0xDC59ac4FeFa32293A95889Dc396682858d52e5Db);
+    address private constant MOON_ADDRESS = address(0xDC59ac4FeFa32293A95889Dc396682858d52e5Db);
     
     address private constant PUBLIUS_ADDRESS = address(0x925753106FCdB6D2f30C3db295328a0A1c5fD1D1);
     uint256 private constant PAYMENT = 4000000000;
@@ -26,7 +26,7 @@ contract InitBip11 {
     uint256 private constant DUMPLING_PAYMENT = 1000000000;
 
     function init() external {
-        IBean(BEAN_ADDRESS).mint(PUBLIUS_ADDRESS, PAYMENT);
-        IBean(BEAN_ADDRESS).mint(DUMPLING_ADDRESS, DUMPLING_PAYMENT);
+        IMoon(MOON_ADDRESS).mint(PUBLIUS_ADDRESS, PAYMENT);
+        IMoon(MOON_ADDRESS).mint(DUMPLING_ADDRESS, DUMPLING_PAYMENT);
     }
 }

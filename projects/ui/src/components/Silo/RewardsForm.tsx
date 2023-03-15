@@ -4,14 +4,14 @@ import { ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
 import { useSelector } from 'react-redux';
 import { useSigner } from '~/hooks/ledger/useSigner';
-import { ClaimRewardsAction } from '~/lib/Beanstalk/Farm';
-import { useBeanstalkContract } from '~/hooks/ledger/useContract';
+import { ClaimRewardsAction } from '~/lib/Moonmage/Farm';
+import { useMoonmageContract } from '~/hooks/ledger/useContract';
 import { UNRIPE_TOKENS } from '~/constants/tokens';
 import useTokenMap from '~/hooks/chain/useTokenMap';
 import { selectCratesForEnroot } from '~/util/Crates';
 import useAccount from '~/hooks/ledger/useAccount';
-import useBDV from '~/hooks/beanstalk/useBDV';
-import { useFetchFarmerSilo } from '~/state/farmer/silo/updater';
+import useBDV from '~/hooks/moonmage/useBDV';
+import { useFetchCosmonautSilo } from '~/state/cosmomage/silo/updater';
 import { AppState } from '~/state';
 import TransactionToast from '~/components/Common/TxnToast';
 import useTimedRefresh from '~/hooks/app/useTimedRefresh';
@@ -52,18 +52,18 @@ const RewardsForm: React.FC<RewardsFormProps> = ({ open, children }) => {
   /// Helpers
   const unripeTokens = useTokenMap(UNRIPE_TOKENS);
 
-  /// Farmer data
-  const farmerSilo = useSelector<AppState, AppState['_farmer']['silo']>(
-    (state) => state._farmer.silo
+  /// Cosmonaut data
+  const cosmomageSilo = useSelector<AppState, AppState['_cosmomage']['silo']>(
+    (state) => state._cosmomage.silo
   );
-  const siloBalances = farmerSilo.balances;
-  const [fetchFarmerSilo] = useFetchFarmerSilo();
+  const siloBalances = cosmomageSilo.balances;
+  const [fetchCosmonautSilo] = useFetchCosmonautSilo();
 
-  // Beanstalk data
+  // Moonmage data
   const getBDV = useBDV();
 
   /// Contracts
-  const beanstalk = useBeanstalkContract(signer);
+  const moonmage = useMoonmageContract(signer);
 
   /// Form
   const initialValues: ClaimRewardsFormValues = useMemo(
@@ -81,7 +81,7 @@ const RewardsForm: React.FC<RewardsFormProps> = ({ open, children }) => {
     if (!signer) throw new Error('No signer');
 
     const selectedCratesByToken = selectCratesForEnroot(
-      beanstalk,
+      moonmage,
       unripeTokens,
       siloBalances,
       getBDV
@@ -98,41 +98,41 @@ const RewardsForm: React.FC<RewardsFormProps> = ({ open, children }) => {
 
     const _calls: ClaimCalls = {
       [ClaimRewardsAction.MOW]: {
-        estimateGas: () => beanstalk.estimateGas.update(account),
-        execute: () => beanstalk.update(account),
-        enabled: farmerSilo.stalk.grown.gt(0),
+        estimateGas: () => moonmage.estimateGas.update(account),
+        execute: () => moonmage.update(account),
+        enabled: cosmomageSilo.mage.grown.gt(0),
       },
       [ClaimRewardsAction.PLANT_AND_MOW]: {
-        estimateGas: () => beanstalk.estimateGas.plant(),
-        execute: () => beanstalk.plant(),
-        enabled: farmerSilo.seeds.earned.gt(0),
+        estimateGas: () => moonmage.estimateGas.plant(),
+        execute: () => moonmage.plant(),
+        enabled: cosmomageSilo.seeds.earned.gt(0),
       },
       [ClaimRewardsAction.ENROOT_AND_MOW]: {
         estimateGas: () =>
-          beanstalk.estimateGas.farm([
+          moonmage.estimateGas.farm([
             // PLANT_AND_MOW
-            beanstalk.interface.encodeFunctionData('plant', undefined),
+            moonmage.interface.encodeFunctionData('plant', undefined),
             // ENROOT_AND_MOW
             ...enrootData,
           ]),
         execute: () =>
-          beanstalk.farm([
+          moonmage.farm([
             // PLANT_AND_MOW
-            beanstalk.interface.encodeFunctionData('plant', undefined),
+            moonmage.interface.encodeFunctionData('plant', undefined),
             // ENROOT_AND_MOW
             ...enrootData,
           ]),
         enabled:
-          farmerSilo.stalk.grown.gt(0) ||
-          farmerSilo.seeds.earned.gt(0) ||
+          cosmomageSilo.mage.grown.gt(0) ||
+          cosmomageSilo.seeds.earned.gt(0) ||
           enrootData.length > 0,
       },
       /* (
           enrootData.length > 1
             /// use `farm()` if multiple crates
             ? {
-              estimateGas: () => beanstalk.estimateGas.farm(enrootData),
-              execute:     () => beanstalk.farm(enrootData),
+              estimateGas: () => moonmage.estimateGas.farm(enrootData),
+              execute:     () => moonmage.farm(enrootData),
               enabled:     true,
             }
             /// send raw transaction if single crate
@@ -141,12 +141,12 @@ const RewardsForm: React.FC<RewardsFormProps> = ({ open, children }) => {
             : {
               estimateGas: () => provider.estimateGas(
                 signer.checkTransaction({
-                  to: beanstalk.address,
+                  to: moonmage.address,
                   data: enrootData[0],
                 })
               ),
               execute: () => signer.sendTransaction({
-                to: beanstalk.address,
+                to: moonmage.address,
                 data: enrootData[0],
               }),
               enabled: enrootData.length > 0,
@@ -154,22 +154,22 @@ const RewardsForm: React.FC<RewardsFormProps> = ({ open, children }) => {
         ), */
       [ClaimRewardsAction.CLAIM_ALL]: {
         estimateGas: () =>
-          beanstalk.estimateGas.farm([
+          moonmage.estimateGas.farm([
             // PLANT_AND_MOW
-            beanstalk.interface.encodeFunctionData('plant', undefined),
+            moonmage.interface.encodeFunctionData('plant', undefined),
             // ENROOT_AND_MOW
             ...enrootData,
           ]),
         execute: () =>
-          beanstalk.farm([
+          moonmage.farm([
             // PLANT_AND_MOW
-            beanstalk.interface.encodeFunctionData('plant', undefined),
+            moonmage.interface.encodeFunctionData('plant', undefined),
             // ENROOT_AND_MOW
             ...enrootData,
           ]),
         enabled:
-          farmerSilo.stalk.grown.gt(0) ||
-          farmerSilo.seeds.earned.gt(0) ||
+          cosmomageSilo.mage.grown.gt(0) ||
+          cosmomageSilo.seeds.earned.gt(0) ||
           enrootData.length > 0,
       },
     };
@@ -193,9 +193,9 @@ const RewardsForm: React.FC<RewardsFormProps> = ({ open, children }) => {
     setGas(_gas);
   }, [
     account,
-    beanstalk,
-    farmerSilo.seeds.earned,
-    farmerSilo.stalk.grown,
+    moonmage,
+    cosmomageSilo.seeds.earned,
+    cosmomageSilo.mage.grown,
     getBDV,
     signer,
     siloBalances,
@@ -230,7 +230,7 @@ const RewardsForm: React.FC<RewardsFormProps> = ({ open, children }) => {
         txToast.confirming(txn);
 
         const receipt = await txn.wait();
-        await fetchFarmerSilo();
+        await fetchCosmonautSilo();
         txToast.success(receipt);
         formActions.resetForm();
       } catch (err) {
@@ -242,7 +242,7 @@ const RewardsForm: React.FC<RewardsFormProps> = ({ open, children }) => {
         }
       }
     },
-    [account, calls, fetchFarmerSilo]
+    [account, calls, fetchCosmonautSilo]
   );
 
   return (

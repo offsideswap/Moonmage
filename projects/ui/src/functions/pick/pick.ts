@@ -2,8 +2,8 @@ import { Handler } from '@netlify/functions';
 import middy from 'middy';
 import { cors, rateLimit } from '~/functions/middleware';
 
-const unripeBean     = require('./unripe-beans-merkle.json');
-const unripeBean3CRV = require('./unripe-bean3crv-merkle.json');
+const unripeMoon     = require('./unripe-moons-merkle.json');
+const unripeMoon3CRV = require('./unripe-moon3crv-merkle.json');
 
 export type MerkleLeaf = {
   amount: string;
@@ -12,8 +12,8 @@ export type MerkleLeaf = {
 }
 
 export type PickMerkleResponse = {
-  bean: MerkleLeaf | null;
-  bean3crv: MerkleLeaf | null;
+  moon: MerkleLeaf | null;
+  moon3crv: MerkleLeaf | null;
 }
 
 /**
@@ -33,12 +33,12 @@ const _handler : Handler = async (event) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      bean:     unripeBean[account]     || null,
-      bean3crv: unripeBean3CRV[account] || null,
+      moon:     unripeMoon[account]     || null,
+      moon3crv: unripeMoon3CRV[account] || null,
     }),
   };
 };
 
 export const handler = middy(_handler)
-  .use(cors({ origin: '*.bean.money' }))
+  .use(cors({ origin: '*.moon.money' }))
   .use(rateLimit());

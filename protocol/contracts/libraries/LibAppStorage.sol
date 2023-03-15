@@ -9,7 +9,7 @@ import "../farm/AppStorage.sol";
 
 /**
  * @author Publius
- * @title App Storage Library allows libaries to access Beanstalk's state.
+ * @title App Storage Library allows libaries to access Moonmage's state.
 **/
 library LibAppStorage {
 

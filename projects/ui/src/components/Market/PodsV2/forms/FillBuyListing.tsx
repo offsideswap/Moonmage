@@ -13,7 +13,7 @@ import {
   selectedPlotAtom, selectedPlotEndAtom,
   selectedPlotStartAtom
 } from '~/components/Market/PodsV2/info/atom-context';
-import useHarvestableIndex from '~/hooks/beanstalk/useHarvestableIndex';
+import useHarvestableIndex from '~/hooks/moonmage/useHarvestableIndex';
 import { ZERO_BN } from '~/constants';
 import { TokenAdornment } from '~/components/Common/Form';
 import { PODS } from '~/constants/tokens';
@@ -24,8 +24,8 @@ import Row from '~/components/Common/Row';
 
 const SelectPlotField: React.FC<{}> = () => {
   // State
-  const plots = useSelector<AppState, AppState['_farmer']['field']['plots']>(
-    (state) => state._farmer.field.plots
+  const plots = useSelector<AppState, AppState['_cosmomage']['field']['plots']>(
+    (state) => state._cosmomage.field.plots
   );
   const [open, setOpen, close] = useToggle();
   const [selectedPlot, setSelectedPlot] = useAtom(selectedPlotAtom);
@@ -117,8 +117,8 @@ const SelectPlotField: React.FC<{}> = () => {
 
 const minSliderDistance = 1;
 const SelectedPlotSlider: React.FC<{}> = () => {
-  const plots = useSelector<AppState, AppState['_farmer']['field']['plots']>(
-    (state) => state._farmer.field.plots
+  const plots = useSelector<AppState, AppState['_cosmomage']['field']['plots']>(
+    (state) => state._cosmomage.field.plots
   );
   const [selectedPlot, setSelectedPlot] = useAtom(selectedPlotAtom);
   const setPlaceInLine = useSetAtom(placeInLineAtom);

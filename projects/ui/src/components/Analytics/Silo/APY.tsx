@@ -4,7 +4,7 @@ import { tickFormatPercentage } from '~/components/Analytics/formatters';
 import { LineChartProps } from '~/components/Common/Charts/LineChart';
 import SeasonPlot, { SeasonPlotBaseProps } from '~/components/Common/Charts/SeasonPlot';
 import { SeasonalApyDocument, SeasonalApyQuery } from '~/generated/graphql';
-import { SnapshotData } from '~/hooks/beanstalk/useSeasonsQuery';
+import { SnapshotData } from '~/hooks/moonmage/useSeasonsQuery';
 
 import { FC } from '~/types';
 
@@ -18,9 +18,9 @@ const lineChartProps : Partial<LineChartProps> = {
   yTickFormat: tickFormatPercentage
 };
 const metricToKey = {
-  Bean: 'twoSeedBeanAPY',
-  LP: 'fourSeedBeanAPY',
-  Stalk: 'twoSeedStalkAPY',
+  Moon: 'twoSeedMoonAPY',
+  LP: 'fourSeedMoonAPY',
+  Mage: 'twoSeedMageAPY',
 };
 
 const APY: FC<{
@@ -39,9 +39,9 @@ const APY: FC<{
     )}
     formatValue={formatValue}
     StatProps={useMemo(() => ({
-      title: `Bean vAPY for Deposited ${metric}`,
+      title: `Moon vAPY for Deposited ${metric}`,
       // FIXME: identical to SiloAssetApyChip
-      titleTooltip: 'The Variable Bean APY uses a moving average of Beans earned by Stalkholders during recent Seasons to estimate a future rate of return, accounting for Stalk growth.',
+      titleTooltip: 'The Variable Moon APY uses a moving average of Moons earned by Mageholders during recent Seasons to estimate a future rate of return, accounting for Mage growth.',
       gap: 0.5,
     }), [metric])}
     LineChartProps={lineChartProps}

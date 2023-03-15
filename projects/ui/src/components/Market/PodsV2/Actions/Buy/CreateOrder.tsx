@@ -23,18 +23,18 @@ import {
 } from '~/components/Common/Form';
 import Token, { ERC20Token, NativeToken } from '~/classes/Token';
 import useChainConstant from '~/hooks/chain/useChainConstant';
-import useFarmerBalances from '~/hooks/farmer/useFarmerBalances';
+import useCosmonautBalances from '~/hooks/cosmomage/useCosmonautBalances';
 import { QuoteHandler } from '~/hooks/ledger/useQuote';
 import useTokenMap from '~/hooks/chain/useTokenMap';
 import useGetChainToken from '~/hooks/chain/useGetChainToken';
 import useToggle from '~/hooks/display/useToggle';
-import { Beanstalk } from '~/generated';
-import { useBeanstalkContract } from '~/hooks/ledger/useContract';
+import { Moonmage } from '~/generated';
+import { useMoonmageContract } from '~/hooks/ledger/useContract';
 import { useSigner } from '~/hooks/ledger/useSigner';
-import { useFetchFarmerBalances } from '~/state/farmer/balances/updater';
-import { useFetchFarmerMarket } from '~/state/farmer/market/updater';
+import { useFetchCosmonautBalances } from '~/state/cosmomage/balances/updater';
+import { useFetchCosmomageStation } from '~/state/cosmomage/market/updater';
 import { ActionType } from '~/util/Actions';
-import Farm, { FarmFromMode, FarmToMode } from '~/lib/Beanstalk/Farm';
+import Farm, { FarmFromMode, FarmToMode } from '~/lib/Moonmage/Farm';
 import { optimizeFromMode } from '~/util/Farm';
 import {
   displayFullBN,
@@ -44,14 +44,14 @@ import {
   displayBN,
 } from '~/util';
 import { AppState } from '~/state';
-import { BEAN, ETH, PODS, WETH } from '~/constants/tokens';
+import { MOON, ETH, PODS, WETH } from '~/constants/tokens';
 import { ONE_BN, ZERO_BN, POD_MARKET_TOOLTIPS } from '~/constants';
 import SliderField from '~/components/Common/Form/SliderField';
 import FieldWrapper from '~/components/Common/Form/FieldWrapper';
 import useFormMiddleware from '~/hooks/ledger/useFormMiddleware';
 
 import { FC } from '~/types';
-import { useFetchFarmerMarketItems } from '~/hooks/farmer/market/useFarmerMarket2';
+import { useFetchCosmomageStationItems } from '~/hooks/cosmomage/market/useCosmomageStation2';
 
 export type CreateOrderFormValues = {
   placeInLine: BigNumber | null;
@@ -84,7 +84,7 @@ const PricePerPodInputProps = {
   inputProps: { step: '0.01' },
   endAdornment: (
     <TokenAdornment
-      token={BEAN[1]}
+      token={MOON[1]}
       // HOTFIX: Small forms
       size="small"
     />
@@ -98,7 +98,7 @@ const CreateOrderV2Form: FC<
     podLine: BigNumber;
     handleQuote: QuoteHandler;
     tokenList: (ERC20Token | NativeToken)[];
-    contract: Beanstalk;
+    contract: Moonmage;
   }
 > = ({
   values,
@@ -110,7 +110,7 @@ const CreateOrderV2Form: FC<
   contract,
 }) => {
   const getChainToken = useGetChainToken();
-  const balances = useFarmerBalances();
+  const balances = useCosmonautBalances();
 
   const [showTokenSelect, handleOpen, handleClose] = useToggle();
   const handleSelectTokens = useCallback(
@@ -136,9 +136,9 @@ const CreateOrderV2Form: FC<
 
   const tokenIn = values.tokens[0].token;
   const amountIn = values.tokens[0].amount;
-  const tokenOut = getChainToken(BEAN);
+  const tokenOut = getChainToken(MOON);
   const amountOut =
-    tokenIn === tokenOut // Beans
+    tokenIn === tokenOut // Moons
       ? values.tokens[0].amount
       : values.tokens[0].amountOut;
 
@@ -199,7 +199,7 @@ const CreateOrderV2Form: FC<
               <TokenQuoteProvider
                 key={`tokens.${index}`}
                 name={`tokens.${index}`}
-                tokenOut={getChainToken(BEAN)}
+                tokenOut={getChainToken(MOON)}
                 balance={balances[state.token.address] || ZERO_BN}
                 state={state}
                 showTokenSelect={handleOpen}
@@ -249,7 +249,7 @@ const CreateOrderV2Form: FC<
                       )} at ${displayFullBN(
                         values.pricePerPod!,
                         4
-                      )} Beans per Pod. Any Pods before ${displayBN(
+                      )} Moons per Pod. Any Pods before ${displayBN(
                         values.placeInLine!
                       )} in the Pod Line are eligible to Fill this Order.`,
                     },
@@ -258,7 +258,7 @@ const CreateOrderV2Form: FC<
                       message: `${displayTokenAmount(
                         amountOut,
                         tokenOut
-                      )} will be locked in the Pod Order to allow for instant settlement. You can reclaim these Beans by Cancelling the Order.`,
+                      )} will be locked in the Pod Order to allow for instant settlement. You can reclaim these Moons by Cancelling the Order.`,
                     },
                   ]}
                 />
@@ -292,29 +292,29 @@ const CreateOrder: FC<{}> = () => {
   /// Tokens
   const getChainToken = useGetChainToken();
   const Eth = useChainConstant(ETH);
-  const Bean = getChainToken(BEAN);
+  const Moon = getChainToken(MOON);
   const Weth = getChainToken(WETH);
-  const tokenMap = useTokenMap<ERC20Token | NativeToken>([BEAN, ETH]);
+  const tokenMap = useTokenMap<ERC20Token | NativeToken>([MOON, ETH]);
 
   /// Ledger
   const { data: signer } = useSigner();
   const provider = useProvider();
-  const beanstalk = useBeanstalkContract(signer);
+  const moonmage = useMoonmageContract(signer);
 
   /// Farm
   const farm = useMemo(() => new Farm(provider), [provider]);
 
-  /// Beanstalk
-  const beanstalkField = useSelector<AppState, AppState['_beanstalk']['field']>(
-    (state) => state._beanstalk.field
+  /// Moonmage
+  const moonmageField = useSelector<AppState, AppState['_moonmage']['field']>(
+    (state) => state._moonmage.field
   );
 
-  /// Farmer
-  const balances = useFarmerBalances();
-  const [refetchFarmerBalances] = useFetchFarmerBalances();
-  const [refetchFarmerMarket] = useFetchFarmerMarket();
+  /// Cosmonaut
+  const balances = useCosmonautBalances();
+  const [refetchCosmonautBalances] = useFetchCosmonautBalances();
+  const [refetchCosmomageStation] = useFetchCosmomageStation();
     // subgraph queries
-    const { fetch: fetchFarmerMarketItems } = useFetchFarmerMarketItems();
+    const { fetch: fetchCosmomageStationItems } = useFetchCosmomageStationItems();
 
   /// Form
   const middleware = useFormMiddleware();
@@ -339,7 +339,7 @@ const CreateOrder: FC<{}> = () => {
 
   const handleQuote = useCallback<QuoteHandler>(
     async (_tokenIn, _amountIn, _tokenOut) => {
-      // tokenOut is fixed to BEAN.
+      // tokenOut is fixed to MOON.
       const tokenIn: ERC20Token =
         _tokenIn instanceof NativeToken ? Weth : _tokenIn;
       const tokenOut: ERC20Token =
@@ -349,10 +349,10 @@ const CreateOrder: FC<{}> = () => {
       );
       let estimate;
 
-      // Depositing BEAN
+      // Depositing MOON
       if (tokenIn === Weth) {
         estimate = await Farm.estimate(
-          farm.buyBeans(), // this assumes we're coming from WETH
+          farm.buyMoons(), // this assumes we're coming from WETH
           [amountIn]
         );
       }
@@ -407,13 +407,13 @@ const CreateOrder: FC<{}> = () => {
         /// Create Pod Order directly
         /// We only need one call to do this, so we skip
         /// the farm() call below to optimize gas.
-        if (inputToken === Bean) {
-          call = beanstalk.createPodOrder(
-            Bean.stringify(tokenData.amount),
-            Bean.stringify(pricePerPod),
-            Bean.stringify(placeInLine),
+        if (inputToken === Moon) {
+          call = moonmage.createPodOrder(
+            Moon.stringify(tokenData.amount),
+            Moon.stringify(pricePerPod),
+            Moon.stringify(placeInLine),
             PODS.stringify(new BigNumber(1)), // minFillAmount is measured in Pods
-            optimizeFromMode(tokenData.amount, balances[Bean.address])
+            optimizeFromMode(tokenData.amount, balances[Moon.address])
           );
         }
 
@@ -429,7 +429,7 @@ const CreateOrder: FC<{}> = () => {
           if (inputToken === Eth) {
             value = value.plus(tokenData.amount);
             data.push(
-              beanstalk.interface.encodeFunctionData('wrapEth', [
+              moonmage.interface.encodeFunctionData('wrapEth', [
                 toStringBaseUnitBN(value, Eth.decimals),
                 FarmToMode.INTERNAL, // to
               ])
@@ -437,35 +437,35 @@ const CreateOrder: FC<{}> = () => {
           }
 
           /// Execute steps
-          /// (right now: Sell WETH -> BEAN)
+          /// (right now: Sell WETH -> MOON)
           const encoded = Farm.encodeStepsWithSlippage(
             tokenData.steps,
             values.settings.slippage / 100
           );
           data.push(...encoded);
           data.push(
-            beanstalk.interface.encodeFunctionData('createPodOrder', [
-              Bean.stringify(tokenData.amountOut),
-              Bean.stringify(pricePerPod),
-              Bean.stringify(placeInLine),
+            moonmage.interface.encodeFunctionData('createPodOrder', [
+              Moon.stringify(tokenData.amountOut),
+              Moon.stringify(pricePerPod),
+              Moon.stringify(placeInLine),
               toStringBaseUnitBN(new BigNumber(1), PODS.decimals),
               FarmFromMode.INTERNAL_TOLERANT,
             ])
           );
 
-          console.log('tokenoutamount: ', Bean.stringify(tokenData.amountOut));
-          console.log('pricePerPod: ',  Bean.stringify(pricePerPod));
-          console.log('placeInLine: ', Bean.stringify(placeInLine));
+          console.log('tokenoutamount: ', Moon.stringify(tokenData.amountOut));
+          console.log('pricePerPod: ',  Moon.stringify(pricePerPod));
+          console.log('placeInLine: ', Moon.stringify(placeInLine));
           console.log('minfillaount: ', toStringBaseUnitBN(new BigNumber(1), PODS.decimals));
 
-          call = beanstalk.farm(data, { value: Eth.stringify(value) });
+          call = moonmage.farm(data, { value: Eth.stringify(value) });
         }
 
         const txn = await call;
         txToast.confirming(txn);
 
         const receipt = await txn.wait();
-        await Promise.all([refetchFarmerBalances(), refetchFarmerMarket(), fetchFarmerMarketItems()]);
+        await Promise.all([refetchCosmonautBalances(), refetchCosmomageStation(), fetchCosmomageStationItems()]);
         txToast.success(receipt);
         formActions.resetForm();
       } catch (err) {
@@ -480,11 +480,11 @@ const CreateOrder: FC<{}> = () => {
     },
     [
       middleware, 
-      Bean, 
-      refetchFarmerBalances, 
-      refetchFarmerMarket, 
-      fetchFarmerMarketItems, 
-      beanstalk, 
+      Moon, 
+      refetchCosmonautBalances, 
+      refetchCosmomageStation, 
+      fetchCosmomageStationItems, 
+      moonmage, 
       balances, 
       Eth
   ]
@@ -516,10 +516,10 @@ const CreateOrder: FC<{}> = () => {
             </TxnSettings>
           </Box>
           <CreateOrderV2Form
-            podLine={beanstalkField.podLine}
+            podLine={moonmageField.podLine}
             handleQuote={handleQuote}
             tokenList={Object.values(tokenMap) as (ERC20Token | NativeToken)[]}
-            contract={beanstalk}
+            contract={moonmage}
             {...formikProps}
           />
         </>

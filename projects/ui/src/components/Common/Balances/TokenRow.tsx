@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography, Tooltip } from '@mui/material';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import { BeanstalkPalette } from '~/components/App/muiTheme';
+import { MoonmagePalette } from '~/components/App/muiTheme';
 import { Token } from '~/classes';
 import TokenIcon from '../TokenIcon';
 import Dot from '~/components/Common/Dot';
@@ -57,7 +57,7 @@ const TokenRow: FC<{
       py: 0.75,
       px: 0.75,
       opacity: isFaded ? 0.3 : 1,
-      outline: isSelected ? `1px solid ${BeanstalkPalette.lightestGrey}` : null,
+      outline: isSelected ? `1px solid ${MoonmagePalette.lightestGrey}` : null,
       borderRadius: 1,
     }}
     onMouseOver={onMouseOver}

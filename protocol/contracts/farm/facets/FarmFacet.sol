@@ -13,8 +13,8 @@ import {LibFunction} from "../../libraries/LibFunction.sol";
 /**
  * @title Farm Facet
  * @author Beasley, Publius
- * @notice Perform multiple Beanstalk functions calls in a single transaction using Farm calls. 
- * Any function stored in Beanstalk's EIP-2535 DiamondStorage can be called as a Farm call. (https://eips.ethereum.org/EIPS/eip-2535)
+ * @notice Perform multiple Moonmage functions calls in a single transaction using Farm calls. 
+ * Any function stored in Moonmage's EIP-2535 DiamondStorage can be called as a Farm call. (https://eips.ethereum.org/EIPS/eip-2535)
  **/
 
 // AdvancedFarmCall is a Farm call that can use a Clipboard.
@@ -77,7 +77,7 @@ contract FarmFacet {
         }
     }
 
-    // delegatecall a Beanstalk function using calldata data
+    // delegatecall a Moonmage function using calldata data
     function _farm(bytes calldata data) private returns (bytes memory result) {
         bytes4 selector; bool success;
         assembly { selector := calldataload(data.offset) }
@@ -86,7 +86,7 @@ contract FarmFacet {
         LibFunction.checkReturn(success, result);
     }
 
-    // delegatecall a Beanstalk function using memory data
+    // delegatecall a Moonmage function using memory data
     function _farmMem(bytes memory data) private returns (bytes memory result) {
         bytes4 selector; bool success;
         assembly { selector := mload(add(data, 32)) }
@@ -95,7 +95,7 @@ contract FarmFacet {
         LibFunction.checkReturn(success, result);
     }
 
-    // signals to Beanstalk functions that they should not refund Eth 
+    // signals to Moonmage functions that they should not refund Eth 
     // at the end of the function because the function is wrapped in a Farm function
     modifier withEth() {
         if (msg.value > 0) s.isFarm = 2;

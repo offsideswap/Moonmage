@@ -17,13 +17,13 @@ contract SeasonFacet is Weather {
     using SafeMath for uint256;
 
     event Sunrise(uint256 indexed season);
-    event Incentivization(address indexed account, uint256 beans);
+    event Incentivization(address indexed account, uint256 moons);
 
     /**
      * Sunrise
      **/
 
-    /// @notice advances Beanstalk to the next Season.
+    /// @notice advances Moonmage to the next Season.
     function sunrise() external payable {
         require(!paused(), "Season: Paused.");
         require(seasonTime() > season(), "Season: Still current Season.");
@@ -72,7 +72,7 @@ contract SeasonFacet is Weather {
         );
         if (timestamp > 300) timestamp = 300;
         uint256 incentive = LibIncentive.fracExp(amount, 100, timestamp, 1);
-        C.bean().mint(account, incentive);
+        C.moon().mint(account, incentive);
         emit Incentivization(account, incentive);
     }
 }

@@ -1,8 +1,8 @@
 const { expect } = require('chai');
 const { deploy } = require('../scripts/deploy.js');
-const { getAltBeanstalk, getBean, getUsdc } = require('../utils/contracts.js');
+const { getAltMoonmage, getMoon, getUsdc } = require('../utils/contracts.js');
 const { signERC2612Permit } = require("eth-permit");
-const { BEAN_3_CURVE, THREE_POOL, THREE_CURVE, PIPELINE, BEANSTALK } = require('./utils/constants.js');
+const { MOON_3_CURVE, THREE_POOL, THREE_CURVE, PIPELINE, MOONMAGE } = require('./utils/constants.js');
 const { to6, to18 } = require('./utils/helpers.js');
 const { takeSnapshot, revertToSnapshot } = require("./utils/snapshot");
 
@@ -18,8 +18,8 @@ describe('Season', function () {
     before(async function () {
         [owner, user, user2] = await ethers.getSigners();
         const contracts = await deploy("Test", false, true);
-        beanstalk = await getAltBeanstalk(contracts.beanstalkDiamond.address)
-        bean = await getBean()
+        moonmage = await getAltMoonmage(contracts.moonmageDiamond.address)
+        moon = await getMoon()
         await setToSecondsAfterHour(0)
         await owner.sendTransaction({to: user.address, value: 0})
     })
@@ -34,25 +34,25 @@ describe('Season', function () {
 
     it('season incentive', async function () {
         await setToSecondsAfterHour(0)
-        await beanstalk.connect(owner).sunrise();
-        expect(await bean.balanceOf(owner.address)).to.be.equal(to6('25'))
+        await moonmage.connect(owner).sunrise();
+        expect(await moon.balanceOf(owner.address)).to.be.equal(to6('25'))
     })
 
     it('30 seconds after season incentive', async function () {
         await setToSecondsAfterHour(30)
-        await beanstalk.connect(owner).sunrise();
-        expect(await bean.balanceOf(owner.address)).to.be.equal('33696207')
+        await moonmage.connect(owner).sunrise();
+        expect(await moon.balanceOf(owner.address)).to.be.equal('33696207')
     })
 
     it('300 seconds after season incentive', async function () {
         await setToSecondsAfterHour(300)
-        await beanstalk.connect(owner).sunrise();
-        expect(await bean.balanceOf(owner.address)).to.be.equal('494705494')
+        await moonmage.connect(owner).sunrise();
+        expect(await moon.balanceOf(owner.address)).to.be.equal('494705494')
     })
 
     it('1500 seconds after season incentive', async function () {
         await setToSecondsAfterHour(1500)
-        await beanstalk.connect(owner).sunrise();
-        expect(await bean.balanceOf(owner.address)).to.be.equal('494705494')
+        await moonmage.connect(owner).sunrise();
+        expect(await moon.balanceOf(owner.address)).to.be.equal('494705494')
     })
 })

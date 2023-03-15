@@ -20,7 +20,7 @@ const config = [
 
   // This is just an example of how to create a new module entry.
   // This lets you do this on the client side:
-  // import { Thing } from "@beanstalk/sdk/Thing"
+  // import { Thing } from "@moonmage/sdk/Thing"
   makeEntry("dist/js/DecimalBigNumber.js", "DecimalBigNumber"),
   makeEntry("dist/js/TokenValue.js", "TokenValue")
 ];
@@ -39,7 +39,7 @@ function makeEntry(inputFile, name) {
     output: [
       { file: esmPath, format: "es", sourcemap: true },
       { file: cjsPath, format: "cjs", sourcemap: true },
-      { file: udmPath, format: "umd", sourcemap: true, name: "BeanstalkSDK" }
+      { file: udmPath, format: "umd", sourcemap: true, name: "MoonmageSDK" }
     ],
     external: Object.keys(pkg.dependencies),
     plugins: [

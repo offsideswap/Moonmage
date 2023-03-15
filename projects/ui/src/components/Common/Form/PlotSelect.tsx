@@ -11,19 +11,19 @@ import {
 } from '@mui/material';
 import BigNumber from 'bignumber.js';
 import { useTheme } from '@mui/material/styles';
-import { BEAN, PODS } from '~/constants/tokens';
-import useFarmerListingsLedger from '~/hooks/farmer/useFarmerListingsLedger';
+import { MOON, PODS } from '~/constants/tokens';
+import useCosmonautListingsLedger from '~/hooks/cosmomage/useCosmonautListingsLedger';
 import { FontSize, IconSize } from '~/components/App/muiTheme';
 import { displayBN, displayFullBN, toStringBaseUnitBN , PlotMap } from '~/util';
-import podIcon from '~/img/beanstalk/pod-icon.svg';
+import podIcon from '~/img/moonmage/pod-icon.svg';
 import Row from '~/components/Common/Row';
 
 import { FC } from '~/types';
 
 export interface PlotSelectProps {
-  /** A farmer's plots */
+  /** A cosmomage's plots */
   plots: PlotMap<BigNumber> | null;
-  /** The beanstalk harvestable index */
+  /** The moonmage harvestable index */
   harvestableIndex: BigNumber;
   /** Custom function to set the selected plot index */
   handlePlotSelect: any;
@@ -40,7 +40,7 @@ const PlotSelect: FC<PlotSelectProps> = ({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const farmerListings = useFarmerListingsLedger();
+  const cosmomageListings = useCosmonautListingsLedger();
   const orderedPlotKeys = useMemo(() => {
     if (!plots) return null;
     /// float sorting is good enough here
@@ -51,8 +51,8 @@ const PlotSelect: FC<PlotSelectProps> = ({
   ///
   let numAlreadyListed = 0;
   const items = orderedPlotKeys.map((index) => {
-    const id = toStringBaseUnitBN(index, BEAN[1].decimals);
-    const listing = farmerListings[id];
+    const id = toStringBaseUnitBN(index, MOON[1].decimals);
+    const listing = cosmomageListings[id];
     if (listing) numAlreadyListed += 1;
     return (
       <ListItem
@@ -71,7 +71,7 @@ const PlotSelect: FC<PlotSelectProps> = ({
           '& .MuiListItemText-secondary': {
             fontSize: FontSize.base,
             lineHeight: '1.25rem',
-            // color: BeanstalkPalette.lightGrey
+            // color: MoonmagePalette.lightGrey
           },
         }}
       >

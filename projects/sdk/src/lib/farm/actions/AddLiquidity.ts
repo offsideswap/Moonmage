@@ -103,8 +103,8 @@ export class AddLiquidity extends StepClass<BasicPreparedResult> {
         });
         if (!minAmountOut) throw new Error("AddLiquidity: missing minAmountOut");
         return {
-          target: AddLiquidity.sdk.contracts.beanstalk.address,
-          callData: AddLiquidity.sdk.contracts.beanstalk.interface.encodeFunctionData("addLiquidity", [
+          target: AddLiquidity.sdk.contracts.moonmage.address,
+          callData: AddLiquidity.sdk.contracts.moonmage.interface.encodeFunctionData("addLiquidity", [
             this._pool,
             this._registry,
             amountInStep as any[], // could be 2 or 3 elems
@@ -114,8 +114,8 @@ export class AddLiquidity extends StepClass<BasicPreparedResult> {
           ])
         };
       },
-      decode: (data: string) => AddLiquidity.sdk.contracts.beanstalk.interface.decodeFunctionData("addLiquidity", data),
-      decodeResult: (result: string) => AddLiquidity.sdk.contracts.beanstalk.interface.decodeFunctionResult("addLiquidity", result)
+      decode: (data: string) => AddLiquidity.sdk.contracts.moonmage.interface.decodeFunctionData("addLiquidity", data),
+      decodeResult: (result: string) => AddLiquidity.sdk.contracts.moonmage.interface.decodeFunctionResult("addLiquidity", result)
     };
   }
 }

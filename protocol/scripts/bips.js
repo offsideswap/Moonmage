@@ -1,16 +1,16 @@
-const { BEANSTALK } = require("../test/utils/constants");
-const { getBeanstalk, impersonateBeanstalkOwner, mintEth } = require("../utils")
+const { MOONMAGE } = require("../test/utils/constants");
+const { getMoonmage, impersonateMoonmageOwner, mintEth } = require("../utils")
 const { upgradeWithNewFacets } = require("./diamond");
 const { impersonatePipeline, deployPipeline } = require('./pipeline')
 
 async function bip30(mock = true, account = undefined) {
     if (account == undefined) {
-        account = await impersonateBeanstalkOwner()
+        account = await impersonateMoonmageOwner()
         await mintEth(account.address)
     }
 
     await upgradeWithNewFacets({
-        diamondAddress: BEANSTALK,
+        diamondAddress: MOONMAGE,
         facetNames: [
             'DepotFacet', // Add Depot
             'TokenSupportFacet', // Add ERC-20 permit function
@@ -26,13 +26,13 @@ async function bip30(mock = true, account = undefined) {
 
 async function bip29(mock = true, account = undefined) {
     if (account == undefined) {
-        account = await impersonateBeanstalkOwner()
+        account = await impersonateMoonmageOwner()
         await mintEth(account.address)
     }
 
-    beanstalk = await getBeanstalk()
+    moonmage = await getMoonmage()
     await upgradeWithNewFacets({
-        diamondAddress: BEANSTALK,
+        diamondAddress: MOONMAGE,
         facetNames: [
             'MarketplaceFacet', // Marketplace V2
             'SiloFacet',  // Add Deposit Permit System

@@ -1,11 +1,11 @@
 import { Box, Chip, Link, Tooltip, Typography } from '@mui/material';
 import React from 'react';
 import Token from '~/classes/Token';
-import { BEAN } from '~/constants/tokens';
-import useAPY from '~/hooks/beanstalk/useAPY';
+import { MOON } from '~/constants/tokens';
+import useAPY from '~/hooks/moonmage/useAPY';
 import Row from '../Common/Row';
 import TokenIcon from '../Common/TokenIcon';
-import stalkIconBlue from '~/img/beanstalk/stalk-icon-blue.svg';
+import mageIconBlue from '~/img/moonmage/mage-icon-blue.svg';
 import { displayFullBN } from '~/util';
 
 import Stat from '../Common/Stat';
@@ -24,7 +24,7 @@ const TOOLTIP_COMPONENT_PROPS = {
 
 type SiloAssetApyChipProps = {
   token: Token;
-  metric: 'bean' | 'stalk';
+  metric: 'moon' | 'mage';
   variant?: 'default' | 'labeled';
 };
 
@@ -34,8 +34,8 @@ const SiloAssetApyChip: FC<SiloAssetApyChipProps> = ({
   variant = 'default',
 }) => {
   const { data: latestYield } = useAPY();
-  const Bean = useChainConstant(BEAN);
-  const isBean = metric === 'bean';
+  const Moon = useChainConstant(MOON);
+  const isMoon = metric === 'moon';
 
   const seeds = token.getSeeds();
   const apys = latestYield
@@ -46,9 +46,9 @@ const SiloAssetApyChip: FC<SiloAssetApyChipProps> = ({
       : null
     : null;
 
-  const tokenProps = isBean
-    ? Bean
-    : ({ symbol: 'Stalk', logo: stalkIconBlue } as Token);
+  const tokenProps = isMoon
+    ? Moon
+    : ({ symbol: 'Mage', logo: mageIconBlue } as Token);
 
   const val = apys ? apys[metric].times(100) : null;
   const displayString = `${
@@ -65,13 +65,13 @@ const SiloAssetApyChip: FC<SiloAssetApyChipProps> = ({
       componentsProps={TOOLTIP_COMPONENT_PROPS}
       title={
         <Row gap={0}>
-          {metric === 'bean' && (
+          {metric === 'moon' && (
             <Box sx={{ px: 1, py: 0.5, maxWidth: 245 }}>
               <Stat
                 title={
                   <Row gap={0.5}>
-                    <TokenIcon token={Bean} />
-                    Total Beans per Season
+                    <TokenIcon token={Moon} />
+                    Total Moons per Season
                   </Row>
                 }
                 gap={0.25}
@@ -79,39 +79,39 @@ const SiloAssetApyChip: FC<SiloAssetApyChipProps> = ({
                 amount={
                   latestYield
                     ? displayFullBN(
-                        latestYield.beansPerSeasonEMA,
-                        Bean.displayDecimals
+                        latestYield.moonsPerSeasonEMA,
+                        Moon.displayDecimals
                       )
                     : '0'
                 }
-                subtitle="30-day exponential moving average of Beans earned by all Stalkholders per Season."
+                subtitle="30-day exponential moving average of Moons earned by all Mageholders per Season."
               />
             </Box>
           )}
           <Box
             sx={{
-              maxWidth: isBean ? 285 : 245,
-              px: isBean ? 1 : 0,
-              py: isBean ? 0.5 : 0,
+              maxWidth: isMoon ? 285 : 245,
+              px: isMoon ? 1 : 0,
+              py: isMoon ? 0.5 : 0,
             }}
           >
-            {metric === 'bean' ? (
+            {metric === 'moon' ? (
               <>
                 {' '}
-                The Variable Bean APY uses a moving average of Beans earned by
-                Stalkholders during recent Seasons to estimate a future rate of
-                return, accounting for Stalk growth.&nbsp;{' '}
+                The Variable Moon APY uses a moving average of Moons earned by
+                Mageholders during recent Seasons to estimate a future rate of
+                return, accounting for Mage growth.&nbsp;{' '}
               </>
             ) : (
               <>
                 {' '}
-                The Variable Stalk APY estimates the growth in your Stalk
+                The Variable Mage APY estimates the growth in your Mage
                 balance for Depositing {token.name}.&nbsp;{' '}
               </>
             )}
             <Link
               underline="hover"
-              href="https://docs.bean.money/almanac/guides/silo/understand-vapy"
+              href="https://docs.moon.money/almanac/guides/silo/understand-vapy"
               target="_blank"
               rel="noreferrer"
               onClick={(e) => e.stopPropagation()}
@@ -124,7 +124,7 @@ const SiloAssetApyChip: FC<SiloAssetApyChipProps> = ({
     >
       <Chip
         variant="filled"
-        color={metric === 'bean' ? 'primary' : 'secondary'}
+        color={metric === 'moon' ? 'primary' : 'secondary'}
         label={
           <Typography sx={{ whiteSpace: 'nowrap' }}>
             <Row gap={0.5} flexWrap="nowrap" justifyContent="center">

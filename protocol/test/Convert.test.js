@@ -2,7 +2,7 @@ const { expect } = require('chai');
 const { deploy } = require('../scripts/deploy.js')
 const { EXTERNAL, INTERNAL, INTERNAL_EXTERNAL, INTERNAL_TOLERANT } = require('./utils/balances.js')
 const { ConvertEncoder } = require('./utils/encoder.js')
-const { BEAN } = require('./utils/constants')
+const { MOON } = require('./utils/constants')
 const { takeSnapshot, revertToSnapshot } = require("./utils/snapshot");
 
 let user,user2,owner;
@@ -14,12 +14,12 @@ describe('Convert', function () {
     user2Address = user2.address;
     const contracts = await deploy("Test", false, true);
     ownerAddress = contracts.account;
-    this.diamond = contracts.beanstalkDiamond;
+    this.diamond = contracts.moonmageDiamond;
     this.season = await ethers.getContractAt('MockSeasonFacet', this.diamond.address);
     this.diamondLoupeFacet = await ethers.getContractAt('DiamondLoupeFacet', this.diamond.address)
     this.silo = await ethers.getContractAt('MockSiloFacet', this.diamond.address);
     this.convert = await ethers.getContractAt('MockConvertFacet', this.diamond.address);
-    this.bean = await ethers.getContractAt('MockToken', BEAN);
+    this.moon = await ethers.getContractAt('MockToken', MOON);
 
     this.siloToken = await ethers.getContractFactory("MockToken");
     this.siloToken = await this.siloToken.deploy("Silo", "SILO")
@@ -32,10 +32,10 @@ describe('Convert', function () {
       '1'
     );
 
-    await this.bean.mint(userAddress, '1000000000');
-    await this.bean.mint(user2Address, '1000000000');
-    await this.bean.connect(user).approve(this.silo.address, '100000000000');
-    await this.bean.connect(user2).approve(this.silo.address, '100000000000'); 
+    await this.moon.mint(userAddress, '1000000000');
+    await this.moon.mint(user2Address, '1000000000');
+    await this.moon.connect(user).approve(this.silo.address, '100000000000');
+    await this.moon.connect(user2).approve(this.silo.address, '100000000000'); 
     await this.siloToken.connect(user).approve(this.silo.address, '100000000000');
     await this.siloToken.mint(userAddress, '10000');
     await this.season.siloSunrise(0);
@@ -78,12 +78,12 @@ describe('Convert', function () {
 
       it('Decrements totals', async function () {
         expect(await this.silo.getTotalDeposited(this.siloToken.address)).to.equal('100');
-        expect(await this.silo.totalStalk()).to.equal('1000100');
+        expect(await this.silo.totalMage()).to.equal('1000100');
         expect(await this.silo.totalSeeds()).to.equal('100');
       })
 
       it('Decrements balances', async function () {
-        expect(await this.silo.balanceOfStalk(userAddress)).to.equal('1000100');
+        expect(await this.silo.balanceOfMage(userAddress)).to.equal('1000100');
         expect(await this.silo.balanceOfSeeds(userAddress)).to.equal('100');
       })
 
@@ -109,12 +109,12 @@ describe('Convert', function () {
 
       it('Decrements totals', async function () {
         expect(await this.silo.getTotalDeposited(this.siloToken.address)).to.equal('100');
-        expect(await this.silo.totalStalk()).to.equal('1000100');
+        expect(await this.silo.totalMage()).to.equal('1000100');
         expect(await this.silo.totalSeeds()).to.equal('100');
       })
 
       it('Decrements balances', async function () {
-        expect(await this.silo.balanceOfStalk(userAddress)).to.equal('1000100');
+        expect(await this.silo.balanceOfMage(userAddress)).to.equal('1000100');
         expect(await this.silo.balanceOfSeeds(userAddress)).to.equal('100');
       })
 
@@ -140,12 +140,12 @@ describe('Convert', function () {
 
       it('Decrements totals', async function () {
         expect(await this.silo.getTotalDeposited(this.siloToken.address)).to.equal('50');
-        expect(await this.silo.totalStalk()).to.equal('500000');
+        expect(await this.silo.totalMage()).to.equal('500000');
         expect(await this.silo.totalSeeds()).to.equal('50');
       })
 
       it('Decrements balances', async function () {
-        expect(await this.silo.balanceOfStalk(userAddress)).to.equal('500000');
+        expect(await this.silo.balanceOfMage(userAddress)).to.equal('500000');
         expect(await this.silo.balanceOfSeeds(userAddress)).to.equal('50');
       })
 
@@ -171,12 +171,12 @@ describe('Convert', function () {
 
       it('Decrements totals', async function () {
         expect(await this.silo.getTotalDeposited(this.siloToken.address)).to.equal('50');
-        expect(await this.silo.totalStalk()).to.equal('500000');
+        expect(await this.silo.totalMage()).to.equal('500000');
         expect(await this.silo.totalSeeds()).to.equal('50');
       })
 
       it('Decrements balances', async function () {
-        expect(await this.silo.balanceOfStalk(userAddress)).to.equal('500000');
+        expect(await this.silo.balanceOfMage(userAddress)).to.equal('500000');
         expect(await this.silo.balanceOfSeeds(userAddress)).to.equal('50');
       })
 
@@ -213,12 +213,12 @@ describe('Convert', function () {
 
       it('Decrements totals', async function () {
         expect(await this.silo.getTotalDeposited(this.siloToken.address)).to.equal('300');
-        expect(await this.silo.totalStalk()).to.equal('3000100');
+        expect(await this.silo.totalMage()).to.equal('3000100');
         expect(await this.silo.totalSeeds()).to.equal('300');
       })
 
       it('Decrements balances', async function () {
-        expect(await this.silo.balanceOfStalk(user2Address)).to.equal('1000000');
+        expect(await this.silo.balanceOfMage(user2Address)).to.equal('1000000');
         expect(await this.silo.balanceOfSeeds(user2Address)).to.equal('100');
       })
 
@@ -240,12 +240,12 @@ describe('Convert', function () {
 
       it('Decrements totals', async function () {
         expect(await this.silo.getTotalDeposited(this.siloToken.address)).to.equal('300');
-        expect(await this.silo.totalStalk()).to.equal('3000200');
+        expect(await this.silo.totalMage()).to.equal('3000200');
         expect(await this.silo.totalSeeds()).to.equal('300');
       })
 
       it('Decrements balances', async function () {
-        expect(await this.silo.balanceOfStalk(user2Address)).to.equal('1000100');
+        expect(await this.silo.balanceOfMage(user2Address)).to.equal('1000100');
         expect(await this.silo.balanceOfSeeds(user2Address)).to.equal('100');
       })
 
@@ -267,12 +267,12 @@ describe('Convert', function () {
 
       it('Decrements totals', async function () {
         expect(await this.silo.getTotalDeposited(this.siloToken.address)).to.equal('300');
-        expect(await this.silo.totalStalk()).to.equal('3000300');
+        expect(await this.silo.totalMage()).to.equal('3000300');
         expect(await this.silo.totalSeeds()).to.equal('300');
       })
 
       it('Decrements balances', async function () {
-        expect(await this.silo.balanceOfStalk(user2Address)).to.equal('1000200');
+        expect(await this.silo.balanceOfMage(user2Address)).to.equal('1000200');
         expect(await this.silo.balanceOfSeeds(user2Address)).to.equal('100');
       })
 
@@ -320,13 +320,13 @@ describe('Convert', function () {
     })
 
     it('Decrements balances', async function () {
-      expect(await this.silo.balanceOfStalk(userAddress)).to.equal('2000000');
+      expect(await this.silo.balanceOfMage(userAddress)).to.equal('2000000');
       expect(await this.silo.balanceOfSeeds(userAddress)).to.equal('200');
     })
 
     it('Decrements totals', async function () {
       expect(await this.silo.getTotalDeposited(this.siloToken.address)).to.equal('200');
-      expect(await this.silo.totalStalk()).to.equal('2000000');
+      expect(await this.silo.totalMage()).to.equal('2000000');
       expect(await this.silo.totalSeeds()).to.equal('200');
     })
 

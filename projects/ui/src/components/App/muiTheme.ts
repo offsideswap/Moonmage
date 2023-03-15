@@ -89,12 +89,12 @@ const BASE_FONT_SIZE = 16;
 const remBase = (n: number) => `${(n / BASE_FONT_SIZE).toFixed(4)}rem`;
 
 /**
- * Beanstalk's primary color pallete.
+ * Moonmage's primary color pallete.
  *
  * Does NOT yet account for prior variance for theming.
  * See `constants/colors.ts`.
  */
-export const BeanstalkPalette = {
+export const MoonmagePalette = {
   // Greens
   logoGreen: '#46B955',
   mediumGreen: lighten('#46B955', 0.7),
@@ -173,7 +173,7 @@ export const BeanstalkPalette = {
   },
 };
 
-export const PAGE_BORDER_COLOR = BeanstalkPalette.blue;
+export const PAGE_BORDER_COLOR = MoonmagePalette.blue;
 
 export const IconSize = {
   xs: 14,
@@ -230,50 +230,50 @@ const muiThemeBase: ThemeOptions = {
    * https://mui.com/material-ui/customization/palette/
    */
   palette: {
-    divider: BeanstalkPalette.blue,
+    divider: MoonmagePalette.blue,
     primary: {
-      main: BeanstalkPalette.theme.winter.primary,
+      main: MoonmagePalette.theme.winter.primary,
       dark: '#146054',
-      light: BeanstalkPalette.theme.winter.primaryHover,
+      light: MoonmagePalette.theme.winter.primaryHover,
       contrastText: '#ffffff',
     },
     secondary: {
-      main: BeanstalkPalette.blue,
+      main: MoonmagePalette.blue,
       contrastText: '#ffffff',
     },
     light: {
-      main: BeanstalkPalette.white,
-      contrastText: BeanstalkPalette.textBlue,
+      main: MoonmagePalette.white,
+      contrastText: MoonmagePalette.textBlue,
     },
     inverse: {
-      main: BeanstalkPalette.white,
-      contrastText: BeanstalkPalette.logoGreen,
+      main: MoonmagePalette.white,
+      contrastText: MoonmagePalette.logoGreen,
     },
     dark: {
-      main: BeanstalkPalette.black,
-      contrastText: BeanstalkPalette.white,
+      main: MoonmagePalette.black,
+      contrastText: MoonmagePalette.white,
     },
     cancel: {
-      main: BeanstalkPalette.washedRed,
+      main: MoonmagePalette.washedRed,
       contrastText: '#ffffff',
     },
     naked: {
       main: 'transparent',
-      contrastText: BeanstalkPalette.black,
+      contrastText: MoonmagePalette.black,
     },
     //
     text: {
-      primary: BeanstalkPalette.textBlue,
-      secondary: BeanstalkPalette.grey,
-      tertiary: BeanstalkPalette.lightGrey,
-      light: BeanstalkPalette.lightestGrey
+      primary: MoonmagePalette.textBlue,
+      secondary: MoonmagePalette.grey,
+      tertiary: MoonmagePalette.lightGrey,
+      light: MoonmagePalette.lightestGrey
     },
     background: {
-      default: BeanstalkPalette.theme.winter.iceBlue,
-      paper: BeanstalkPalette.offWhite,
+      default: MoonmagePalette.theme.winter.iceBlue,
+      paper: MoonmagePalette.offWhite,
     },
     error: {
-      main: BeanstalkPalette.theme.winter.red,
+      main: MoonmagePalette.theme.winter.red,
     }
   },
 
@@ -402,10 +402,10 @@ const muiThemeBase: ThemeOptions = {
             color: 'light',
           },
           style: (t) => t.theme.unstable_sx({
-            borderColor: BeanstalkPalette.lightestGrey,
+            borderColor: MoonmagePalette.lightestGrey,
             ':hover': {
               borderColor: 'primary.main',
-              background: BeanstalkPalette.theme.winter.primaryHover
+              background: MoonmagePalette.theme.winter.primaryHover
             }
           })
         },
@@ -416,8 +416,8 @@ const muiThemeBase: ThemeOptions = {
           },
           style: {
             '&.Mui-disabled': {
-              backgroundColor: BeanstalkPalette.lightestGrey,
-              color: BeanstalkPalette.lightGrey,
+              backgroundColor: MoonmagePalette.lightestGrey,
+              color: MoonmagePalette.lightGrey,
             },
           },
         },
@@ -432,7 +432,7 @@ const muiThemeBase: ThemeOptions = {
             borderColor: 'divider',
             ':hover': {
               borderColor: 'primary.main',
-              background: BeanstalkPalette.theme.winter.primaryHover
+              background: MoonmagePalette.theme.winter.primaryHover
             }
           })
         }
@@ -447,10 +447,10 @@ const muiThemeBase: ThemeOptions = {
           textTransform: 'none',
           // fontWeight: 'bold',
           '&.MuiButton-root:hover': {
-            // backgroundColor: BeanstalkPalette.supportGreen,
+            // backgroundColor: MoonmagePalette.supportGreen,
           },
           '&.MuiLoadingButton-root:hover': {
-            // backgroundColor: BeanstalkPalette.supportGreen,
+            // backgroundColor: MoonmagePalette.supportGreen,
           },
           fontWeight: 700,
           fontSize: '1rem',
@@ -526,7 +526,7 @@ const muiThemeBase: ThemeOptions = {
           borderColor: 'divider',
           borderWidth: 1,
           borderStyle: 'solid',
-          backgroundColor: BeanstalkPalette.lightestBlue,
+          backgroundColor: MoonmagePalette.lightestBlue,
           color: 'text.primary',
           p: 1,
           px: 1.25,
@@ -611,7 +611,7 @@ const muiThemeBase: ThemeOptions = {
           px: 1,
           py: 1,
           border: '0.5px solid',
-          borderColor: BeanstalkPalette.white,
+          borderColor: MoonmagePalette.white,
         }),
       },
     },
@@ -683,7 +683,7 @@ const muiThemeBase: ThemeOptions = {
             border: 'none',
           },
           '&.MuiTab-iconWrapper': {
-            color: BeanstalkPalette.black,
+            color: MoonmagePalette.black,
             mr: 0,
           },
         },
@@ -700,7 +700,7 @@ const muiThemeBase: ThemeOptions = {
         transitionDuration: 0,
         PaperProps: {
           sx: {
-            background: BeanstalkPalette.white,
+            background: MoonmagePalette.white,
             minWidth: { xs: '95%', sm: '400px' },
           },
         },
@@ -738,8 +738,8 @@ const muiThemeBase: ThemeOptions = {
             color: 'primary',
           },
           style: (t) => t.theme.unstable_sx({
-            color: BeanstalkPalette.theme.winter.primary,
-            backgroundColor: hexToRgba(BeanstalkPalette.theme.winter.primary, 0.1),
+            color: MoonmagePalette.theme.winter.primary,
+            backgroundColor: hexToRgba(MoonmagePalette.theme.winter.primary, 0.1),
 
           }),
         },
@@ -749,8 +749,8 @@ const muiThemeBase: ThemeOptions = {
             color: 'secondary',
           },
           style: (t) => t.theme.unstable_sx({
-            color: BeanstalkPalette.textBlue,
-            backgroundColor: BeanstalkPalette.lightestBlue,
+            color: MoonmagePalette.textBlue,
+            backgroundColor: MoonmagePalette.lightestBlue,
           }),
         },
       ],

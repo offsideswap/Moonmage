@@ -5,7 +5,7 @@ import { AppState } from '~/state';
 import { ZERO_BN } from '../../constants';
 import { SeasonalLiquidityDocument, SeasonalLiquidityQuery } from '~/generated/graphql';
 import SeasonPlot from '~/components/Common/Charts/SeasonPlot';
-import useSeason from '~/hooks/beanstalk/useSeason';
+import useSeason from '~/hooks/moonmage/useSeason';
 
 import { FC } from '~/types';
 
@@ -24,12 +24,12 @@ const StatProps = {
 };
 const queryConfig = { 
   variables: { season_gt: 6073 },
-  context: { subgraph: 'bean' }
+  context: { subgraph: 'moon' }
 };
 
 const LiquidityOverTime: FC<{} & CardProps> = ({ sx }) => {
-  const beanPools = useSelector<AppState, AppState['_bean']['pools']>((state) => state._bean.pools);
-  const liquidity = Object.values(beanPools).reduce((prev, curr) => prev.plus(curr.liquidity), ZERO_BN);
+  const moonPools = useSelector<AppState, AppState['_moon']['pools']>((state) => state._moon.pools);
+  const liquidity = Object.values(moonPools).reduce((prev, curr) => prev.plus(curr.liquidity), ZERO_BN);
   const season = useSeason();
   return (
     <Card sx={{ width: '100%', pt: 2, ...sx }}>

@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Tab } from '@mui/material';
 import { Pool } from '~/classes';
 import { ERC20Token } from '~/classes/Token';
-import { FarmerSiloBalance } from '~/state/farmer/silo';
+import { CosmonautSiloBalance } from '~/state/cosmomage/silo';
 import useTabs from '~/hooks/display/useTabs';
 import BadgeTab from '~/components/Common/BadgeTab';
 import Deposit from './Deposit';
@@ -32,7 +32,7 @@ const SILO_ACTIONS_MAX_WIDTH = '470px';
 const SiloActions : FC<{
   pool: Pool;
   token: ERC20Token;
-  siloBalance: FarmerSiloBalance;
+  siloBalance: CosmonautSiloBalance;
 }> = (props) => {
   const [tab, handleChange] = useTabs(SLUGS, 'action');
   const hasClaimable = props.siloBalance?.claimable?.amount.gt(0);

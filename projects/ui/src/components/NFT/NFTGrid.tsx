@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CircularProgress, Grid, Stack } from '@mui/material';
 import { Nft } from '~/util/BeaNFTs';
 import NFTDetails from './NFTDetails';
-import { BeanstalkPalette } from '../App/muiTheme';
+import { MoonmagePalette } from '../App/muiTheme';
 import EmptyState from '../Common/ZeroState/EmptyState';
 
 import { FC } from '~/types';
@@ -39,7 +39,7 @@ const NFTGrid: FC<NFTGridProps> = ({
                     p: 1,
                     cursor: 'pointer',
                     '&:hover': {
-                      backgroundColor: BeanstalkPalette.lightestBlue,
+                      backgroundColor: MoonmagePalette.lightestBlue,
                       opacity: 0.95
                     }
                   }}>

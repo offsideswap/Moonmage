@@ -1,16 +1,16 @@
 import { Handler } from '@netlify/functions';
 import { ethers } from 'ethers';
 import middy from 'middy';
-import { BEANSTALK_PRICE_ADDRESSES } from '~/constants/addresses';
+import { MOONMAGE_PRICE_ADDRESSES } from '~/constants/addresses';
 import { cors, rateLimit } from '~/functions/middleware';
-import { BeanstalkPrice__factory } from '~/generated';
+import { MoonmagePrice__factory } from '~/generated';
 
 const provider = new ethers.providers.AlchemyProvider(1, process.env.VITE_ALCHEMY_API_KEY);
-const address  = BEANSTALK_PRICE_ADDRESSES[1];
-const contract = BeanstalkPrice__factory.connect(address, provider);
+const address  = MOONMAGE_PRICE_ADDRESSES[1];
+const contract = MoonmagePrice__factory.connect(address, provider);
 
 /**
- * Return a JSON version of the Beanstalk price contract's
+ * Return a JSON version of the Moonmage price contract's
  * `price()` struct. This should only be used for display purposes.
  */
 const _handler: Handler = async () => {

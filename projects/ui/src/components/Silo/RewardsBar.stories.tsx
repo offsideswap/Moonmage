@@ -10,10 +10,10 @@ export default {
 
 const Template: ComponentStory<typeof RewardsBar> = (args: any) => (
   <RewardsBar
-    beans={{
+    moons={{
       earned: new BigNumber(100),
     }}
-    stalk={{
+    mage={{
       total: new BigNumber(100),
       active: new BigNumber(100),
       earned: new BigNumber(100),

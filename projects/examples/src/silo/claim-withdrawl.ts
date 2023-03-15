@@ -1,5 +1,5 @@
-import { BeanstalkSDK, Token, TokenValue } from "@beanstalk/sdk";
-import { Crate } from "@beanstalk/sdk/dist/types/lib/silo";
+import { MoonmageSDK, Token, TokenValue } from "@moonmage/sdk";
+import { Crate } from "@moonmage/sdk/dist/types/lib/silo";
 
 import chalk from "chalk";
 import { account as _account, impersonate } from "../setup";
@@ -9,7 +9,7 @@ main().catch((e) => {
   console.log(e);
 });
 
-let sdk: BeanstalkSDK;
+let sdk: MoonmageSDK;
 
 async function main() {
   const account = process.argv[3] || _account;
@@ -17,7 +17,7 @@ async function main() {
   let { sdk: _sdk, stop } = await impersonate(account);
   sdk = _sdk;
 
-  await go(sdk.tokens.BEAN);
+  await go(sdk.tokens.MOON);
 
   await stop();
 }

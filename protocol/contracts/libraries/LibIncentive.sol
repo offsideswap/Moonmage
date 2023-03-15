@@ -24,7 +24,7 @@ library LibIncentive {
         uint256 x
     ) internal pure returns (uint256 s) {
         // The upper bound in which the binomial expansion is expected to converge
-        // Upon testing with a limit of n <= 300, x = 2, k = 100, q = 100 (parameters Beanstalk currently uses)
+        // Upon testing with a limit of n <= 300, x = 2, k = 100, q = 100 (parameters Moonmage currently uses)
         // we found this p optimizes for gas and error
         uint256 p = log_two(n) + 1 + (x * n) / q;
         // Solution for binomial expansion in Solidity.

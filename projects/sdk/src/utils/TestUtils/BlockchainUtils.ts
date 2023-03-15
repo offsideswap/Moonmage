@@ -1,6 +1,6 @@
 import { BigNumber, ethers } from "ethers";
 import { ERC20Token, Token } from "src/classes/Token";
-import { BeanstalkSDK, DataSource } from "src/lib/BeanstalkSDK";
+import { MoonmageSDK, DataSource } from "src/lib/MoonmageSDK";
 import { TokenSiloBalance } from "src/lib/silo/types";
 import { makeDepositCrate } from "src/lib/silo/utils";
 import { TokenValue } from "src/TokenValue";
@@ -8,10 +8,10 @@ import * as addr from "./addresses";
 import { logSiloBalance } from "./log";
 
 export class BlockchainUtils {
-  sdk: BeanstalkSDK;
+  sdk: MoonmageSDK;
   provider: ethers.providers.JsonRpcProvider;
 
-  constructor(sdk: BeanstalkSDK) {
+  constructor(sdk: MoonmageSDK) {
     this.sdk = sdk;
     this.provider = sdk.provider as ethers.providers.JsonRpcProvider; // fixme
   }
@@ -39,7 +39,7 @@ export class BlockchainUtils {
   async sendDeposit(
     to: string,
     from: string = addr.BF_MULTISIG,
-    token: ERC20Token = this.sdk.tokens.BEAN
+    token: ERC20Token = this.sdk.tokens.MOON
   ): Promise<TokenSiloBalance["deposited"]["crates"][number]> {
     await this.provider.send("anvil_impersonateAccount", [from]);
 
@@ -51,7 +51,7 @@ export class BlockchainUtils {
     logSiloBalance(from, balance);
     console.log(`Transferring ${crate.amount.toHuman()} ${token.symbol} to ${to}...`, { season, amount });
 
-    const txn = await this.sdk.contracts.beanstalk
+    const txn = await this.sdk.contracts.moonmage
       .connect(await this.provider.getSigner(from))
       .transferDeposit(from, to, token.address, season, amount);
 
@@ -63,10 +63,10 @@ export class BlockchainUtils {
   }
 
   /**
-   * Send BEAN from the BF Multisig -> `to`.
+   * Send MOON from the BF Multisig -> `to`.
    */
-  async sendBean(to: string, amount: TokenValue, from: string = addr.BF_MULTISIG, token: ERC20Token = this.sdk.tokens.BEAN) {
-    console.log(`Sending ${amount.toHuman()} BEAN from ${from} -> ${to}...`);
+  async sendMoon(to: string, amount: TokenValue, from: string = addr.BF_MULTISIG, token: ERC20Token = this.sdk.tokens.MOON) {
+    console.log(`Sending ${amount.toHuman()} MOON from ${from} -> ${to}...`);
 
     await this.provider.send("anvil_impersonateAccount", [from]);
     const contract = token.getContract().connect(await this.provider.getSigner(from));
@@ -123,11 +123,11 @@ export class BlockchainUtils {
       this.setUSDTBalance(account, this.sdk.tokens.USDT.amount(amount)),
       this.setCRV3Balance(account, this.sdk.tokens.CRV3.amount(amount)),
       this.setWETHBalance(account, this.sdk.tokens.WETH.amount(amount)),
-      this.setBEANBalance(account, this.sdk.tokens.BEAN.amount(amount)),
+      this.setMOONBalance(account, this.sdk.tokens.MOON.amount(amount)),
       this.setROOTBalance(account, this.sdk.tokens.ROOT.amount(amount)),
-      this.seturBEANBalance(account, this.sdk.tokens.UNRIPE_BEAN.amount(amount)),
-      this.seturBEAN3CRVBalance(account, this.sdk.tokens.UNRIPE_BEAN_CRV3.amount(amount)),
-      this.setBEAN3CRVBalance(account, this.sdk.tokens.BEAN_CRV3_LP.amount(amount))
+      this.seturMOONBalance(account, this.sdk.tokens.UNRIPE_MOON.amount(amount)),
+      this.seturMOON3CRVBalance(account, this.sdk.tokens.UNRIPE_MOON_CRV3.amount(amount)),
+      this.setMOON3CRVBalance(account, this.sdk.tokens.MOON_CRV3_LP.amount(amount))
     ]);
   }
   async setETHBalance(account: string, balance: TokenValue) {
@@ -148,20 +148,20 @@ export class BlockchainUtils {
   async setWETHBalance(account: string, balance: TokenValue) {
     this.setBalance(this.sdk.tokens.WETH, account, balance);
   }
-  async setBEANBalance(account: string, balance: TokenValue) {
-    this.setBalance(this.sdk.tokens.BEAN, account, balance);
+  async setMOONBalance(account: string, balance: TokenValue) {
+    this.setBalance(this.sdk.tokens.MOON, account, balance);
   }
   async setROOTBalance(account: string, balance: TokenValue) {
     this.setBalance(this.sdk.tokens.ROOT, account, balance);
   }
-  async seturBEANBalance(account: string, balance: TokenValue) {
-    this.setBalance(this.sdk.tokens.UNRIPE_BEAN, account, balance);
+  async seturMOONBalance(account: string, balance: TokenValue) {
+    this.setBalance(this.sdk.tokens.UNRIPE_MOON, account, balance);
   }
-  async seturBEAN3CRVBalance(account: string, balance: TokenValue) {
-    this.setBalance(this.sdk.tokens.UNRIPE_BEAN_CRV3, account, balance);
+  async seturMOON3CRVBalance(account: string, balance: TokenValue) {
+    this.setBalance(this.sdk.tokens.UNRIPE_MOON_CRV3, account, balance);
   }
-  async setBEAN3CRVBalance(account: string, balance: TokenValue) {
-    this.setBalance(this.sdk.tokens.BEAN_CRV3_LP, account, balance);
+  async setMOON3CRVBalance(account: string, balance: TokenValue) {
+    this.setBalance(this.sdk.tokens.MOON_CRV3_LP, account, balance);
   }
 
   private getBalanceConfig(tokenAddress: string) {
@@ -171,16 +171,16 @@ export class BlockchainUtils {
     slotConfig.set(this.sdk.tokens.USDT.address, [2, false]);
     slotConfig.set(this.sdk.tokens.CRV3.address, [3, true]);
     slotConfig.set(this.sdk.tokens.WETH.address, [3, false]);
-    slotConfig.set(this.sdk.tokens.BEAN.address, [0, false]);
+    slotConfig.set(this.sdk.tokens.MOON.address, [0, false]);
     slotConfig.set(this.sdk.tokens.ROOT.address, [151, false]);
-    slotConfig.set(this.sdk.tokens.UNRIPE_BEAN.address, [0, false]);
-    slotConfig.set(this.sdk.tokens.UNRIPE_BEAN_CRV3.address, [0, false]);
-    slotConfig.set(this.sdk.tokens.BEAN_CRV3_LP.address, [15, true]);
+    slotConfig.set(this.sdk.tokens.UNRIPE_MOON.address, [0, false]);
+    slotConfig.set(this.sdk.tokens.UNRIPE_MOON_CRV3.address, [0, false]);
+    slotConfig.set(this.sdk.tokens.MOON_CRV3_LP.address, [15, true]);
     return slotConfig.get(tokenAddress);
   }
 
   /**
-   * Writes the new bean & 3crv balances to the evm storage
+   * Writes the new moon & 3crv balances to the evm storage
    */
   async setBalance(token: Token | string, account: string, balance: TokenValue | number) {
     const _token = token instanceof Token ? token : this.sdk.tokens.findBySymbol(token);
@@ -201,54 +201,54 @@ export class BlockchainUtils {
   }
 
   /**
-   * This method will change the liquidity in the the BEAN:3CRV pool to whatever
+   * This method will change the liquidity in the the MOON:3CRV pool to whatever
    * amounts are passed in.
    * Examples of prices (around block # 16549841)
    *  (10M, 10M) => price $1.011764, deltaB = 117,988
    *  (15M, 10M) => price $0.823969, deltaB = -2,495,837
    *  (10M, 15M) => price $1.243677, deltaB = 2,533,294
    *  (10_236_668, 10M) => price $1.00000, deltaB = 0.177251 (at block )
-   * @param beanAmount
+   * @param moonAmount
    * @param crv3Amount
    */
-  async setCurveLiquidity(beanAmount: TokenValue | number, crv3Amount: TokenValue | number) {
+  async setCurveLiquidity(moonAmount: TokenValue | number, crv3Amount: TokenValue | number) {
     const BALANCE_SLOT = 3;
     const PREV_BALANCE_SLOT = 5;
-    const POOL_ADDRESS = this.sdk.contracts.curve.pools.beanCrv3.address;
+    const POOL_ADDRESS = this.sdk.contracts.curve.pools.moonCrv3.address;
 
     // Get the existing liquidity amounts
-    const [currentBean, currentCrv3] = await this.getCurvePoolBalances(BALANCE_SLOT, POOL_ADDRESS);
+    const [currentMoon, currentCrv3] = await this.getCurvePoolBalances(BALANCE_SLOT, POOL_ADDRESS);
 
-    const newBean = beanAmount instanceof TokenValue ? beanAmount : this.sdk.tokens.BEAN.amount(beanAmount);
+    const newMoon = moonAmount instanceof TokenValue ? moonAmount : this.sdk.tokens.MOON.amount(moonAmount);
     const newCrv3 = crv3Amount instanceof TokenValue ? crv3Amount : this.sdk.tokens.CRV3.amount(crv3Amount);
 
     // update the array tracking balances
-    await this.setCurvePoolBalances(POOL_ADDRESS, BALANCE_SLOT, newBean, newCrv3);
+    await this.setCurvePoolBalances(POOL_ADDRESS, BALANCE_SLOT, newMoon, newCrv3);
     // actually give the pool the ERC20's
-    await this.setBEANBalance(POOL_ADDRESS, newBean);
+    await this.setMOONBalance(POOL_ADDRESS, newMoon);
     await this.setCRV3Balance(POOL_ADDRESS, newCrv3);
 
     // Curve also keeps track of the previous balance, so we just copy the existing current to old.
-    await this.setCurvePoolBalances(POOL_ADDRESS, PREV_BALANCE_SLOT, currentBean, currentCrv3);
+    await this.setCurvePoolBalances(POOL_ADDRESS, PREV_BALANCE_SLOT, currentMoon, currentCrv3);
   }
 
   /**
-   * Returns the amounts of bean and 3crv in the Curve pool
+   * Returns the amounts of moon and 3crv in the Curve pool
    */
   private async getCurvePoolBalances(slot: number, address: string) {
-    const beanLocation = ethers.utils.solidityKeccak256(["uint256"], [slot]);
-    const crv3Location = this.addOne(beanLocation);
+    const moonLocation = ethers.utils.solidityKeccak256(["uint256"], [slot]);
+    const crv3Location = this.addOne(moonLocation);
 
-    const t1 = await this.sdk.provider.getStorageAt(address, beanLocation);
-    const beanAmount = TokenValue.fromBlockchain(t1, this.sdk.tokens.BEAN.decimals);
+    const t1 = await this.sdk.provider.getStorageAt(address, moonLocation);
+    const moonAmount = TokenValue.fromBlockchain(t1, this.sdk.tokens.MOON.decimals);
 
     const t2 = await this.sdk.provider.getStorageAt(address, crv3Location);
     const crv3Amount = TokenValue.fromBlockchain(t2, this.sdk.tokens.CRV3.decimals);
 
-    return [beanAmount, crv3Amount];
+    return [moonAmount, crv3Amount];
   }
 
-  /** This will set the balance of BEAN and 3CRV tokens in the Curve liquidity pool contract
+  /** This will set the balance of MOON and 3CRV tokens in the Curve liquidity pool contract
    * by directly editing the storage in the evm.
    * Cur balance slot: 3
    * Pre balance slot: 5
@@ -258,15 +258,15 @@ export class BlockchainUtils {
    *
    * @param address
    * @param slot
-   * @param beanBalance
+   * @param moonBalance
    * @param crv3Balance
    */
-  private async setCurvePoolBalances(address: string, slot: number, beanBalance: TokenValue, crv3Balance: TokenValue) {
-    const beanLocation = ethers.utils.solidityKeccak256(["uint256"], [slot]);
-    const crv3Location = this.addOne(beanLocation);
+  private async setCurvePoolBalances(address: string, slot: number, moonBalance: TokenValue, crv3Balance: TokenValue) {
+    const moonLocation = ethers.utils.solidityKeccak256(["uint256"], [slot]);
+    const crv3Location = this.addOne(moonLocation);
 
-    // Set BEAN balance
-    await this.setStorageAt(address, beanLocation, this.toBytes32(beanBalance.toBigNumber()));
+    // Set MOON balance
+    await this.setStorageAt(address, moonLocation, this.toBytes32(moonBalance.toBigNumber()));
     // Set 3CRV balance
     await this.setStorageAt(address, crv3Location, this.toBytes32(crv3Balance.toBigNumber()));
   }
@@ -314,11 +314,11 @@ export class BlockchainUtils {
     await this.sdk.provider.send("evm_mine", []);
 
     // call sunrise
-    const res = await this.sdk.contracts.beanstalk.sunrise();
+    const res = await this.sdk.contracts.moonmage.sunrise();
     await res.wait();
 
     // get the new season
-    const season = await this.sdk.contracts.beanstalk.season();
+    const season = await this.sdk.contracts.moonmage.season();
 
     return season;
   }

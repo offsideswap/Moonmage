@@ -2,19 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Box, CircularProgress, Stack, Typography } from '@mui/material';
 import { bigNumberResult, displayBN, displayFullBN } from '~/util';
-import { useBeanstalkContract } from '~/hooks/ledger/useContract';
-import usePodOrder from '~/hooks/beanstalk/usePodOrder';
+import { useMoonmageContract } from '~/hooks/ledger/useContract';
+import usePodOrder from '~/hooks/moonmage/usePodOrder';
 import FillOrderForm from '~/components/Market/PodsV2/Actions/Sell/FillOrderForm';
 import StatHorizontal from '~/components/Common/StatHorizontal';
 import Row from '~/components/Common/Row';
 import TokenIcon from '~/components/Common/TokenIcon';
-import FarmerChip from '~/components/Common/FarmerChip';
-import { BEAN, PODS } from '~/constants/tokens';
+import CosmonautChip from '~/components/Common/CosmonautChip';
+import { MOON, PODS } from '~/constants/tokens';
 
 const FillOrder: React.FC<{}> = () => {
   const { orderID } = useParams<{ orderID?: string }>();
   const { data: podOrder, source, loading, error } = usePodOrder(orderID);
-  const beanstalk = useBeanstalkContract();
+  const moonmage = useMoonmageContract();
 
   /// Verify that this order is still live via the contract.
   const [orderValid, setOrderValid] = useState<null | boolean>(null);
@@ -22,7 +22,7 @@ const FillOrder: React.FC<{}> = () => {
     if (orderID) {
       (async () => {
         try {
-          const _order = await beanstalk.podOrderById(orderID.toString()).then(bigNumberResult);
+          const _order = await moonmage.podOrderById(orderID.toString()).then(bigNumberResult);
           console.debug('[pages/order] order = ', _order);
           setOrderValid(_order?.gt(0));
         } catch (e) {
@@ -31,7 +31,7 @@ const FillOrder: React.FC<{}> = () => {
         }
       })();
     }
-  }, [beanstalk, orderID]);
+  }, [moonmage, orderID]);
 
   /// Loading isn't complete until orderValid is set
   if (loading || orderValid === null) {
@@ -61,9 +61,9 @@ const FillOrder: React.FC<{}> = () => {
       {/* Listing Details */}
       <Box px={0.5}>
         <Stack gap={0.75}>
-          {/* add mr of -0.5 to offset padding of farmer chip */}
+          {/* add mr of -0.5 to offset padding of cosmomage chip */}
           <StatHorizontal label="Buyer" maxHeight={20} sx={{ mr: -0.5 }}>
-            <FarmerChip account={podOrder.account} />
+            <CosmonautChip account={podOrder.account} />
           </StatHorizontal>
           <StatHorizontal label="Place in Line">
             0 - {displayBN(podOrder.maxPlaceInLine)}
@@ -76,13 +76,13 @@ const FillOrder: React.FC<{}> = () => {
           </StatHorizontal>
           <StatHorizontal label="Price per Pod">
             <Row gap={0.25}>
-              <TokenIcon token={BEAN[1]} />{' '}
+              <TokenIcon token={MOON[1]} />{' '}
               {displayFullBN(podOrder.pricePerPod)}
             </Row>
           </StatHorizontal>
-          <StatHorizontal label="Beans Remaining">
+          <StatHorizontal label="Moons Remaining">
             <Row gap={0.25}>
-              <TokenIcon token={BEAN[1]} />{' '}
+              <TokenIcon token={MOON[1]} />{' '}
               {displayBN(podOrder.podAmountRemaining.times(podOrder.pricePerPod))}
             </Row>
           </StatHorizontal>

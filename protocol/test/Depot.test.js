@@ -3,12 +3,12 @@ const { defaultAbiCoder } = require('ethers/lib/utils.js');
 const { deploy } = require('../scripts/deploy.js');
 const { deployPipeline, impersonatePipeline } = require('../scripts/pipeline.js');
 const { deployContract } = require('../scripts/contracts.js');
-const { getAltBeanstalk, getBean, getUsdc } = require('../utils/contracts.js');
+const { getAltMoonmage, getMoon, getUsdc } = require('../utils/contracts.js');
 const { signERC2612Permit } = require("eth-permit");
 const { toBN, encodeAdvancedData, signSiloDepositTokenPermit, signSiloDepositTokensPermit, signTokenPermit } = require('../utils/index.js');
 const { impersonateSigner } = require('../utils/signer.js');
 const { EXTERNAL, INTERNAL, INTERNAL_EXTERNAL, INTERNAL_TOLERANT } = require('./utils/balances.js');
-const { BEAN_3_CURVE, THREE_POOL, THREE_CURVE, STABLE_FACTORY, WETH, BEAN, PIPELINE } = require('./utils/constants.js');
+const { MOON_3_CURVE, THREE_POOL, THREE_CURVE, STABLE_FACTORY, WETH, MOON, PIPELINE } = require('./utils/constants.js');
 const { to6, to18 } = require('./utils/helpers.js');
 const { takeSnapshot, revertToSnapshot } = require("./utils/snapshot");
 const { impersonateDepot } = require('../scripts/depot.js');
@@ -19,13 +19,13 @@ describe('Depot', function () {
     before(async function () {
         [owner, user, user2] = await ethers.getSigners();
         const contracts = await deploy("Test", false, true);
-        this.beanstalk = await getAltBeanstalk(contracts.beanstalkDiamond.address)
-        this.mockSilo = await ethers.getContractAt('MockSiloFacet', contracts.beanstalkDiamond.address);
-        this.bean = await getBean()
+        this.moonmage = await getAltMoonmage(contracts.moonmageDiamond.address)
+        this.mockSilo = await ethers.getContractAt('MockSiloFacet', contracts.moonmageDiamond.address);
+        this.moon = await getMoon()
         this.usdc = await getUsdc()
         this.threeCurve = await ethers.getContractAt('MockToken', THREE_CURVE)
         this.threePool = await ethers.getContractAt('Mock3Curve', THREE_POOL)
-        this.beanMetapool = await ethers.getContractAt('MockMeta3Curve', BEAN_3_CURVE)
+        this.moonMetapool = await ethers.getContractAt('MockMeta3Curve', MOON_3_CURVE)
         this.weth = await ethers.getContractAt("MockWETH", WETH)
 
         pipeline = await impersonatePipeline()
@@ -39,29 +39,29 @@ describe('Depot', function () {
         this.mockContract = await (await ethers.getContractFactory('MockContract', owner)).deploy()
         await this.mockContract.deployed()
         await this.mockContract.setAccount(user2.address)
-        const season = await ethers.getContractAt('MockSeasonFacet', contracts.beanstalkDiamond.address)
+        const season = await ethers.getContractAt('MockSeasonFacet', contracts.moonmageDiamond.address)
 
-        await this.bean.mint(user.address, to6('1004'))
+        await this.moon.mint(user.address, to6('1004'))
         await this.usdc.mint(user.address, to6('1000'))
 
-        await this.bean.connect(user).approve(this.beanstalk.address, to18('1'))
-        await this.usdc.connect(user).approve(this.beanstalk.address, to18('1'))
+        await this.moon.connect(user).approve(this.moonmage.address, to18('1'))
+        await this.usdc.connect(user).approve(this.moonmage.address, to18('1'))
 
-        await this.bean.connect(user).approve(this.beanstalk.address, '100000000000')
-        await this.bean.connect(user).approve(this.beanMetapool.address, '100000000000')
-        await this.bean.mint(user.address, to6('10000'))
+        await this.moon.connect(user).approve(this.moonmage.address, '100000000000')
+        await this.moon.connect(user).approve(this.moonMetapool.address, '100000000000')
+        await this.moon.mint(user.address, to6('10000'))
 
         await this.threeCurve.mint(user.address, to18('1000'))
         await this.threePool.set_virtual_price(to18('2'))
-        await this.threeCurve.connect(user).approve(this.beanMetapool.address, to18('100000000000'))
+        await this.threeCurve.connect(user).approve(this.moonMetapool.address, to18('100000000000'))
 
-        await this.beanMetapool.set_A_precise('1000')
-        await this.beanMetapool.set_virtual_price(ethers.utils.parseEther('1'))
-        await this.beanMetapool.connect(user).approve(this.threeCurve.address, to18('100000000000'))
-        await this.beanMetapool.connect(user).approve(this.beanstalk.address, to18('100000000000'))
-        await this.threeCurve.connect(user).approve(this.beanstalk.address, to18('100000000000'))
-        this.result = await this.beanstalk.connect(user).addLiquidity(
-            BEAN_3_CURVE,
+        await this.moonMetapool.set_A_precise('1000')
+        await this.moonMetapool.set_virtual_price(ethers.utils.parseEther('1'))
+        await this.moonMetapool.connect(user).approve(this.threeCurve.address, to18('100000000000'))
+        await this.moonMetapool.connect(user).approve(this.moonmage.address, to18('100000000000'))
+        await this.threeCurve.connect(user).approve(this.moonmage.address, to18('100000000000'))
+        this.result = await this.moonmage.connect(user).addLiquidity(
+            MOON_3_CURVE,
             STABLE_FACTORY,
             [to6('1000'), to18('1000')],
             to18('2000'),
@@ -78,14 +78,14 @@ describe('Depot', function () {
             '10000',
             '1'
         );
-        await this.siloToken.connect(user).approve(this.beanstalk.address, '100000000000');
+        await this.siloToken.connect(user).approve(this.moonmage.address, '100000000000');
         await this.siloToken.mint(user.address, to6('2'));
 
-        await this.beanstalk.connect(user).deposit(BEAN, to6('1'), 0)
-        await this.beanstalk.connect(user).deposit(this.siloToken.address, to6('1'), 0)
+        await this.moonmage.connect(user).deposit(MOON, to6('1'), 0)
+        await this.moonmage.connect(user).deposit(this.siloToken.address, to6('1'), 0)
         await season.siloSunrise('0')
-        await this.beanstalk.connect(user).deposit(BEAN, to6('1'), 0)
-        await this.beanstalk.connect(user).transferToken(BEAN, user.address, to6('1'), EXTERNAL, INTERNAL)
+        await this.moonmage.connect(user).deposit(MOON, to6('1'), 0)
+        await this.moonmage.connect(user).transferToken(MOON, user.address, to6('1'), EXTERNAL, INTERNAL)
     });
 
     beforeEach(async function () {
@@ -99,23 +99,23 @@ describe('Depot', function () {
     describe("Normal Pipe", async function () {
         describe("1 Pipe", async function () {
             beforeEach(async function () {
-                const mintBeans = this.bean.interface.encodeFunctionData('mint', [
+                const mintMoons = this.moon.interface.encodeFunctionData('mint', [
                     pipeline.address,
                     to6('100')
                 ])
-                await this.depot.connect(user).pipe([this.bean.address, mintBeans])
+                await this.depot.connect(user).pipe([this.moon.address, mintMoons])
             })
 
-            it('mints beans', async function () {
-                expect(await this.bean.balanceOf(pipeline.address)).to.be.equal(to6('100'))
+            it('mints moons', async function () {
+                expect(await this.moon.balanceOf(pipeline.address)).to.be.equal(to6('100'))
             })
         })
     })
 
     describe("Permit Deposit and Transfer Deposits (multiple seasons)", async function () {
         beforeEach(async function () {
-            const nonce = await this.beanstalk.connect(user).depositPermitNonces(user.address);
-            const signature = await signSiloDepositTokenPermit(user, user.address, this.depot.address, BEAN, to6('2'), nonce);
+            const nonce = await this.moonmage.connect(user).depositPermitNonces(user.address);
+            const signature = await signSiloDepositTokenPermit(user, user.address, this.depot.address, MOON, to6('2'), nonce);
             permit = await this.depot.interface.encodeFunctionData('permitDeposit',
                 [
                     signature.owner,
@@ -132,7 +132,7 @@ describe('Depot', function () {
             transfer = await this.depot.interface.encodeFunctionData('transferDeposits', [
                 user.address,
                 PIPELINE,
-                BEAN,
+                MOON,
                 [1, 2],
                 [to6('1'), to6('1')]
             ])
@@ -140,19 +140,19 @@ describe('Depot', function () {
         })
 
         it('pipeline has deposits', async function () {
-            const deposit = await this.beanstalk.getDeposit(PIPELINE, BEAN, 1)
+            const deposit = await this.moonmage.getDeposit(PIPELINE, MOON, 1)
             expect(deposit[0]).to.be.equal(to6('1'))
             expect(deposit[1]).to.be.equal(to6('1'))
-            const deposit2 = await this.beanstalk.getDeposit(PIPELINE, BEAN, 2)
+            const deposit2 = await this.moonmage.getDeposit(PIPELINE, MOON, 2)
             expect(deposit2[0]).to.be.equal(to6('1'))
             expect(deposit2[1]).to.be.equal(to6('1'))
         })
 
         it('user does not have deposits', async function () {
-            const deposit = await this.beanstalk.getDeposit(user.address, BEAN, 1)
+            const deposit = await this.moonmage.getDeposit(user.address, MOON, 1)
             expect(deposit[0]).to.be.equal(to6('0'))
             expect(deposit[1]).to.be.equal(to6('0'))
-            const deposit2 = await this.beanstalk.getDeposit(user.address, BEAN, 2)
+            const deposit2 = await this.moonmage.getDeposit(user.address, MOON, 2)
             expect(deposit2[0]).to.be.equal(to6('0'))
             expect(deposit2[1]).to.be.equal(to6('0'))
         })
@@ -160,8 +160,8 @@ describe('Depot', function () {
 
     describe("Permit Deposit and Transfer Deposits (multiple tokens)", async function () {
         beforeEach(async function () {
-            const nonce = await this.beanstalk.connect(user).depositPermitNonces(user.address);
-            const signature = await signSiloDepositTokensPermit(user, user.address, this.depot.address, [BEAN, this.siloToken.address], [to6('1'), to6('1')], nonce);
+            const nonce = await this.moonmage.connect(user).depositPermitNonces(user.address);
+            const signature = await signSiloDepositTokensPermit(user, user.address, this.depot.address, [MOON, this.siloToken.address], [to6('1'), to6('1')], nonce);
             permit = await this.depot.interface.encodeFunctionData('permitDeposits',
                 [
                     signature.owner,
@@ -178,7 +178,7 @@ describe('Depot', function () {
             transfer = await this.depot.interface.encodeFunctionData('transferDeposit', [
                 user.address,
                 PIPELINE,
-                BEAN,
+                MOON,
                 1,
                 to6('1')
             ])
@@ -194,19 +194,19 @@ describe('Depot', function () {
         })
 
         it('pipeline has deposits', async function () {
-            const deposit = await this.beanstalk.getDeposit(PIPELINE, BEAN, 1)
+            const deposit = await this.moonmage.getDeposit(PIPELINE, MOON, 1)
             expect(deposit[0]).to.be.equal(to6('1'))
             expect(deposit[1]).to.be.equal(to6('1'))
-            const deposit2 = await this.beanstalk.getDeposit(PIPELINE, this.siloToken.address, 1)
+            const deposit2 = await this.moonmage.getDeposit(PIPELINE, this.siloToken.address, 1)
             expect(deposit2[0]).to.be.equal(to6('1'))
             expect(deposit2[1]).to.be.equal(to6('1'))
         })
 
         it('user does not have deposits', async function () {
-            const deposit = await this.beanstalk.getDeposit(user.address, BEAN, 1)
+            const deposit = await this.moonmage.getDeposit(user.address, MOON, 1)
             expect(deposit[0]).to.be.equal(to6('0'))
             expect(deposit[1]).to.be.equal(to6('0'))
-            const deposit2 = await this.beanstalk.getDeposit(user.address, this.siloToken.address, 1)
+            const deposit2 = await this.moonmage.getDeposit(user.address, this.siloToken.address, 1)
             expect(deposit2[0]).to.be.equal(to6('0'))
             expect(deposit2[1]).to.be.equal(to6('0'))
         })
@@ -255,7 +255,7 @@ describe('Depot', function () {
                 '10000000',
             );
 
-            permit = this.beanstalk.interface.encodeFunctionData('permitERC20', [
+            permit = this.moonmage.interface.encodeFunctionData('permitERC20', [
                 this.siloToken.address,
                 signature.owner, 
                 signature.spender, 
@@ -284,10 +284,10 @@ describe('Depot', function () {
 
     describe("Permit and Transfer ERC-20 token from Farm balances", async function () {
         beforeEach(async function () {
-            const nonce = await this.beanstalk.tokenPermitNonces(user.address);
-            const signature = await signTokenPermit(user, user.address, this.depot.address, BEAN, to6('1'), nonce);
+            const nonce = await this.moonmage.tokenPermitNonces(user.address);
+            const signature = await signTokenPermit(user, user.address, this.depot.address, MOON, to6('1'), nonce);
 
-            permit = this.beanstalk.interface.encodeFunctionData('permitToken', [
+            permit = this.moonmage.interface.encodeFunctionData('permitToken', [
                 signature.owner, 
                 signature.spender, 
                 signature.token, 
@@ -298,7 +298,7 @@ describe('Depot', function () {
                 signature.split.s
             ]);
             transfer = await this.depot.interface.encodeFunctionData('transferToken', [
-                BEAN,
+                MOON,
                 PIPELINE,
                 to6('1'),
                 INTERNAL,
@@ -308,8 +308,8 @@ describe('Depot', function () {
         })
 
         it('transfers token', async function () {
-            expect(await this.beanstalk.getInternalBalance(BEAN, user.address)).to.be.equal(to6('0'))
-            expect(await this.bean.balanceOf(PIPELINE)).to.be.equal(to6('1'))
+            expect(await this.moonmage.getInternalBalance(MOON, user.address)).to.be.equal(to6('0'))
+            expect(await this.moon.balanceOf(PIPELINE)).to.be.equal(to6('1'))
         })
     })
 

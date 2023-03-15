@@ -7,7 +7,7 @@ export default function useAppFlag<T extends string | number | object>(
   fallback?: T
 ) {
   const account = useAccount();
-  const key = `beanstalk.a.${account || '_'}.${id}`;  
+  const key = `moonmage.a.${account || '_'}.${id}`;  
   const get = useCallback<() => T>(() => {
     try {
       const v = localStorage.getItem(key);

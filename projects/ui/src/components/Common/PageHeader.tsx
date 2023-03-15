@@ -11,7 +11,7 @@ import { FC } from '~/types';
 const PageHeader : FC<{
   /** The Field: The Decentralized Credit Facility */
   title?: any;
-  /** "Earn yield through lending beans..." */
+  /** "Earn yield through lending moons..." */
   description?: string;
   /** Show a back button to return to `returnPath`. */
   returnPath?: string;
@@ -58,7 +58,7 @@ const PageHeader : FC<{
               {props.description}.
               {props.href !== undefined && (
                 <Link
-                  href={props.href || 'https://docs.bean.money/almanac'}
+                  href={props.href || 'https://docs.moon.money/almanac'}
                   underline="none"
                   color="primary"
                   display="flex"

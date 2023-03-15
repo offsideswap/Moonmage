@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Token from '~/classes/Token';
-import { BeanstalkPalette, IconSize } from '../../App/muiTheme';
+import { MoonmagePalette, IconSize } from '../../App/muiTheme';
 import { hexToRgba } from '~/util/UI';
 import Row from '~/components/Common/Row';
 
@@ -34,7 +34,7 @@ const wrappedVariantSx = {
   borderColor: 'text.light',
   ':hover': {
     borderColor: 'text.light',
-    backgroundColor: BeanstalkPalette.lightestBlue
+    backgroundColor: MoonmagePalette.lightestBlue
   }
 };
 
@@ -88,7 +88,7 @@ const TokenAdornment: FC<TokenAdornmentProps> = ({
               ) : null}
               <Box
                 sx={{
-                  borderRight: `1px solid ${BeanstalkPalette.lightestGrey}`,
+                  borderRight: `1px solid ${MoonmagePalette.lightestGrey}`,
                   height: textVariant === 'body2' ? 12 : 16,
                   mx: 0.3,
                 }}
@@ -120,7 +120,7 @@ const TokenAdornment: FC<TokenAdornmentProps> = ({
             <KeyboardArrowDownIcon
               sx={{
                 fontSize: downArrowIconSize || 18,
-                color: hexToRgba(BeanstalkPalette.textBlue, 0.87),
+                color: hexToRgba(MoonmagePalette.textBlue, 0.87),
                 mb: size === 'small' ? '2px' : 0,
               }}
             />

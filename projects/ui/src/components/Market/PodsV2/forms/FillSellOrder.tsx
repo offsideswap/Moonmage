@@ -37,7 +37,7 @@ const FillSellOrder: React.FC<{}> = () => {
       {selected && (
         <>
           <InfoRow label="PRICE" infoVariant="caption" labelVariant="caption">
-            {`${displayFullBN(selected?.pricePerPod || ZERO_BN, 2)} BEAN`}
+            {`${displayFullBN(selected?.pricePerPod || ZERO_BN, 2)} MOON`}
           </InfoRow>
           <InfoRow
             label="AMOUNT LISTED"
@@ -61,7 +61,7 @@ const FillSellOrder: React.FC<{}> = () => {
                 endAdornment: (
                   <InputAdornment position="end">
                     <Typography variant="caption" color="text.primary">
-                      BEANS
+                      MOONS
                     </Typography>
                   </InputAdornment>
                 ),

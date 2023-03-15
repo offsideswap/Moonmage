@@ -3,7 +3,7 @@ query Seasons {
     id
     season
     price
-    deltaBeans
+    deltaMoons
   }
   fields(first: 24, orderBy: season, orderDirection: desc) {
     id

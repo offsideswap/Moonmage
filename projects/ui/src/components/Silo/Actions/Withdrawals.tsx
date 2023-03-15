@@ -4,11 +4,11 @@ import { useAccount as useWagmiAccount } from 'wagmi';
 import { Typography } from '@mui/material';
 import { GridColumns } from '@mui/x-data-grid';
 import { Token } from '~/classes';
-import { FarmerSiloBalance, WithdrawalCrate } from '~/state/farmer/silo';
+import { CosmonautSiloBalance, WithdrawalCrate } from '~/state/cosmomage/silo';
 import { displayFullBN, displayUSD } from '~/util';
-import useSeason from '~/hooks/beanstalk/useSeason';
+import useSeason from '~/hooks/moonmage/useSeason';
 import { ZERO_BN } from '~/constants';
-import useSiloTokenToFiat from '~/hooks/beanstalk/useSiloTokenToFiat';
+import useSiloTokenToFiat from '~/hooks/moonmage/useSiloTokenToFiat';
 import TableCard from '../../Common/TableCard';
 
 import { FC } from '~/types';
@@ -17,7 +17,7 @@ type RowData = WithdrawalCrate & { id: BigNumber };
 
 const Withdrawals : FC<{
   token: Token;
-  siloBalance: FarmerSiloBalance | undefined;
+  siloBalance: CosmonautSiloBalance | undefined;
 }> = ({
   token,
   siloBalance,

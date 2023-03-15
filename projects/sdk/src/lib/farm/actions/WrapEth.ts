@@ -19,8 +19,8 @@ export class WrapEth extends StepClass<BasicPreparedResult> {
       prepare: () => {
         WrapEth.sdk.debug(`>[${this.name}.prepare()]`, { toMode: this.toMode, _amountInStep, context });
         return {
-          target: WrapEth.sdk.contracts.beanstalk.address,
-          callData: WrapEth.sdk.contracts.beanstalk.interface.encodeFunctionData("wrapEth", [
+          target: WrapEth.sdk.contracts.moonmage.address,
+          callData: WrapEth.sdk.contracts.moonmage.interface.encodeFunctionData("wrapEth", [
             _amountInStep, // ignore minAmountOut since there is no slippage
             this.toMode
           ]),
@@ -30,8 +30,8 @@ export class WrapEth extends StepClass<BasicPreparedResult> {
           clipboard: Clipboard.encode([], _amountInStep)
         };
       },
-      decode: (data: string) => WrapEth.sdk.contracts.beanstalk.interface.decodeFunctionData("wrapEth", data),
-      decodeResult: (result: string) => WrapEth.sdk.contracts.beanstalk.interface.decodeFunctionResult("wrapEth", result)
+      decode: (data: string) => WrapEth.sdk.contracts.moonmage.interface.decodeFunctionData("wrapEth", data),
+      decodeResult: (result: string) => WrapEth.sdk.contracts.moonmage.interface.decodeFunctionResult("wrapEth", result)
     };
   }
 }

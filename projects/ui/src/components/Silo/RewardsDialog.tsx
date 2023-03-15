@@ -12,13 +12,13 @@ import {
   StyledDialogContent,
   StyledDialogTitle,
 } from '~/components/Common/Dialog';
-import { ClaimRewardsAction } from '~/lib/Beanstalk/Farm';
-import { UNRIPE_BEAN, UNRIPE_BEAN_CRV3 } from '~/constants/tokens';
+import { ClaimRewardsAction } from '~/lib/Moonmage/Farm';
+import { UNRIPE_MOON, UNRIPE_MOON_CRV3 } from '~/constants/tokens';
 import DescriptionButton from '~/components/Common/DescriptionButton';
 import RewardsBar, { RewardsBarProps } from './RewardsBar';
 import { hoverMap } from '~/constants/silo';
-import { BeanstalkPalette } from '~/components/App/muiTheme';
-import useFarmerSiloBalances from '~/hooks/farmer/useFarmerSiloBalances';
+import { MoonmagePalette } from '~/components/App/muiTheme';
+import useCosmonautSiloBalances from '~/hooks/cosmomage/useCosmonautSiloBalances';
 import useGetChainToken from '~/hooks/chain/useGetChainToken';
 import { FC } from '~/types';
 import RewardsForm from './RewardsForm';
@@ -35,19 +35,19 @@ const options = [
   {
     title: 'Mow',
     description:
-      'Add Grown Stalk to your Stalk balance. Mow is called upon any interaction with the Silo.',
+      'Add Grown Mage to your Mage balance. Mow is called upon any interaction with the Silo.',
     value: ClaimRewardsAction.MOW,
   },
   {
     title: 'Plant',
     description:
-      'Add Plantable Seeds to your Seed balance. Also Mows Grown Stalk, Deposits Earned Beans and claims Earned Stalk.',
+      'Add Plantable Seeds to your Seed balance. Also Mows Grown Mage, Deposits Earned Moons and claims Earned Mage.',
     value: ClaimRewardsAction.PLANT_AND_MOW,
   },
   {
     title: 'Enroot',
     description:
-      'Add Revitalized Stalk and Seeds to your Stalk and Seed balances, respectively. Also Mows Grown Stalk.',
+      'Add Revitalized Mage and Seeds to your Mage and Seed balances, respectively. Also Mows Grown Mage.',
     value: ClaimRewardsAction.ENROOT_AND_MOW,
     hideIfNoUnripe: true,
   },
@@ -85,7 +85,7 @@ const ClaimRewardsForm: FC<
   const getChainToken = useGetChainToken();
 
   /// State
-  const balances = useFarmerSiloBalances();
+  const balances = useCosmonautSiloBalances();
 
   /// The currently hovered action.
   const [hoveredAction, setHoveredAction] = useState<
@@ -95,11 +95,11 @@ const ClaimRewardsForm: FC<
   const selectedAction = values.action;
 
   /// Calculate Unripe Silo Balance
-  const urBean = getChainToken(UNRIPE_BEAN);
-  const urBeanCrv3 = getChainToken(UNRIPE_BEAN_CRV3);
+  const urMoon = getChainToken(UNRIPE_MOON);
+  const urMoonCrv3 = getChainToken(UNRIPE_MOON_CRV3);
   const unripeDepositedBalance = balances[
-    urBean.address
-  ]?.deposited.amount.plus(balances[urBeanCrv3.address]?.deposited.amount);
+    urMoon.address
+  ]?.deposited.amount.plus(balances[urMoonCrv3.address]?.deposited.amount);
 
   /// Handlers
   const onMouseOver = useCallback(
@@ -192,7 +192,7 @@ const ClaimRewardsForm: FC<
                             disabled={disabled}
                             sx={{
                               '&:disabled': {
-                                borderColor: BeanstalkPalette.lightestGrey,
+                                borderColor: MoonmagePalette.lightestGrey,
                               },
                             }}
                           />

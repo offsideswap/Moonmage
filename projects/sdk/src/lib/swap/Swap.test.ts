@@ -20,18 +20,18 @@ beforeAll(async () => {
     utils.setUSDTBalance(account, sdk.tokens.USDT.amount(30000)),
     utils.setCRV3Balance(account, sdk.tokens.CRV3.amount(30000)),
     utils.setWETHBalance(account, sdk.tokens.WETH.amount(30000)),
-    utils.setBEANBalance(account, sdk.tokens.BEAN.amount(30000))
+    utils.setMOONBalance(account, sdk.tokens.MOON.amount(30000))
   ]);
   await utils.mine();
 
   // set max allowance
   await Promise.all([
-    await sdk.tokens.DAI.approve(sdk.contracts.beanstalk.address, TokenValue.MAX_UINT256.toBigNumber()),
-    await sdk.tokens.USDC.approve(sdk.contracts.beanstalk.address, TokenValue.MAX_UINT256.toBigNumber()),
-    await sdk.tokens.USDT.approve(sdk.contracts.beanstalk.address, TokenValue.MAX_UINT256.toBigNumber()),
-    await sdk.tokens.CRV3.approve(sdk.contracts.beanstalk.address, TokenValue.MAX_UINT256.toBigNumber()),
-    await sdk.tokens.WETH.approve(sdk.contracts.beanstalk.address, TokenValue.MAX_UINT256.toBigNumber()),
-    await sdk.tokens.BEAN.approve(sdk.contracts.beanstalk.address, TokenValue.MAX_UINT256.toBigNumber())
+    await sdk.tokens.DAI.approve(sdk.contracts.moonmage.address, TokenValue.MAX_UINT256.toBigNumber()),
+    await sdk.tokens.USDC.approve(sdk.contracts.moonmage.address, TokenValue.MAX_UINT256.toBigNumber()),
+    await sdk.tokens.USDT.approve(sdk.contracts.moonmage.address, TokenValue.MAX_UINT256.toBigNumber()),
+    await sdk.tokens.CRV3.approve(sdk.contracts.moonmage.address, TokenValue.MAX_UINT256.toBigNumber()),
+    await sdk.tokens.WETH.approve(sdk.contracts.moonmage.address, TokenValue.MAX_UINT256.toBigNumber()),
+    await sdk.tokens.MOON.approve(sdk.contracts.moonmage.address, TokenValue.MAX_UINT256.toBigNumber())
   ]);
 });
 
@@ -42,19 +42,19 @@ describe("Swap", function () {
     [sdk.tokens.ETH, sdk.tokens.USDT],
     [sdk.tokens.ETH, sdk.tokens.USDC],
     [sdk.tokens.ETH, sdk.tokens.DAI],
-    [sdk.tokens.ETH, sdk.tokens.BEAN],
+    [sdk.tokens.ETH, sdk.tokens.MOON],
     [sdk.tokens.ETH, sdk.tokens.CRV3],
 
-    // BEAN => x
-    [sdk.tokens.BEAN, sdk.tokens.ETH],
-    [sdk.tokens.BEAN, sdk.tokens.WETH],
-    [sdk.tokens.BEAN, sdk.tokens.BEAN],
-    [sdk.tokens.BEAN, sdk.tokens.USDT],
-    [sdk.tokens.BEAN, sdk.tokens.USDC],
-    [sdk.tokens.BEAN, sdk.tokens.DAI],
-    [sdk.tokens.BEAN, sdk.tokens.BEAN],
-    [sdk.tokens.BEAN, sdk.tokens.CRV3]
-  ])("BEAN->x", (tokenIn, tokenOut) => {
+    // MOON => x
+    [sdk.tokens.MOON, sdk.tokens.ETH],
+    [sdk.tokens.MOON, sdk.tokens.WETH],
+    [sdk.tokens.MOON, sdk.tokens.MOON],
+    [sdk.tokens.MOON, sdk.tokens.USDT],
+    [sdk.tokens.MOON, sdk.tokens.USDC],
+    [sdk.tokens.MOON, sdk.tokens.DAI],
+    [sdk.tokens.MOON, sdk.tokens.MOON],
+    [sdk.tokens.MOON, sdk.tokens.CRV3]
+  ])("MOON->x", (tokenIn, tokenOut) => {
     it.each([
       [FarmFromMode.EXTERNAL, FarmToMode.EXTERNAL],
       [FarmFromMode.EXTERNAL, FarmToMode.INTERNAL]
@@ -66,31 +66,31 @@ describe("Swap", function () {
     });
   });
 
-  // x => BEAN
-  describe.each([sdk.tokens.USDC, sdk.tokens.USDT, sdk.tokens.DAI, sdk.tokens.CRV3, sdk.tokens.BEAN])("Buy BEAN", (tokenIn) => {
-    const BEAN = sdk.tokens.BEAN;
+  // x => MOON
+  describe.each([sdk.tokens.USDC, sdk.tokens.USDT, sdk.tokens.DAI, sdk.tokens.CRV3, sdk.tokens.MOON])("Buy MOON", (tokenIn) => {
+    const MOON = sdk.tokens.MOON;
 
     beforeAll(async () => {
       await transferToFarmBalance(tokenIn, "10000");
     });
 
-    it(`${tokenIn.symbol}:BEAN - EXTERNAL -> INTERNAL`, async () => {
-      await swapTest(tokenIn, BEAN, FarmFromMode.EXTERNAL, FarmToMode.INTERNAL, "2000");
+    it(`${tokenIn.symbol}:MOON - EXTERNAL -> INTERNAL`, async () => {
+      await swapTest(tokenIn, MOON, FarmFromMode.EXTERNAL, FarmToMode.INTERNAL, "2000");
     });
-    it(`${tokenIn.symbol}:BEAN - EXTERNAL -> EXTERNAL`, async () => {
-      await swapTest(tokenIn, BEAN, FarmFromMode.EXTERNAL, FarmToMode.EXTERNAL, "2000");
+    it(`${tokenIn.symbol}:MOON - EXTERNAL -> EXTERNAL`, async () => {
+      await swapTest(tokenIn, MOON, FarmFromMode.EXTERNAL, FarmToMode.EXTERNAL, "2000");
     });
-    it(`${tokenIn.symbol}:BEAN - INTERNAL -> INTERNAL`, async () => {
-      await swapTest(tokenIn, BEAN, FarmFromMode.INTERNAL, FarmToMode.INTERNAL, "2000");
+    it(`${tokenIn.symbol}:MOON - INTERNAL -> INTERNAL`, async () => {
+      await swapTest(tokenIn, MOON, FarmFromMode.INTERNAL, FarmToMode.INTERNAL, "2000");
     });
-    it(`${tokenIn.symbol}:BEAN - INTERNAL -> EXTERNAL`, async () => {
-      await swapTest(tokenIn, BEAN, FarmFromMode.INTERNAL, FarmToMode.EXTERNAL, "2000");
+    it(`${tokenIn.symbol}:MOON - INTERNAL -> EXTERNAL`, async () => {
+      await swapTest(tokenIn, MOON, FarmFromMode.INTERNAL, FarmToMode.EXTERNAL, "2000");
     });
   });
 });
 
 async function transferToFarmBalance(tokenIn: Token, _amount: string) {
-  const tx = await sdk.contracts.beanstalk.transferToken(
+  const tx = await sdk.contracts.moonmage.transferToken(
     tokenIn.address,
     account,
     tokenIn.amount(_amount).toBlockchain(),

@@ -1,5 +1,5 @@
 const { EXTERNAL, INTERNAL, INTERNAL_EXTERNAL, INTERNAL_TOLERANT } = require('./utils/balances.js')
-const { BEAN } = require('./utils/constants')
+const { MOON } = require('./utils/constants')
 const { expect } = require('chai');
 const { deploy } = require('../scripts/deploy.js')
 const { takeSnapshot, revertToSnapshot } = require("./utils/snapshot");
@@ -15,10 +15,10 @@ describe('Fundraiser', function () {
     fundraiserAddress = fundraiser.address
     const contracts = await deploy("Test", false, true)
     ownerAddress = contracts.account
-    this.diamond = contracts.beanstalkDiamond
+    this.diamond = contracts.moonmageDiamond
     this.season = await ethers.getContractAt('MockSeasonFacet', this.diamond.address)
     this.field = await ethers.getContractAt('MockFieldFacet', this.diamond.address)
-    this.bean = await ethers.getContractAt('MockToken', BEAN)
+    this.moon = await ethers.getContractAt('MockToken', MOON)
     this.fundraiser = await ethers.getContractAt('MockFundraiserFacet', this.diamond.address)
 
     let tokenFacet = await ethers.getContractFactory('MockToken')
@@ -27,8 +27,8 @@ describe('Fundraiser', function () {
     await this.season.setYieldE('0')
 
     await this.season.siloSunrise(0)
-    await this.bean.mint(userAddress, '1000000000')
-    await this.bean.mint(user2Address, '1000000000')
+    await this.moon.mint(userAddress, '1000000000')
+    await this.moon.mint(user2Address, '1000000000')
     await this.token.mint(userAddress, '1000000000')
     await this.token.mint(user2Address, '1000000000')
     await this.token.connect(user).approve(this.diamond.address, '1000000000')
@@ -66,8 +66,8 @@ describe('Fundraiser', function () {
         await expect(this.result).to.emit(this.fundraiser, 'CreateFundraiser').withArgs(0, fundraiserAddress, this.token.address, '1000')
       })
 
-      it('mints beans to protocol', async function () {
-        await expect(await this.bean.balanceOf(this.fundraiser.address)).to.be.equal('1000')
+      it('mints moons to protocol', async function () {
+        await expect(await this.moon.balanceOf(this.fundraiser.address)).to.be.equal('1000')
       })
     })
 
@@ -88,8 +88,8 @@ describe('Fundraiser', function () {
         await expect(this.result).to.emit(this.fundraiser, 'CreateFundraiser').withArgs(1, fundraiserAddress, this.token.address, '1000')
       })
 
-      it('mints beans to protocol', async function () {
-        await expect(await this.bean.balanceOf(this.fundraiser.address)).to.be.equal('2000')
+      it('mints moons to protocol', async function () {
+        await expect(await this.moon.balanceOf(this.fundraiser.address)).to.be.equal('2000')
       })
     })
   })
@@ -108,8 +108,8 @@ describe('Fundraiser', function () {
         await expect(this.fundraiser.connect(user).fund(0, '0', EXTERNAL)).to.be.revertedWith('Fundraiser: already completed.')
       })
 
-      it('burns beans from protocol', async function () {
-        await expect(await this.bean.balanceOf(this.fundraiser.address)).to.be.equal('0')
+      it('burns moons from protocol', async function () {
+        await expect(await this.moon.balanceOf(this.fundraiser.address)).to.be.equal('0')
       })
     })
 
@@ -122,8 +122,8 @@ describe('Fundraiser', function () {
         await expect(this.fundraiser.connect(user).fund(0, '0', EXTERNAL)).to.be.revertedWith('Fundraiser: already completed.')
       })
 
-      it('burns beans from protocol', async function () {
-        await expect(await this.bean.balanceOf(this.fundraiser.address)).to.be.equal('0')
+      it('burns moons from protocol', async function () {
+        await expect(await this.moon.balanceOf(this.fundraiser.address)).to.be.equal('0')
       })
     })
 
@@ -151,8 +151,8 @@ describe('Fundraiser', function () {
         await expect(this.result).to.emit(this.field, 'Sow').withArgs(userAddress, 0, '500', '500')
       })
 
-      it('burns beans from protocol', async function () {
-        await expect(await this.bean.balanceOf(this.fundraiser.address)).to.be.equal('500')
+      it('burns moons from protocol', async function () {
+        await expect(await this.moon.balanceOf(this.fundraiser.address)).to.be.equal('500')
       })
     })
 
@@ -188,8 +188,8 @@ describe('Fundraiser', function () {
         await expect(this.result).to.emit(this.fundraiser, 'CompleteFundraiser').withArgs(0)
       })
 
-      it('burns beans from protocol', async function () {
-        await expect(await this.bean.balanceOf(this.fundraiser.address)).to.be.equal('0')
+      it('burns moons from protocol', async function () {
+        await expect(await this.moon.balanceOf(this.fundraiser.address)).to.be.equal('0')
       })
     })
   })

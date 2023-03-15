@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { Token } from "src/classes/Token";
-import { BeanstalkSDK } from "src/lib/BeanstalkSDK";
+import { MoonmageSDK } from "src/lib/MoonmageSDK";
 import { TokenValue } from "src/TokenValue";
 
 /**
@@ -73,10 +73,10 @@ export type StepGenerator<P extends BasicPreparedResult = BasicPreparedResult> =
  * raw encoded data.
  */
 export abstract class StepClass<P extends BasicPreparedResult = BasicPreparedResult> {
-  static sdk: BeanstalkSDK;
+  static sdk: MoonmageSDK;
   name: string;
 
-  public setSDK(sdk: BeanstalkSDK) {
+  public setSDK(sdk: MoonmageSDK) {
     StepClass.sdk = sdk;
   }
 
@@ -155,7 +155,7 @@ type StepGeneratorOptions = {
 
 /**
  * A `Workflow` allows for iterative preparation of an Ethereum transaction
- * that involves multiple steps. This includes Beanstalk's `farm()` function,
+ * that involves multiple steps. This includes Moonmage's `farm()` function,
  * the `pipeMulti` and `pipeAdvanced` functions provided by Pipeline and Depot,
  * etc.
  *
@@ -215,7 +215,7 @@ export abstract class Workflow<
   PreparedResult extends BasicPreparedResult = BasicPreparedResult, // the value returned from prepare() in each step
   RunData extends Record<string, any> = {} // RunData passed into context
 > {
-  static sdk: BeanstalkSDK;
+  static sdk: MoonmageSDK;
   abstract readonly FUNCTION_NAME: string;
 
   //
@@ -229,7 +229,7 @@ export abstract class Workflow<
 
   static SLIPPAGE_PRECISION = 10 ** 6;
 
-  constructor(sdk: BeanstalkSDK, public name: string = "Workflow") {
+  constructor(sdk: MoonmageSDK, public name: string = "Workflow") {
     Workflow.sdk = sdk;
   }
 
@@ -499,8 +499,8 @@ export abstract class Workflow<
 
   /**
    * Estimate what the workflow would output given this amountIn is the input.
-   * For ex, if we are trading ETH -> BEAN, and you want to spend exactly 5 ETH, estimate()
-   * would tell how much BEAN you'd receive for 5 ETH
+   * For ex, if we are trading ETH -> MOON, and you want to spend exactly 5 ETH, estimate()
+   * would tell how much MOON you'd receive for 5 ETH
    * @param amountIn Amount to send to workflow as input for estimation
    * @param context
    * @returns Promise of BigNumber
@@ -516,8 +516,8 @@ export abstract class Workflow<
 
   /**
    * Estimate the min amount to input to the workflow to receive the desiredAmountOut output
-   * For ex, if we are trading ETH -> Bean, and I want exactly 500 BEAN, estimateReversed()
-   * tell me how much ETH will result in 500 BEAN
+   * For ex, if we are trading ETH -> Moon, and I want exactly 500 MOON, estimateReversed()
+   * tell me how much ETH will result in 500 MOON
    * @param desiredAmountOut The end amount you want the workflow to output
    * @returns Promise of BigNumber
    */

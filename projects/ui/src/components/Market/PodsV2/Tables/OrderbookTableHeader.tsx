@@ -15,7 +15,7 @@ const OrderbookTableHeader: React.FC<{ isMinMax: boolean }> = (
     <Grid item container xs={5.25}>
       <Grid item xs={6} alignItems="flex-start" textAlign="left">
         <Typography variant="caption" color="text.secondary">
-          DEPTH(BEAN)
+          DEPTH(MOON)
         </Typography>
       </Grid>
       <Grid item xs={6} alignItems="flex-end" textAlign="right">

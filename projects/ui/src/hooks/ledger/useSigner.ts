@@ -7,7 +7,7 @@ import { TESTNET_CHAINS, TESTNET_RPC_ADDRESSES } from '~/constants';
 export let useSigner = useWagmiSigner;
 
 if (import.meta.env.DEV && import.meta.env.VITE_OVERRIDE_FARMER_ACCOUNT) {
-  console.warn(`Using overridden Farmer account: ${import.meta.env.VITE_OVERRIDE_FARMER_ACCOUNT}`);
+  console.warn(`Using overridden Cosmonaut account: ${import.meta.env.VITE_OVERRIDE_FARMER_ACCOUNT}`);
 
   // @ts-ignore
   useSigner = () => {

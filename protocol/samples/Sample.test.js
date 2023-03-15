@@ -8,18 +8,18 @@ let user,user2,owner
 let userAddress, ownerAddress, user2Address
 
 describe('BIP3', function () {
-// In the before, we deploy a mock Beanstalk and create the facet objects we will use to interact with the contract.
+// In the before, we deploy a mock Moonmage and create the facet objects we will use to interact with the contract.
   before(async function () {
     [owner,user,user2] = await ethers.getSigners()
     userAddress = user.address
     user2Address = user2.address
     const contracts = await deploy("Test", false, true)
     ownerAddress = contracts.account
-    this.diamond = contracts.beanstalkDiamond
+    this.diamond = contracts.moonmageDiamond
     this.season = await ethers.getContractAt('MockSeasonFacet', this.diamond.address)
     this.field = await ethers.getContractAt('MockFieldFacet', this.diamond.address)
     this.silo = await ethers.getContractAt('MockSiloFacet', this.diamond.address)
-    this.bean = await ethers.getContractAt('MockToken', contracts.bean)
+    this.moon = await ethers.getContractAt('MockToken', contracts.moon)
     this.pair = await ethers.getContractAt('MockUniswapV2Pair', contracts.pair)
     this.pegPair = await ethers.getContractAt('MockUniswapV2Pair', contracts.pegPair)
     // Create objects for any other faucets here

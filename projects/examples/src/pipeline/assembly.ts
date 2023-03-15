@@ -1,4 +1,4 @@
-import { FarmFromMode, FarmToMode } from "@beanstalk/sdk";
+import { FarmFromMode, FarmToMode } from "@moonmage/sdk";
 import { ethers } from "ethers";
 import { sdk, account } from "../setup";
 
@@ -87,19 +87,19 @@ function displayAssembly<C extends ethers.Contract, N extends keyof C["functions
 displayAssembly(sdk.contracts.root, "mint", [
   [
     {
-      token: sdk.tokens.BEAN.address,
+      token: sdk.tokens.MOON.address,
       seasons: ["6075"],
-      amounts: [sdk.tokens.BEAN.amount(100).toBlockchain()]
+      amounts: [sdk.tokens.MOON.amount(100).toBlockchain()]
     }
   ],
   FarmToMode.EXTERNAL, // from
   sdk.tokens.ROOT.amount(90).toBlockchain() // minRootsOut
 ]);
 
-// displayAssembly(sdk.contracts.beanstalk, "transferToken", [
+// displayAssembly(sdk.contracts.moonmage, "transferToken", [
 //   sdk.contracts.root.address,
 //   account,
 //   "1", // amount - will be overwritten by advancedData
 //   FarmFromMode.EXTERNAL, // pipeline holds in external
-//   FarmFromMode.INTERNAL, // farmer wants in their internal
+//   FarmFromMode.INTERNAL, // cosmomage wants in their internal
 // ]);

@@ -7,8 +7,8 @@ query SunButton {
     id
     season
     price
-    deltaBeans # total change in supply
-    rewardBeans # amount from Reward on Sunrise
+    deltaMoons # total change in supply
+    rewardMoons # amount from Reward on Sunrise
   }
   fields: fieldHourlySnapshots(
     first: 24,

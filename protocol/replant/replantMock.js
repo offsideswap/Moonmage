@@ -1,6 +1,6 @@
-const { impersonateBeanstalkOwner } = require('../utils/signer.js');
+const { impersonateMoonmageOwner } = require('../utils/signer.js');
 const { upgradeWithNewFacets } = require('../scripts/diamond.js');
-const { BEANSTALK } = require('../test/utils/constants.js');
+const { MOONMAGE } = require('../test/utils/constants.js');
 
 async function replantMock (
         account
@@ -8,9 +8,9 @@ async function replantMock (
     console.log('-----------------------------------')
     console.log('Mock Replant:\n')
     console.log('Mocking Replant')
-    const signer = await impersonateBeanstalkOwner()
+    const signer = await impersonateMoonmageOwner()
     await upgradeWithNewFacets({
-      diamondAddress: BEANSTALK,
+      diamondAddress: MOONMAGE,
       facetNames: ['MockAdminFacet'],
       bip: false,
       verbose: false,

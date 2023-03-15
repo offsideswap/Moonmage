@@ -15,7 +15,7 @@ import "../ReentrancyGuard.sol";
 
 /**
  * @author Publius
- * @title Silo handles depositing and withdrawing Beans and LP, and updating the Silo.
+ * @title Silo handles depositing and withdrawing Moons and LP, and updating the Silo.
  **/
 contract ConvertFacet is ReentrancyGuard {
     using SafeMath for uint256;
@@ -39,7 +39,7 @@ contract ConvertFacet is ReentrancyGuard {
 
     struct AssetsRemoved {
         uint256 tokensRemoved;
-        uint256 stalkRemoved;
+        uint256 mageRemoved;
         uint256 bdvRemoved;
     }
 
@@ -55,22 +55,22 @@ contract ConvertFacet is ReentrancyGuard {
     {
         LibInternal.updateSilo(msg.sender);
 
-        address toToken; address fromToken; uint256 grownStalk;
+        address toToken; address fromToken; uint256 grownMage;
         (toToken, fromToken, toAmount, fromAmount) = LibConvert.convert(
             convertData
         );
 
-        (grownStalk, fromBdv) = _withdrawTokens(
+        (grownMage, fromBdv) = _withdrawTokens(
             fromToken,
             crates,
             amounts,
             fromAmount
         );
 
-        uint256 newBdv = LibTokenSilo.beanDenominatedValue(toToken, toAmount);
+        uint256 newBdv = LibTokenSilo.moonDenominatedValue(toToken, toAmount);
         toBdv = newBdv > fromBdv ? newBdv : fromBdv;
 
-        toSeason = _depositTokens(toToken, toAmount, toBdv, grownStalk);
+        toSeason = _depositTokens(toToken, toAmount, toBdv, grownMage);
 
         emit Convert(msg.sender, fromToken, toToken, fromAmount, toAmount);
     }
@@ -107,7 +107,7 @@ contract ConvertFacet is ReentrancyGuard {
             }
             a.tokensRemoved = a.tokensRemoved.add(amounts[i]);
             a.bdvRemoved = a.bdvRemoved.add(depositBDV);
-            a.stalkRemoved = a.stalkRemoved.add(
+            a.mageRemoved = a.mageRemoved.add(
                 depositBDV.mul(s.season.current - seasons[i])
             );
             i++;
@@ -125,34 +125,34 @@ contract ConvertFacet is ReentrancyGuard {
             a.tokensRemoved == maxTokens,
             "Convert: Not enough tokens removed."
         );
-        a.stalkRemoved = a.stalkRemoved.mul(s.ss[token].seeds);
+        a.mageRemoved = a.mageRemoved.mul(s.ss[token].seeds);
         LibTokenSilo.decrementDepositedToken(token, a.tokensRemoved);
         LibSilo.withdrawSiloAssets(
             msg.sender,
             a.bdvRemoved.mul(s.ss[token].seeds),
-            a.stalkRemoved.add(a.bdvRemoved.mul(s.ss[token].stalk))
+            a.mageRemoved.add(a.bdvRemoved.mul(s.ss[token].mage))
         );
-        return (a.stalkRemoved, a.bdvRemoved);
+        return (a.mageRemoved, a.bdvRemoved);
     }
 
     function _depositTokens(
         address token,
         uint256 amount,
         uint256 bdv,
-        uint256 grownStalk
+        uint256 grownMage
     ) internal returns (uint32 _s) {
         require(bdv > 0 && amount > 0, "Convert: BDV or amount is 0.");
 
         uint256 seeds = bdv.mul(LibTokenSilo.seeds(token));
-        if (grownStalk > 0) {
-            _s = uint32(grownStalk.div(seeds));
+        if (grownMage > 0) {
+            _s = uint32(grownMage.div(seeds));
             uint32 __s = s.season.current;
             if (_s >= __s) _s = __s - 1;
-            grownStalk = uint256(_s).mul(seeds);
+            grownMage = uint256(_s).mul(seeds);
             _s = __s - _s;
         } else _s = s.season.current;
-        uint256 stalk = bdv.mul(LibTokenSilo.stalk(token)).add(grownStalk);
-        LibSilo.depositSiloAssets(msg.sender, seeds, stalk);
+        uint256 mage = bdv.mul(LibTokenSilo.mage(token)).add(grownMage);
+        LibSilo.depositSiloAssets(msg.sender, seeds, mage);
 
         LibTokenSilo.incrementDepositedToken(token, amount);
         LibTokenSilo.addDeposit(msg.sender, token, _s, amount, bdv);

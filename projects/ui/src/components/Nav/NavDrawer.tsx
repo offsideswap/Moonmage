@@ -7,13 +7,13 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { IconSize } from '~/components/App/muiTheme';
-import beanstalkLogo from '~/img/tokens/bean-logo-circled.svg';
+import moonmageLogo from '~/img/tokens/moon-logo-circled.svg';
 import ROUTES from './routes';
 import MenuItemMobile from './MenuItemMobile';
 import DropdownIcon from '~/components/Common/DropdownIcon';
 import useToggle from '~/hooks/display/useToggle';
 import useChainConstant from '~/hooks/chain/useChainConstant';
-import { BEANSTALK_ADDRESSES, CHAIN_INFO } from '~/constants';
+import { MOONMAGE_ADDRESSES, CHAIN_INFO } from '~/constants';
 import Row from '~/components/Common/Row';
 
 import { FC } from '~/types';
@@ -28,7 +28,7 @@ const NavDrawer: FC<{
     const [openMore, showMore, hideMore] = useToggle();
     // Constants
     const chainInfo = useChainConstant(CHAIN_INFO);
-    const beanstalkAddress = useChainConstant(BEANSTALK_ADDRESSES);
+    const moonmageAddress = useChainConstant(MOONMAGE_ADDRESSES);
 
     /// closes more dropdown when drawer closes
     useEffect(() => {
@@ -44,11 +44,11 @@ const NavDrawer: FC<{
         transitionDuration={0}
       >
         <Box position="fixed" sx={{ backgroundColor: 'background.paper', width: '100%', height: '100%', top: 0, overflowY: 'scroll' }}>
-          {/* Beanstalk Logo & Close Button */}
+          {/* Moonmage Logo & Close Button */}
           <Row alignItems="center" justifyContent="space-between" sx={{ p: 1.5 }}>
             <Box>
               <Link href="/" display="flex" alignItems="center">
-                <img src={beanstalkLogo} alt="" width={IconSize.large} />
+                <img src={moonmageLogo} alt="" width={IconSize.large} />
               </Link>
             </Box>
             <IconButton aria-label="close" onClick={hideDrawer} sx={{ mr: -0.8 }}>
@@ -87,7 +87,7 @@ const NavDrawer: FC<{
                 <Box sx={{ px: 1, py: 0.6 }}>
                   <Button
                     fullWidth
-                    href={`${chainInfo.explorer}/address/${beanstalkAddress}`}
+                    href={`${chainInfo.explorer}/address/${moonmageAddress}`}
                     target="_blank"
                     rel="noreferrer"
                     variant="contained"
@@ -97,7 +97,7 @@ const NavDrawer: FC<{
                     <Row alignItems="center" spacing={1}>
                       <ListItemText>
                         <Typography variant="h4">
-                          Contract: {beanstalkAddress.slice(0, 6)}...
+                          Contract: {moonmageAddress.slice(0, 6)}...
                         </Typography>
                       </ListItemText>
                       <Typography variant="body2" color="text.secondary">

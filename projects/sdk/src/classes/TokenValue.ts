@@ -17,16 +17,16 @@ export class TokenValue {
 
   /**
    * Create a TokenValue from string, number, or BigNumber values that represent a **human** readable form.
-   * For example: "3" ETH, or "4.5" beans.
+   * For example: "3" ETH, or "4.5" moons.
    * If your value is a blockchain value, for ex 3e18 or 4500000, use `fromBlockchain()` method instead.
    *
-   * Example: `fromHuman('3.14', 6)` means 3.14 BEAN tokens, and would be represented as 3140000 on the blockchain
+   * Example: `fromHuman('3.14', 6)` means 3.14 MOON tokens, and would be represented as 3140000 on the blockchain
    *
    * Warning: Even thought we support supplying the value as a BigNumber, make sure you really mean to use it here.
    * If your input is a BigNumber, you most likely want to use `.fromBlockchain()`
    *
    * @param value The amount, as a human readable value, in string, number or BigNumber form.
-   * @param decimals The number of decimals this TokenValue should be stored with. For ex, 6 for BEAN or 18 for ETH
+   * @param decimals The number of decimals this TokenValue should be stored with. For ex, 6 for MOON or 18 for ETH
    * @returns a TokenValue
    */
   static fromHuman(value: string | number | BigNumber, decimals: number): TokenValue {
@@ -45,12 +45,12 @@ export class TokenValue {
 
   /**
    * Create a TokenValue from string, number, or BigNumber values that represent a **blockhain** value.
-   * For example: 3e18 ETH, or 4500000 beans.
-   * If your value is a human readable value, for ex 5 ETH  or 3.14 BEAN, use `fromHuman()` method instead.
+   * For example: 3e18 ETH, or 4500000 moons.
+   * If your value is a human readable value, for ex 5 ETH  or 3.14 MOON, use `fromHuman()` method instead.
    *
-   * Example: `fromBlockchain('3140000', 6)` means 3.14 BEAN tokens, and would be represented as 3140000 on the blockchain
+   * Example: `fromBlockchain('3140000', 6)` means 3.14 MOON tokens, and would be represented as 3140000 on the blockchain
    * @param value The amount, as a human readable value, in string, number or BigNumber form.
-   * @param decimals The number of decimals this TokenValue should be stored with. For ex, 6 for BEAN or 18 for ETH
+   * @param decimals The number of decimals this TokenValue should be stored with. For ex, 6 for MOON or 18 for ETH
    * @returns a TokenValue
    */
   static fromBlockchain(value: string | number | BigNumber, decimals: number): TokenValue {

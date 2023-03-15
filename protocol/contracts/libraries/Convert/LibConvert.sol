@@ -30,18 +30,18 @@ library LibConvert {
     {
         LibConvertData.ConvertKind kind = convertData.convertKind();
 
-        if (kind == LibConvertData.ConvertKind.BEANS_TO_CURVE_LP) {
+        if (kind == LibConvertData.ConvertKind.MOONS_TO_CURVE_LP) {
             (tokenOut, tokenIn, outAmount, inAmount) = LibCurveConvert
-                .convertBeansToLP(convertData);
-        } else if (kind == LibConvertData.ConvertKind.CURVE_LP_TO_BEANS) {
+                .convertMoonsToLP(convertData);
+        } else if (kind == LibConvertData.ConvertKind.CURVE_LP_TO_MOONS) {
             (tokenOut, tokenIn, outAmount, inAmount) = LibCurveConvert
-                .convertLPToBeans(convertData);
-        } else if (kind == LibConvertData.ConvertKind.UNRIPE_BEANS_TO_UNRIPE_LP) {
+                .convertLPToMoons(convertData);
+        } else if (kind == LibConvertData.ConvertKind.UNRIPE_MOONS_TO_UNRIPE_LP) {
             (tokenOut, tokenIn, outAmount, inAmount) = LibUnripeConvert
-                .convertBeansToLP(convertData);
-        } else if (kind == LibConvertData.ConvertKind.UNRIPE_LP_TO_UNRIPE_BEANS) {
+                .convertMoonsToLP(convertData);
+        } else if (kind == LibConvertData.ConvertKind.UNRIPE_LP_TO_UNRIPE_MOONS) {
             (tokenOut, tokenIn, outAmount, inAmount) = LibUnripeConvert
-                .convertLPToBeans(convertData);
+                .convertLPToMoons(convertData);
         } else if (kind == LibConvertData.ConvertKind.LAMBDA_LAMBDA) {
             (tokenOut, tokenIn, outAmount, inAmount) = LibLambdaConvert
                 .convert(convertData);
@@ -55,21 +55,21 @@ library LibConvert {
         view
         returns (uint256 amountIn)
     {
-        /// BEAN:3CRV LP -> BEAN
-        if (tokenIn == C.curveMetapoolAddress() && tokenOut == C.beanAddress())
+        /// MOON:3CRV LP -> MOON
+        if (tokenIn == C.curveMetapoolAddress() && tokenOut == C.moonAddress())
             return LibCurveConvert.lpToPeg(C.curveMetapoolAddress());
         
-        /// BEAN -> BEAN:3CRV LP
-        if (tokenIn == C.beanAddress() && tokenOut == C.curveMetapoolAddress())
-            return LibCurveConvert.beansToPeg(C.curveMetapoolAddress());
+        /// MOON -> MOON:3CRV LP
+        if (tokenIn == C.moonAddress() && tokenOut == C.curveMetapoolAddress())
+            return LibCurveConvert.moonsToPeg(C.curveMetapoolAddress());
         
-        /// urBEAN:3CRV LP -> urBEAN
-        if (tokenIn == C.unripeLPAddress() && tokenOut == C.unripeBeanAddress())
+        /// urMOON:3CRV LP -> urMOON
+        if (tokenIn == C.unripeLPAddress() && tokenOut == C.unripeMoonAddress())
             return LibUnripeConvert.lpToPeg();
 
-        /// urBEAN -> urBEAN:3CRV LP
-        if (tokenIn == C.unripeBeanAddress() && tokenOut == C.unripeLPAddress())
-            return LibUnripeConvert.beansToPeg();
+        /// urMOON -> urMOON:3CRV LP
+        if (tokenIn == C.unripeMoonAddress() && tokenOut == C.unripeLPAddress())
+            return LibUnripeConvert.moonsToPeg();
 
         // Lambda -> Lambda
         if (tokenIn == tokenOut) return type(uint256).max;
@@ -82,20 +82,20 @@ library LibConvert {
         view
         returns (uint256 amountOut)
     {
-        /// BEAN:3CRV LP -> BEAN
-        if (tokenIn == C.curveMetapoolAddress() && tokenOut == C.beanAddress())
-            return LibCurveConvert.getBeanAmountOut(C.curveMetapoolAddress(), amountIn);
+        /// MOON:3CRV LP -> MOON
+        if (tokenIn == C.curveMetapoolAddress() && tokenOut == C.moonAddress())
+            return LibCurveConvert.getMoonAmountOut(C.curveMetapoolAddress(), amountIn);
         
-        /// BEAN -> BEAN:3CRV LP
-        if (tokenIn == C.beanAddress() && tokenOut == C.curveMetapoolAddress())
+        /// MOON -> MOON:3CRV LP
+        if (tokenIn == C.moonAddress() && tokenOut == C.curveMetapoolAddress())
             return LibCurveConvert.getLPAmountOut(C.curveMetapoolAddress(), amountIn);
 
-        /// urBEAN:3CRV LP -> BEAN
-        if (tokenIn == C.unripeLPAddress() && tokenOut == C.unripeBeanAddress())
-            return LibUnripeConvert.getBeanAmountOut(amountIn);
+        /// urMOON:3CRV LP -> MOON
+        if (tokenIn == C.unripeLPAddress() && tokenOut == C.unripeMoonAddress())
+            return LibUnripeConvert.getMoonAmountOut(amountIn);
         
-        /// urBEAN -> urBEAN:3CRV LP
-        if (tokenIn == C.unripeBeanAddress() && tokenOut == C.unripeLPAddress())
+        /// urMOON -> urMOON:3CRV LP
+        if (tokenIn == C.unripeMoonAddress() && tokenOut == C.unripeLPAddress())
             return LibUnripeConvert.getLPAmountOut(amountIn);
         
         // Lambda -> Lambda

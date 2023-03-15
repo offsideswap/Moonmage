@@ -2,18 +2,18 @@ import { Dialog, IconButton, Stack, Typography } from '@mui/material';
 import React, { useCallback } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { LoadingButton } from '@mui/lab';
-import { BeanstalkPalette, FontSize } from '~/components/App/muiTheme';
+import { MoonmagePalette, FontSize } from '~/components/App/muiTheme';
 import CondensedCard from '~/components/Common/Card/CondensedCard';
-import { FarmerMarketOrder } from '~/hooks/farmer/market/useFarmerMarket2';
-import FarmerModeFieldDialog from './FarmToModeDialog';
-import useFarmerMarketItemStats from '~/hooks/farmer/market/useFarmerMarketItemStats';
+import { CosmomageStationOrder } from '~/hooks/cosmomage/market/useCosmomageStation2';
+import CosmonautModeFieldDialog from './FarmToModeDialog';
+import useCosmomageStationItemStats from '~/hooks/cosmomage/market/useCosmomageStationItemStats';
 import Row from '~/components/Common/Row';
-import useFarmerMarketCancelTxn from '~/hooks/farmer/market/useFarmerMarketCancelTxn';
-import { FarmToMode } from '~/lib/Beanstalk/Farm';
-import { PodOrder } from '~/state/farmer/market';
+import useCosmomageStationCancelTxn from '~/hooks/cosmomage/market/useCosmomageStationCancelTxn';
+import { FarmToMode } from '~/lib/Moonmage/Farm';
+import { PodOrder } from '~/state/cosmomage/market';
 
 type Props = {
-  item: FarmerMarketOrder | undefined | null;
+  item: CosmomageStationOrder | undefined | null;
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   open2: boolean;
@@ -27,8 +27,8 @@ const MarketItemDetailsDialog: React.FC<Props> = ({
   setOpen,
   setOpen2,
 }) => {
-  const { data, isCancellable, openStates } = useFarmerMarketItemStats(item);
-  const { loading, cancelListing, cancelOrder } = useFarmerMarketCancelTxn();
+  const { data, isCancellable, openStates } = useCosmomageStationItemStats(item);
+  const { loading, cancelListing, cancelOrder } = useCosmomageStationCancelTxn();
 
   const onClick = useCallback(() => {
     if (!item) return;
@@ -86,7 +86,7 @@ const MarketItemDetailsDialog: React.FC<Props> = ({
               {data.map(({ label, info }) => {
                 const infoColor =
                   label === 'STATUS' && openStates.includes(info)
-                    ? BeanstalkPalette.theme.winter.orderGreen
+                    ? MoonmagePalette.theme.winter.orderGreen
                     : 'text.secondary';
                 return (
                   <Row width="100%" justifyContent="space-between" key={label}>
@@ -121,7 +121,7 @@ const MarketItemDetailsDialog: React.FC<Props> = ({
           </Stack>
         </CondensedCard>
       </Dialog>
-      <FarmerModeFieldDialog
+      <CosmonautModeFieldDialog
         open={open2}
         onClose={() => setOpen2(false)}
         onSubmit={handleCancelOrder}

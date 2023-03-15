@@ -11,7 +11,7 @@ import "../../../C.sol";
 
 /**
  * @author Publius
- * @title Replant5 Redeposits all existing Bean Deposits as Unripe Bean Deposits
+ * @title Replant5 Redeposits all existing Moon Deposits as Unripe Moon Deposits
  * ------------------------------------------------------------------------------------
  **/
 contract Replant5 {
@@ -19,11 +19,11 @@ contract Replant5 {
 
     using SafeMath for uint256;
 
-    event BeanRemove(
+    event MoonRemove(
         address indexed account,
         uint32[] crates,
-        uint256[] crateBeans,
-        uint256 beans
+        uint256[] crateMoons,
+        uint256 moons
     );
 
     event AddDeposit(
@@ -41,19 +41,19 @@ contract Replant5 {
         uint256 amount;
     }
 
-    function init(V1Deposit[] calldata beanDeposits) external {
-        updateBeanDeposits(beanDeposits);
+    function init(V1Deposit[] calldata moonDeposits) external {
+        updateMoonDeposits(moonDeposits);
     }
 
-    function updateBeanDeposits(V1Deposit[] calldata ds) private {
+    function updateMoonDeposits(V1Deposit[] calldata ds) private {
         for (uint256 i; i < ds.length; ++i) {
             V1Deposit calldata d = ds[i];
-            emit BeanRemove(d.account, d.seasons, d.amounts, d.amount);
+            emit MoonRemove(d.account, d.seasons, d.amounts, d.amount);
 
             for (uint256 j; j < d.seasons.length; ++j) {
                 emit AddDeposit(
                     d.account,
-                    C.unripeBeanAddress(),
+                    C.unripeMoonAddress(),
                     d.seasons[j],
                     d.amounts[j],
                     d.amounts[j].mul(C.initialRecap()).div(C.precision())

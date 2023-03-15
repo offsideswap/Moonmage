@@ -1,5 +1,5 @@
 import {
-  BeanstalkPalette,
+  MoonmagePalette,
   FontSize,
   FontWeight,
 } from '~/components/App/muiTheme';
@@ -15,14 +15,14 @@ export const scrollbarStyles = {
   },
   '& ::-webkit-scrollbar-track': {
     width: '4px',
-    background: BeanstalkPalette.offWhite,
+    background: MoonmagePalette.offWhite,
   },
   '& ::-webkit-scrollbar-thumb': {
     borderRadius: 2,
-    background: BeanstalkPalette.theme.winter.primary,
+    background: MoonmagePalette.theme.winter.primary,
   },
   // '& ::-webkit-scrollbar-thumb:hover': {
-  //   background: BeanstalkPalette.theme.winter.blueLight,
+  //   background: MoonmagePalette.theme.winter.blueLight,
   // },
 };
 
@@ -42,7 +42,7 @@ const marketplaceTableStyle = {
     '& .MuiDataGrid-columnHeaders': {
       // outline: 'none',
       // border: 'none',
-      borderBottom: `1px solid ${BeanstalkPalette.lightestGrey} !important`,
+      borderBottom: `1px solid ${MoonmagePalette.lightestGrey} !important`,
       '&:focused, active': {
         border: 'none',
       },
@@ -81,7 +81,7 @@ const marketplaceTableStyle = {
       // pt: '4px !important',
       // pb: '4px !important',
       // borderBottom: 'none',
-      // borderColor: hexToRgba(BeanstalkPalette.lightGrey, 0.8),
+      // borderColor: hexToRgba(MoonmagePalette.lightGrey, 0.8),
     },
     // Icon
     '& .MuiDataGrid-sortIcon': {

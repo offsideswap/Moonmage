@@ -19,7 +19,7 @@ describe("Silo Transfer", function () {
 
   it("Fails when using a non-whitelisted token", async () => {
     const t = async () => {
-      const tx = await transfer.transfer(sdk.tokens.ETH, sdk.tokens.BEAN.amount(3000), testDestination);
+      const tx = await transfer.transfer(sdk.tokens.ETH, sdk.tokens.MOON.amount(3000), testDestination);
     };
     expect(t).rejects.toThrow("Transfer error; token ETH is not a whitelisted asset");
   });
@@ -27,7 +27,7 @@ describe("Silo Transfer", function () {
   describe.each(whiteListedTokens)("Transfer", (siloToken: Token) => {
     describe(`Transfer ${siloToken.displayName} sourced from single crate`, () => {
       beforeAll(async () => {
-        await siloToken.approveBeanstalk(TokenValue.MAX_UINT256);
+        await siloToken.approveMoonmage(TokenValue.MAX_UINT256);
         const deposit = await sdk.silo.deposit(siloToken, siloToken, siloToken.amount(500), 0.1);
         await deposit.wait();
       });

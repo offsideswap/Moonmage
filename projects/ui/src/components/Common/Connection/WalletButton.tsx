@@ -18,23 +18,23 @@ import { useTheme } from '@mui/material/styles';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { IMPERSONATED_ACCOUNT, trimAddress } from '~/util';
 import useChainConstant from '~/hooks/chain/useChainConstant';
-import gearIcon from '~/img/beanstalk/interface/nav/gear.svg';
-import historyIcon from '~/img/beanstalk/interface/nav/history.svg';
-import etherscanIcon from '~/img/beanstalk/interface/nav/etherscan.svg';
-import disconnectIcon from '~/img/beanstalk/interface/nav/disconnect.svg';
+import gearIcon from '~/img/moonmage/interface/nav/gear.svg';
+import historyIcon from '~/img/moonmage/interface/nav/history.svg';
+import etherscanIcon from '~/img/moonmage/interface/nav/etherscan.svg';
+import disconnectIcon from '~/img/moonmage/interface/nav/disconnect.svg';
 import useAnchor from '~/hooks/display/useAnchor';
 import useToggle from '~/hooks/display/useToggle';
 import useAccount from '~/hooks/ledger/useAccount';
 import { CHAIN_INFO } from '~/constants';
 import WalletDialog from './WalletDialog';
 import DropdownIcon from '~/components/Common/DropdownIcon';
-import PickBeansDialog from '~/components/Farmer/Unripe/PickDialog';
+import PickMoonsDialog from '~/components/Cosmonaut/Unripe/PickDialog';
 import AddressIcon from '~/components/Common/AddressIcon';
 import useGlobal from '~/hooks/app/useGlobal';
 import Row from '~/components/Common/Row';
 
 import { FC } from '~/types';
-import { BeanstalkPalette } from '~/components/App/muiTheme';
+import { MoonmagePalette } from '~/components/App/muiTheme';
 
 const WalletButton: FC<{ showFullText?: boolean; } & ButtonProps> = ({ ...props }) => {
   const account = useAccount();
@@ -54,7 +54,7 @@ const WalletButton: FC<{ showFullText?: boolean; } & ButtonProps> = ({ ...props 
   /// Dialog: Wallet
   const [selectingWallet, showWallets, hideWallets] = useToggle();
 
-  /// Dialog: Pick Unripe Beans
+  /// Dialog: Pick Unripe Moons
   const [picking, showPick, hidePick] = useToggle(toggleMenuAnchor);
 
   /// Dialog: Settings
@@ -85,7 +85,7 @@ const WalletButton: FC<{ showFullText?: boolean; } & ButtonProps> = ({ ...props 
   }
 
   const menu = (
-    <MenuList sx={{ minWidth: 250, background: BeanstalkPalette.white, border: '1px solid', borderColor: 'divider' }} component={Card}>
+    <MenuList sx={{ minWidth: 250, background: MoonmagePalette.white, border: '1px solid', borderColor: 'divider' }} component={Card}>
       <MenuItem onClick={() => {
         toggleMenuAnchor();
         setSettingsOpen(true);
@@ -144,10 +144,10 @@ const WalletButton: FC<{ showFullText?: boolean; } & ButtonProps> = ({ ...props 
           onClick={showPick}
           sx={{
             py: 1.25,
-            color: BeanstalkPalette.brown,
-            backgroundColor: BeanstalkPalette.lightBrown,
+            color: MoonmagePalette.brown,
+            backgroundColor: MoonmagePalette.lightBrown,
             '&:hover': {
-              backgroundColor: BeanstalkPalette.lightBrown,
+              backgroundColor: MoonmagePalette.lightBrown,
               opacity: 0.96
             },
           }}
@@ -163,10 +163,10 @@ const WalletButton: FC<{ showFullText?: boolean; } & ButtonProps> = ({ ...props 
           color="primary"
           href="/#/chop"
           sx={{ 
-            background: BeanstalkPalette.brown,
+            background: MoonmagePalette.brown,
             py: 1.25,
             '&:hover': {
-              background: BeanstalkPalette.darkBrown,
+              background: MoonmagePalette.darkBrown,
               opacity: 0.96
             }
           }}
@@ -236,8 +236,8 @@ const WalletButton: FC<{ showFullText?: boolean; } & ButtonProps> = ({ ...props 
       >
         {menu}
       </Menu>
-      {/* Pick Beans Dialog */}
-      <PickBeansDialog
+      {/* Pick Moons Dialog */}
+      <PickMoonsDialog
         open={picking}
         handleClose={hidePick}
       />

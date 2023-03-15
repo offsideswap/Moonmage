@@ -3,11 +3,11 @@ import { Router } from "src/classes/Router";
 import { Token } from "src/classes/Token";
 import { ActionType } from "src/constants/actions";
 import { TokenValue } from "src/TokenValue";
-import { BeanstalkSDK } from "../BeanstalkSDK";
+import { MoonmageSDK } from "../MoonmageSDK";
 import { FarmFromMode, FarmToMode, FarmWorkflow } from "../farm";
 
 export class DepositOperation {
-  static sdk: BeanstalkSDK;
+  static sdk: MoonmageSDK;
   readonly targetToken: Token;
   readonly account: string;
   fromMode: FarmFromMode = FarmFromMode.INTERNAL_EXTERNAL;
@@ -17,7 +17,7 @@ export class DepositOperation {
   workflow: FarmWorkflow<{ slippage: number } & Record<string, any>>;
   lastAmountIn: TokenValue;
 
-  constructor(sdk: BeanstalkSDK, router: Router, targetToken: Token, account: string) {
+  constructor(sdk: MoonmageSDK, router: Router, targetToken: Token, account: string) {
     if (!sdk.tokens.siloWhitelist.has(targetToken)) throw new Error(`Cannot deposit ${targetToken.symbol}, not on whitelist.`);
 
     DepositOperation.sdk = sdk;
@@ -84,7 +84,7 @@ export class DepositOperation {
       });
     }
 
-    const depositBDV = await DepositOperation.sdk.bean.getBDV(toToken, toToken.fromBlockchain(depositStep.amountOut));
+    const depositBDV = await DepositOperation.sdk.moon.getBDV(toToken, toToken.fromBlockchain(depositStep.amountOut));
 
     summary.push({
       type: ActionType.DEPOSIT,
@@ -93,7 +93,7 @@ export class DepositOperation {
     });
     summary.push({
       type: ActionType.UPDATE_SILO_REWARDS,
-      stalk: toToken.getStalk(depositBDV),
+      mage: toToken.getMage(depositBDV),
       seeds: toToken.getSeeds(depositBDV)
     });
 

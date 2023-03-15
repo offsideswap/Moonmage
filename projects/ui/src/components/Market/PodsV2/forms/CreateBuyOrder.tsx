@@ -42,7 +42,7 @@ const priceInputProps = {
   endAdornment: (
     <InputAdornment position="start">
       <Typography color="text.primary" variant="caption">
-        BEAN
+        MOON
       </Typography>
     </InputAdornment>
   ),
@@ -63,7 +63,7 @@ const CreateBuyOrder: React.FC<{}> = () => (
     <Row spacing={0.8} width="100%">
       {/* fixed / dynamic pricing fn select */}
       <PricingFnSelect />
-      {/* payment amount in beans */}
+      {/* payment amount in moons */}
       <AtomInputField
         atom={pricePerPodAtom}
         InputProps={priceInputProps}

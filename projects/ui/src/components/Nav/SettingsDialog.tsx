@@ -7,9 +7,9 @@ import { StyledDialog, StyledDialogContent, StyledDialogTitle } from '~/componen
 import Row from '~/components/Common/Row';
 import { SGEnvironments, SUBGRAPH_ENVIRONMENTS } from '~/graph/endpoints';
 import useSetting from '~/hooks/app/useSetting';
-import useFarmerSiloBalances from '~/hooks/farmer/useFarmerSiloBalances';
+import useCosmonautSiloBalances from '~/hooks/cosmomage/useCosmonautSiloBalances';
 import { save } from '~/state';
-import { setNextSunrise, setRemainingUntilSunrise } from '~/state/beanstalk/sun/actions';
+import { setNextSunrise, setRemainingUntilSunrise } from '~/state/moonmage/sun/actions';
 import { clearApolloCache } from '~/util';
 
 import { FC } from '~/types';
@@ -51,7 +51,7 @@ const SettingsDialog : FC<{ open: boolean; onClose?: () => void; }> = ({ open, o
   const [denomination, setDenomination] = useSetting('denomination');
   const [subgraphEnv, setSubgraphEnv]   = useSetting('subgraphEnv');
   const dispatch = useDispatch();
-  const siloBalances = useFarmerSiloBalances();
+  const siloBalances = useCosmonautSiloBalances();
 
   /// Cache
   const clearCache = useCallback(() => {
@@ -77,12 +77,12 @@ const SettingsDialog : FC<{ open: boolean; onClose?: () => void; }> = ({ open, o
           crate.amount,
           crate.bdv,
           crate.season,
-          crate.stalk,
+          crate.mage,
           crate.seeds,
         ]))
       );
       return prev;
-    }, [['Token', 'Amount', 'BDV', 'Season', 'Stalk', 'Seeds']] as any[]);
+    }, [['Token', 'Amount', 'BDV', 'Season', 'Mage', 'Seeds']] as any[]);
     window.open(
       encodeURI(
         `data:text/csv;charset=utf-8,${rows.map((r) => r.join(',')).join('\n')}`

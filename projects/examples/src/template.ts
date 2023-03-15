@@ -12,7 +12,7 @@ async function main() {
   const { sdk, stop } = await impersonate(account);
 
   const season = await sdk.sun.getSeason()
-  const price =  await sdk.bean.getPrice()
+  const price =  await sdk.moon.getPrice()
   console.log(season, price.toHuman());
 
 

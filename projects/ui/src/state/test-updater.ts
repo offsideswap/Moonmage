@@ -2,7 +2,7 @@
 // import { useAccount, useConnect, useNetwork, useProvider } from 'wagmi';
 // import { useWhatChanged } from '@simbathesailor/use-what-changed';
 // import useChainId from '~/hooks/useChain';
-// import { useGetPools } from './bean/pools/updater';
+// import { useGetPools } from './moon/pools/updater';
 
 // // -- Updater
 

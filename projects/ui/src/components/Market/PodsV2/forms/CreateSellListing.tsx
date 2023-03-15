@@ -18,15 +18,15 @@ import FieldWrapper from '~/components/Common/Form/FieldWrapper';
 import PlotInputField from '~/components/Common/Form/PlotInputField';
 import TxnAccordion from '~/components/Common/TxnAccordion';
 import { ONE_BN, POD_MARKET_TOOLTIPS, ZERO_BN } from '~/constants';
-import { BEAN, PODS } from '~/constants/tokens';
-import useHarvestableIndex from '~/hooks/beanstalk/useHarvestableIndex';
+import { MOON, PODS } from '~/constants/tokens';
+import useHarvestableIndex from '~/hooks/moonmage/useHarvestableIndex';
 import useGetChainToken from '~/hooks/chain/useGetChainToken';
-import useFarmerListingsLedger from '~/hooks/farmer/useFarmerListingsLedger';
-import useFarmerPlots from '~/hooks/farmer/useFarmerPlots';
-import { useBeanstalkContract } from '~/hooks/ledger/useContract';
+import useCosmonautListingsLedger from '~/hooks/cosmomage/useCosmonautListingsLedger';
+import useCosmonautPlots from '~/hooks/cosmomage/useCosmonautPlots';
+import { useMoonmageContract } from '~/hooks/ledger/useContract';
 import useFormMiddleware from '~/hooks/ledger/useFormMiddleware';
-import { FarmToMode } from '~/lib/Beanstalk/Farm';
-import { useFetchFarmerMarket } from '~/state/farmer/market/updater';
+import { FarmToMode } from '~/lib/Moonmage/Farm';
+import { useFetchCosmomageStation } from '~/state/cosmomage/market/updater';
 import { FC } from '~/types';
 import {
   ActionType,
@@ -81,7 +81,7 @@ const initValues = {
 
 const PricePerPodInputProps = {
   inputProps: { step: '0.01' },
-  endAdornment: <TokenAdornment token={BEAN[1]} />,
+  endAdornment: <TokenAdornment token={MOON[1]} />,
 };
 const ExpiresAtInputProps = {
   endAdornment: (
@@ -114,7 +114,7 @@ const ListForm: FC<
   const plot = values.plot;
 
   /// Data
-  const existingListings = useFarmerListingsLedger();
+  const existingListings = useCosmonautListingsLedger();
 
   /// Derived
   const placeInLine = useMemo(() => {
@@ -126,7 +126,7 @@ const ListForm: FC<
 
   /// Calculations
   const alreadyListed = plot?.index
-    ? existingListings[toStringBaseUnitBN(plot.index, BEAN[1].decimals)]
+    ? existingListings[toStringBaseUnitBN(plot.index, MOON[1].decimals)]
     : false;
   const isSubmittable = !REQUIRED_KEYS.some((k) => values[k] === null);
 
@@ -170,8 +170,8 @@ const ListForm: FC<
             </FieldWrapper>
             <FarmModeField
               name="destination"
-              circDesc="When Pods are sold, send Beans to your wallet."
-              farmDesc="When Pods are sold, send Beans to your internal Beanstalk balance."
+              circDesc="When Pods are sold, send Moons to your wallet."
+              farmDesc="When Pods are sold, send Moons to your internal Moonmage balance."
               label="Send proceeds to"
             />
             {isSubmittable && (
@@ -186,7 +186,7 @@ const ListForm: FC<
                           PODS
                         )} at ${displayFullBN(
                           values.pricePerPod || ZERO_BN
-                        )} Beans per Pod from your Plot at ${displayBN(
+                        )} Moons per Pod from your Plot at ${displayBN(
                           placeInLine
                         )} in the Pod Line.`,
                       },
@@ -234,14 +234,14 @@ const CreateSellListing: React.FC<{}> = () => {
 
   /// Ledger
   const { data: signer } = useSigner();
-  const beanstalk = useBeanstalkContract(signer);
+  const moonmage = useMoonmageContract(signer);
 
-  /// Beanstalk
+  /// Moonmage
   const harvestableIndex = useHarvestableIndex();
 
-  /// Farmer
-  const plots = useFarmerPlots();
-  const [refetchFarmerMarket] = useFetchFarmerMarket();
+  /// Cosmonaut
+  const plots = useCosmonautPlots();
+  const [refetchCosmomageStation] = useFetchCosmomageStation();
 
   /// Form
   const middleware = useFormMiddleware();

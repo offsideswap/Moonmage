@@ -1,19 +1,19 @@
-<img src="https://github.com/BeanstalkFarms/Beanstalk-Brand-Assets/blob/main/BEAN/bean-128x128.png" alt="Beanstalk logo" align="right" width="120" />
+<img src="https://github.com/MoonmageFarms/Moonmage-Brand-Assets/blob/main/MOON/moon-128x128.png" alt="Moonmage logo" align="right" width="120" />
 
-# Beanstalk Development CLI tool
+# Moonmage Development CLI tool
 
 CLI tool with helpful utilities for development
 
 ```
-npx @beanstalk/cli balance
-npx @beanstalk/cli setbalance
+npx @moonmage/cli balance
+npx @moonmage/cli setbalance
 
 # or
 
-npm i -g @beanstalk/cli
+npm i -g @moonmage/cli
 
-bean balance
-bean setbalance
+moon balance
+moon setbalance
 ```
 
 ## Local development use
@@ -21,10 +21,10 @@ bean setbalance
 
 While developing, execute the _ts_ file in ./src w/o building via:
 ```
-yarn beandev
+yarn moondev
 ```
 
 To run the built output, run:
 ```
-yarn bean
+yarn moon
 ```

@@ -18,13 +18,13 @@ contract InitHotFix4 {
     using SafeMath for uint256;
 
     function init() external {
-        // Migrate farmable Beans to Legacy V2 system
-        // s.v2SIBeans = s.si.beans;
-        // s.si.beans = 0;
+        // Migrate farmable Moons to Legacy V2 system
+        // s.v2SIMoons = s.si.moons;
+        // s.si.moons = 0;
 
-        // Remove all exiting farmable Stalk
-        // s.s.stalk = s.s.stalk.sub(s.si.stalk);
-        // s.si.stalk = 0;
+        // Remove all exiting farmable Mage
+        // s.s.mage = s.s.mage.sub(s.si.mage);
+        // s.si.mage = 0;
 
         // Increment unclaimed Roots to total for previous misallocation
         // s.unclaimedRoots = s.unclaimedRoots.add(11_941_504_984_220_113_756_780_626_858);

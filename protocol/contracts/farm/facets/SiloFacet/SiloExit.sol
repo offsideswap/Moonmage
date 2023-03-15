@@ -31,8 +31,8 @@ contract SiloExit is ReentrancyGuard {
      * Silo
      **/
 
-    function totalStalk() public view returns (uint256) {
-        return s.s.stalk;
+    function totalMage() public view returns (uint256) {
+        return s.s.mage;
     }
 
     function totalRoots() public view returns (uint256) {
@@ -43,69 +43,69 @@ contract SiloExit is ReentrancyGuard {
         return s.s.seeds;
     }
 
-    function totalEarnedBeans() public view returns (uint256) {
-        return s.earnedBeans;
+    function totalEarnedMoons() public view returns (uint256) {
+        return s.earnedMoons;
     }
 
     function balanceOfSeeds(address account) public view returns (uint256) {
-        return s.a[account].s.seeds; // Earned Seeds do not earn Grown stalk, so we do not include them.
+        return s.a[account].s.seeds; // Earned Seeds do not earn Grown mage, so we do not include them.
     }
 
-    function balanceOfStalk(address account) public view returns (uint256) {
-        return s.a[account].s.stalk.add(balanceOfEarnedStalk(account)); // Earned Stalk earns Bean Mints, but Grown Stalk does not.
+    function balanceOfMage(address account) public view returns (uint256) {
+        return s.a[account].s.mage.add(balanceOfEarnedMage(account)); // Earned Mage earns Moon Mints, but Grown Mage does not.
     }
 
     function balanceOfRoots(address account) public view returns (uint256) {
         return s.a[account].roots;
     }
 
-    function balanceOfGrownStalk(address account)
+    function balanceOfGrownMage(address account)
         public
         view
         returns (uint256)
     {
         return
-            LibSilo.stalkReward(
+            LibSilo.mageReward(
                 s.a[account].s.seeds,
                 season() - lastUpdate(account)
             );
     }
 
-    function balanceOfEarnedBeans(address account)
+    function balanceOfEarnedMoons(address account)
         public
         view
-        returns (uint256 beans)
+        returns (uint256 moons)
     {
-        beans = _balanceOfEarnedBeans(account, s.a[account].s.stalk);
+        moons = _balanceOfEarnedMoons(account, s.a[account].s.mage);
     }
 
-    function _balanceOfEarnedBeans(address account, uint256 accountStalk)
+    function _balanceOfEarnedMoons(address account, uint256 accountMage)
         internal
         view
-        returns (uint256 beans)
+        returns (uint256 moons)
     {
         // There will be no Roots when the first deposit is made.
         if (s.s.roots == 0) return 0;
 
-        // Determine expected user Stalk based on Roots balance
-        // userStalk / totalStalk = userRoots / totalRoots
-        uint256 stalk = s.s.stalk.mul(s.a[account].roots).div(s.s.roots);
+        // Determine expected user Mage based on Roots balance
+        // userMage / totalMage = userRoots / totalRoots
+        uint256 mage = s.s.mage.mul(s.a[account].roots).div(s.s.roots);
 
         // Handle edge case caused by rounding
-        if (stalk <= accountStalk) return 0;
+        if (mage <= accountMage) return 0;
 
-        // Calculate Earned Stalk and convert to Earned Beans.
-        beans = (stalk - accountStalk).div(C.getStalkPerBean()); // Note: SafeMath is redundant here.
-        if (beans > s.earnedBeans) return s.earnedBeans;
-        return beans;
+        // Calculate Earned Mage and convert to Earned Moons.
+        moons = (mage - accountMage).div(C.getMagePerMoon()); // Note: SafeMath is redundant here.
+        if (moons > s.earnedMoons) return s.earnedMoons;
+        return moons;
     }
 
-    function balanceOfEarnedStalk(address account)
+    function balanceOfEarnedMage(address account)
         public
         view
         returns (uint256)
     {
-        return balanceOfEarnedBeans(account).mul(C.getStalkPerBean());
+        return balanceOfEarnedMoons(account).mul(C.getMagePerMoon());
     }
 
     function balanceOfEarnedSeeds(address account)
@@ -113,7 +113,7 @@ contract SiloExit is ReentrancyGuard {
         view
         returns (uint256)
     {
-        return balanceOfEarnedBeans(account).mul(C.getSeedsPerBean());
+        return balanceOfEarnedMoons(account).mul(C.getSeedsPerMoon());
     }
 
     function lastUpdate(address account) public view returns (uint32) {

@@ -1,18 +1,18 @@
-<img src="https://github.com/BeanstalkFarms/Beanstalk-Brand-Assets/blob/main/BEAN/bean-128x128.png" alt="Beanstalk logo" align="right" width="120" />
+<img src="https://github.com/MoonmageFarms/Moonmage-Brand-Assets/blob/main/MOON/moon-128x128.png" alt="Moonmage logo" align="right" width="120" />
 
-# Beanstalk Protocol
+# Moonmage Protocol
 
 [![Discord][discord-badge]][discord-url]
 
-[discord-badge]: https://img.shields.io/discord/880413392916054098?label=Beanstalk
-[discord-url]: https://discord.gg/beanstalk
+[discord-badge]: https://img.shields.io/discord/880413392916054098?label=Moonmage
+[discord-url]: https://discord.gg/moonmage
 
 Code Version: `2.3.1` <br>
 Whitepaper Version: `2.3.0`
 
 ## About
 
-This repository contains the code base for the Beanstalk protocol, all of its facets and related contracts in the Beanstalk ecosystem.
+This repository contains the code base for the Moonmage protocol, all of its facets and related contracts in the Moonmage ecosystem.
 
 - [EIP-2535 Diamond](#eip-2535-diamond)
 - [Setup](#setup)
@@ -22,11 +22,11 @@ This repository contains the code base for the Beanstalk protocol, all of its fa
 
 ## EIP-2535 Diamond
 
-The Beanstalk contract is a multi-facet proxy that implements [EIP-2535](https://eips.ethereum.org/EIPS/eip-2535). Thus, the Beanstalk contract implements functionality from multiple different Facet contracts that all share a common storage.
+The Moonmage contract is a multi-facet proxy that implements [EIP-2535](https://eips.ethereum.org/EIPS/eip-2535). Thus, the Moonmage contract implements functionality from multiple different Facet contracts that all share a common storage.
 
-* [Beanstalk EIP-2535 Diamond Documentation](https://docs.bean.money/developers/overview/eip-2535-diamond)
-* [Current Beanstalk Facets](https://docs.bean.money/almanac/protocol/contracts#diamond)
-* [Beanstalk on Louper, The Ethereum Diamond Inspector](https://louper.dev/diamond/0xc1e088fc1323b20bcbee9bd1b9fc9546db5624c5)
+* [Moonmage EIP-2535 Diamond Documentation](https://docs.moon.money/developers/overview/eip-2535-diamond)
+* [Current Moonmage Facets](https://docs.moon.money/almanac/protocol/contracts#diamond)
+* [Moonmage on Louper, The Ethereum Diamond Inspector](https://louper.dev/diamond/0xc1e088fc1323b20bcbee9bd1b9fc9546db5624c5)
 
 ## Setup
 
@@ -62,11 +62,11 @@ For `<FORK_RPC>`, use an Alchemy or Infura RPC URL. It should be very clear if t
 
 ### Overview
 
-As Beanstalk implements EIP-2535, Beanstalk is upgraded through a `diamondCut` function call.
+As Moonmage implements EIP-2535, Moonmage is upgraded through a `diamondCut` function call.
 
 There are two different ways a `diamondCut` can execute code:
 1. Adding, replacing and/or removing functions
-    * Functions in Beanstalk are implemented in contracts known as `facets`. Facets are no different than normal smart contract with callable functions. In order to share a state, Facets can only define 1 internal state variable: The `AppStorage` struct defined in `AppStorage.sol`. Read more [here](https://docs.bean.money/developers/overview/app-storage).
+    * Functions in Moonmage are implemented in contracts known as `facets`. Facets are no different than normal smart contract with callable functions. In order to share a state, Facets can only define 1 internal state variable: The `AppStorage` struct defined in `AppStorage.sol`. Read more [here](https://docs.moon.money/developers/overview/app-storage).
 2. Calling the `init` function of a contract
     * This is a one time action and will be called when the `diamondCut` is executed. There can be 1 `init` call per `diamondCut`.
 
@@ -78,7 +78,7 @@ For this tutorial, we will create a new Facet called `SampleFacet`.
 2. In `protocol/farm/facets/`, create a new folder called `SampleFacet`
 3. Within the `SampleFacet` folder create a file called `SampleFacet.sol`.
 4. Implement your Facet. You can use `SampleFacet.sol` in `protocol/samples` as a template. Note that Facets can only have `AppStorage` as an internal state variable.
-5. Modify the `deploy` function in `scripts/deploy` to include your new Facet, so that the Facet will be deployed with the Beanstalk Diamond.
+5. Modify the `deploy` function in `scripts/deploy` to include your new Facet, so that the Facet will be deployed with the Moonmage Diamond.
 
 ## Testing a BIP
 
@@ -105,8 +105,8 @@ There are a couple of steps that must be done before forking mainnet and testing
     ```
 2. Include as imports:
     ```
-    const BEANSTALK = "0xC1E088fC1323b20BCBee9bd1B9fC9546db5624C5";
-    const ownerFacet = await ethers.getContractAt('OwnershipFacet', BEANSTALK);
+    const MOONMAGE = "0xC1E088fC1323b20BCBee9bd1B9fC9546db5624C5";
+    const ownerFacet = await ethers.getContractAt('OwnershipFacet', MOONMAGE);
     const owner = await ownerFacet.owner();
     const { upgradeWithNewFacets } = require('./scripts/diamond.js')
     ```
@@ -120,7 +120,7 @@ There are a couple of steps that must be done before forking mainnet and testing
         });
         const account = await ethers.getSigner(owner)
         await upgradeWithNewFacets({
-            diamondAddress: BEANSTALK,
+            diamondAddress: MOONMAGE,
             facetNames: [],
             initFacetName: 'InitEmpty',
             initArgs: [],
@@ -133,7 +133,7 @@ There are a couple of steps that must be done before forking mainnet and testing
 4. Here is an example of what BIP-11 deployment looked like:
     ```
     await upgradeWithNewFacets({
-        diamondAddress: BEANSTALK,
+        diamondAddress: MOONMAGE,
         initFacetName: 'InitBip11',
         facetNames: ['MarketplaceFacet'],
         libraryNames: ["LibClaim"],
@@ -160,8 +160,8 @@ There are a couple of steps that must be done before forking mainnet and testing
     Where `upgrade` is where you put the name of your task (in the example above it was named upgrade).
 
 3. Now you can test your changes using your local mainnet fork that should now have the latest version
-of Beanstalk that you upgraded.
+of Moonmage that you upgraded.
 
 ## License
 
-[MIT](https://github.com/BeanstalkFarms/Beanstalk/blob/master/LICENSE.txt)
+[MIT](https://github.com/MoonmageFarms/Moonmage/blob/master/LICENSE.txt)

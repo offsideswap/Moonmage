@@ -1,8 +1,8 @@
 {
-  "name": "@beanstalk/examples",
+  "name": "@moonmage/examples",
   "main": "src/index.ts",
   "dependencies": {
-    "@beanstalk/sdk": "workspace:*",
+    "@moonmage/sdk": "workspace:*",
     "chalk": "4",
     "table": "6.8.1"
   },

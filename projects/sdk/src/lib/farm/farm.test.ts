@@ -1,18 +1,18 @@
 import { FarmWorkflow } from "./farm";
 // import { workflowTestSuite } from "src/classes/Workflow.test";
 import { setupConnection } from "src/utils/TestUtils/provider";
-import { BeanstalkSDK } from "../BeanstalkSDK";
+import { MoonmageSDK } from "../MoonmageSDK";
 import { ethers } from "ethers";
 
 /// Setup
-let sdk: BeanstalkSDK;
+let sdk: MoonmageSDK;
 let account: string;
 beforeAll(async () => {
   const { signer, provider, account: _account } = await setupConnection();
-  sdk = new BeanstalkSDK({
+  sdk = new MoonmageSDK({
     provider: provider,
     signer: signer,
-    subgraphUrl: "https://graph.node.bean.money/subgraphs/name/beanstalk-testing"
+    subgraphUrl: "https://graph.node.moon.money/subgraphs/name/moonmage-testing"
   });
   account = _account;
 });
@@ -43,7 +43,7 @@ describe("Workflow", () => {
         // Setup
         const farm = sdk.farm.create();
         farm.add([
-          sdk.farm.presets.bean2usdt(), // instanceof StepClass
+          sdk.farm.presets.moon2usdt(), // instanceof StepClass
           async () => "0xCALLDATA1", // instanceof StepFunction (returns EncodedData)
           async () => ({
             // instanceof StepFunction (returns Step<EncodedData>)
@@ -75,7 +75,7 @@ describe("Workflow", () => {
         // Setup
         const farm = sdk.farm.create();
         farm.add([
-          sdk.farm.presets.bean2usdt(),
+          sdk.farm.presets.moon2usdt(),
           async () => "0xCALLDATA100000000000000000000000000000000000000",
           [
             async () => "0xCALLDATA200000000000000000000000000000000000000",

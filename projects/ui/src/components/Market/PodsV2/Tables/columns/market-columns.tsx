@@ -15,17 +15,17 @@ import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 import toast from 'react-hot-toast';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { PodListing, PodOrder, PricingType } from '~/state/farmer/market';
+import { PodListing, PodOrder, PricingType } from '~/state/cosmomage/market';
 import { displayBN, displayFullBN, MinBN } from '~/util';
 import Row from '~/components/Common/Row';
 import TokenIcon from '~/components/Common/TokenIcon';
-import { BEAN, PODS } from '~/constants/tokens';
+import { MOON, PODS } from '~/constants/tokens';
 import { ZERO_BN } from '~/constants';
-import { BeanstalkPalette, FontSize } from '~/components/App/muiTheme';
-import { FarmerMarketOrder } from '~/hooks/farmer/market/useFarmerMarket2';
-import etherscanIcon from '~/img/beanstalk/interface/nav/etherscan.svg';
+import { MoonmagePalette, FontSize } from '~/components/App/muiTheme';
+import { CosmomageStationOrder } from '~/hooks/cosmomage/market/useCosmomageStation2';
+import etherscanIcon from '~/img/moonmage/interface/nav/etherscan.svg';
 import EntityIcon from '~/components/Market/PodsV2/Common/EntityIcon';
-import { MarketEvent } from '~/hooks/beanstalk/useMarketActivityData';
+import { MarketEvent } from '~/hooks/moonmage/useMarketActivityData';
 import { FC } from '~/types';
 import StatHorizontal from '~/components/Common/StatHorizontal';
 
@@ -37,8 +37,8 @@ const TooltipPill : FC<{ title: string | React.ReactElement } & { placement?: To
       px: 0.25,
       '&:hover': {
         outlineOffset: 1,
-        backgroundColor: BeanstalkPalette.white,
-        outlineColor: BeanstalkPalette.lightGrey,
+        backgroundColor: MoonmagePalette.white,
+        outlineColor: MoonmagePalette.lightGrey,
         outlineStyle: 'solid',
         outlineWidth: 1,
         borderRadius: 0.5,
@@ -64,7 +64,7 @@ const Copy : FC<{ value: string }> = ({ value }) => {
 /// ////////////////////////// Constants /////////////////////////////
 
 const MARKET_STATUS_TO_COLOR = {
-  active: BeanstalkPalette.logoGreen,
+  active: MoonmagePalette.logoGreen,
   cancelled: 'text.secondary',
   cancelled_partial: 'text.secondary',
 };
@@ -142,7 +142,7 @@ export const MarketColumns = {
         renderCell: (params: GridRenderCellParams) => (
           params.value?.gt(0) ? (
             <Row gap={0.25}>
-              <TokenIcon token={BEAN[1]} />
+              <TokenIcon token={MOON[1]} />
               <span>{displayFullBN(params.value || ZERO_BN, 6, 0)}</span>
             </Row>
           ) : '-'
@@ -158,7 +158,7 @@ export const MarketColumns = {
         align: align || 'left',
         headerAlign: align || 'left',
         type: 'number',
-        renderCell: (params: GridRenderCellParams<any, FarmerMarketOrder>) => {
+        renderCell: (params: GridRenderCellParams<any, CosmomageStationOrder>) => {
           if (!params.value || params.value.eq(0)) return <>-</>;
           if ((type || params.row.type) === 'listing') {
             return (
@@ -249,7 +249,7 @@ export const MarketColumns = {
         flex: flex,
         align: align || 'left',
         headerAlign: align || 'left',
-        renderCell: (params: GridRenderCellParams<any, FarmerMarketOrder | MarketEvent>) => (
+        renderCell: (params: GridRenderCellParams<any, CosmomageStationOrder | MarketEvent>) => (
           <TooltipPill
             title={
               <>
@@ -297,7 +297,7 @@ export const MarketColumns = {
         align: align || 'left',
         headerAlign: align || 'left',
         type: 'number',
-        renderCell: (params: GridRenderCellParams<any, FarmerMarketOrder>) => {
+        renderCell: (params: GridRenderCellParams<any, CosmomageStationOrder>) => {
           const progress = MinBN(
             // round down so that we don't show 100% when it's not fully filled
             (params.value as BigNumber).dp(2, BigNumber.ROUND_DOWN),
@@ -309,11 +309,11 @@ export const MarketColumns = {
               <StatHorizontal label="Listed">
                 {displayFullBN(params.row.amountPods, 6)} PODS
               </StatHorizontal>
-              <StatHorizontal label="Sold" color={BeanstalkPalette.washedRed}>
+              <StatHorizontal label="Sold" color={MoonmagePalette.washedRed}>
                 - {displayFullBN(params.row.amountPodsFilled, 6)} PODS
               </StatHorizontal>
-              <StatHorizontal label="Received" color={BeanstalkPalette.logoGreen}>
-                + {displayFullBN(params.row.amountBeansFilled, 6)} BEAN
+              <StatHorizontal label="Received" color={MoonmagePalette.logoGreen}>
+                + {displayFullBN(params.row.amountMoonsFilled, 6)} MOON
               </StatHorizontal>
             </>
           ) : (
@@ -321,10 +321,10 @@ export const MarketColumns = {
               <StatHorizontal label="Ordered">
                 {displayFullBN(params.row.amountPods, 6)} PODS
               </StatHorizontal>
-              <StatHorizontal label="Sold" color={BeanstalkPalette.washedRed}>
-                - {displayFullBN(params.row.amountBeansFilled, 6)} BEAN
+              <StatHorizontal label="Sold" color={MoonmagePalette.washedRed}>
+                - {displayFullBN(params.row.amountMoonsFilled, 6)} MOON
               </StatHorizontal>
-              <StatHorizontal label="Received" color={BeanstalkPalette.logoGreen}>
+              <StatHorizontal label="Received" color={MoonmagePalette.logoGreen}>
                 + {displayFullBN(params.row.amountPodsFilled, 6)} PODS
               </StatHorizontal>
             </>
@@ -345,9 +345,9 @@ export const MarketColumns = {
       } as GridColumns[number]),
     
     /** */
-    amountBeans: (flex: number, align?: 'left' | 'right') =>
+    amountMoons: (flex: number, align?: 'left' | 'right') =>
       ({
-        field: 'amountBeans',
+        field: 'amountMoons',
         headerName: 'TOTAL',
         flex: flex,
         align: align || 'left',
@@ -356,7 +356,7 @@ export const MarketColumns = {
         renderCell: (params: GridRenderCellParams) => (
           params.value ? (
             <Row gap={0.25}>
-              <TokenIcon token={BEAN[1]} />
+              <TokenIcon token={MOON[1]} />
               <span>{displayBN(params.value || ZERO_BN)}</span>
             </Row>
           ) : '-'
@@ -534,6 +534,6 @@ export const MarketColumns = {
             </Typography>
           </>
         ),
-      } as GridColumns<FarmerMarketOrder>[number]),
+      } as GridColumns<CosmomageStationOrder>[number]),
   }
 };

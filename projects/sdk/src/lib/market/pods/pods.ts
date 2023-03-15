@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { BeanstalkSDK, DataSource } from "src/lib/BeanstalkSDK";
+import { MoonmageSDK, DataSource } from "src/lib/MoonmageSDK";
 
 class BaseError extends Error {
   constructor(message: string) {
@@ -16,9 +16,9 @@ class NotFoundError extends BaseError {
 }
 
 export class PodsMarket {
-  static sdk: BeanstalkSDK;
+  static sdk: MoonmageSDK;
 
-  constructor(sdk: BeanstalkSDK) {
+  constructor(sdk: MoonmageSDK) {
     PodsMarket.sdk = sdk;
   }
 
@@ -37,7 +37,7 @@ export class PodsMarket {
   ) {
     const [isValid, query] = await Promise.all([
       options?.validate
-        ? PodsMarket.sdk.contracts.beanstalk.podListing(id).then((r) => ethers.BigNumber.from(r).gt(0))
+        ? PodsMarket.sdk.contracts.moonmage.podListing(id).then((r) => ethers.BigNumber.from(r).gt(0))
         : Promise.resolve(true),
       PodsMarket.sdk.queries.getListingByIndex({ index: id })
     ]);

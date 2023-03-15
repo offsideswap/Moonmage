@@ -5,7 +5,7 @@ import { Box, Grid, Typography } from '@mui/material';
 import useToggle from '~/hooks/display/useToggle';
 import { displayBN, MaxBN, MinBN , PlotMap } from '~/util';
 import PlotSelectDialog from '~/components/Field/PlotSelectDialog';
-import useHarvestableIndex from '~/hooks/beanstalk/useHarvestableIndex';
+import useHarvestableIndex from '~/hooks/moonmage/useHarvestableIndex';
 import { PODS } from '~/constants/tokens';
 
 import { ZERO_BN } from '~/constants';
@@ -48,7 +48,7 @@ const PlotInputField : FC<{
   const harvestableIndex = useHarvestableIndex();
   
   /// Find the currently selected plot from form state.
-  /// If selected, grab the number of pods from the farmer's field state.
+  /// If selected, grab the number of pods from the cosmomage's field state.
   const plot = values.plot;
   const [numPods, numPodsFloat] = useMemo(
     () => {

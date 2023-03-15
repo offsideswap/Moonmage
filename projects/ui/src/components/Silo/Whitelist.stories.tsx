@@ -2,7 +2,7 @@ import React from 'react';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import BigNumber from 'bignumber.js';
 import { SupportedChainId } from '~/constants/chains';
-import { BEAN, BEAN_ETH_UNIV2_LP } from '~/constants/tokens';
+import { MOON, MOON_ETH_UNIV2_LP } from '~/constants/tokens';
 import Whitelist from './Whitelist';
 
 export default {
@@ -15,17 +15,17 @@ const Template: ComponentStory<typeof Whitelist> = (args: any) => (
     {...args}
     config={{
       whitelist: [
-        BEAN[SupportedChainId.MAINNET],
-        BEAN_ETH_UNIV2_LP[SupportedChainId.MAINNET]
+        MOON[SupportedChainId.MAINNET],
+        MOON_ETH_UNIV2_LP[SupportedChainId.MAINNET]
       ]
     }}
-    farmerSilo={{
+    cosmomageSilo={{
       balances: {
-        [BEAN[SupportedChainId.MAINNET].address]: {
+        [MOON[SupportedChainId.MAINNET].address]: {
           // input fake data here
           deposited: new BigNumber(123_456_789)
         },
-        [BEAN_ETH_UNIV2_LP[SupportedChainId.MAINNET].address]: {
+        [MOON_ETH_UNIV2_LP[SupportedChainId.MAINNET].address]: {
           // input fake data here
           deposited: new BigNumber(0.0001)
         },

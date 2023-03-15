@@ -17,7 +17,7 @@ import {
 } from '@visx/curve';
 import { useTooltip, useTooltipInPortal } from '@visx/tooltip';
 
-import { BeanstalkPalette } from '~/components/App/muiTheme';
+import { MoonmagePalette } from '~/components/App/muiTheme';
 import { CurveFactory } from 'd3-shape';
 import { Group } from '@visx/group';
 import { NumberValue } from 'd3-scale';
@@ -78,15 +78,15 @@ type GraphProps = {
 
 const strokes = [
   {
-    stroke: BeanstalkPalette.theme.winter.primary,
+    stroke: MoonmagePalette.theme.winter.primary,
     strokeWidth: 2,
   },
   {
-    stroke: BeanstalkPalette.darkBlue,
+    stroke: MoonmagePalette.darkBlue,
     strokeWidth: 2,
   },
   {
-    stroke: BeanstalkPalette.lightGrey,
+    stroke: MoonmagePalette.lightGrey,
     strokeWidth: 0.5,
   },
 ];
@@ -277,7 +277,7 @@ const Graph: React.FC<GraphProps> = (props) => {
             <Line
               from={{ x: tooltipLeft, y: dataRegion.yTop }}
               to={{ x: tooltipLeft, y: dataRegion.yBottom }}
-              stroke={BeanstalkPalette.lightGrey}
+              stroke={MoonmagePalette.lightGrey}
               strokeWidth={1}
               pointerEvents="none"
             />

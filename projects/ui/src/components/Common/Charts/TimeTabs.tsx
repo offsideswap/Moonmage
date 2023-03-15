@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { Button, Divider, StackProps, Typography } from '@mui/material';
-import { SeasonAggregation, SeasonRange } from '~/hooks/beanstalk/useSeasonsQuery';
+import { SeasonAggregation, SeasonRange } from '~/hooks/moonmage/useSeasonsQuery';
 import Row from '~/components/Common/Row';
 
 import { FC } from '~/types';

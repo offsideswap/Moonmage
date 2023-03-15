@@ -1,5 +1,5 @@
 import { TypedDataField, VoidSigner } from "ethers";
-import { BeanstalkSDK } from "./BeanstalkSDK";
+import { MoonmageSDK } from "./MoonmageSDK";
 
 /// EIP-712: "Typed structured data hashing and signing"
 /// https://eips.ethereum.org/EIPS/eip-712
@@ -57,7 +57,7 @@ export type SignedPermit<Message extends EIP712PermitMessage = any, Domain exten
  * @ref https://github.com/dmihal/eth-permit/blob/master/src/eth-permit.ts
  */
 export class Permit {
-  static sdk: BeanstalkSDK;
+  static sdk: MoonmageSDK;
 
   static MAX_UINT256 = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
 
@@ -71,7 +71,7 @@ export class Permit {
   ] as const;
 
   ///
-  constructor(sdk: BeanstalkSDK) {
+  constructor(sdk: MoonmageSDK) {
     Permit.sdk = sdk;
   }
 

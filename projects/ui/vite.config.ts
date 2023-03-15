@@ -30,7 +30,7 @@ const CSP = buildCSP({
     '*.alchemyapi.io', // Alchemy RPC
     'https://cloudflare-eth.com', // Cloudflare RPC
     '*.infura.io', // Infura RPC
-    '*.bean.money', // Beanstalk APIs
+    '*.moon.money', // Moonmage APIs
     '*.snapshot.org', // Snapshot GraphQL API
     'wss://*.walletconnect.org',
     'wss://*.bridge.walletconnect.org',

@@ -24,16 +24,16 @@ export class WithdrawDeposits extends StepClass<BasicPreparedResult> {
           amounts: this._amounts
         });
         return {
-          target: WithdrawDeposits.sdk.contracts.beanstalk.address,
-          callData: WithdrawDeposits.sdk.contracts.beanstalk.interface.encodeFunctionData("withdrawDeposits", [
+          target: WithdrawDeposits.sdk.contracts.moonmage.address,
+          callData: WithdrawDeposits.sdk.contracts.moonmage.interface.encodeFunctionData("withdrawDeposits", [
             this._tokenIn, //
             this._seasons, //
             this._amounts //
           ])
         };
       },
-      decode: (data: string) => WithdrawDeposits.sdk.contracts.beanstalk.interface.decodeFunctionData("withdrawDeposits", data),
-      decodeResult: (result: string) => WithdrawDeposits.sdk.contracts.beanstalk.interface.decodeFunctionResult("withdrawDeposits", result)
+      decode: (data: string) => WithdrawDeposits.sdk.contracts.moonmage.interface.decodeFunctionData("withdrawDeposits", data),
+      decodeResult: (result: string) => WithdrawDeposits.sdk.contracts.moonmage.interface.decodeFunctionResult("withdrawDeposits", result)
     };
   }
 }

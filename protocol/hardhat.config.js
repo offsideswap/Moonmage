@@ -7,45 +7,45 @@ require("@openzeppelin/hardhat-upgrades")
 require('dotenv').config();
 const fs = require('fs')
 const { upgradeWithNewFacets } = require("./scripts/diamond")
-const { impersonateSigner, mintUsdc, mintBeans, getBeanMetapool, getUsdc, getBean, getBeanstalkAdminControls, impersonateBeanstalkOwner, mintEth } = require('./utils');
+const { impersonateSigner, mintUsdc, mintMoons, getMoonMetapool, getUsdc, getMoon, getMoonmageAdminControls, impersonateMoonmageOwner, mintEth } = require('./utils');
 const { EXTERNAL, INTERNAL, INTERNAL_EXTERNAL, INTERNAL_TOLERANT } = require('./test/utils/balances.js')
-const { BEANSTALK, PUBLIUS, BEAN_3_CURVE } = require('./test/utils/constants.js')  
+const { MOONMAGE, PUBLIUS, MOON_3_CURVE } = require('./test/utils/constants.js')  
 const { to6 } = require('./test/utils/helpers.js')
 const { replant } = require("./replant/replant.js")
 const { task } = require("hardhat/config")
 
-task('buyBeans').addParam("amount", "The amount of USDC to buy with").setAction(async(args) => {
+task('buyMoons').addParam("amount", "The amount of USDC to buy with").setAction(async(args) => {
   await mintUsdc(PUBLIUS, args.amount)
   const signer = await impersonateSigner(PUBLIUS)
-  await (await getUsdc()).connect(signer).approve(BEAN_3_CURVE, ethers.constants.MaxUint256)
-  await (await getBeanMetapool()).connect(signer).exchange_underlying('2', '0', args.amount, '0')
+  await (await getUsdc()).connect(signer).approve(MOON_3_CURVE, ethers.constants.MaxUint256)
+  await (await getMoonMetapool()).connect(signer).exchange_underlying('2', '0', args.amount, '0')
 })
 
-task('sellBeans').addParam("amount", "The amount of Beans to sell").setAction(async(args) => {
-  await mintBeans(PUBLIUS, args.amount)
+task('sellMoons').addParam("amount", "The amount of Moons to sell").setAction(async(args) => {
+  await mintMoons(PUBLIUS, args.amount)
   const signer = await impersonateSigner(PUBLIUS)
-  await (await getBean()).connect(signer).approve(BEAN_3_CURVE, ethers.constants.MaxUint256)
-  await (await getBeanMetapool()).connect(signer).connect(await impersonateSigner(PUBLIUS)).exchange_underlying('0', '2', args.amount, '0')
+  await (await getMoon()).connect(signer).approve(MOON_3_CURVE, ethers.constants.MaxUint256)
+  await (await getMoonMetapool()).connect(signer).connect(await impersonateSigner(PUBLIUS)).exchange_underlying('0', '2', args.amount, '0')
 })
 
 task('ripen').addParam("amount", "The amount of Pods to ripen").setAction(async(args) => {
-  const beanstalkAdmin = await getBeanstalkAdminControls()
-  await beanstalkAdmin.ripen(args.amount)
+  const moonmageAdmin = await getMoonmageAdminControls()
+  await moonmageAdmin.ripen(args.amount)
 })
 
-task('fertilize').addParam("amount", "The amount of Beans to fertilize").setAction(async(args) => {
-  const beanstalkAdmin = await getBeanstalkAdminControls()
-  await beanstalkAdmin.fertilize(args.amount)
+task('fertilize').addParam("amount", "The amount of Moons to fertilize").setAction(async(args) => {
+  const moonmageAdmin = await getMoonmageAdminControls()
+  await moonmageAdmin.fertilize(args.amount)
 })
 
-task('rewardSilo').addParam("amount", "The amount of Beans to distribute to Silo").setAction(async(args) => {
-  const beanstalkAdmin = await getBeanstalkAdminControls()
-  await beanstalkAdmin.rewardSilo(args.amount)
+task('rewardSilo').addParam("amount", "The amount of Moons to distribute to Silo").setAction(async(args) => {
+  const moonmageAdmin = await getMoonmageAdminControls()
+  await moonmageAdmin.rewardSilo(args.amount)
 })
 
 task('sunrise', async function () {
-  const beanstalkAdmin = await getBeanstalkAdminControls()
-  await beanstalkAdmin.forceSunrise()
+  const moonmageAdmin = await getMoonmageAdminControls()
+  await moonmageAdmin.forceSunrise()
 })
 
 task('replant', async () => {
@@ -74,15 +74,15 @@ task('diamondABI', 'Generates ABI file for diamond, includes all ABIs of facets'
     }
   }
   abi = JSON.stringify(abi.filter((item, pos) => abi.map((a)=>a.name).indexOf(item.name) == pos), null, 4)
-  fs.writeFileSync('./abi/Beanstalk.json', abi)
-  console.log('ABI written to abi/Beanstalk.json')
+  fs.writeFileSync('./abi/Moonmage.json', abi)
+  console.log('ABI written to abi/Moonmage.json')
 })
 
 task('marketplace', async function () {
-  const owner = await impersonateBeanstalkOwner();
+  const owner = await impersonateMoonmageOwner();
   await mintEth(owner.address);
   await upgradeWithNewFacets({
-    diamondAddress: BEANSTALK,
+    diamondAddress: MOONMAGE,
     facetNames:
     ['MarketplaceFacet'],
     bip: false,

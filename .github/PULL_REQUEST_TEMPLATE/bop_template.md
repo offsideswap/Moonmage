@@ -1,6 +1,6 @@
 ---
 name: BOP Template
-about: A template for proposing BOPs on the Beanstalk repo.
+about: A template for proposing BOPs on the Moonmage repo.
 title: 'BOP-X: To Do'
 labels: ''
 assignees: ''
@@ -11,7 +11,7 @@ Note: Given the nature of BOPs, not all the sections below may be applicable. Us
 
 ## Proposer
 
-The proposer of the BOP. Include an Etherscan verified message from an address that has at least 0.1% Stalk ownership.
+The proposer of the BOP. Include an Etherscan verified message from an address that has at least 0.1% Mage ownership.
 
 ## Summary
 
@@ -19,7 +19,7 @@ A summary of the BOP. Use a bulleted list if necessary.
 
 ## Problem
 
-A paragraph on the each of the issues that the Beanstalk DAO is facing that the BOP attempts to address. 
+A paragraph on the each of the issues that the Moonmage DAO is facing that the BOP attempts to address. 
 
 ## Proposed Solution
 

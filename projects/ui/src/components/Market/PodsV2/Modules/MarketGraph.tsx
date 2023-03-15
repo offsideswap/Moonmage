@@ -5,7 +5,7 @@ import './MarketGraph.css';
 import { AxisBottom, AxisLeft } from '@visx/axis';
 import { Box, Card, CardProps, Stack, Typography } from '@mui/material';
 import { Circle, Line } from '@visx/shape';
-import { PodListing, PodOrder } from '~/state/farmer/market';
+import { PodListing, PodOrder } from '~/state/cosmomage/market';
 import { ProvidedZoom, TransformMatrix } from '@visx/zoom/lib/types';
 import React, {
   useCallback,
@@ -18,7 +18,7 @@ import { Tooltip, useTooltip } from '@visx/tooltip';
 import { VoronoiPolygon, voronoi } from '@visx/voronoi';
 import { Zoom, applyMatrixToPoint } from '@visx/zoom';
 
-import { BeanstalkPalette } from '~/components/App/muiTheme';
+import { MoonmagePalette } from '~/components/App/muiTheme';
 import BigNumber from 'bignumber.js';
 import EntityIcon from '~/components/Market/PodsV2/Common/EntityIcon';
 import { FC } from '~/types';
@@ -78,8 +78,8 @@ const PATTERN_ID = 'brush_pattern';
 export const accentColor = '#f6acc8';
 export const background = '#584153';
 export const background2 = '#af8baf';
-const axisColor = BeanstalkPalette.lightGrey;
-const tickLabelColor = BeanstalkPalette.lightGrey;
+const axisColor = MoonmagePalette.lightGrey;
+const tickLabelColor = MoonmagePalette.lightGrey;
 const tickLabelProps = (type: 'x' | 'y') => () => ({
   fill: tickLabelColor,
   fontSize: 12,
@@ -180,7 +180,7 @@ const rescaleXWithZoom = (scale: any, zoom: any) => {
 const TooltipCard: FC<CardProps> = ({ children, sx, ...props }) => (
   <Card
     sx={{
-      backgroundColor: BeanstalkPalette.lightestBlue,
+      backgroundColor: MoonmagePalette.lightestBlue,
       px: 0.5,
       py: 0.5,
       ...sx,
@@ -204,19 +204,19 @@ const CursorPositionLines: FC<CursorLineProps> = ({
     <Line
       from={{ x: 0, y }}
       to={{ x, y }}
-      stroke={BeanstalkPalette.lightGrey}
+      stroke={MoonmagePalette.lightGrey}
       strokeWidth={1}
       pointerEvents="none"
     />
     <Line
       from={{ x, y: height }}
       to={{ x, y }}
-      stroke={BeanstalkPalette.lightGrey}
+      stroke={MoonmagePalette.lightGrey}
       strokeWidth={1}
       pointerEvents="none"
     />
     <Text
-      fill={BeanstalkPalette.textBlue}
+      fill={MoonmagePalette.textBlue}
       x={x + 10}
       y={height - axis.xHeight}
       fontSize={14}
@@ -224,7 +224,7 @@ const CursorPositionLines: FC<CursorLineProps> = ({
       {yLabel}
     </Text>
     <Text
-      fill={BeanstalkPalette.textBlue}
+      fill={MoonmagePalette.textBlue}
       x={axis.yWidth + 10}
       y={y - 5}
       fontSize={14}
@@ -388,8 +388,8 @@ const Graph: FC<GraphProps> = ({
               active ? HOVER_MULTIPLIER * coordinate.radius : coordinate.radius
             }
             opacity={peerOpacity('order', i)}
-            fill={BeanstalkPalette.logoGreen}
-            stroke={active ? BeanstalkPalette.mediumGreen : '#fff'}
+            fill={MoonmagePalette.logoGreen}
+            stroke={active ? MoonmagePalette.mediumGreen : '#fff'}
             strokeWidth={active ? 2 : 1}
             cursor="pointer"
             className={`mg-point mg-point-o${active ? ' mg-active' : ''}`}
@@ -412,8 +412,8 @@ const Graph: FC<GraphProps> = ({
               active ? HOVER_MULTIPLIER * coordinate.radius : coordinate.radius
             }
             opacity={peerOpacity('listing', i)}
-            fill={BeanstalkPalette.mediumRed}
-            stroke={active ? BeanstalkPalette.trueRed : '#fff'}
+            fill={MoonmagePalette.mediumRed}
+            stroke={active ? MoonmagePalette.trueRed : '#fff'}
             strokeWidth={active ? 2 : 1}
             cursor="pointer"
             className={`mg-point mg-point-l${active ? ' mg-active' : ''}`}
@@ -712,7 +712,7 @@ const Graph: FC<GraphProps> = ({
               id={PATTERN_ID}
               height={5}
               width={5}
-              stroke={BeanstalkPalette.logoGreen}
+              stroke={MoonmagePalette.logoGreen}
               strokeWidth={1}
               orientation={['diagonal']}
             />

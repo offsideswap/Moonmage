@@ -1,13 +1,13 @@
-<img src="https://github.com/BeanstalkFarms/Beanstalk-Brand-Assets/blob/main/BEAN/bean-128x128.png" alt="Beanstalk logo" align="right" width="120" />
+<img src="https://github.com/MoonmageFarms/Moonmage-Brand-Assets/blob/main/MOON/moon-128x128.png" alt="Moonmage logo" align="right" width="120" />
 
-## Beanstalk UI
+## Moonmage UI
 
 [![Discord][discord-badge]][discord-url]
 
-[discord-badge]: https://img.shields.io/discord/880413392916054098?label=Beanstalk
-[discord-url]: https://discord.gg/beanstalk
+[discord-badge]: https://img.shields.io/discord/880413392916054098?label=Moonmage
+[discord-url]: https://discord.gg/moonmage
 
-**An interface for the Beanstalk Protocol: [app.bean.money](https://app.bean.money)**
+**An interface for the Moonmage Protocol: [app.moon.money](https://app.moon.money)**
 
 ## Getting started
 
@@ -43,7 +43,7 @@ ETHERSCAN_API_KEY=[your api key]
 
 ### Development
 
-When developing, it's recommended to use a local fork of Ethereum. See [Beanstalk / Forking Mainnet Locally](https://github.com/BeanstalkFarms/Beanstalk#forking-mainnet-locally) for instructions.
+When developing, it's recommended to use a local fork of Ethereum. See [Moonmage / Forking Mainnet Locally](https://github.com/MoonmageFarms/Moonmage#forking-mainnet-locally) for instructions.
 
 ### Testing
 

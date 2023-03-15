@@ -1,5 +1,5 @@
 const fs = require('fs')
-const root = `${__dirname}/Beanstalk`
+const root = `${__dirname}/Moonmage`
 
 main().catch((e) => {
   console.log("FAILED:");
@@ -34,15 +34,15 @@ async function main() {
   fs.writeFileSync(protocolf, JSON.stringify(protocolj, null, 2)+'\n')
 
 
-  const sgbsf = root + "/projects/subgraph-beanstalk/package.json"
+  const sgbsf = root + "/projects/subgraph-moonmage/package.json"
   sgbsj = require(sgbsf)
-  sgbsj.name = "subgraph-beanstalk"
+  sgbsj.name = "subgraph-moonmage"
   sgbsj.private = true;
   fs.writeFileSync(sgbsf, JSON.stringify(sgbsj, null, 2)+'\n')
 
-  const sgbf = root + "/projects/subgraph-bean/package.json"
+  const sgbf = root + "/projects/subgraph-moon/package.json"
   sgbj = require(sgbf)
-  sgbj.name = "subgraph-bean"
+  sgbj.name = "subgraph-moon"
   sgbj.private = true;
   fs.writeFileSync(sgbf, JSON.stringify(sgbj, null, 2)+'\n')
 }

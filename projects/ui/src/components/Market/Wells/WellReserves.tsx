@@ -7,8 +7,8 @@ import InfoIcon from '@mui/icons-material/Info';
 import Row from '~/components/Common/Row';
 import WhitelistBadge from '~/components/Market/Wells/WhitelistBadge';
 import TokenIcon from '~/components/Common/TokenIcon';
-import { BEAN } from '~/constants/tokens';
-import { BeanstalkPalette, IconSize } from '~/components/App/muiTheme';
+import { MOON } from '~/constants/tokens';
+import { MoonmagePalette, IconSize } from '~/components/App/muiTheme';
 
 const WellReserves: React.FC = () => (
   <Card sx={{ height: '100%', p: 1 }}>
@@ -21,14 +21,14 @@ const WellReserves: React.FC = () => (
         <Stack gap={1}>
           <Row justifyContent="space-between">
             <Row gap={0.5}>
-              <TokenIcon token={BEAN[1]} />
-              <Typography>BEAN</Typography>
+              <TokenIcon token={MOON[1]} />
+              <Typography>MOON</Typography>
             </Row>
             <Typography>750,135 (50.05%)</Typography>
           </Row>
           <Row justifyContent="space-between">
             <Row gap={0.5}>
-              <TokenIcon token={BEAN[1]} />
+              <TokenIcon token={MOON[1]} />
               <Typography>ETH</Typography>
             </Row>
             <Typography>35.15 (49.95%)</Typography>
@@ -44,7 +44,7 @@ const WellReserves: React.FC = () => (
       <Stack gap={1}>
         <Stack p={1} gap={1}>
           <Row justifyContent="space-between">
-            <Typography>Current Bean Price</Typography>
+            <Typography>Current Moon Price</Typography>
             <Typography>0.00012 ETH (~$1.01)</Typography>
           </Row>
           <Row justifyContent="space-between">
@@ -52,8 +52,8 @@ const WellReserves: React.FC = () => (
             <Typography>+10,000</Typography>
           </Row>
         </Stack>
-        <Row p={1} gap={1} sx={{ borderRadius: 1, backgroundColor: BeanstalkPalette.lightestBlue }}>
-          <InfoIcon sx={{ width: IconSize.small, color: BeanstalkPalette.blue }} />
+        <Row p={1} gap={1} sx={{ borderRadius: 1, backgroundColor: MoonmagePalette.lightestBlue }}>
+          <InfoIcon sx={{ width: IconSize.small, color: MoonmagePalette.blue }} />
           <Typography>Earn up to ~5.67% vAPY for adding liquidity to this Well and depositing the whitelisted liquidity token in the silo here.</Typography>
         </Row>
         {/* <Button fullWidth component={Link} to="/silo"> */}

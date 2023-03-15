@@ -3,8 +3,8 @@ import { Box, Stack, Typography } from '@mui/material';
 import groupBy from 'lodash/groupBy';
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 import TokenIcon from '~/components/Common/TokenIcon';
-import { FERTILIZER_ICONS } from '~/components/Barn/FertilizerImage';
-import siloIcon from '~/img/beanstalk/silo-icon.svg';
+import { FERTILIZER_ICONS } from '~/components/Ship/FertilizerImage';
+import siloIcon from '~/img/moonmage/silo-icon.svg';
 import Token from '~/classes/Token';
 import {
   Action,
@@ -18,12 +18,12 @@ import {
   TransferBalanceAction
 } from '~/util/Actions';
 import { SupportedChainId } from '~/constants/chains';
-import { BEAN, PODS, SEEDS, SPROUTS, STALK, USDC } from '~/constants/tokens';
-import { FarmFromMode, FarmToMode } from '~/lib/Beanstalk/Farm';
+import { MOON, PODS, SEEDS, SPROUTS, MAGE, USDC } from '~/constants/tokens';
+import { FarmFromMode, FarmToMode } from '~/lib/Moonmage/Farm';
 import AddressIcon from '~/components/Common/AddressIcon';
 import Row from '~/components/Common/Row';
 import { FC } from '~/types';
-import { BeanstalkPalette } from '../../App/muiTheme';
+import { MoonmagePalette } from '../../App/muiTheme';
 
 // -----------------------------------------------------------------------
 
@@ -155,8 +155,8 @@ const TxnStep : FC<{
     case ActionType.UPDATE_SILO_REWARDS:
       step = (
         <IconRow spacing={0}>
-          <Typography fontWeight="bold" sx={{ fontSize: 20 }}>{(actions[0] as SiloRewardsAction).stalk.lt(0) ? '🔥' : '+'}</Typography>
-          <TokenIcon token={STALK} css={{ height: '100%' }} />
+          <Typography fontWeight="bold" sx={{ fontSize: 20 }}>{(actions[0] as SiloRewardsAction).mage.lt(0) ? '🔥' : '+'}</Typography>
+          <TokenIcon token={MAGE} css={{ height: '100%' }} />
           <TokenIcon token={SEEDS} css={{ height: '100%' }} />
         </IconRow>
       );
@@ -170,18 +170,18 @@ const TxnStep : FC<{
       break;
 
     /// FIELD
-    case ActionType.BUY_BEANS:
+    case ActionType.BUY_MOONS:
       step = (
         <IconRow>
           <TokenIcon token={(actions[0] as SiloTransitAction).token} css={{ height: '100%' }} />
         </IconRow>
       );
       break;
-    case ActionType.BURN_BEANS:
+    case ActionType.BURN_MOONS:
       step = (
         <IconRow spacing={0.3}>
           <Typography fontWeight="bold" sx={{ fontSize: 20 }}>🔥</Typography>
-          <TokenIcon token={BEAN[1]} css={{ height: '100%' }} />
+          <TokenIcon token={MOON[1]} css={{ height: '100%' }} />
         </IconRow>
       );
       break;
@@ -199,10 +199,10 @@ const TxnStep : FC<{
         </IconRow>
       );
       break;
-    case ActionType.RECEIVE_BEANS:
+    case ActionType.RECEIVE_MOONS:
       step = (
         <IconRow>
-          <TokenIcon token={BEAN[1]} css={{ height: '100%' }} />
+          <TokenIcon token={MOON[1]} css={{ height: '100%' }} />
         </IconRow>
       );
       break;
@@ -218,7 +218,7 @@ const TxnStep : FC<{
     case ActionType.CREATE_ORDER:
       step = (
         <IconRow>
-          <TokenIcon token={BEAN[1]} css={{ height: '100%', marginTop: 0, }} />
+          <TokenIcon token={MOON[1]} css={{ height: '100%', marginTop: 0, }} />
           <DoubleArrowIcon sx={{ color: 'text.secondary', fontSize: 14 }} />
           <TokenIcon token={PODS} css={{ height: '100%', marginTop: 0, }} />
         </IconRow>
@@ -301,7 +301,7 @@ const TxnStep : FC<{
         py: 0.5,
         px: 0.5,
         mx: 'auto',
-        background: BeanstalkPalette.offWhite,
+        background: MoonmagePalette.offWhite,
       }}>
         <Box
           display="inline-block"
@@ -321,11 +321,11 @@ const TxnStep : FC<{
 
 const EXECUTION_STEPS = [
   /// Group 1:
-  /// Actions that must precede a Beanstalk transaction
+  /// Actions that must precede a Moonmage transaction
   ActionType.SWAP,
 
   /// Group 2:
-  /// Beanstalk function calls
+  /// Moonmage function calls
   ActionType.TRANSFER_BALANCE,
   ActionType.HARVEST,
   ActionType.DEPOSIT,
@@ -333,19 +333,19 @@ const EXECUTION_STEPS = [
   ActionType.BUY_FERTILIZER,
   ActionType.CREATE_ORDER,
   ActionType.TRANSFER,
-  ActionType.BUY_BEANS,
-  ActionType.BURN_BEANS,
+  ActionType.BUY_MOONS,
+  ActionType.BURN_MOONS,
   ActionType.TRANSFER_PODS,
   ActionType.SELL_PODS,
   ActionType.RINSE,
 
   /// Group 3:
-  /// Results of Beanstalk function calls
+  /// Results of Moonmage function calls
   ActionType.UPDATE_SILO_REWARDS,
   ActionType.RECEIVE_FERT_REWARDS,
   ActionType.IN_TRANSIT,
   ActionType.CLAIM_WITHDRAWAL,
-  ActionType.RECEIVE_BEANS,
+  ActionType.RECEIVE_MOONS,
   ActionType.RECEIVE_PODS,
   ActionType.BUY_PODS,
   ActionType.RECEIVE_TOKEN,

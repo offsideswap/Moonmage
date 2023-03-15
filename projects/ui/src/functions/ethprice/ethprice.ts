@@ -45,7 +45,7 @@ const REFRESH_MS = 10 * 1000;
 const FORCE_EXPIRY_MS = 120 * 1000;
 
 const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': process.env.NODE_ENV === 'production' ? 'https://*.bean.money ' : '*',
+  'Access-Control-Allow-Origin': process.env.NODE_ENV === 'production' ? 'https://*.moon.money ' : '*',
   'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
 };
 
@@ -103,5 +103,5 @@ const _handler: Handler = async (event) => {
 };
 
 export const handler = middy(_handler)
-  .use(cors({ origin: '*.bean.money' }))
+  .use(cors({ origin: '*.moon.money' }))
   .use(rateLimit());

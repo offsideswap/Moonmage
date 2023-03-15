@@ -8,7 +8,7 @@ pragma experimental ABIEncoderV2;
 import "./Listing.sol";
 
 /**
- * @author Beanjoyer, Malteasy
+ * @author Moonjoyer, Malteasy
  * @title Pod Marketplace v2
  **/
 
@@ -41,7 +41,7 @@ contract Order is Listing {
         uint256 index,
         uint256 start,
         uint256 amount,
-        uint256 costInBeans
+        uint256 costInMoons
     );
 
     event PodOrderCancelled(address indexed account, bytes32 id);
@@ -49,40 +49,40 @@ contract Order is Listing {
     /*
     * Create
     */
-    // Note: Orders changed and now can accept an arbitary amount of beans, possibly higher than the value of the order
+    // Note: Orders changed and now can accept an arbitary amount of moons, possibly higher than the value of the order
     /* Note: Fixed pod orders store at s.podOrders[id] the amount of pods that they order 
-    * whereas dynamic orders store the amount of beans used to make the order 
+    * whereas dynamic orders store the amount of moons used to make the order 
     */
     function _createPodOrder(
-        uint256 beanAmount,
+        uint256 moonAmount,
         uint24 pricePerPod,
         uint256 maxPlaceInLine,
         uint256 minFillAmount
     ) internal returns (bytes32 id) {
-        require(beanAmount > 0, "Marketplace: Order amount must be > 0.");
+        require(moonAmount > 0, "Marketplace: Order amount must be > 0.");
         require(pricePerPod > 0, "Marketplace: Pod price must be greater than 0.");
 
         id = createOrderId(msg.sender, pricePerPod, maxPlaceInLine, minFillAmount);
 
         if (s.podOrders[id] > 0) _cancelPodOrder(pricePerPod, maxPlaceInLine, minFillAmount, LibTransfer.To.INTERNAL);
-        s.podOrders[id] = beanAmount;
+        s.podOrders[id] = moonAmount;
 
         bytes memory emptyPricingFunction;
-        emit PodOrderCreated(msg.sender, id, beanAmount, pricePerPod, maxPlaceInLine, minFillAmount, emptyPricingFunction, LibPolynomial.PriceType.Fixed);
+        emit PodOrderCreated(msg.sender, id, moonAmount, pricePerPod, maxPlaceInLine, minFillAmount, emptyPricingFunction, LibPolynomial.PriceType.Fixed);
     }
 
     function _createPodOrderV2(
-        uint256 beanAmount,
+        uint256 moonAmount,
         uint256 maxPlaceInLine,
         uint256 minFillAmount,
         bytes calldata pricingFunction
     ) internal returns (bytes32 id) {
-        require(beanAmount > 0, "Marketplace: Order amount must be > 0.");
+        require(moonAmount > 0, "Marketplace: Order amount must be > 0.");
         id = createOrderIdV2(msg.sender, 0, maxPlaceInLine, minFillAmount, pricingFunction);
         if (s.podOrders[id] > 0) _cancelPodOrderV2(maxPlaceInLine, minFillAmount, pricingFunction, LibTransfer.To.INTERNAL);
-        s.podOrders[id] = beanAmount;
+        s.podOrders[id] = moonAmount;
 
-        emit PodOrderCreated(msg.sender, id, beanAmount, 0, maxPlaceInLine, minFillAmount, pricingFunction, LibPolynomial.PriceType.Dynamic);
+        emit PodOrderCreated(msg.sender, id, moonAmount, 0, maxPlaceInLine, minFillAmount, pricingFunction, LibPolynomial.PriceType.Dynamic);
     }
 
 
@@ -102,10 +102,10 @@ contract Order is Listing {
         require(index.add(start).add(amount).sub(s.f.harvestable) <= o.maxPlaceInLine, "Marketplace: Plot too far in line.");
         
         bytes32 id = createOrderId(o.account, o.pricePerPod, o.maxPlaceInLine, o.minFillAmount);
-        uint256 costInBeans = amount.mul(o.pricePerPod).div(1000000);
-        s.podOrders[id] = s.podOrders[id].sub(costInBeans, "Marketplace: Not enough beans in order.");
+        uint256 costInMoons = amount.mul(o.pricePerPod).div(1000000);
+        s.podOrders[id] = s.podOrders[id].sub(costInMoons, "Marketplace: Not enough moons in order.");
 
-        LibTransfer.sendToken(C.bean(), costInBeans, msg.sender, mode);
+        LibTransfer.sendToken(C.moon(), costInMoons, msg.sender, mode);
         
         if (s.podListings[index] != bytes32(0)) _cancelPodListing(msg.sender, index);
         
@@ -113,7 +113,7 @@ contract Order is Listing {
 
         if (s.podOrders[id] == 0) delete s.podOrders[id];
         
-        emit PodOrderFilled(msg.sender, o.account, id, index, start, amount, costInBeans);
+        emit PodOrderFilled(msg.sender, o.account, id, index, start, amount, costInMoons);
     }
 
     function _fillPodOrderV2(
@@ -130,10 +130,10 @@ contract Order is Listing {
         require(index.add(start).add(amount).sub(s.f.harvestable) <= o.maxPlaceInLine, "Marketplace: Plot too far in line.");
         
         bytes32 id = createOrderIdV2(o.account, 0, o.maxPlaceInLine, o.minFillAmount, pricingFunction);
-        uint256 costInBeans = getAmountBeansToFillOrderV2(index.add(start).sub(s.f.harvestable), amount, pricingFunction);
-        s.podOrders[id] = s.podOrders[id].sub(costInBeans, "Marketplace: Not enough beans in order.");
+        uint256 costInMoons = getAmountMoonsToFillOrderV2(index.add(start).sub(s.f.harvestable), amount, pricingFunction);
+        s.podOrders[id] = s.podOrders[id].sub(costInMoons, "Marketplace: Not enough moons in order.");
         
-        LibTransfer.sendToken(C.bean(), costInBeans, msg.sender, mode);
+        LibTransfer.sendToken(C.moon(), costInMoons, msg.sender, mode);
         
         if (s.podListings[index] != bytes32(0)) _cancelPodListing(msg.sender, index);
         
@@ -141,7 +141,7 @@ contract Order is Listing {
 
         if (s.podOrders[id] == 0) delete s.podOrders[id];
         
-        emit PodOrderFilled(msg.sender, o.account, id, index, start, amount, costInBeans);
+        emit PodOrderFilled(msg.sender, o.account, id, index, start, amount, costInMoons);
     }
 
     /*
@@ -154,8 +154,8 @@ contract Order is Listing {
         LibTransfer.To mode
     ) internal {
         bytes32 id = createOrderId(msg.sender, pricePerPod, maxPlaceInLine, minFillAmount);
-        uint256 amountBeans = s.podOrders[id];
-        LibTransfer.sendToken(C.bean(), amountBeans, msg.sender, mode);
+        uint256 amountMoons = s.podOrders[id];
+        LibTransfer.sendToken(C.moon(), amountMoons, msg.sender, mode);
         delete s.podOrders[id];
         emit PodOrderCancelled(msg.sender, id);
     }
@@ -167,8 +167,8 @@ contract Order is Listing {
         LibTransfer.To mode
     ) internal {
         bytes32 id = createOrderIdV2(msg.sender, 0, maxPlaceInLine, minFillAmount, pricingFunction);
-        uint256 amountBeans = s.podOrders[id];
-        LibTransfer.sendToken(C.bean(), amountBeans, msg.sender, mode);
+        uint256 amountMoons = s.podOrders[id];
+        LibTransfer.sendToken(C.moon(), amountMoons, msg.sender, mode);
         delete s.podOrders[id];
         
         emit PodOrderCancelled(msg.sender, id);
@@ -185,16 +185,16 @@ contract Order is Listing {
         Then our integration splits into: I(start, b1) + I(b1, b2) + I(b2, b3) + I(b3, end).
     */
     /**
-    * @notice Calculates the amount of beans needed to fill an order.
+    * @notice Calculates the amount of moons needed to fill an order.
     * @dev Integration over a range that falls within piecewise domain.
     */
-    function getAmountBeansToFillOrderV2(
+    function getAmountMoonsToFillOrderV2(
         uint256 placeInLine, 
         uint256 amountPodsFromOrder,
         bytes calldata pricingFunction
-    ) public pure returns (uint256 beanAmount) { 
-        beanAmount = LibPolynomial.evaluatePolynomialIntegrationPiecewise(pricingFunction, placeInLine, placeInLine.add(amountPodsFromOrder));
-        beanAmount = beanAmount.div(1000000);
+    ) public pure returns (uint256 moonAmount) { 
+        moonAmount = LibPolynomial.evaluatePolynomialIntegrationPiecewise(pricingFunction, placeInLine, placeInLine.add(amountPodsFromOrder));
+        moonAmount = moonAmount.div(1000000);
     }
 
     /*

@@ -1,0 +1,25 @@
+{
+  "name": "subgraph-moon",
+  "license": "MIT",
+  "description": "A subgraph for indexing events emitted by the Moon ERC-20 token.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MoonmageFarms/Moonmage.git",
+    "directory": "projects/subgraph-moon"
+  },
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ moon",
+    "create-local": "graph create --node http://graph.playgrounds.academy:8020/ moon",
+    "remove-local": "graph remove --node http://graph.playgrounds.academy:8020/ moon",
+    "deploy-local": "graph deploy --node http://graph.playgrounds.academy:8020/ --ipfs http://graph.playgrounds.academy:5001 moon",
+    "deploy-hosted": "graph deploy --product hosted-service cujowolf/moon"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.30.4",
+    "@graphprotocol/graph-ts": "0.27.0",
+    "matchstick-as": "^0.5.0"
+  },
+  "private": true
+}

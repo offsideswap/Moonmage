@@ -1,41 +1,41 @@
 import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import useSeason from '~/hooks/beanstalk/useSeason';
+import useSeason from '~/hooks/moonmage/useSeason';
 import { AppState } from '~/state';
 import useAccount from './useAccount';
 
 export type EventParsingParameters = {
   account: string;
   season: BigNumber;
-  farmableBeans: BigNumber;
+  farmableMoons: BigNumber;
   harvestableIndex: BigNumber;
 };
 
 export default function useEventParsingParams() {
   const account     = useAccount();
   const season      = useSeason();
-  const earnedBeans = useSelector<AppState, AppState['_farmer']['silo']['beans']['earned']>(
-    (state) => state._farmer.silo.beans.earned
+  const earnedMoons = useSelector<AppState, AppState['_cosmomage']['silo']['moons']['earned']>(
+    (state) => state._cosmomage.silo.moons.earned
   );
-  const harvestableIndex = useSelector<AppState, AppState['_beanstalk']['field']['harvestableIndex']>(
-    (state) => state._beanstalk.field.harvestableIndex,
+  const harvestableIndex = useSelector<AppState, AppState['_moonmage']['field']['harvestableIndex']>(
+    (state) => state._moonmage.field.harvestableIndex,
   );
   return useMemo<null | EventParsingParameters>(() => {
-    if (account && earnedBeans && season?.gt(0) && harvestableIndex?.gt(0)) {
+    if (account && earnedMoons && season?.gt(0) && harvestableIndex?.gt(0)) {
       return {
         account,
         season,
         // only needed for v1
         harvestableIndex: harvestableIndex,
-        farmableBeans:    earnedBeans,
+        farmableMoons:    earnedMoons,
       };
     }
     return null;
   }, [
     account,
     season,
-    earnedBeans,
+    earnedMoons,
     harvestableIndex,
   ]);
 }

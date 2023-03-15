@@ -1,7 +1,7 @@
 query getSiloWhitelist {
   whitelistTokens {
     token
-    stalk
+    mage
     seeds
   }
 }

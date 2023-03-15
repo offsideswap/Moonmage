@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { Step, Workflow } from "src/classes/Workflow";
-import { Beanstalk } from "src/constants/generated";
-import { BeanstalkSDK } from "src/lib/BeanstalkSDK";
+import { Moonmage } from "src/constants/generated";
+import { MoonmageSDK } from "src/lib/MoonmageSDK";
 import { Clipboard } from "src/lib/depot/clipboard";
 import { AdvancedPipeCallStruct } from "src/lib/depot/depot";
 
@@ -12,7 +12,7 @@ type AdvancedPipePreparedResult = {
 };
 
 /**
- * The "AdvancedPipe" is a Workflow that encodes a call to `beanstalk.advancedPipe()`.
+ * The "AdvancedPipe" is a Workflow that encodes a call to `moonmage.advancedPipe()`.
  */
 export class AdvancedPipeWorkflow<RunData extends { slippage: number } = { slippage: number }> extends Workflow<
   AdvancedPipeCallStruct, // EncodedResult
@@ -20,11 +20,11 @@ export class AdvancedPipeWorkflow<RunData extends { slippage: number } = { slipp
   RunData
 > {
   public readonly FUNCTION_NAME = "advancedPipe";
-  private contract: Beanstalk;
+  private contract: Moonmage;
 
-  constructor(protected sdk: BeanstalkSDK, public name: string = "AdvancedPipe") {
+  constructor(protected sdk: MoonmageSDK, public name: string = "AdvancedPipe") {
     super(sdk, name);
-    this.contract = Workflow.sdk.contracts.beanstalk;
+    this.contract = Workflow.sdk.contracts.moonmage;
   }
 
   copy() {

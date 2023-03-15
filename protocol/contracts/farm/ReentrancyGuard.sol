@@ -6,7 +6,7 @@ pragma experimental ABIEncoderV2;
 import "./AppStorage.sol";
 
 /**
- * @author Beanstalk Farms
+ * @author Moonmage Farms
  * @title Variation of Oepn Zeppelins reentrant guard to include Silo Update
  * https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts%2Fsecurity%2FReentrancyGuard.sol
 **/

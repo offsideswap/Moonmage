@@ -2,24 +2,24 @@ var fs = require('fs');
 
 const {
   ZERO_ADDRESS,
-  BEAN,
+  MOON,
   THREE_CURVE,
   THREE_POOL,
-  BEAN_3_CURVE,
+  MOON_3_CURVE,
   LUSD_3_CURVE,
-  BEAN_LUSD_CURVE,
+  MOON_LUSD_CURVE,
   UNISWAP_V2_ROUTER,
   UNISWAP_V2_PAIR,
   WETH,
   LUSD,
-  UNRIPE_BEAN,
+  UNRIPE_MOON,
   UNRIPE_LP,
   USDC,
   CURVE_REGISTRY,
   CURVE_ZAP,
   STABLE_FACTORY,
   PRICE_DEPLOYER,
-  BEANSTALK
+  MOONMAGE
 } = require('../test/utils/constants');
 const { impersonateSigner, mintEth } = require('../utils');
 
@@ -54,7 +54,7 @@ async function curve() {
     JSON.parse(threeCurveJson).deployedBytecode,
   ]);
   const curveStableFactory = await ethers.getContractAt("MockCurveFactory", STABLE_FACTORY);
-  await curveStableFactory.set_coins(BEAN_3_CURVE, [BEAN, THREE_CURVE, ZERO_ADDRESS, ZERO_ADDRESS]);
+  await curveStableFactory.set_coins(MOON_3_CURVE, [MOON, THREE_CURVE, ZERO_ADDRESS, ZERO_ADDRESS]);
 
   let curveZapJson = fs.readFileSync(`./artifacts/contracts/mocks/curve/MockCurveZap.sol/MockCurveZap.json`);
   await network.provider.send("hardhat_setCode", [
@@ -68,18 +68,18 @@ async function curve() {
 
 async function curveMetapool() {
 
-    // Deploy Bean Metapool
+    // Deploy Moon Metapool
     let meta3CurveJson = fs.readFileSync(`./artifacts/contracts/mocks/curve/MockMeta3Curve.sol/MockMeta3Curve.json`);
     await network.provider.send("hardhat_setCode", [
-      BEAN_3_CURVE,
+      MOON_3_CURVE,
       JSON.parse(meta3CurveJson).deployedBytecode,
     ]);
-    // const beanMetapool = await ethers.getContractAt('MockMeta3Curve', BEAN_3_CURVE);
+    // const moonMetapool = await ethers.getContractAt('MockMeta3Curve', MOON_3_CURVE);
 
-    const beanMetapool = await ethers.getContractAt('MockMeta3Curve', BEAN_3_CURVE);
-    await beanMetapool.init(BEAN, THREE_CURVE, THREE_POOL);
-    await beanMetapool.set_A_precise('1000');
-    await beanMetapool.set_virtual_price(ethers.utils.parseEther('1'));
+    const moonMetapool = await ethers.getContractAt('MockMeta3Curve', MOON_3_CURVE);
+    await moonMetapool.init(MOON, THREE_CURVE, THREE_POOL);
+    await moonMetapool.set_A_precise('1000');
+    await moonMetapool.set_virtual_price(ethers.utils.parseEther('1'));
   
 }
 
@@ -115,7 +115,7 @@ async function pool() {
 
   const pair = await ethers.getContractAt("MockUniswapV2Pair", UNISWAP_V2_PAIR);
   await pair.resetLP();
-  await pair.setToken(BEAN);
+  await pair.setToken(MOON);
   return UNISWAP_V2_PAIR;
 }
 
@@ -134,30 +134,30 @@ async function curveLUSD() {
       JSON.parse(meta3CurveJson).deployedBytecode,
     ]);
 
-    let beanLusdCurveJson = fs.readFileSync(`./artifacts/contracts/mocks/curve/MockPlainCurve.sol/MockPlainCurve.json`);
+    let moonLusdCurveJson = fs.readFileSync(`./artifacts/contracts/mocks/curve/MockPlainCurve.sol/MockPlainCurve.json`);
     await network.provider.send("hardhat_setCode", [
-      BEAN_LUSD_CURVE,
-      JSON.parse(beanLusdCurveJson).deployedBytecode,
+      MOON_LUSD_CURVE,
+      JSON.parse(moonLusdCurveJson).deployedBytecode,
     ]);
 
     const lusdMetapool = await ethers.getContractAt('MockMeta3Curve', LUSD_3_CURVE);
     await lusdMetapool.init(LUSD, THREE_CURVE, THREE_CURVE);
 
-    const beanLusdPool = await ethers.getContractAt('MockPlainCurve', BEAN_LUSD_CURVE);
-    await beanLusdPool.init(BEAN, LUSD);
+    const moonLusdPool = await ethers.getContractAt('MockPlainCurve', MOON_LUSD_CURVE);
+    await moonLusdPool.init(MOON, LUSD);
 }
 
-async function bean() {
+async function moon() {
   let tokenJson = fs.readFileSync(`./artifacts/contracts/mocks/MockToken.sol/MockToken.json`);
 
   await network.provider.send("hardhat_setCode", [
-    BEAN,
+    MOON,
     JSON.parse(tokenJson).deployedBytecode,
   ]);
 
-  const bean = await ethers.getContractAt("MockToken", BEAN);
-  await bean.setDecimals(6);
-  return BEAN;
+  const moon = await ethers.getContractAt("MockToken", MOON);
+  await moon.setDecimals(6);
+  return MOON;
 }
 
 async function usdc() {
@@ -175,7 +175,7 @@ async function fertilizer() {
   // let tokenJson = fs.readFileSync(`./artifacts/contracts/mocks/MockToken.sol/MockToken.json`);
 
   // await network.provider.send("hardhat_setCode", [
-  //   BARN_RAISE,
+  //   SHIP_RAISE,
   //   JSON.parse(tokenJson).deployedBytecode,
   // ]);
 }
@@ -184,12 +184,12 @@ async function unripe() {
   let tokenJson = fs.readFileSync(`./artifacts/contracts/mocks/MockToken.sol/MockToken.json`);
 
   await network.provider.send("hardhat_setCode", [
-    UNRIPE_BEAN,
+    UNRIPE_MOON,
     JSON.parse(tokenJson).deployedBytecode,
   ]);
 
-  const unripeBean = await ethers.getContractAt("MockToken", UNRIPE_BEAN);
-  await unripeBean.setDecimals(6);
+  const unripeMoon = await ethers.getContractAt("MockToken", UNRIPE_MOON);
+  await unripeMoon.setDecimals(6);
 
   await network.provider.send("hardhat_setCode", [
     UNRIPE_LP,
@@ -200,25 +200,25 @@ async function unripe() {
 async function price() {
   const priceDeployer = await impersonateSigner(PRICE_DEPLOYER)
   await mintEth(PRICE_DEPLOYER)
-  const Price = await ethers.getContractFactory('BeanstalkPrice')
+  const Price = await ethers.getContractFactory('MoonmagePrice')
   const price = await Price.connect(priceDeployer).deploy()
   await price.deployed()
 }
 
-async function impersonateBeanstalk(owner) {
-  let beanstalkJson = fs.readFileSync(`./artifacts/contracts/mocks/MockDiamond.sol/MockDiamond.json`);
+async function impersonateMoonmage(owner) {
+  let moonmageJson = fs.readFileSync(`./artifacts/contracts/mocks/MockDiamond.sol/MockDiamond.json`);
 
   await network.provider.send("hardhat_setCode", [
-    BEANSTALK,
-    JSON.parse(beanstalkJson).deployedBytecode,
+    MOONMAGE,
+    JSON.parse(moonmageJson).deployedBytecode,
   ]);
 
-  beanstalk = await ethers.getContractAt('MockDiamond', BEANSTALK)
-  await beanstalk.mockInit(owner);
+  moonmage = await ethers.getContractAt('MockDiamond', MOONMAGE)
+  await moonmage.mockInit(owner);
 }
 
 exports.impersonateRouter = router
-exports.impersonateBean = bean
+exports.impersonateMoon = moon
 exports.impersonateCurve = curve
 exports.impersonateCurveMetapool = curveMetapool 
 exports.impersonateCurveLUSD = curveLUSD
@@ -228,4 +228,4 @@ exports.impersonateUnripe = unripe
 exports.impersonateFertilizer = fertilizer
 exports.impersonateUsdc = usdc
 exports.impersonatePrice = price
-exports.impersonateBeanstalk = impersonateBeanstalk
+exports.impersonateMoonmage = impersonateMoonmage

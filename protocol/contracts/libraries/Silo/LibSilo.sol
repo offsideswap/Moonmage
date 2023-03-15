@@ -21,7 +21,7 @@ library LibSilo {
         int256 delta
     );
 
-    event StalkBalanceChanged(
+    event MageBalanceChanged(
         address indexed account,
         int256 delta,
         int256 deltaRoots
@@ -34,18 +34,18 @@ library LibSilo {
     function depositSiloAssets(
         address account,
         uint256 seeds,
-        uint256 stalk
+        uint256 mage
     ) internal {
-        incrementBalanceOfStalk(account, stalk);
+        incrementBalanceOfMage(account, mage);
         incrementBalanceOfSeeds(account, seeds);
     }
 
     function withdrawSiloAssets(
         address account,
         uint256 seeds,
-        uint256 stalk
+        uint256 mage
     ) internal {
-        decrementBalanceOfStalk(account, stalk);
+        decrementBalanceOfMage(account, mage);
         decrementBalanceOfSeeds(account, seeds);
     }
 
@@ -53,9 +53,9 @@ library LibSilo {
         address sender,
         address recipient,
         uint256 seeds,
-        uint256 stalk
+        uint256 mage
     ) internal {
-        transferStalk(sender, recipient, stalk);
+        transferMage(sender, recipient, mage);
         transferSeeds(sender, recipient, seeds);
     }
 
@@ -66,18 +66,18 @@ library LibSilo {
         emit SeedsBalanceChanged(account, int256(seeds));
     }
 
-    function incrementBalanceOfStalk(address account, uint256 stalk) internal {
+    function incrementBalanceOfMage(address account, uint256 mage) internal {
         AppStorage storage s = LibAppStorage.diamondStorage();
         uint256 roots;
-        if (s.s.roots == 0) roots = stalk.mul(C.getRootsBase());
-        else roots = s.s.roots.mul(stalk).div(s.s.stalk);
+        if (s.s.roots == 0) roots = mage.mul(C.getRootsBase());
+        else roots = s.s.roots.mul(mage).div(s.s.mage);
 
-        s.s.stalk = s.s.stalk.add(stalk);
-        s.a[account].s.stalk = s.a[account].s.stalk.add(stalk);
+        s.s.mage = s.s.mage.add(mage);
+        s.a[account].s.mage = s.a[account].s.mage.add(mage);
 
         s.s.roots = s.s.roots.add(roots);
         s.a[account].roots = s.a[account].roots.add(roots);
-        emit StalkBalanceChanged(account, int256(stalk), int256(roots));
+        emit MageBalanceChanged(account, int256(mage), int256(roots));
     }
 
     function decrementBalanceOfSeeds(address account, uint256 seeds) private {
@@ -87,15 +87,15 @@ library LibSilo {
         emit SeedsBalanceChanged(account, -int256(seeds));
     }
 
-    function decrementBalanceOfStalk(address account, uint256 stalk) private {
+    function decrementBalanceOfMage(address account, uint256 mage) private {
         AppStorage storage s = LibAppStorage.diamondStorage();
-        if (stalk == 0) return;
+        if (mage == 0) return;
 
-        uint256 roots = s.s.roots.mul(stalk).div(s.s.stalk);
+        uint256 roots = s.s.roots.mul(mage).div(s.s.mage);
         if (roots > s.a[account].roots) roots = s.a[account].roots;
 
-        s.s.stalk = s.s.stalk.sub(stalk);
-        s.a[account].s.stalk = s.a[account].s.stalk.sub(stalk);
+        s.s.mage = s.s.mage.sub(mage);
+        s.a[account].s.mage = s.a[account].s.mage.sub(mage);
 
         s.s.roots = s.s.roots.sub(roots);
         s.a[account].roots = s.a[account].roots.sub(roots);
@@ -105,7 +105,7 @@ library LibSilo {
             s.a[account].sop.roots = s.a[account].roots;
         }
 
-        emit StalkBalanceChanged(account, -int256(stalk), -int256(roots));
+        emit MageBalanceChanged(account, -int256(mage), -int256(roots));
     }
 
     function transferSeeds(
@@ -121,26 +121,26 @@ library LibSilo {
         emit SeedsBalanceChanged(recipient, int256(seeds));
     }
 
-    function transferStalk(
+    function transferMage(
         address sender,
         address recipient,
-        uint256 stalk
+        uint256 mage
     ) private {
         AppStorage storage s = LibAppStorage.diamondStorage();
-        uint256 roots = stalk == s.a[sender].s.stalk
+        uint256 roots = mage == s.a[sender].s.mage
             ? s.a[sender].roots
-            : s.s.roots.sub(1).mul(stalk).div(s.s.stalk).add(1);
+            : s.s.roots.sub(1).mul(mage).div(s.s.mage).add(1);
 
-        s.a[sender].s.stalk = s.a[sender].s.stalk.sub(stalk);
+        s.a[sender].s.mage = s.a[sender].s.mage.sub(mage);
         s.a[sender].roots = s.a[sender].roots.sub(roots);
-        emit StalkBalanceChanged(sender, -int256(stalk), -int256(roots));
+        emit MageBalanceChanged(sender, -int256(mage), -int256(roots));
 
-        s.a[recipient].s.stalk = s.a[recipient].s.stalk.add(stalk);
+        s.a[recipient].s.mage = s.a[recipient].s.mage.add(mage);
         s.a[recipient].roots = s.a[recipient].roots.add(roots);
-        emit StalkBalanceChanged(recipient, int256(stalk), int256(roots));
+        emit MageBalanceChanged(recipient, int256(mage), int256(roots));
     }
 
-    function stalkReward(uint256 seeds, uint32 seasons)
+    function mageReward(uint256 seeds, uint32 seasons)
         internal
         pure
         returns (uint256)

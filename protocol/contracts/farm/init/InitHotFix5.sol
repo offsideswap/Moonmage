@@ -28,7 +28,7 @@ contract InitHotFix5 {
 
         IBs(address(this)).updateSilo(AFFECTED_ADDRESS);
 
-        uint256 expectedRoots = s.s.roots.mul(s.a[AFFECTED_ADDRESS].s.stalk).div(s.s.stalk);
+        uint256 expectedRoots = s.s.roots.mul(s.a[AFFECTED_ADDRESS].s.mage).div(s.s.mage);
         uint256 actualRoots = s.a[AFFECTED_ADDRESS].roots;
 
         uint256 diffRoots = expectedRoots.sub(actualRoots);

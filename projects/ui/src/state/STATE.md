@@ -1,4 +1,4 @@
-`bean`: Bean token
+`moon`: Moon token
 - pools (keyed by pool address)
   - price
   - reserves
@@ -7,7 +7,7 @@
   - supply
 - price: aggregate price
 
-`beanstalk`: Beanstalk protocol
+`moonmage`: Moonmage protocol
 - field
 - governance
 - market
@@ -24,10 +24,10 @@
 - sun
   - season
 
-`farmer`: Active user
+`cosmomage`: Active user
 - allowances: ERC-20 token allowances
 - balances: ERC-20 token balances
-- events: Beanstalk events related to this farmer, used to calculate deposits etc.
+- events: Moonmage events related to this cosmomage, used to calculate deposits etc.
 - field
   - pods
   - plots
@@ -50,9 +50,9 @@
       - crates
     - circulating
     - wrapped
-  - beans
+  - moons
     - earned
-  - stalk
+  - mage
     - total
     - active
     - earned

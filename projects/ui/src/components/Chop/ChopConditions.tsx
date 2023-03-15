@@ -3,18 +3,18 @@ import { Card, CircularProgress, Grid, Stack, Tooltip, Typography } from '@mui/m
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { useSelector } from 'react-redux';
 import { displayBN, displayFullBN } from '../../util';
-import { BeanstalkPalette, FontSize } from '../App/muiTheme';
+import { MoonmagePalette, FontSize } from '../App/muiTheme';
 import { AppState } from '~/state';
 import useChainConstant from '~/hooks/chain/useChainConstant';
-import { UNRIPE_BEAN } from '~/constants/tokens';
+import { UNRIPE_MOON } from '~/constants/tokens';
 
 import { FC } from '~/types';
 
 const ChopConditions: FC<{}> = () => {
-  const { fertilized, recapFundedPct, unfertilized } = useSelector<AppState, AppState['_beanstalk']['barn']>((state) => state._beanstalk.barn);
+  const { fertilized, recapFundedPct, unfertilized } = useSelector<AppState, AppState['_moonmage']['ship']>((state) => state._moonmage.ship);
   const pctDebtRepaid = fertilized.div(fertilized.plus(unfertilized));
-  const unripeTokens = useSelector<AppState, AppState['_bean']['unripe']>((_state) => _state._bean.unripe);
-  const urBean = useChainConstant(UNRIPE_BEAN);
+  const unripeTokens = useSelector<AppState, AppState['_moon']['unripe']>((_state) => _state._moon.unripe);
+  const urMoon = useChainConstant(UNRIPE_MOON);
 
   return (
     <Card sx={{ p: 2 }}>
@@ -27,18 +27,18 @@ const ChopConditions: FC<{}> = () => {
                 title="The claim to future Ripe assets you are forfeiting by Chopping."
                 placement="top"
               >
-                <Typography variant="body1" color={BeanstalkPalette.theme.winter.error}>
+                <Typography variant="body1" color={MoonmagePalette.theme.winter.error}>
                   Chop Penalty&nbsp;
                   <HelpOutlineIcon
-                    sx={{ color: BeanstalkPalette.theme.winter.error, fontSize: FontSize.sm }}
+                    sx={{ color: MoonmagePalette.theme.winter.error, fontSize: FontSize.sm }}
                   />
                 </Typography>
               </Tooltip>
-              {!unripeTokens[urBean.address] ? (
-                <CircularProgress size={16} thickness={5} sx={{ color: BeanstalkPalette.theme.winter.error }} />
+              {!unripeTokens[urMoon.address] ? (
+                <CircularProgress size={16} thickness={5} sx={{ color: MoonmagePalette.theme.winter.error }} />
               ) : (
-                <Typography variant="bodyLarge" fontWeight="400" color={BeanstalkPalette.theme.winter.error}>
-                  {displayBN(unripeTokens[urBean.address].chopPenalty)}%
+                <Typography variant="bodyLarge" fontWeight="400" color={MoonmagePalette.theme.winter.error}>
+                  {displayBN(unripeTokens[urMoon.address].chopPenalty)}%
                 </Typography>
               )}
             </Stack>

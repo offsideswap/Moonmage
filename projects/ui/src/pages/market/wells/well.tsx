@@ -9,13 +9,13 @@ import { IconSize } from '~/components/App/muiTheme';
 import WellCharts from '~/components/Market/Wells/Charts';
 import WellActivity from '~/components/Market/Wells/Tables';
 import WellButtons from '~/components/Market/Wells/WellButtons';
-import beanIcon from '~/img/tokens/bean-logo-circled.svg';
+import moonIcon from '~/img/tokens/moon-logo-circled.svg';
 import ethIcon from '~/img/tokens/eth-logo-circled.svg';
 import { Module } from '~/components/Common/Module';
 import WellReserves from '~/components/Market/Wells/WellReserves';
 import PageHeader from '~/components/Common/PageHeader';
 import WellStat from '~/components/Market/Wells/WellStat';
-import stalkIcon from '~/img/beanstalk/stalk-icon.svg';
+import mageIcon from '~/img/moonmage/mage-icon.svg';
 import { displayBN } from '~/util';
 import PagePath from '~/components/Common/PagePath';
 
@@ -33,7 +33,7 @@ const WellPage: React.FC = () => (
             path: '/'
           },
           {
-            title: 'BEAN:ETH Liquidity Well',
+            title: 'MOON:ETH Liquidity Well',
             path: '/'
           }
         ]}
@@ -42,10 +42,10 @@ const WellPage: React.FC = () => (
         title={
           <Row gap={1}>
             <Row gap={0.2}>
-              <img alt="" src={beanIcon} height={IconSize.medium} />
+              <img alt="" src={moonIcon} height={IconSize.medium} />
               <img alt="" src={ethIcon} height={IconSize.medium} />
             </Row>
-            <Typography variant="h2" textAlign="center" sx={{ verticalAlign: 'middle' }}>BEAN:ETH Liquidity
+            <Typography variant="h2" textAlign="center" sx={{ verticalAlign: 'middle' }}>MOON:ETH Liquidity
               Well
             </Typography>
           </Row>
@@ -87,7 +87,7 @@ const WellPage: React.FC = () => (
               title="Rewards per BDV"
               subTitle={
                 <Row>
-                  <img src={stalkIcon} alt="" height={IconSize.small} />
+                  <img src={mageIcon} alt="" height={IconSize.small} />
                   <Typography variant="h4">
                     {displayBN(new BigNumber(5))}
                   </Typography>
@@ -97,7 +97,7 @@ const WellPage: React.FC = () => (
           </Grid>
           <Grid item xs={6} md={2.75}>
             <WellStat
-              title="Beans Earned by Depositors (7D)"
+              title="Moons Earned by Depositors (7D)"
               subTitle={
                 <Typography variant="h4">
                   Constant Product
@@ -107,7 +107,7 @@ const WellPage: React.FC = () => (
           </Grid>
           <Grid item xs={6} md={2.75}>
             <WellStat
-              title="Stalk Grown by Depositors (7D)"
+              title="Mage Grown by Depositors (7D)"
               subTitle={
                 <Typography variant="h4">
                   Constant Product

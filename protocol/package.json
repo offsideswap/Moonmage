@@ -1,10 +1,10 @@
 {
-  "name": "@beanstalk/protocol",
+  "name": "@moonmage/protocol",
   "version": "2.7.1",
-  "description": "Beanstalk is a permissionless fiat stablecoin protocol built on Ethereum.",
+  "description": "Moonmage is a permissionless fiat stablecoin protocol built on Ethereum.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/BeanstalkFarms/Beanstalk.git",
+    "url": "https://github.com/MoonmageFarms/Moonmage.git",
     "directory": "protocol"
   },
   "scripts": {

@@ -1,7 +1,7 @@
 fragment PodOrder on PodOrder {
   #// Identifiers
   id
-  farmer { id }
+  cosmomage { id }
   historyID
 
   #// Pricing
@@ -15,9 +15,9 @@ fragment PodOrder on PodOrder {
 
   #// Amounts
   podAmount           # Market V1: Original amount of the ordered pods
-  beanAmount          # Market V2: Original amount of beans used to ordered beans
+  moonAmount          # Market V2: Original amount of moons used to ordered moons
   podAmountFilled     # current filled amount
-  beanAmountFilled    # bean amount filled
+  moonAmountFilled    # moon amount filled
 
   #// Metadata
   status

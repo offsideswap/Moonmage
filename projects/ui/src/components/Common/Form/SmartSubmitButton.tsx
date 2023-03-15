@@ -5,12 +5,12 @@ import { ethers } from 'ethers';
 import { useFormikContext } from 'formik';
 import BigNumber from 'bignumber.js';
 import { useAccount as useWagmiAccount } from 'wagmi';
-import useAllowances from '~/hooks/farmer/useAllowances';
+import useAllowances from '~/hooks/cosmomage/useAllowances';
 import useChainConstant from '~/hooks/chain/useChainConstant';
 import { useGetERC20Contract } from '~/hooks/ledger/useContract';
 import Token from '~/classes/Token';
 import { trimAddress } from '~/util';
-import { BEANSTALK_ADDRESSES, BEANSTALK_FERTILIZER_ADDRESSES } from '~/constants/addresses';
+import { MOONMAGE_ADDRESSES, MOONMAGE_FERTILIZER_ADDRESSES } from '~/constants/addresses';
 import { CHAIN_INFO, SupportedChainId, MAX_UINT256 } from '~/constants';
 import { StyledDialog, StyledDialogActions, StyledDialogContent, StyledDialogTitle } from '../Dialog';
 import TransactionToast from '../TxnToast';
@@ -28,8 +28,8 @@ import NetworkButton from '~/components/Common/Connection/NetworkButton';
 import { FC } from '~/types';
 
 const CONTRACT_NAMES : { [address: string] : string } = {
-  [BEANSTALK_ADDRESSES[SupportedChainId.MAINNET]]: 'Beanstalk',
-  [BEANSTALK_FERTILIZER_ADDRESSES[SupportedChainId.MAINNET]]: 'Beanstalk Fertilizer',
+  [MOONMAGE_ADDRESSES[SupportedChainId.MAINNET]]: 'Moonmage',
+  [MOONMAGE_FERTILIZER_ADDRESSES[SupportedChainId.MAINNET]]: 'Moonmage Fertilizer',
 };
 
 const SmartSubmitButton : FC<{

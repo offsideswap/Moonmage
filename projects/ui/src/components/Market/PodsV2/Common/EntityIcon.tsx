@@ -1,7 +1,7 @@
 import { Stack } from '@mui/material';
 import { StackProps } from '@mui/system';
 import React from 'react';
-import { BeanstalkPalette } from '~/components/App/muiTheme';
+import { MoonmagePalette } from '~/components/App/muiTheme';
 import TokenIcon from '~/components/Common/TokenIcon';
 import { PODS } from '~/constants/tokens';
 
@@ -14,8 +14,8 @@ const EntityIcon : FC<{ size?: number, type: 'listing' | 'order' } & StackProps>
     sx={{
       backgroundColor: (
         type === 'listing'
-          ? BeanstalkPalette.mediumRed
-          : BeanstalkPalette.mediumGreen
+          ? MoonmagePalette.mediumRed
+          : MoonmagePalette.mediumGreen
       ),
       width: size,
       height: size,

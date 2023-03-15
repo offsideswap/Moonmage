@@ -76,8 +76,8 @@ export class RemoveLiquidityOneToken extends StepClass<BasicPreparedResult> {
         });
         if (!minAmountOut) throw new Error("RemoveLiquidityOneToken: missing minAmountOut");
         return {
-          target: RemoveLiquidityOneToken.sdk.contracts.beanstalk.address,
-          callData: RemoveLiquidityOneToken.sdk.contracts.beanstalk.interface.encodeFunctionData("removeLiquidityOneToken", [
+          target: RemoveLiquidityOneToken.sdk.contracts.moonmage.address,
+          callData: RemoveLiquidityOneToken.sdk.contracts.moonmage.interface.encodeFunctionData("removeLiquidityOneToken", [
             this._pool,
             this._registry,
             this._tokenOut,
@@ -89,9 +89,9 @@ export class RemoveLiquidityOneToken extends StepClass<BasicPreparedResult> {
         };
       },
       decode: (data: string) =>
-        RemoveLiquidityOneToken.sdk.contracts.beanstalk.interface.decodeFunctionData("removeLiquidityOneToken", data),
+        RemoveLiquidityOneToken.sdk.contracts.moonmage.interface.decodeFunctionData("removeLiquidityOneToken", data),
       decodeResult: (result: string) =>
-        RemoveLiquidityOneToken.sdk.contracts.beanstalk.interface.decodeFunctionResult("removeLiquidityOneToken", result)
+        RemoveLiquidityOneToken.sdk.contracts.moonmage.interface.decodeFunctionResult("removeLiquidityOneToken", result)
     };
   }
 }

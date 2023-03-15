@@ -1,35 +1,35 @@
-import { BeanstalkSDK } from "src/lib/BeanstalkSDK";
+import { MoonmageSDK } from "src/lib/MoonmageSDK";
 import { setupConnection } from "src/utils/TestUtils";
 
-let sdk: BeanstalkSDK;
+let sdk: MoonmageSDK;
 
 beforeAll(async () => {
   const { signer, account: _account } = await setupConnection();
-  sdk = new BeanstalkSDK({
+  sdk = new MoonmageSDK({
     signer: signer
   });
 });
 
-describe("Bean", () => {
-  it("has correct stalk", () => {
-    const stalk = sdk.tokens.BEAN.getStalk(sdk.tokens.BEAN.amount(10));
-    expect(stalk.decimals).toBe(sdk.tokens.STALK.decimals);
-    expect(stalk.toHuman()).toBe("10");
+describe("Moon", () => {
+  it("has correct mage", () => {
+    const mage = sdk.tokens.MOON.getMage(sdk.tokens.MOON.amount(10));
+    expect(mage.decimals).toBe(sdk.tokens.MAGE.decimals);
+    expect(mage.toHuman()).toBe("10");
   });
   it("has correct seeds", () => {
-    const seeds = sdk.tokens.BEAN.getSeeds(sdk.tokens.BEAN.amount(10));
+    const seeds = sdk.tokens.MOON.getSeeds(sdk.tokens.MOON.amount(10));
     expect(seeds.decimals).toBe(sdk.tokens.SEEDS.decimals);
     expect(seeds.toHuman()).toBe("20");
   });
 });
-describe("BeanLP", () => {
-  it("has correct stalk", () => {
-    const stalk = sdk.tokens.BEAN_CRV3_LP.getStalk(sdk.tokens.BEAN.amount(10));
-    expect(stalk.decimals).toBe(sdk.tokens.STALK.decimals);
-    expect(stalk.toHuman()).toBe("10");
+describe("MoonLP", () => {
+  it("has correct mage", () => {
+    const mage = sdk.tokens.MOON_CRV3_LP.getMage(sdk.tokens.MOON.amount(10));
+    expect(mage.decimals).toBe(sdk.tokens.MAGE.decimals);
+    expect(mage.toHuman()).toBe("10");
   });
   it("has correct seeds", () => {
-    const seeds = sdk.tokens.BEAN_CRV3_LP.getSeeds(sdk.tokens.BEAN.amount(10));
+    const seeds = sdk.tokens.MOON_CRV3_LP.getSeeds(sdk.tokens.MOON.amount(10));
     expect(seeds.decimals).toBe(sdk.tokens.SEEDS.decimals);
     expect(seeds.toHuman()).toBe("40");
   });

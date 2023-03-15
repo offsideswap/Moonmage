@@ -4,11 +4,11 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { StyledDialog, StyledDialogActions, StyledDialogContent, StyledDialogTitle } from '../Common/Dialog';
 import { AppState } from '~/state';
-import { ActiveProposal } from '~/state/beanstalk/governance';
+import { ActiveProposal } from '~/state/moonmage/governance';
 import { displayBN } from '~/util';
 import { IconSize } from '~/components/App/muiTheme';
 import TokenIcon from '~/components/Common/TokenIcon';
-import { STALK } from '~/constants/tokens';
+import { MAGE } from '~/constants/tokens';
 import useAppFlag from '~/hooks/app/useAppFlag';
 import useToggle from '~/hooks/display/useToggle';
 import { getDateCountdown } from '~/util/Time';
@@ -24,8 +24,8 @@ const NewProposalsDialog: FC<{}> = () => {
   const [getLastSeen, setLastSeen] = useAppFlag<number>('last_gov_prompt', 'int', 0);
 
   /// State
-  const activeProposals = useSelector<AppState, ActiveProposal[]>((state) => state._beanstalk.governance.activeProposals);
-  const farmerSilo = useSelector<AppState, AppState['_farmer']['silo']>((state) => state._farmer.silo);
+  const activeProposals = useSelector<AppState, ActiveProposal[]>((state) => state._moonmage.governance.activeProposals);
+  const cosmomageSilo = useSelector<AppState, AppState['_cosmomage']['silo']>((state) => state._cosmomage.silo);
 
   const dismiss = useCallback(() => {
     setLastSeen(Math.floor(new Date().getTime() / 1000));
@@ -62,9 +62,9 @@ const NewProposalsDialog: FC<{}> = () => {
       <StyledDialogContent sx={{ px: 2, pt: 1, pb: 1 }}>
         <Box display="flex" alignItems="center" justifyContent="center" py={3}>
           <Row gap={0.3}>
-            <TokenIcon token={STALK} css={{ height: IconSize.small }} />
+            <TokenIcon token={MAGE} css={{ height: IconSize.small }} />
             <Typography variant="bodyLarge" textAlign="center">
-              {displayBN(farmerSilo.stalk.active)} STALK
+              {displayBN(cosmomageSilo.mage.active)} MAGE
             </Typography>
           </Row>
         </Box>

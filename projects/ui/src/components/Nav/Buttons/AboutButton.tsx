@@ -17,7 +17,7 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import useChainConstant from '~/hooks/chain/useChainConstant';
 import useAnchor from '~/hooks/display/useAnchor';
 import useToggle from '~/hooks/display/useToggle';
-import { BEANSTALK_ADDRESSES, CHAIN_INFO } from '~/constants';
+import { MOONMAGE_ADDRESSES, CHAIN_INFO } from '~/constants';
 import NavDrawer from '../NavDrawer';
 import ROUTES from '../routes';
 import MenuItem from '../MenuItem';
@@ -26,7 +26,7 @@ import useGlobal from '~/hooks/app/useGlobal';
 import Row from '~/components/Common/Row';
 
 import { FC } from '~/types';
-import { BeanstalkPalette } from '~/components/App/muiTheme';
+import { MoonmagePalette } from '~/components/App/muiTheme';
 
 const AboutButton: FC<ButtonProps> = ({ sx }) => {
   /// Theme
@@ -35,7 +35,7 @@ const AboutButton: FC<ButtonProps> = ({ sx }) => {
 
   /// Constants
   const chainInfo = useChainConstant(CHAIN_INFO);
-  const beanstalkAddress = useChainConstant(BEANSTALK_ADDRESSES);
+  const moonmageAddress = useChainConstant(MOONMAGE_ADDRESSES);
 
   /// Menu
   const [anchorEl, toggleAnchor] = useAnchor();
@@ -52,7 +52,7 @@ const AboutButton: FC<ButtonProps> = ({ sx }) => {
 
   /// Content
   const menuContent = (
-    <MenuList component={Card} sx={{ background: BeanstalkPalette.white, border: '1px solid', borderColor: 'divider' }}>
+    <MenuList component={Card} sx={{ background: MoonmagePalette.white, border: '1px solid', borderColor: 'divider' }}>
       {/* Menu Items */}
       {/* <MenuItem
         item={{ title: 'Settings', path: '/settings' }}
@@ -65,7 +65,7 @@ const AboutButton: FC<ButtonProps> = ({ sx }) => {
       <Box sx={{ px: 1, pt: 0.75 }}>
         <Button
           fullWidth
-          href={`${chainInfo.explorer}/address/${beanstalkAddress}`}
+          href={`${chainInfo.explorer}/address/${moonmageAddress}`}
           target="_blank"
           rel="noreferrer"
           variant="contained"
@@ -75,7 +75,7 @@ const AboutButton: FC<ButtonProps> = ({ sx }) => {
           <Row spacing={1}>
             <ListItemText>
               <Typography variant="h4">
-                Contract: {beanstalkAddress.slice(0, 6)}...
+                Contract: {moonmageAddress.slice(0, 6)}...
               </Typography>
             </ListItemText>
             <Typography variant="body2" color="white">

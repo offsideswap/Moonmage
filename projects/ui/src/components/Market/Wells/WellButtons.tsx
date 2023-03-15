@@ -5,7 +5,7 @@ import {
   Typography,
 } from '@mui/material';
 import { Link } from 'react-router-dom';
-import downloadIcon from '~/img/beanstalk/interface/download.svg';
+import downloadIcon from '~/img/moonmage/interface/download.svg';
 import Row from '~/components/Common/Row';
 
 const WellButtons: React.FC = () => (

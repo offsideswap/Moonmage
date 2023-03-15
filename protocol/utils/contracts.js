@@ -1,34 +1,34 @@
 const fs = require('fs');
-const beanstalkABI = require("../abi/Beanstalk.json");
-const { BEANSTALK, BEAN, BEAN_3_CURVE, USDC, FERTILIZER, PRICE } = require('../test/utils/constants');
+const moonmageABI = require("../abi/Moonmage.json");
+const { MOONMAGE, MOON, MOON_3_CURVE, USDC, FERTILIZER, PRICE } = require('../test/utils/constants');
 
-async function getBeanstalk() {
-    return await ethers.getContractAt(beanstalkABI, BEANSTALK);
+async function getMoonmage() {
+    return await ethers.getContractAt(moonmageABI, MOONMAGE);
 }
 
-async function getBeanstalkAdminControls() {
-    return await ethers.getContractAt('MockAdminFacet', BEANSTALK);
+async function getMoonmageAdminControls() {
+    return await ethers.getContractAt('MockAdminFacet', MOONMAGE);
 }
 
-async function getAltBeanstalk(address) {
-    return await ethers.getContractAt(beanstalkABI, address);
+async function getAltMoonmage(address) {
+    return await ethers.getContractAt(moonmageABI, address);
 }
 
-async function getBean() {
-    return await ethers.getContractAt('Bean', BEAN);
+async function getMoon() {
+    return await ethers.getContractAt('Moon', MOON);
 }
 
 async function getUsdc() {
-    return await ethers.getContractAt('IBean', USDC);
+    return await ethers.getContractAt('IMoon', USDC);
 }
 
 async function getPrice() {
-    return await ethers.getContractAt('BeanstalkPrice', PRICE)
+    return await ethers.getContractAt('MoonmagePrice', PRICE)
 }
 
 
-async function getBeanMetapool() {
-    return await ethers.getContractAt('ICurvePool', BEAN_3_CURVE);
+async function getMoonMetapool() {
+    return await ethers.getContractAt('ICurvePool', MOON_3_CURVE);
 }
 
 async function getFertilizerPreMint() {
@@ -39,12 +39,12 @@ async function getFertilizer() {
     return await ethers.getContractAt('Fertilizer', FERTILIZER)
 }
 
-exports.getBeanstalk = getBeanstalk;
-exports.getBean = getBean;
+exports.getMoonmage = getMoonmage;
+exports.getMoon = getMoon;
 exports.getUsdc = getUsdc;
 exports.getPrice = getPrice;
-exports.getBeanMetapool = getBeanMetapool;
-exports.getBeanstalkAdminControls = getBeanstalkAdminControls;
+exports.getMoonMetapool = getMoonMetapool;
+exports.getMoonmageAdminControls = getMoonmageAdminControls;
 exports.getFertilizerPreMint = getFertilizerPreMint
 exports.getFertilizer = getFertilizer
-exports.getAltBeanstalk = getAltBeanstalk
+exports.getAltMoonmage = getAltMoonmage

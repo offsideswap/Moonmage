@@ -5,17 +5,17 @@ import { BaseDataPoint } from '~/components/Common/Charts/ChartPropProvider';
 import useTimeTabState from '~/hooks/app/useTimeTabState';
 import BaseSeasonPlot, { QueryData } from '~/components/Common/Charts/BaseSeasonPlot';
 import { SILO_WHITELIST } from '~/constants/tokens';
-import { SEASON_RANGE_TO_COUNT, SeasonRange } from '~/hooks/beanstalk/useSeasonsQuery';
+import { SEASON_RANGE_TO_COUNT, SeasonRange } from '~/hooks/moonmage/useSeasonsQuery';
 import MockPlot from '../Silo/MockPlot';
 import BlurComponent from '../Common/ZeroState/BlurComponent';
 import WalletButton from '../Common/Connection/WalletButton';
-import useFarmerSiloHistory from '~/hooks/farmer/useFarmerSiloHistory';
+import useCosmonautSiloHistory from '~/hooks/cosmomage/useCosmonautSiloHistory';
 
 const SiloBalancesHistory: React.FC<{}> = () => {
   //
   const account = useAccount();
   const timeTabParams = useTimeTabState();
-  const { data, loading } = useFarmerSiloHistory(account, true, false);
+  const { data, loading } = useCosmonautSiloHistory(account, true, false);
 
   const formatValue = (value: number) =>
     `$${value.toLocaleString('en-US', { maximumFractionDigits: 2 })}`;

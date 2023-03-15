@@ -22,7 +22,7 @@ contract CurvePrice {
     // Mainnet
     address private constant POOL = 0xc9C32cd16Bf7eFB85Ff14e0c8603cc90F6F2eE49;
     address private constant CRV3_POOL = 0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7;
-    address private constant BEANSTALK = 0xC1E088fC1323b20BCBee9bd1B9fC9546db5624C5;
+    address private constant MOONMAGE = 0xC1E088fC1323b20BCBee9bd1B9fC9546db5624C5;
     //-------------------------------------------------------------------------------------------------------------------
 
     uint256 private constant A_PRECISION = 100; 
@@ -48,12 +48,12 @@ contract CurvePrice {
         pool.liquidity = getCurveUSDValue(balances, rates);
         pool.deltaB = getCurveDeltaB(balances[0], D);
         pool.lpUsd = pool.liquidity * 1e18 / ICurvePool(POOL).totalSupply();
-        pool.lpBdv = IBDV(BEANSTALK).bdv(POOL, 1e18);
+        pool.lpBdv = IBDV(MOONMAGE).bdv(POOL, 1e18);
     }
 
     function getCurveDeltaB(uint256 balance, uint256 D) private pure returns (int deltaB) {
-        uint256 pegBeans = D / 2 / 1e12;
-        deltaB = int256(pegBeans) - int256(balance);
+        uint256 pegMoons = D / 2 / 1e12;
+        deltaB = int256(pegMoons) - int256(balance);
     }
 
     function getCurveUSDValue(uint256[2] memory balances, uint256[2] memory rates) private pure returns (uint) {

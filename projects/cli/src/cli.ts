@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import commandLineArgs, { OptionDefinition } from "command-line-args";
-import { BeanstalkSDK, TestUtils, DataSource } from "@beanstalk/sdk";
+import { MoonmageSDK, TestUtils, DataSource } from "@moonmage/sdk";
 import { ethers } from "ethers";
 import { balance } from "./commands/balance.js";
 import { setbalance } from "./commands/setbalance.js";
@@ -56,7 +56,7 @@ async function setupSDK(args: commandLineArgs.CommandLineOptions) {
 
   const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
   const signer = await provider.getSigner(account);
-  const sdk = new BeanstalkSDK({
+  const sdk = new MoonmageSDK({
     signer,
     source: DataSource.LEDGER,
     DEBUG: true

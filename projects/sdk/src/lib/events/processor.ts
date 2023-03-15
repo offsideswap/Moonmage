@@ -16,9 +16,9 @@ import {
   PodOrderCreatedEvent,
   PodOrderCancelledEvent,
   PodOrderFilledEvent
-} from "src/constants/generated/protocol/abi/Beanstalk";
+} from "src/constants/generated/protocol/abi/Moonmage";
 import { StringMap } from "../../types";
-import { BeanstalkSDK } from "../BeanstalkSDK";
+import { MoonmageSDK } from "../MoonmageSDK";
 import { PodListing, PodOrder } from "./types";
 
 // ----------------------------------------
@@ -104,7 +104,7 @@ export type Event = Simplify<ethers.Event>;
 //
 
 export default class EventProcessor {
-  private readonly sdk: BeanstalkSDK;
+  private readonly sdk: MoonmageSDK;
   // ----------------------------
   // |       PROCESSING         |
   // ----------------------------
@@ -124,7 +124,7 @@ export default class EventProcessor {
 
   /// /////////////////////// SETUP //////////////////////////
 
-  constructor(sdk: BeanstalkSDK, account: string, epp: EventProcessingParameters, initialState?: Partial<EventProcessorData>) {
+  constructor(sdk: MoonmageSDK, account: string, epp: EventProcessingParameters, initialState?: Partial<EventProcessorData>) {
     if (!epp.whitelist || typeof epp !== "object") throw new Error("EventProcessor: Missing whitelist.");
     this.sdk = sdk;
     // Setup
@@ -186,15 +186,15 @@ export default class EventProcessor {
   // }
 
   // Harvest(event: Simplify<HarvestEvent>) {
-  //   let beansClaimed = tokenBN(event.args.beans, Bean);
+  //   let moonsClaimed = tokenBN(event.args.moons, Moon);
   //   const plots = (
   //     event.args.plots
-  //       .map((_index) => tokenBN(_index, Bean))
+  //       .map((_index) => tokenBN(_index, Moon))
   //       .sort((a, b) => a.minus(b).toNumber())
   //   );
   //   plots.forEach((indexBN) => {
   //     const index = indexBN.toString();
-  //     if (beansClaimed.isLessThan(this.plots[index])) {
+  //     if (moonsClaimed.isLessThan(this.plots[index])) {
   //       // ----------------------------------------
   //       // A Plot was partially Harvested. Example:
   //       // Event: Sow
@@ -204,23 +204,23 @@ export default class EventProcessor {
   //       // I call harvest when harvestableIndex = 14 (I harvest 10,11,12,13)
   //       //
   //       // Event: Harvest
-  //       //  args.beans = 4
+  //       //  args.moons = 4
   //       //  args.plots = [10]
-  //       //  beansClaimed  = 4
+  //       //  moonsClaimed  = 4
   //       //  partialIndex  = 4 + 10 = 14
   //       //  partialAmount = 10 - 4 = 6
   //       //
   //       // Add Plot with 6 Pods at index 14
   //       // Remove Plot at index 10.
   //       // ----------------------------------------
-  //       const partialIndex  = beansClaimed.plus(indexBN);
-  //       const partialAmount = this.plots[index].minus(beansClaimed);
+  //       const partialIndex  = moonsClaimed.plus(indexBN);
+  //       const partialAmount = this.plots[index].minus(moonsClaimed);
   //       this.plots = {
   //         ...this.plots,
   //         [partialIndex.toString()]: partialAmount,
   //       };
   //     } else {
-  //       beansClaimed = beansClaimed.minus(this.plots[index]);
+  //       moonsClaimed = moonsClaimed.minus(this.plots[index]);
   //     }
   //     delete this.plots[index];
   //   });
@@ -228,8 +228,8 @@ export default class EventProcessor {
 
   // PlotTransfer(event: Simplify<PlotTransferEvent>) {
   //   // Numerical "index" of the Plot. Absolute, with respect to Pod 0.
-  //   const transferIndex   = tokenBN(event.args.id, Bean);
-  //   const podsTransferred = tokenBN(event.args.pods, Bean);
+  //   const transferIndex   = tokenBN(event.args.id, Moon);
+  //   const podsTransferred = tokenBN(event.args.pods, Moon);
 
   //   if (event.args.to.toLowerCase() === this.account) {
   //     // This account received a Plot
@@ -558,14 +558,14 @@ export default class EventProcessor {
 
   // PodListingCreated(event: Simplify<PodListingCreatedEvent>) {
   //   const id          = event.args.index.toString();
-  //   const amount      = tokenBN(event.args.amount, BEAN[1]);
+  //   const amount      = tokenBN(event.args.amount, MOON[1]);
   //   this.listings[id] = {
   //     id:               id,
   //     account:          event.args.account.toLowerCase(),
-  //     index:            tokenBN(event.args.index, BEAN[1]), // 6 dec
-  //     start:            tokenBN(event.args.start, BEAN[1]), // 6 dec
-  //     pricePerPod:      tokenBN(event.args.pricePerPod, BEAN[1]),
-  //     maxHarvestableIndex: tokenBN(event.args.maxHarvestableIndex, BEAN[1]),
+  //     index:            tokenBN(event.args.index, MOON[1]), // 6 dec
+  //     start:            tokenBN(event.args.start, MOON[1]), // 6 dec
+  //     pricePerPod:      tokenBN(event.args.pricePerPod, MOON[1]),
+  //     maxHarvestableIndex: tokenBN(event.args.maxHarvestableIndex, MOON[1]),
   //     mode:             event.args.mode.toString() as FarmToMode,
   //     amount:           amount,   //
   //     totalAmount:      amount,   //
@@ -608,8 +608,8 @@ export default class EventProcessor {
   //   if (!this.listings[id]) return;
 
   //   const indexBN     = BN(event.args.index);
-  //   const deltaAmount = tokenBN(event.args.amount, BEAN[1]);
-  //   // const start   = tokenBN(event.args.start,  BEAN[1]);
+  //   const deltaAmount = tokenBN(event.args.amount, MOON[1]);
+  //   // const start   = tokenBN(event.args.start,  MOON[1]);
 
   //   /// Move current listing's index up by |amount|
   //   ///  FIXME: does this match the new marketplace behavior? Believe
@@ -626,7 +626,7 @@ export default class EventProcessor {
 
   //   /// Bump up |amountSold| for this listing
   //   this.listings[newID].id              = newID;
-  //   this.listings[newID].index           = tokenBN(newIndex, BEAN[1]);
+  //   this.listings[newID].index           = tokenBN(newIndex, MOON[1]);
   //   this.listings[newID].start           = new BigNumber(0); // After a Fill, the new start position is always zero (?)
   //   this.listings[newID].filledAmount    = currentListing.filledAmount.plus(deltaAmount);
   //   this.listings[newID].remainingAmount = currentListing.amount.minus(currentListing.filledAmount);
@@ -644,10 +644,10 @@ export default class EventProcessor {
   //   this.orders[id] = {
   //     id:               id,
   //     account:          event.args.account.toLowerCase(),
-  //     maxPlaceInLine:   tokenBN(event.args.maxPlaceInLine, BEAN[1]),
-  //     totalAmount:      tokenBN(event.args.amount, BEAN[1]),
-  //     pricePerPod:      tokenBN(event.args.pricePerPod, BEAN[1]),
-  //     remainingAmount:  tokenBN(event.args.amount, BEAN[1]),
+  //     maxPlaceInLine:   tokenBN(event.args.maxPlaceInLine, MOON[1]),
+  //     totalAmount:      tokenBN(event.args.amount, MOON[1]),
+  //     pricePerPod:      tokenBN(event.args.pricePerPod, MOON[1]),
+  //     remainingAmount:  tokenBN(event.args.amount, MOON[1]),
   //     filledAmount:     new BigNumber(0),
   //     status:           MarketStatus.Active,
   //   };
@@ -662,7 +662,7 @@ export default class EventProcessor {
   //   const id = event.args.id.toString();
   //   if (!this.orders[id]) return;
 
-  //   const amount = tokenBN(event.args.amount, BEAN[1]);
+  //   const amount = tokenBN(event.args.amount, MOON[1]);
   //   this.orders[id].filledAmount    = this.orders[id].filledAmount.plus(amount);
   //   this.orders[id].remainingAmount = this.orders[id].totalAmount.minus(this.orders[id].filledAmount);
 

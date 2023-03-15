@@ -25,7 +25,7 @@ const ChartTypePill: React.FC<PaperProps & { pos: OverlaySxProps}> = ({ pos, ...
       <Paper {...paperProps} sx={{ position: 'relative', borderRadius: '8px', border: '1px solid', borderColor: 'divider', ...paperProps.sx }}>
         <Typography variant="bodySmall" fontWeight={bold} component="span">
           <Row p={0.8}>
-            {chartType === 'depth' ? 'BEAN / POD DEPTH' : 'LISTING'}
+            {chartType === 'depth' ? 'MOON / POD DEPTH' : 'LISTING'}
             <DropdownIcon open={open} sx={{ fontSize: FontSize.base, fontWeight: bold, ml: 0.4 }} />
           </Row>
         </Typography>

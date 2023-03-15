@@ -3,7 +3,7 @@ import { lighten, StackProps } from '@mui/material';
 import Row from '~/components/Common/Row';
 
 import { FC } from '~/types';
-import { BeanstalkPalette } from '~/components/App/muiTheme';
+import { MoonmagePalette } from '~/components/App/muiTheme';
 
 const OutputField : FC<{
   isNegative?: boolean;
@@ -17,11 +17,11 @@ const OutputField : FC<{
 }) => (
   <Row
     sx={{
-      backgroundColor: isNegative ? lighten(BeanstalkPalette.lightestRed, 0.25) : BeanstalkPalette.lightestBlue,
+      backgroundColor: isNegative ? lighten(MoonmagePalette.lightestRed, 0.25) : MoonmagePalette.lightestBlue,
       borderRadius: 1,
       px: size === 'small' ? 1 : 2,
       py: size === 'small' ? 0.5 : 2,
-      color: isNegative ? BeanstalkPalette.trueRed : 'inherit',
+      color: isNegative ? MoonmagePalette.trueRed : 'inherit',
       height: size === 'small' ? '42px' : '70px',
       ...sx
     }}

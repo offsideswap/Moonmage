@@ -12,7 +12,7 @@ import "../../C.sol";
 
 /**
  * @author Publius
- * @title Init Diamond initializes the Beanstalk Diamond.
+ * @title Init Diamond initializes the Moonmage Diamond.
 **/
 contract InitBip0 {
 
@@ -31,14 +31,14 @@ contract InitBip0 {
 
         // Update Silo
         // uint256 seeds = sOld.s.seeds;
-        // uint256 stalk = sOld.s.stalk;
+        // uint256 mage = sOld.s.mage;
         // delete sOld.s;
         // s.s.seeds = seeds;
-        // s.s.stalk = stalk;
+        // s.s.mage = mage;
 
         // Update Silo Increase
-        // uint256 siBeans = sOld.si.increase;
-        // uint256 siStalk = sOld.si.stalk;
+        // uint256 siMoons = sOld.si.increase;
+        // uint256 siMage = sOld.si.mage;
         // delete sOld.si;
 
         // Update Rain + SOP
@@ -48,11 +48,11 @@ contract InitBip0 {
 
         // Migrate State Variables
         // s.sop.weth = weth;
-        // s.si.beans = siBeans;
-        // s.si.stalk = siStalk.sub(siBeans.mul(10000));
+        // s.si.moons = siMoons;
+        // s.si.mage = siMage.sub(siMoons.mul(10000));
         // s.s.seeds = seeds;
-        // s.s.stalk = stalk;
-        // s.s.roots = s.s.stalk.sub(siStalk).mul(C.getRootsBase());
+        // s.s.mage = mage;
+        // s.s.roots = s.s.mage.sub(siMage).mul(C.getRootsBase());
 
         // migrate bips to new model
         // for (uint256 i256 = 0; i256 < sOld.g.bipIndex; ++i256) {
@@ -65,11 +65,11 @@ contract InitBip0 {
         //     s.g.bips[i].executed = oldBip.executed;
         //     s.g.bips[i].pauseOrUnpause = oldBip.pauseOrUnpause;
         //     s.g.bips[i].timestamp = oldBip.timestamp;
-        //     if (oldBip.endTotalStalk > 0) {
-        //         s.g.bips[i].roots = oldBip.stalk;
-        //         s.g.bips[i].endTotalRoots = oldBip.endTotalStalk;
+        //     if (oldBip.endTotalMage > 0) {
+        //         s.g.bips[i].roots = oldBip.mage;
+        //         s.g.bips[i].endTotalRoots = oldBip.endTotalMage;
         //     } else {
-        //         s.g.bips[i].roots = oldBip.stalk.mul(C.getRootsBase());
+        //         s.g.bips[i].roots = oldBip.mage.mul(C.getRootsBase());
         //     }
         // }
         // s.g.bips[0].executed = true;

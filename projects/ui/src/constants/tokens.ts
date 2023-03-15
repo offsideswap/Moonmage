@@ -2,19 +2,19 @@
 import ethIconCircledUrl from '~/img/tokens/eth-logo-circled.svg';
 import wEthIconCircledUrl from '~/img/tokens/weth-logo-circled.svg';
 
-// Bean Images
-// import beanLogoUrl from '~/img/tokens/bean-logo.svg';
-import beanCircleLogoUrl from '~/img/tokens/bean-logo-circled.svg';
-import beanCrv3LpLogoUrl from '~/img/tokens/bean-crv3-logo.svg';
+// Moon Images
+// import moonLogoUrl from '~/img/tokens/moon-logo.svg';
+import moonCircleLogoUrl from '~/img/tokens/moon-logo-circled.svg';
+import moonCrv3LpLogoUrl from '~/img/tokens/moon-crv3-logo.svg';
 
-// Beanstalk Token Logos
-import stalkLogo from '~/img/beanstalk/stalk-icon-winter.svg';
-import seedLogo from '~/img/beanstalk/seed-icon-winter.svg';
-import podsLogo from '~/img/beanstalk/pod-icon-winter.svg';
-import sproutLogo from '~/img/beanstalk/sprout-icon-winter.svg';
-import rinsableSproutLogo from '~/img/beanstalk/rinsable-sprout-icon.svg';
-import beanEthLpLogoUrl from '~/img/tokens/bean-eth-lp-logo.svg';
-import beanLusdLogoUrl from '~/img/tokens/bean-lusd-logo.svg';
+// Moonmage Token Logos
+import mageLogo from '~/img/moonmage/mage-icon-winter.svg';
+import seedLogo from '~/img/moonmage/seed-icon-winter.svg';
+import podsLogo from '~/img/moonmage/pod-icon-winter.svg';
+import sproutLogo from '~/img/moonmage/sprout-icon-winter.svg';
+import rinsableSproutLogo from '~/img/moonmage/rinsable-sprout-icon.svg';
+import moonEthLpLogoUrl from '~/img/tokens/moon-eth-lp-logo.svg';
+import moonLusdLogoUrl from '~/img/tokens/moon-lusd-logo.svg';
 
 // ERC-20 Token Images
 import crv3LogoUrl from '~/img/tokens/crv3-logo.png';
@@ -22,15 +22,15 @@ import daiLogoUrl from '~/img/tokens/dai-logo.svg';
 import usdcLogoUrl from '~/img/tokens/usdc-logo.svg';
 import usdtLogoUrl from '~/img/tokens/usdt-logo.svg';
 import lusdLogoUrl from '~/img/tokens/lusd-logo.svg';
-import unripeBeanLogoUrl from '~/img/tokens/unripe-bean-logo-circled.svg';
-import unripeBeanCrv3LogoUrl from '~/img/tokens/unripe-lp-logo-circled.svg';
+import unripeMoonLogoUrl from '~/img/tokens/unripe-moon-logo-circled.svg';
+import unripeMoonCrv3LogoUrl from '~/img/tokens/unripe-lp-logo-circled.svg';
 
 // Other imports
-import { ERC20Token, NativeToken, BeanstalkToken } from '~/classes/Token';
+import { ERC20Token, NativeToken, MoonmageToken } from '~/classes/Token';
 import { SupportedChainId } from './chains';
 import { ChainConstant } from '.';
-import { BEAN_CRV3_ADDRESSES, CRV3_ADDRESSES, DAI_ADDRESSES, LUSD_ADDRESSES, USDC_ADDRESSES, USDT_ADDRESSES, UNRIPE_BEAN_ADDRESSES, UNRIPE_BEAN_CRV3_ADDRESSES, BEAN_ADDRESSES } from './addresses';
-import { BeanstalkPalette } from '~/components/App/muiTheme';
+import { MOON_CRV3_ADDRESSES, CRV3_ADDRESSES, DAI_ADDRESSES, LUSD_ADDRESSES, USDC_ADDRESSES, USDT_ADDRESSES, UNRIPE_MOON_ADDRESSES, UNRIPE_MOON_CRV3_ADDRESSES, MOON_ADDRESSES } from './addresses';
+import { MoonmagePalette } from '~/components/App/muiTheme';
 
 // ----------------------------------------
 // Types + Utilities
@@ -68,21 +68,21 @@ export const ETH = {
 };
 
 // ----------------------------------------
-// Beanstalk Internal Tokens (not ERC20)
+// Moonmage Internal Tokens (not ERC20)
 // ----------------------------------------
 
-export const STALK = new BeanstalkToken(
+export const MAGE = new MoonmageToken(
   SupportedChainId.MAINNET,
   '',
   10,
   {
-    name: 'Stalk',
-    symbol: 'STALK',
-    logo: stalkLogo,
+    name: 'Mage',
+    symbol: 'MAGE',
+    logo: mageLogo,
   }
 );
 
-export const SEEDS = new BeanstalkToken(
+export const SEEDS = new MoonmageToken(
   SupportedChainId.MAINNET,
   '',
   6,
@@ -93,7 +93,7 @@ export const SEEDS = new BeanstalkToken(
   }
 );
 
-export const PODS = new BeanstalkToken(
+export const PODS = new MoonmageToken(
   SupportedChainId.MAINNET,
   '',
   6,
@@ -104,7 +104,7 @@ export const PODS = new BeanstalkToken(
   }
 );
 
-export const SPROUTS = new BeanstalkToken(
+export const SPROUTS = new MoonmageToken(
   SupportedChainId.MAINNET,
   '',
   6,
@@ -115,7 +115,7 @@ export const SPROUTS = new BeanstalkToken(
   }
 );
 
-export const RINSABLE_SPROUTS = new BeanstalkToken(
+export const RINSABLE_SPROUTS = new MoonmageToken(
   SupportedChainId.MAINNET,
   '',
   6,
@@ -143,19 +143,19 @@ export const WETH = {
   )
 };
 
-export const BEAN = {
+export const MOON = {
   [SupportedChainId.MAINNET]: new ERC20Token(
     SupportedChainId.MAINNET,
-    BEAN_ADDRESSES,
+    MOON_ADDRESSES,
     6,
     {
-      name: 'Bean',
-      symbol: 'BEAN',
-      logo: beanCircleLogoUrl,
-      color: BeanstalkPalette.logoGreen
+      name: 'Moon',
+      symbol: 'MOON',
+      logo: moonCircleLogoUrl,
+      color: MoonmagePalette.logoGreen
     },
     {
-      stalk: 1,
+      mage: 1,
       seeds: 2,
     }
   ),
@@ -233,39 +233,39 @@ export const LUSD = {
 };
 
 // TEMP
-// Keep the old BEAN_ETH and BEAN_LUSD tokens to let
+// Keep the old MOON_ETH and MOON_LUSD tokens to let
 // the Pick dialog properly display pickable assets.
-export const BEAN_ETH_UNIV2_LP = {
+export const MOON_ETH_UNIV2_LP = {
   [SupportedChainId.MAINNET]: new ERC20Token(
     SupportedChainId.MAINNET,
     '0x87898263B6C5BABe34b4ec53F22d98430b91e371',
     18,
     {
-      name: 'BEAN:ETH LP',
-      symbol: 'BEAN:ETH',
-      logo: beanEthLpLogoUrl,
+      name: 'MOON:ETH LP',
+      symbol: 'MOON:ETH',
+      logo: moonEthLpLogoUrl,
       displayDecimals: 9,
       isLP: true,
     },
     {
-      stalk: 1,
+      mage: 1,
       seeds: 4,
     }
   ),
 };
-export const BEAN_LUSD_LP = {
+export const MOON_LUSD_LP = {
   [SupportedChainId.MAINNET]: new ERC20Token(
     SupportedChainId.MAINNET,
     '0xD652c40fBb3f06d6B58Cb9aa9CFF063eE63d465D',
     18,
     {
-      name: 'BEAN:LUSD LP',
-      symbol: 'BEAN:LUSD',
-      logo: beanLusdLogoUrl,
+      name: 'MOON:LUSD LP',
+      symbol: 'MOON:LUSD',
+      logo: moonLusdLogoUrl,
       isLP: true,
     },
     {
-      stalk: 1,
+      mage: 1,
       seeds: 3,
     }
   ),
@@ -275,20 +275,20 @@ export const BEAN_LUSD_LP = {
 // ERC20 Tokens - LP
 // ----------------------------------------
 
-export const BEAN_CRV3_LP = {
+export const MOON_CRV3_LP = {
   [SupportedChainId.MAINNET]: new ERC20Token(
     SupportedChainId.MAINNET,
-    BEAN_CRV3_ADDRESSES,
+    MOON_CRV3_ADDRESSES,
     18,
     {
-      name: 'BEAN:3CRV LP',
-      symbol: 'BEAN3CRV',
-      logo: beanCrv3LpLogoUrl,
+      name: 'MOON:3CRV LP',
+      symbol: 'MOON3CRV',
+      logo: moonCrv3LpLogoUrl,
       isLP: true,
       color: '#DFB385'
     },
     {
-      stalk: 1,
+      mage: 1,
       seeds: 4,
     }
   ),
@@ -298,41 +298,41 @@ export const BEAN_CRV3_LP = {
 // ERC20 Tokens - Unripe
 // ----------------------------------------
 
-export const UNRIPE_BEAN = {
+export const UNRIPE_MOON = {
   [SupportedChainId.MAINNET]: new ERC20Token(
     SupportedChainId.MAINNET,
-    UNRIPE_BEAN_ADDRESSES,
+    UNRIPE_MOON_ADDRESSES,
     6,
     {
-      name: 'Unripe Bean',
-      symbol: 'urBEAN',
-      logo: unripeBeanLogoUrl,
+      name: 'Unripe Moon',
+      symbol: 'urMOON',
+      logo: unripeMoonLogoUrl,
       displayDecimals: 2,
       color: '#ECBCB3',
       isUnripe: true,
     },
     {
-      stalk: 1,
+      mage: 1,
       seeds: 2,
     }
   ),
 };
 
-export const UNRIPE_BEAN_CRV3 = {
+export const UNRIPE_MOON_CRV3 = {
   [SupportedChainId.MAINNET]: new ERC20Token(
     SupportedChainId.MAINNET,
-    UNRIPE_BEAN_CRV3_ADDRESSES,
+    UNRIPE_MOON_CRV3_ADDRESSES,
     6,
     {
-      name: 'Unripe BEAN:3CRV LP',
-      symbol: 'urBEAN3CRV',
-      logo: unripeBeanCrv3LogoUrl,
+      name: 'Unripe MOON:3CRV LP',
+      symbol: 'urMOON3CRV',
+      logo: unripeMoonCrv3LogoUrl,
       displayDecimals: 2,
-      color: BeanstalkPalette.lightBlue,
+      color: MoonmagePalette.lightBlue,
       isUnripe: true,
     },
     {
-      stalk: 1,
+      mage: 1,
       seeds: 4,
     }
   ),
@@ -343,20 +343,20 @@ export const UNRIPE_BEAN_CRV3 = {
 // ----------------------------------------
 
 export const UNRIPE_TOKENS: ChainConstant<ERC20Token>[] = [
-  UNRIPE_BEAN,
-  UNRIPE_BEAN_CRV3,
+  UNRIPE_MOON,
+  UNRIPE_MOON_CRV3,
 ];
 export const UNRIPE_UNDERLYING_TOKENS : ChainConstant<ERC20Token>[] = [
-  BEAN,
-  BEAN_CRV3_LP,
+  MOON,
+  MOON_CRV3_LP,
 ];
 
 // Show these tokens as whitelisted in the Silo.
 export const SILO_WHITELIST: ChainConstant<ERC20Token>[] = [
-  BEAN,
-  BEAN_CRV3_LP,
-  UNRIPE_BEAN,
-  UNRIPE_BEAN_CRV3
+  MOON,
+  MOON_CRV3_LP,
+  UNRIPE_MOON,
+  UNRIPE_MOON_CRV3
 ];
 
 // All supported ERC20 tokens.

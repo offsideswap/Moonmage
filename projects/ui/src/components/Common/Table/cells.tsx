@@ -4,15 +4,15 @@ import { GridColumns, GridRenderCellParams, GridValueFormatterParams } from '@mu
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import BigNumber from 'bignumber.js';
 import { displayBN, displayFullBN, MaxBN, trimAddress } from '~/util';
-import { BEAN, PODS } from '~/constants/tokens';
+import { MOON, PODS } from '~/constants/tokens';
 import { ZERO_BN } from '~/constants';
-import { PodListing, PodOrder } from '~/state/farmer/market';
+import { PodListing, PodOrder } from '~/state/cosmomage/market';
 import TokenIcon from '../TokenIcon';
 import AddressIcon from '../AddressIcon';
 import Row from '~/components/Common/Row';
 import { WellActivityData } from '~/components/Market/Wells/Tables';
 import { Token } from '~/classes';
-import { BeanstalkPalette } from '~/components/App/muiTheme';
+import { MoonmagePalette } from '~/components/App/muiTheme';
 
 const basicCell = (params: GridRenderCellParams) => <Typography>{params.formattedValue}</Typography>;
 
@@ -67,7 +67,7 @@ const COLUMNS = {
         title={
           <>
             Total
-            Value: {displayFullBN((params.value as BigNumber).times(params.row.pricePerPod), BEAN[1].displayDecimals)} BEAN
+            Value: {displayFullBN((params.value as BigNumber).times(params.row.pricePerPod), MOON[1].displayDecimals)} MOON
           </>
         }>
         <Row gap={0.3}>
@@ -94,7 +94,7 @@ const COLUMNS = {
         title={
           <>
             Total
-            Value: {displayFullBN((params.value as BigNumber).times(params.row.pricePerPod), BEAN[1].displayDecimals)} BEAN
+            Value: {displayFullBN((params.value as BigNumber).times(params.row.pricePerPod), MOON[1].displayDecimals)} MOON
           </>
         }>
         <Row gap={0.3}>
@@ -116,7 +116,7 @@ const COLUMNS = {
     flex: flex,
     renderCell: (params: GridRenderCellParams<any, PodListing | PodOrder>) => (
       <Row gap={0.3}>
-        <TokenIcon token={BEAN[1]} />
+        <TokenIcon token={MOON[1]} />
         <Typography>
           {displayFullBN(params.value)}
         </Typography>
@@ -316,7 +316,7 @@ const COLUMNS = {
     width: 20,
     sortable: false,
     filterable: false,
-    renderCell: () => <ArrowRightIcon sx={{ color: BeanstalkPalette.lightestGrey }} />
+    renderCell: () => <ArrowRightIcon sx={{ color: MoonmagePalette.lightestGrey }} />
   } as GridColumns[number],
 };
 

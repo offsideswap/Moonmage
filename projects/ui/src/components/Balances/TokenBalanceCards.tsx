@@ -2,7 +2,7 @@ import { Typography, Stack } from '@mui/material';
 import React from 'react';
 import Row from '../Common/Row';
 import AddressIcon from '~/components/Common/AddressIcon';
-import useFarmerBalancesWithFiatValue from '~/hooks/farmer/useFarmerBalancesWithFiatValue';
+import useCosmonautBalancesWithFiatValue from '~/hooks/cosmomage/useCosmonautBalancesWithFiatValue';
 import TokenBalanceTable from '~/components/Balances/TokenBalanceTable';
 
 /**
@@ -10,7 +10,7 @@ import TokenBalanceTable from '~/components/Balances/TokenBalanceTable';
  * INTERNAL and EXTERNAL balances.
  */
 const TokenBalanceCards: React.FC<{}> = () => {
-  const { internal, external } = useFarmerBalancesWithFiatValue();
+  const { internal, external } = useCosmonautBalancesWithFiatValue();
   return (
     <Stack direction={{ xs: 'column', lg: 'row' }} gap={2} width="100%">
       <TokenBalanceTable

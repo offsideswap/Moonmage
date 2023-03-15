@@ -3,9 +3,9 @@ import { Box, Divider, Link, Stack, Typography } from '@mui/material';
 import BigNumber from 'bignumber.js';
 import Token from '~/classes/Token';
 import { displayBN, toTokenUnitsBN } from '~/util';
-import { BEAN, PODS, SILO_WHITELIST } from '~/constants/tokens';
+import { MOON, PODS, SILO_WHITELIST } from '~/constants/tokens';
 import { SupportedChainId } from '~/constants/chains';
-import { Event } from '~/lib/Beanstalk/EventProcessor';
+import { Event } from '~/lib/Moonmage/EventProcessor';
 import TokenIcon from '../Common/TokenIcon';
 import useTokenMap from '../../hooks/chain/useTokenMap';
 import Row from '~/components/Common/Row';
@@ -105,25 +105,25 @@ const EventItem: FC<EventItemProps> = ({ event, account }) => {
       break;
     }
     case 'Sow': {
-      const pods = toTokenUnitsBN(event.args?.pods.toString(), BEAN[SupportedChainId.MAINNET].decimals);
-      if (event.args?.beans.toString() !== undefined) {
-        const beans = toTokenUnitsBN(event.args?.beans.toString(), BEAN[SupportedChainId.MAINNET].decimals);
+      const pods = toTokenUnitsBN(event.args?.pods.toString(), MOON[SupportedChainId.MAINNET].decimals);
+      if (event.args?.moons.toString() !== undefined) {
+        const moons = toTokenUnitsBN(event.args?.moons.toString(), MOON[SupportedChainId.MAINNET].decimals);
 
         const weather = pods
-          .dividedBy(beans)
+          .dividedBy(moons)
           .minus(new BigNumber(1))
           .multipliedBy(100)
           .toFixed(0);
 
-        eventTitle = `Bean Sow (${weather}% Temperature)`;
+        eventTitle = `Moon Sow (${weather}% Temperature)`;
         amountOut = (
-          <TokenDisplay color="red" input={[beans, BEAN[SupportedChainId.MAINNET]]} />
+          <TokenDisplay color="red" input={[moons, MOON[SupportedChainId.MAINNET]]} />
         );
         amountIn = (
           <TokenDisplay color="green" input={[pods, PODS]} />
         );
       } else {
-        eventTitle = 'Bean Sow';
+        eventTitle = 'Moon Sow';
         amountIn = (
           <TokenDisplay color="green" input={[pods, PODS]} />
         );
@@ -131,35 +131,35 @@ const EventItem: FC<EventItemProps> = ({ event, account }) => {
       break;
     }
     case 'Harvest': {
-      const beans = toTokenUnitsBN(
-        new BigNumber(event.args?.beans.toString()),
-        BEAN[SupportedChainId.MAINNET].decimals
+      const moons = toTokenUnitsBN(
+        new BigNumber(event.args?.moons.toString()),
+        MOON[SupportedChainId.MAINNET].decimals
       );
 
       eventTitle = 'Pod Harvest';
       amountOut = (
-        <TokenDisplay color="red" input={[beans, PODS]} />
+        <TokenDisplay color="red" input={[moons, PODS]} />
       );
       amountIn = (
-        <TokenDisplay color="green" input={[beans, BEAN[SupportedChainId.MAINNET]]} />
+        <TokenDisplay color="green" input={[moons, MOON[SupportedChainId.MAINNET]]} />
       );
       break;
     }
-    // FIXME: need to add Bean inflows here.
+    // FIXME: need to add Moon inflows here.
     // Technically we need to look up the price of the Pod Order
     // during this Fill by scanning Events. This is too complex to
     // do efficiently in the frontend so it should be likely be
     // moved to the subgraph.
     case 'PodOrderFilled': {
       const values = event.args;
-      // const pods = toTokenUnitsBN(values.amount, BEAN.decimals);
+      // const pods = toTokenUnitsBN(values.amount, MOON.decimals);
       if (values?.to.toString().toLowerCase() === account) {
         // My Pod Order was "Filled".
-        // I lose Beans, gain the Plot.
+        // I lose Moons, gain the Plot.
         eventTitle = 'Bought Plot';
       } else {
         // I "Filled" a Pod Order (sold my plot)
-        // I lose the plot, gain Beans.
+        // I lose the plot, gain Moons.
         eventTitle = 'Purchase Plot';
       }
       break;
@@ -167,7 +167,7 @@ const EventItem: FC<EventItemProps> = ({ event, account }) => {
     case 'PlotTransfer': {
       const pods = toTokenUnitsBN(
         new BigNumber(event.args?.pods.toString()),
-        BEAN[SupportedChainId.MAINNET].decimals
+        MOON[SupportedChainId.MAINNET].decimals
       );
       if (event.args?.from.toString().toLowerCase() === account) {
         eventTitle = 'Transfer Plot';
@@ -239,7 +239,7 @@ export default EventItem;
 // useEffect(() => {
 //   /** This is NOT an optimal way to get timestamps for events.
 //    * A more ideal solution will 1) be off-chain and 2) not
-//    * repeat calls for the same block number. - Cool Bean */
+//    * repeat calls for the same block number. - Cool Moon */
 //   function handleSetDatetimeTwo() {
 //     getBlockTimestamp(event.blockNumber).then((t) => {
 //       const date = new Date(t * 1e3);
@@ -261,29 +261,29 @@ export default EventItem;
 //     );
 //     const swapTo = toTokenUnitsBN(
 //       new BigNumber(event.args?.amount1Out.toString()),
-//       BEAN[SupportedChainId.MAINNET].decimals
+//       MOON[SupportedChainId.MAINNET].decimals
 //     );
 //
-//     eventTitle = 'ETH to Bean Swap';
+//     eventTitle = 'ETH to Moon Swap';
 //     amountOut = (
 //       <TokenDisplay color="red" input={[swapFrom, ETH[SupportedChainId.MAINNET]]} />
 //     );
 //     amountIn = (
-//       <TokenDisplay color="green" input={[swapTo, BEAN[SupportedChainId.MAINNET]]} />
+//       <TokenDisplay color="green" input={[swapTo, MOON[SupportedChainId.MAINNET]]} />
 //     );
 //   } else if (event.args?.amount1In.toString() !== '0') {
 //     const swapFrom = toTokenUnitsBN(
 //       new BigNumber(event.args?.amount1In.toString()),
-//       BEAN[SupportedChainId.MAINNET].decimals
+//       MOON[SupportedChainId.MAINNET].decimals
 //     );
 //     const swapTo = toTokenUnitsBN(
 //       new BigNumber(event.args?.amount0Out.toString()),
 //       ETH[SupportedChainId.MAINNET].decimals
 //     );
 //
-//     eventTitle = 'Bean to ETH Swap';
+//     eventTitle = 'Moon to ETH Swap';
 //     amountOut = (
-//       <TokenDisplay color="red" input={[swapFrom, BEAN[SupportedChainId.MAINNET]]} />
+//       <TokenDisplay color="red" input={[swapFrom, MOON[SupportedChainId.MAINNET]]} />
 //     );
 //     amountIn = (
 //       <TokenDisplay color="green" input={[swapTo, ETH[SupportedChainId.MAINNET]]} />

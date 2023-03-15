@@ -5,18 +5,18 @@ import {
   RemoveDepositEvent,
   RemoveWithdrawalEvent,
   RemoveWithdrawalsEvent
-} from "src/constants/generated/protocol/abi/Beanstalk";
+} from "src/constants/generated/protocol/abi/Moonmage";
 import EventProcessor, { EventProcessingParameters } from "./processor";
-import { BeanstalkSDK } from "../BeanstalkSDK";
+import { MoonmageSDK } from "../MoonmageSDK";
 import { getProvider } from "../../utils/TestUtils/provider";
 
 // ------------------------------------------
 
-const sdk = new BeanstalkSDK({
+const sdk = new MoonmageSDK({
   provider: getProvider()
 });
-const Bean = sdk.tokens.BEAN;
-const BeanCrv3 = sdk.tokens.BEAN_CRV3_LP;
+const Moon = sdk.tokens.MOON;
+const MoonCrv3 = sdk.tokens.MOON_CRV3_LP;
 
 const account = "0xFARMER";
 const epp: EventProcessingParameters = {
@@ -65,8 +65,8 @@ describe("utilities", () => {
 //     p.ingest({
 //       event: 'Sow',
 //       args: propArray({
-//         index: EBN.from(10 * 10 ** Bean.decimals),
-//         pods:  EBN.from(42 * 10 ** Bean.decimals)
+//         index: EBN.from(10 * 10 ** Moon.decimals),
+//         pods:  EBN.from(42 * 10 ** Moon.decimals)
 //       })
 //     } as SowEvent);
 
@@ -80,15 +80,15 @@ describe("utilities", () => {
 //     p.ingest({
 //       event: 'Sow',
 //       args: propArray({
-//         index: EBN.from(10 * 10 ** Bean.decimals),
-//         pods:  EBN.from(42 * 10 ** Bean.decimals)
+//         index: EBN.from(10 * 10 ** Moon.decimals),
+//         pods:  EBN.from(42 * 10 ** Moon.decimals)
 //       })
 //     } as SowEvent);
 //     p.ingest({
 //       event: 'Harvest',
 //       args: propArray({
-//         beans: EBN.from(5 * 10 ** Bean.decimals),
-//         plots: [EBN.from(10 * 10 ** Bean.decimals)]
+//         moons: EBN.from(5 * 10 ** Moon.decimals),
+//         plots: [EBN.from(10 * 10 ** Moon.decimals)]
 //       })
 //     } as HarvestEvent);
 
@@ -99,8 +99,8 @@ describe("utilities", () => {
 //     p.ingest({
 //       event: 'Harvest',
 //       args: propArray({
-//         beans: EBN.from(37 * 10 ** Bean.decimals),
-//         plots: [EBN.from(15 * 10 ** Bean.decimals)]
+//         moons: EBN.from(37 * 10 ** Moon.decimals),
+//         plots: [EBN.from(15 * 10 ** Moon.decimals)]
 //       })
 //     } as HarvestEvent);
 
@@ -115,8 +115,8 @@ describe("utilities", () => {
 //     p.ingest({
 //       event: 'Sow',
 //       args: propArray({
-//         index: EBN.from(10 * 10 ** Bean.decimals),
-//         pods:  EBN.from(42 * 10 ** Bean.decimals)
+//         index: EBN.from(10 * 10 ** Moon.decimals),
+//         pods:  EBN.from(42 * 10 ** Moon.decimals)
 //       })
 //     } as SowEvent);
 //     p.ingest({
@@ -124,8 +124,8 @@ describe("utilities", () => {
 //       args: propArray({
 //         from: '0xFARMER',
 //         to: '0xPUBLIUS',
-//         id: EBN.from(10 * 10 ** Bean.decimals),
-//         pods: EBN.from(42 * 10 ** Bean.decimals)
+//         id: EBN.from(10 * 10 ** Moon.decimals),
+//         pods: EBN.from(42 * 10 ** Moon.decimals)
 //       })
 //     } as PlotTransferEvent);
 
@@ -138,8 +138,8 @@ describe("utilities", () => {
 //     p.ingest({
 //       event: 'Sow',
 //       args: propArray({
-//         index: EBN.from(10 * 10 ** Bean.decimals),
-//         pods:  EBN.from(42 * 10 ** Bean.decimals)
+//         index: EBN.from(10 * 10 ** Moon.decimals),
+//         pods:  EBN.from(42 * 10 ** Moon.decimals)
 //       })
 //     } as SowEvent);
 //     p.ingest({
@@ -147,8 +147,8 @@ describe("utilities", () => {
 //       args: propArray({
 //         from: '0xFARMER',
 //         to:   '0xPUBLIUS',
-//         id:   EBN.from(10 * 10 ** Bean.decimals), // front of the Plot
-//         pods: EBN.from(22 * 10 ** Bean.decimals)  // don't send the whole Plot
+//         id:   EBN.from(10 * 10 ** Moon.decimals), // front of the Plot
+//         pods: EBN.from(22 * 10 ** Moon.decimals)  // don't send the whole Plot
 //       })
 //     } as PlotTransferEvent);
 
@@ -191,59 +191,59 @@ describe("the Silo", () => {
   it("runs a simple deposit sequence (three deposits, two tokens, two seasons)", () => {
     const p = mockProcessor();
 
-    // Deposit: 1000 Bean, Season 6074
-    const amount1 = EBN.from(1000 * 10 ** Bean.decimals);
-    const bdv1 = EBN.from(1000 * 10 ** Bean.decimals);
+    // Deposit: 1000 Moon, Season 6074
+    const amount1 = EBN.from(1000 * 10 ** Moon.decimals);
+    const bdv1 = EBN.from(1000 * 10 ** Moon.decimals);
     p.ingest({
       event: "AddDeposit",
       args: propArray({
         account,
-        token: Bean.address,
+        token: Moon.address,
         season: EBN.from(6074),
-        amount: amount1, // Deposited 1,000 Bean
+        amount: amount1, // Deposited 1,000 Moon
         bdv: bdv1
       })
     } as AddDepositEvent);
 
-    expect(p.deposits.get(Bean)?.["6074"]).toStrictEqual({
+    expect(p.deposits.get(Moon)?.["6074"]).toStrictEqual({
       amount: amount1,
       bdv: bdv1
     });
 
-    // Deposit: 500 Bean, Season 6074
-    const amount2 = EBN.from(500 * 10 ** Bean.decimals);
-    const bdv2 = EBN.from(500 * 10 ** Bean.decimals);
+    // Deposit: 500 Moon, Season 6074
+    const amount2 = EBN.from(500 * 10 ** Moon.decimals);
+    const bdv2 = EBN.from(500 * 10 ** Moon.decimals);
     p.ingest({
       event: "AddDeposit",
       args: propArray({
         account,
-        token: Bean.address,
+        token: Moon.address,
         season: EBN.from(6074),
         amount: amount2,
         bdv: bdv2
       })
     } as AddDepositEvent);
 
-    expect(p.deposits.get(Bean)?.["6074"]).toStrictEqual({
+    expect(p.deposits.get(Moon)?.["6074"]).toStrictEqual({
       amount: amount1.add(amount2),
       bdv: bdv1.add(bdv2)
     });
 
-    // Deposit: 1000 Bean:CRV3 LP, Season 6100
-    const amount3 = EBN.from(1000).mul(EBN.from(10).pow(BeanCrv3.decimals));
-    const bdv3 = EBN.from(900).mul(EBN.from(10).pow(Bean.decimals));
+    // Deposit: 1000 Moon:CRV3 LP, Season 6100
+    const amount3 = EBN.from(1000).mul(EBN.from(10).pow(MoonCrv3.decimals));
+    const bdv3 = EBN.from(900).mul(EBN.from(10).pow(Moon.decimals));
     p.ingest({
       event: "AddDeposit",
       args: propArray({
         account,
-        token: BeanCrv3.address,
+        token: MoonCrv3.address,
         season: EBN.from(6100),
-        amount: amount3, // Deposited 1,000 Bean:CRV3
+        amount: amount3, // Deposited 1,000 Moon:CRV3
         bdv: bdv3
       })
     } as AddDepositEvent);
 
-    expect(p.deposits.get(BeanCrv3)?.["6100"]).toStrictEqual({
+    expect(p.deposits.get(MoonCrv3)?.["6100"]).toStrictEqual({
       amount: amount3,
       bdv: bdv3
     });
@@ -252,51 +252,51 @@ describe("the Silo", () => {
   it("adds withdrawals", () => {
     const p = mockProcessor();
 
-    // Withdrawal: 1000 Bean, Season 6074
-    const amount1 = EBN.from(1000 * 10 ** Bean.decimals); // Withdrew 1,000 Bean
+    // Withdrawal: 1000 Moon, Season 6074
+    const amount1 = EBN.from(1000 * 10 ** Moon.decimals); // Withdrew 1,000 Moon
     p.ingest({
       event: "AddWithdrawal",
       args: propArray({
         account,
-        token: Bean.address,
+        token: Moon.address,
         season: EBN.from(6074),
         amount: amount1
       })
     } as AddWithdrawalEvent);
 
-    expect(p.withdrawals.get(Bean)?.["6074"]).toStrictEqual({
+    expect(p.withdrawals.get(Moon)?.["6074"]).toStrictEqual({
       amount: amount1
     });
 
-    // Withdrawal: 500 Bean, Season 6074
-    const amount2 = EBN.from(500 * 10 ** Bean.decimals); // Withdrew 500 Bean
+    // Withdrawal: 500 Moon, Season 6074
+    const amount2 = EBN.from(500 * 10 ** Moon.decimals); // Withdrew 500 Moon
     p.ingest({
       event: "AddWithdrawal",
       args: propArray({
         account,
-        token: Bean.address,
+        token: Moon.address,
         season: EBN.from(6074),
         amount: amount2
       })
     } as AddWithdrawalEvent);
 
-    expect(p.withdrawals.get(Bean)?.["6074"]).toStrictEqual({
+    expect(p.withdrawals.get(Moon)?.["6074"]).toStrictEqual({
       amount: amount1.add(amount2)
     });
 
-    // Deposit: 1000 Bean:CRV3 LP, Season 6100
-    const amount3 = EBN.from(1000).mul(EBN.from(10).pow(BeanCrv3.decimals));
+    // Deposit: 1000 Moon:CRV3 LP, Season 6100
+    const amount3 = EBN.from(1000).mul(EBN.from(10).pow(MoonCrv3.decimals));
     p.ingest({
       event: "AddWithdrawal",
       args: propArray({
         account,
-        token: BeanCrv3.address,
+        token: MoonCrv3.address,
         season: EBN.from(6100),
-        amount: amount3 // Deposited 1,000 Bean:CRV3
+        amount: amount3 // Deposited 1,000 Moon:CRV3
       })
     } as AddWithdrawalEvent);
 
-    expect(p.withdrawals.get(BeanCrv3)?.["6100"]).toStrictEqual({
+    expect(p.withdrawals.get(MoonCrv3)?.["6100"]).toStrictEqual({
       amount: amount3
     });
   });
@@ -304,135 +304,135 @@ describe("the Silo", () => {
   it("removes a single deposit, partial -> full", () => {
     const p = mockProcessor();
 
-    // Add Deposit: 1000 Bean, Season 6074
-    const amount1 = EBN.from(1000 * 10 ** Bean.decimals);
-    const bdv1 = EBN.from(1000 * 10 ** Bean.decimals);
+    // Add Deposit: 1000 Moon, Season 6074
+    const amount1 = EBN.from(1000 * 10 ** Moon.decimals);
+    const bdv1 = EBN.from(1000 * 10 ** Moon.decimals);
     p.ingest({
       event: "AddDeposit",
       args: propArray({
         account,
-        token: Bean.address,
+        token: Moon.address,
         season: EBN.from(6074),
         amount: amount1,
         bdv: bdv1
       })
     } as AddDepositEvent);
 
-    // Remove Deposit: 600 Bean, Season 6074
-    const amount2 = EBN.from(600 * 10 ** Bean.decimals);
-    const bdv2 = EBN.from(600 * 10 ** Bean.decimals);
+    // Remove Deposit: 600 Moon, Season 6074
+    const amount2 = EBN.from(600 * 10 ** Moon.decimals);
+    const bdv2 = EBN.from(600 * 10 ** Moon.decimals);
     p.ingest({
       event: "RemoveDeposit",
       args: propArray({
         account,
-        token: Bean.address,
+        token: Moon.address,
         season: EBN.from(6074),
         amount: amount2,
         bdv: bdv2
       })
     } as RemoveDepositEvent);
 
-    expect(p.deposits.get(Bean)?.["6074"]).toStrictEqual({
+    expect(p.deposits.get(Moon)?.["6074"]).toStrictEqual({
       amount: amount1.sub(amount2),
       bdv: bdv1.sub(bdv2)
     });
 
-    // Remove Deposit: 400 Bean, Season 6074
-    const amount3 = EBN.from(400 * 10 ** Bean.decimals);
-    const bdv3 = EBN.from(400 * 10 ** Bean.decimals);
+    // Remove Deposit: 400 Moon, Season 6074
+    const amount3 = EBN.from(400 * 10 ** Moon.decimals);
+    const bdv3 = EBN.from(400 * 10 ** Moon.decimals);
     p.ingest({
       event: "RemoveDeposit",
       args: propArray({
         account,
-        token: Bean.address,
+        token: Moon.address,
         season: EBN.from(6074),
         amount: amount3,
         bdv: bdv3
       })
     } as RemoveDepositEvent);
 
-    expect(p.deposits.get(Bean)?.["6074"]).toBeUndefined();
+    expect(p.deposits.get(Moon)?.["6074"]).toBeUndefined();
   });
 
   it("removes a single withdrawal", () => {
     const p = mockProcessor();
 
-    // Withdraw: 1000 Bean in Season 6074
-    const amount1 = EBN.from(1000 * 10 ** Bean.decimals);
+    // Withdraw: 1000 Moon in Season 6074
+    const amount1 = EBN.from(1000 * 10 ** Moon.decimals);
     p.ingest({
       event: "AddWithdrawal",
       args: propArray({
         account,
-        token: Bean.address,
+        token: Moon.address,
         season: EBN.from(6074),
         amount: amount1
       })
     } as AddWithdrawalEvent);
 
-    // Claim: 600 Bean from Withdrawal in Season 6074
+    // Claim: 600 Moon from Withdrawal in Season 6074
     p.ingest({
       event: "RemoveWithdrawal",
       args: propArray({
         account,
-        token: Bean.address,
+        token: Moon.address,
         season: EBN.from(6074),
         amount: amount1
       })
     } as RemoveWithdrawalEvent);
 
     // withdrawal should be deleted
-    expect(p.withdrawals.get(Bean)?.["6074"]).toBeUndefined();
+    expect(p.withdrawals.get(Moon)?.["6074"]).toBeUndefined();
   });
 
   it("removes multiple withdrawals, full", () => {
     const p = mockProcessor();
 
-    // Withdraw: 1000 Bean in Season 6074
-    const amount1 = EBN.from(1000 * 10 ** Bean.decimals);
+    // Withdraw: 1000 Moon in Season 6074
+    const amount1 = EBN.from(1000 * 10 ** Moon.decimals);
     p.ingest({
       event: "AddWithdrawal",
       args: propArray({
         account,
-        token: Bean.address,
+        token: Moon.address,
         season: EBN.from(6074),
         amount: amount1
       })
     } as AddWithdrawalEvent);
 
-    expect(p.withdrawals.get(Bean)?.["6074"]).toStrictEqual({
+    expect(p.withdrawals.get(Moon)?.["6074"]).toStrictEqual({
       amount: amount1
     });
 
-    // Withdraw: 5000 Bean in Season 6100
-    const amount2 = EBN.from(5000 * 10 ** Bean.decimals);
+    // Withdraw: 5000 Moon in Season 6100
+    const amount2 = EBN.from(5000 * 10 ** Moon.decimals);
     p.ingest({
       event: "AddWithdrawal",
       args: propArray({
         account,
-        token: Bean.address,
+        token: Moon.address,
         season: EBN.from(6100),
         amount: amount2
       })
     } as AddWithdrawalEvent);
 
-    expect(p.withdrawals.get(Bean)?.["6100"]).toStrictEqual({
+    expect(p.withdrawals.get(Moon)?.["6100"]).toStrictEqual({
       amount: amount2
     });
 
     // Claim: 1000 from 6074, 5000 from 6100
-    const amount3 = EBN.from(6000 * 10 ** Bean.decimals);
+    const amount3 = EBN.from(6000 * 10 ** Moon.decimals);
     p.ingest({
       event: "RemoveWithdrawals",
       args: propArray({
         account,
-        token: Bean.address,
+        token: Moon.address,
         seasons: ["6074", "6100"],
         amount: amount3
       })
     } as RemoveWithdrawalsEvent);
 
-    expect(p.withdrawals.get(Bean)?.["6074"]).toBeUndefined();
-    expect(p.withdrawals.get(Bean)?.["6100"]).toBeUndefined();
+    expect(p.withdrawals.get(Moon)?.["6074"]).toBeUndefined();
+    expect(p.withdrawals.get(Moon)?.["6100"]).toBeUndefined();
   });
 
   it("ignores empty RemoveWithdrawal events", () => {
@@ -443,14 +443,14 @@ describe("the Silo", () => {
         event: "RemoveWithdrawal",
         args: propArray({
           account,
-          token: Bean.address,
+          token: Moon.address,
           season: EBN.from(6074),
           amount: EBN.from(0) // amount is empty is Withdrawal couldn't be processed
         })
       } as RemoveWithdrawalEvent)
     ).not.toThrow();
 
-    // No deposit made in Bean
-    expect(p.withdrawals.get(Bean)).toStrictEqual({});
+    // No deposit made in Moon
+    expect(p.withdrawals.get(Moon)).toStrictEqual({});
   });
 });

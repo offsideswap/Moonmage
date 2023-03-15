@@ -16,19 +16,19 @@ describe("Estimate", function () {
     [sdk.tokens.ETH, sdk.tokens.USDT],
     [sdk.tokens.ETH, sdk.tokens.USDC],
     [sdk.tokens.ETH, sdk.tokens.DAI],
-    [sdk.tokens.ETH, sdk.tokens.BEAN],
+    [sdk.tokens.ETH, sdk.tokens.MOON],
     [sdk.tokens.ETH, sdk.tokens.CRV3],
 
-    // BEAN => x
-    [sdk.tokens.BEAN, sdk.tokens.ETH],
-    [sdk.tokens.BEAN, sdk.tokens.WETH],
-    [sdk.tokens.BEAN, sdk.tokens.BEAN],
-    [sdk.tokens.BEAN, sdk.tokens.USDT],
-    [sdk.tokens.BEAN, sdk.tokens.USDC],
-    [sdk.tokens.BEAN, sdk.tokens.DAI],
-    [sdk.tokens.BEAN, sdk.tokens.BEAN],
-    [sdk.tokens.BEAN, sdk.tokens.CRV3]
-  ])("Estimate BEAN->x", (tokenIn, tokenOut) => {
+    // MOON => x
+    [sdk.tokens.MOON, sdk.tokens.ETH],
+    [sdk.tokens.MOON, sdk.tokens.WETH],
+    [sdk.tokens.MOON, sdk.tokens.MOON],
+    [sdk.tokens.MOON, sdk.tokens.USDT],
+    [sdk.tokens.MOON, sdk.tokens.USDC],
+    [sdk.tokens.MOON, sdk.tokens.DAI],
+    [sdk.tokens.MOON, sdk.tokens.MOON],
+    [sdk.tokens.MOON, sdk.tokens.CRV3]
+  ])("Estimate MOON->x", (tokenIn, tokenOut) => {
     it(`estimate(${tokenIn.symbol}, ${tokenOut.symbol})`, async () => {
       await estimate(tokenIn, tokenOut);
     });

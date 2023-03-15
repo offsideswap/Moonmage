@@ -18,19 +18,19 @@ import { TokenSelectMode } from '~/components/Common/Form/TokenSelectDialog';
 import TokenInputField from '~/components/Common/Form/TokenInputField';
 import FarmModeField from '~/components/Common/Form/FarmModeField';
 import Token, { ERC20Token, NativeToken } from '~/classes/Token';
-import { Beanstalk } from '~/generated/index';
+import { Moonmage } from '~/generated/index';
 import { ZERO_BN } from '~/constants';
-import { BEAN, CRV3, DAI, USDC, USDT, WETH } from '~/constants/tokens';
-import { useBeanstalkContract } from '~/hooks/ledger/useContract';
-import useFarmerBalances from '~/hooks/farmer/useFarmerBalances';
+import { MOON, CRV3, DAI, USDC, USDT, WETH } from '~/constants/tokens';
+import { useMoonmageContract } from '~/hooks/ledger/useContract';
+import useCosmonautBalances from '~/hooks/cosmomage/useCosmonautBalances';
 import useTokenMap from '~/hooks/chain/useTokenMap';
 import { useSigner } from '~/hooks/ledger/useSigner';
-import { FarmFromMode, FarmToMode } from '~/lib/Beanstalk/Farm';
+import { FarmFromMode, FarmToMode } from '~/lib/Moonmage/Farm';
 import useGetChainToken from '~/hooks/chain/useGetChainToken';
 import useAccount from '~/hooks/ledger/useAccount';
 import { toStringBaseUnitBN } from '~/util';
 import TransactionToast from '~/components/Common/TxnToast';
-import { useFetchFarmerBalances } from '~/state/farmer/balances/updater';
+import { useFetchCosmonautBalances } from '~/state/cosmomage/balances/updater';
 import StyledAccordionSummary from '~/components/Common/Accordion/AccordionSummary';
 import { ActionType } from '~/util/Actions';
 import { FC } from '~/types';
@@ -51,8 +51,8 @@ type TransferFormValues = {
 }
 
 const TransferForm: FC<FormikProps<TransferFormValues> & {
-  balances: ReturnType<typeof useFarmerBalances>;
-  beanstalk: Beanstalk;
+  balances: ReturnType<typeof useCosmonautBalances>;
+  moonmage: Moonmage;
   tokenList: (ERC20Token | NativeToken)[];
   defaultValues: TransferFormValues;
 }> = ({
@@ -60,7 +60,7 @@ const TransferForm: FC<FormikProps<TransferFormValues> & {
   setFieldValue,
   isSubmitting,
   balances,
-  beanstalk,
+  moonmage,
   tokenList,
   defaultValues,
   submitForm
@@ -289,7 +289,7 @@ const TransferForm: FC<FormikProps<TransferFormValues> & {
             infoLabel="Destination Balance"
             baseMode={FarmToMode}
             circDesc="Send assets to another wallet."
-            farmDesc="Send assets to another internal balance within Beanstalk."
+            farmDesc="Send assets to another internal balance within Moonmage."
             onChange={handleChangeToMode}
           />
         </>
@@ -341,7 +341,7 @@ const TransferForm: FC<FormikProps<TransferFormValues> & {
           size="large"
           loading={isSubmitting}
           disabled={!isValid || isSubmitting}
-          contract={beanstalk}
+          contract={moonmage}
           tokens={shouldApprove ? values.tokensIn : []}
           mode="auto"
           nowApproving={handleApprovalMode}
@@ -360,7 +360,7 @@ const TransferForm: FC<FormikProps<TransferFormValues> & {
 // ---------------------------------------------------
 
 const SUPPORTED_TOKENS = [
-  BEAN,
+  MOON,
   WETH,
   CRV3,
   DAI,
@@ -372,25 +372,25 @@ const Transfer: FC<{}> = () => {
   /// Ledger
   const account = useAccount();
   const { data: signer } = useSigner();
-  const beanstalk = useBeanstalkContract(signer);
+  const moonmage = useMoonmageContract(signer);
 
   /// Tokens
   const getChainToken = useGetChainToken();
-  const Bean          = getChainToken(BEAN);
+  const Moon          = getChainToken(MOON);
   
   /// Token List
   const tokenMap      = useTokenMap<ERC20Token | NativeToken>(SUPPORTED_TOKENS);
   const tokenList     = useMemo(() => Object.values(tokenMap), [tokenMap]);
 
-  /// Farmer
-  const farmerBalances = useFarmerBalances();
-  const [refetchFarmerBalances] = useFetchFarmerBalances();
+  /// Cosmonaut
+  const cosmomageBalances = useCosmonautBalances();
+  const [refetchCosmonautBalances] = useFetchCosmonautBalances();
 
   /// Form
   const middleware = useFormMiddleware();
   const initialValues: TransferFormValues = useMemo(() => ({
       tokensIn: [{
-        token: Bean,
+        token: Moon,
         amount: undefined,
       }],
       balanceFrom: BalanceFrom.TOTAL,
@@ -398,7 +398,7 @@ const Transfer: FC<{}> = () => {
       toMode: FarmToMode.INTERNAL,
       destination: '',
       approving: false,
-    }), [Bean]);
+    }), [Moon]);
 
   const onSubmit = useCallback(
     async (values: TransferFormValues, formActions: FormikHelpers<TransferFormValues>) => {
@@ -429,12 +429,12 @@ const Transfer: FC<{}> = () => {
           success: 'Transfer successful..'
         });
 
-        const txn = await beanstalk.transferToken(tokenAddress, recipient, amount, fromMode, toMode);
+        const txn = await moonmage.transferToken(tokenAddress, recipient, amount, fromMode, toMode);
         txToast.confirming(txn);
 
         const receipt = await txn.wait();
         await Promise.all([
-          refetchFarmerBalances()
+          refetchCosmonautBalances()
         ]);
         txToast.success(receipt);
         // formActions.resetForm();
@@ -452,7 +452,7 @@ const Transfer: FC<{}> = () => {
         formActions.setSubmitting(false);
       }
     },
-    [account, refetchFarmerBalances, beanstalk, middleware]
+    [account, refetchCosmonautBalances, moonmage, middleware]
   );
 
   return (
@@ -464,8 +464,8 @@ const Transfer: FC<{}> = () => {
       {(formikProps: FormikProps<TransferFormValues>) => (
         <>
           <TransferForm
-            balances={farmerBalances}
-            beanstalk={beanstalk}
+            balances={cosmomageBalances}
+            moonmage={moonmage}
             tokenList={tokenList}
             defaultValues={initialValues}
             {...formikProps}

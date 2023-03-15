@@ -35,7 +35,7 @@ library LibTokenSilo {
         uint32 _s,
         uint256 amount
     ) internal returns (uint256, uint256) {
-        uint256 bdv = beanDenominatedValue(token, amount);
+        uint256 bdv = moonDenominatedValue(token, amount);
         return depositWithBDV(account, token, _s, amount, bdv);
     }
 
@@ -47,10 +47,10 @@ library LibTokenSilo {
         uint256 bdv
     ) internal returns (uint256, uint256) {
         AppStorage storage s = LibAppStorage.diamondStorage();
-        require(bdv > 0, "Silo: No Beans under Token.");
+        require(bdv > 0, "Silo: No Moons under Token.");
         incrementDepositedToken(token, amount);
         addDeposit(account, token, _s, amount, bdv);
-        return (bdv.mul(s.ss[token].seeds), bdv.mul(s.ss[token].stalk));
+        return (bdv.mul(s.ss[token].seeds), bdv.mul(s.ss[token].mage));
     }
 
     function incrementDepositedToken(address token, uint256 amount) internal {
@@ -116,10 +116,10 @@ library LibTokenSilo {
 
         if (amount > crateAmount) {
             amount -= crateAmount;
-            if (LibUnripeSilo.isUnripeBean(token))
+            if (LibUnripeSilo.isUnripeMoon(token))
                 return
                     crateBDV.add(
-                        LibUnripeSilo.removeUnripeBeanDeposit(
+                        LibUnripeSilo.removeUnripeMoonDeposit(
                             account,
                             id,
                             amount
@@ -144,8 +144,8 @@ library LibTokenSilo {
         uint32 id
     ) internal view returns (uint256, uint256) {
         AppStorage storage s = LibAppStorage.diamondStorage();
-        if (LibUnripeSilo.isUnripeBean(token))
-            return LibUnripeSilo.unripeBeanDeposit(account, id);
+        if (LibUnripeSilo.isUnripeMoon(token))
+            return LibUnripeSilo.unripeMoonDeposit(account, id);
         if (LibUnripeSilo.isUnripeLP(token))
             return LibUnripeSilo.unripeLPDeposit(account, id);
         return (
@@ -154,7 +154,7 @@ library LibTokenSilo {
         );
     }
 
-    function beanDenominatedValue(address token, uint256 amount)
+    function moonDenominatedValue(address token, uint256 amount)
         internal
         returns (uint256 bdv)
     {
@@ -191,8 +191,8 @@ library LibTokenSilo {
         return uint256(s.ss[token].seeds);
     }
 
-    function stalk(address token) internal view returns (uint256) {
+    function mage(address token) internal view returns (uint256) {
         AppStorage storage s = LibAppStorage.diamondStorage();
-        return uint256(s.ss[token].stalk);
+        return uint256(s.ss[token].mage);
     }
 }

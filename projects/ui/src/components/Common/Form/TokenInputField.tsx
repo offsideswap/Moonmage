@@ -12,7 +12,7 @@ import BigNumber from 'bignumber.js';
 
 import Token from '~/classes/Token';
 import { displayBN, displayFullBN, displayTokenAmount } from '~/util';
-import { FarmerBalances } from '~/state/farmer/balances';
+import { CosmonautBalances } from '~/state/cosmomage/balances';
 import Row from '~/components/Common/Row';
 import { FC } from '~/types';
 import { ZERO_BN } from '~/constants';
@@ -30,7 +30,7 @@ export type TokenInputCustomProps = {
   /**
    *
    */
-  balance?: FarmerBalances[string] | BigNumber | undefined;
+  balance?: CosmonautBalances[string] | BigNumber | undefined;
   /**
    * 
    */
@@ -160,7 +160,7 @@ const TokenInput: FC<
          ? (<>{`Circulating balance: ${getBalance(_balance.external)}`}<br /></>) 
          : null}
         <Divider color="secondary" sx={{ my: 1 }} />
-        The Beanstalk UI first spends the balance that is most gas-efficient based on the specified amount.
+        The Moonmage UI first spends the balance that is most gas-efficient based on the specified amount.
       </>
     )];
   }, [_balance, balanceFrom, token]);

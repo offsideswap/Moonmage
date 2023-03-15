@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
-import { TransferBatchEvent, TransferSingleEvent } from '~/generated/projects/ui/src/constants/abi/Beanstalk/BeanstalkFertilizer';
-import { decimalBN, Event } from '~/lib/Beanstalk/EventProcessor';
+import { TransferBatchEvent, TransferSingleEvent } from '~/generated/projects/ui/src/constants/abi/Moonmage/MoonmageFertilizer';
+import { decimalBN, Event } from '~/lib/Moonmage/EventProcessor';
 
 export default class ERC1155EventProcessor {
   static SUPPORTED_EVENTS = new Set([

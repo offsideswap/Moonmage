@@ -1,5 +1,5 @@
 var fs = require('fs');
-const beanstalkAbi = require('../abi/Beanstalk.json');
+const moonmageAbi = require('../abi/Moonmage.json');
 
 
 function parseItem(i) {
@@ -22,17 +22,17 @@ function parseItem(i) {
 }
 
 function rip() {
-    for(let i = 0; i <beanstalkAbi.length; i++) {
-        if (beanstalkAbi[i].type == 'function') {
-            console.log(parseItem(beanstalkAbi[i]))
+    for(let i = 0; i <moonmageAbi.length; i++) {
+        if (moonmageAbi[i].type == 'function') {
+            console.log(parseItem(moonmageAbi[i]))
         }
     }
 
     console.log('\n')
 
-    for(let i = 0; i <beanstalkAbi.length; i++) {
-        if (beanstalkAbi[i].type == 'event') {
-            console.log(parseItem(beanstalkAbi[i]))
+    for(let i = 0; i <moonmageAbi.length; i++) {
+        if (moonmageAbi[i].type == 'event') {
+            console.log(parseItem(moonmageAbi[i]))
         }
     }
 }

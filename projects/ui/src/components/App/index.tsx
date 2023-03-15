@@ -9,21 +9,21 @@ import NewProposalsDialog from '~/components/Governance/NewProposalsDialog';
 import NavBar from '~/components/Nav/NavBar';
 
 import AppUpdater from '~/state/app/updater';
-import PoolsUpdater from '~/state/bean/pools/updater';
-import UnripeUpdater from '~/state/bean/unripe/updater';
-import BarnUpdater from '~/state/beanstalk/barn/updater';
-import FieldUpdater from '~/state/beanstalk/field/updater';
-import SiloUpdater from '~/state/beanstalk/silo/updater';
-import SunUpdater from '~/state/beanstalk/sun/updater';
-import FarmerBalancesUpdater from '~/state/farmer/balances/updater';
-import FarmerBarnUpdater from '~/state/farmer/barn/updater';
-import FarmerFieldUpdater from '~/state/farmer/field/updater';
-import FarmerMarketUpdater from '~/state/farmer/market/updater';
-import FarmerSiloUpdater from '~/state/farmer/silo/updater';
+import PoolsUpdater from '~/state/moon/pools/updater';
+import UnripeUpdater from '~/state/moon/unripe/updater';
+import ShipUpdater from '~/state/moonmage/ship/updater';
+import FieldUpdater from '~/state/moonmage/field/updater';
+import SiloUpdater from '~/state/moonmage/silo/updater';
+import SunUpdater from '~/state/moonmage/sun/updater';
+import CosmonautBalancesUpdater from '~/state/cosmomage/balances/updater';
+import CosmonautShipUpdater from '~/state/cosmomage/ship/updater';
+import CosmonautFieldUpdater from '~/state/cosmomage/field/updater';
+import CosmomageStationUpdater from '~/state/cosmomage/market/updater';
+import CosmonautSiloUpdater from '~/state/cosmomage/silo/updater';
 
 import AnalyticsPage from '~/pages/analytics';
 import BalancesPage from '~/pages/balances';
-import Barn from '~/pages/barn';
+import Ship from '~/pages/ship';
 import ChopPage from '~/pages/chop';
 import PageNotFound from '~/pages/error/404';
 import FieldPage from '~/pages/field';
@@ -35,13 +35,13 @@ import NFTPage from '~/pages/nft';
 import SiloPage from '~/pages/silo';
 import SiloTokenPage from '~/pages/silo/token';
 import SwapPage from '~/pages/swap';
-import GovernanceUpdater from '~/state/beanstalk/governance/updater';
+import GovernanceUpdater from '~/state/moonmage/governance/updater';
 
 import { sgEnvKey } from '~/graph/client';
 import useBanner from '~/hooks/app/useBanner';
 import useNavHeight from '~/hooks/app/usePageDimensions';
 
-import pageBackground from '~/img/beanstalk/interface/bg/winter.png';
+import pageBackground from '~/img/moonmage/interface/bg/winter.png';
 
 import EnforceNetwork from '~/components/App/EnforceNetwork';
 import useAccount from '~/hooks/ledger/useAccount';
@@ -102,26 +102,26 @@ export default function App() {
        * ----------------------- */}
       <AppUpdater />
       {/* -----------------------
-       * Bean Updaters
+       * Moon Updaters
        * ----------------------- */}
       <PoolsUpdater />
       <UnripeUpdater />
       {/* -----------------------
-       * Beanstalk Updaters
+       * Moonmage Updaters
        * ----------------------- */}
       <SiloUpdater />
       <FieldUpdater />
-      <BarnUpdater />
+      <ShipUpdater />
       <SunUpdater />
       <GovernanceUpdater />
       {/* -----------------------
-       * Farmer Updaters
+       * Cosmonaut Updaters
        * ----------------------- */}
-      <FarmerSiloUpdater />
-      <FarmerFieldUpdater />
-      <FarmerBarnUpdater />
-      <FarmerBalancesUpdater />
-      <FarmerMarketUpdater />
+      <CosmonautSiloUpdater />
+      <CosmonautFieldUpdater />
+      <CosmonautShipUpdater />
+      <CosmonautBalancesUpdater />
+      <CosmomageStationUpdater />
       {/* -----------------------
        * Routes & Content
        * ----------------------- */}
@@ -149,7 +149,7 @@ export default function App() {
             <Route index element={<ForecastPage />} />
             <Route path="/analytics" element={<AnalyticsPage />} />
             <Route path="/balances" element={<BalancesPage />} />
-            <Route path="/barn" element={<Barn />} />
+            <Route path="/ship" element={<Ship />} />
             <Route path="/chop" element={<ChopPage />} />
             <Route path="/field" element={<FieldPage />} />
             <Route path="/governance" element={<GovernancePage />} />

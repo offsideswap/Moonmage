@@ -5,7 +5,7 @@ import ProposalStats from '~/components/Governance/Proposals/ProposalStats';
 import { Proposal } from '~/util/Governance';
 
 import { FC } from '~/types';
-import useProposalBlockData from '~/hooks/beanstalk/useProposalBlockData';
+import useProposalBlockData from '~/hooks/moonmage/useProposalBlockData';
 import Row from '~/components/Common/Row';
 import { FontSize } from '~/components/App/muiTheme';
 

@@ -11,7 +11,7 @@ import {AppStorage} from "../AppStorage.sol";
 
 /**
  * @author Publius
- * @title Pause Facet handles the pausing/unpausing of Beanstalk.
+ * @title Pause Facet handles the pausing/unpausing of Moonmage.
  **/
 contract PauseFacet {
     AppStorage internal s;

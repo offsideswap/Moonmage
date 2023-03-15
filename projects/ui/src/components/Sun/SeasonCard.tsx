@@ -1,8 +1,8 @@
 import React from 'react';
 import { Typography, Box, Grid } from '@mui/material';
 import BigNumber from 'bignumber.js';
-import rainySeasonIcon from '~/img/beanstalk/sun/rainy-season.svg';
-import drySeasonIcon from '~/img/beanstalk/sun/dry-season.svg';
+import rainySeasonIcon from '~/img/moonmage/sun/rainy-season.svg';
+import drySeasonIcon from '~/img/moonmage/sun/dry-season.svg';
 import { displayBN, displayFullBN } from '../../util';
 import { FontSize, IconSize } from '../App/muiTheme';
 import Row from '~/components/Common/Row';
@@ -11,7 +11,7 @@ import { FC } from '~/types';
 
 export interface SeasonCardProps {
   season: BigNumber;
-  rewardBeans: BigNumber | undefined;
+  rewardMoons: BigNumber | undefined;
   issuedSoil: BigNumber | undefined;
   temperature: BigNumber | undefined;
   deltaTemperature: BigNumber | undefined;
@@ -22,7 +22,7 @@ export interface SeasonCardProps {
 
 const SeasonCard: FC<SeasonCardProps> = ({ 
   season,
-  rewardBeans,
+  rewardMoons,
   issuedSoil,
   podRate,
   temperature,
@@ -71,7 +71,7 @@ const SeasonCard: FC<SeasonCardProps> = ({
           {/* Season */}
           <Grid item xs={1.5} md={1.25}>
             <Row justifyContent="flex-start" spacing={0.5}>
-              {(rewardBeans && rewardBeans.lte(0)) ? (
+              {(rewardMoons && rewardMoons.lte(0)) ? (
                 <img src={drySeasonIcon} height={IconSize.small} alt="" />
               ) : (
                 <img src={rainySeasonIcon} height={IconSize.small} alt="" />
@@ -81,10 +81,10 @@ const SeasonCard: FC<SeasonCardProps> = ({
               </Typography>
             </Row>
           </Grid>
-          {/* New Beans */}
+          {/* New Moons */}
           <Grid item xs={3} md={2} textAlign="right">
             <Typography variant="bodySmall">
-              {rewardBeans ? `+ ${displayBN(rewardBeans)}` : '-'}
+              {rewardMoons ? `+ ${displayBN(rewardMoons)}` : '-'}
             </Typography>
           </Grid>
           {/* Soil */}

@@ -1,11 +1,11 @@
 import { expect } from "chai";
-import { DataSource } from "src/lib/BeanstalkSDK";
+import { DataSource } from "src/lib/MoonmageSDK";
 import { getTestUtils, setupConnection } from "../utils/TestUtils/provider";
 
-import { BeanstalkSDK } from "./BeanstalkSDK";
+import { MoonmageSDK } from "./MoonmageSDK";
 import { Token } from "../classes/Token";
 import { TokenSiloBalance } from "./silo/types";
-import { calculateGrownStalk, parseWithdrawalCrates } from "./silo/utils";
+import { calculateGrownMage, parseWithdrawalCrates } from "./silo/utils";
 import { BigNumber, ethers } from "ethers";
 import { TokenValue } from "../classes/TokenValue";
 import { BF_MULTISIG } from "src/utils/TestUtils/addresses";
@@ -32,7 +32,7 @@ describe("Utilities", function () {
     const crate2 = { amount: ethers.BigNumber.from(2000 * 1e6) };
     const crate3 = { amount: ethers.BigNumber.from(3000 * 1e6) };
     const result = parseWithdrawalCrates(
-      sdk.tokens.BEAN,
+      sdk.tokens.MOON,
       {
         "6074": crate1, // => claimable
         "6075": crate2, // => withdrawn
@@ -56,13 +56,13 @@ describe("Utilities", function () {
 describe("Silo Balance loading", () => {
   describe("getBalance", function () {
     it("returns an empty object", async () => {
-      const balance = await sdk.silo.getBalance(sdk.tokens.BEAN, account2, { source: DataSource.SUBGRAPH });
+      const balance = await sdk.silo.getBalance(sdk.tokens.MOON, account2, { source: DataSource.SUBGRAPH });
       expect(balance.deposited.amount.eq(0)).to.be.true;
       expect(balance.withdrawn.amount.eq(0)).to.be.true;
       expect(balance.claimable.amount.eq(0)).to.be.true;
     });
     it("loads an account with deposits (fuzzy)", async () => {
-      const balance = await sdk.silo.getBalance(sdk.tokens.BEAN, BF_MULTISIG, { source: DataSource.SUBGRAPH });
+      const balance = await sdk.silo.getBalance(sdk.tokens.MOON, BF_MULTISIG, { source: DataSource.SUBGRAPH });
       expect(balance.deposited.amount.gt(10_000)).to.be.true; // FIXME
       expect(balance.withdrawn.amount.eq(0)).to.be.true;
       expect(balance.claimable.amount.eq(0)).to.be.true;
@@ -71,8 +71,8 @@ describe("Silo Balance loading", () => {
     // FIX: discrepancy in graph results
     it.skip("source: ledger === subgraph", async function () {
       const [ledger, subgraph]: TokenSiloBalance[] = await Promise.all([
-        timer(sdk.silo.getBalance(sdk.tokens.BEAN, account1, { source: DataSource.LEDGER }), "Ledger result time"),
-        timer(sdk.silo.getBalance(sdk.tokens.BEAN, account1, { source: DataSource.SUBGRAPH }), "Subgraph result time")
+        timer(sdk.silo.getBalance(sdk.tokens.MOON, account1, { source: DataSource.LEDGER }), "Ledger result time"),
+        timer(sdk.silo.getBalance(sdk.tokens.MOON, account1, { source: DataSource.SUBGRAPH }), "Subgraph result time")
       ]);
 
       // We cannot compare .deposited.bdv as the ledger results come from prod
@@ -117,36 +117,36 @@ describe("Silo Balance loading", () => {
     });
   });
 
-  describe("stalk calculations for each crate", () => {
+  describe("mage calculations for each crate", () => {
     let balance: TokenSiloBalance;
     beforeAll(async () => {
-      balance = await sdk.silo.getBalance(sdk.tokens.BEAN, BF_MULTISIG, { source: DataSource.SUBGRAPH });
+      balance = await sdk.silo.getBalance(sdk.tokens.MOON, BF_MULTISIG, { source: DataSource.SUBGRAPH });
     });
 
-    it("stalk = baseStalk + grownStalk", () => {
-      // Note that this does not verify that the stalk values themselves
+    it("mage = baseMage + grownMage", () => {
+      // Note that this does not verify that the mage values themselves
       // are as expected, just that their additive properties hold.
       balance.deposited.crates.forEach((crate) => {
-        expect(crate.baseStalk.add(crate.grownStalk).eq(crate.stalk)).to.be.true;
+        expect(crate.baseMage.add(crate.grownMage).eq(crate.mage)).to.be.true;
       });
     });
 
-    it("correctly instantiates baseStalk using getStalk()", () => {
-      // Note that this does not verify that `getStalk()` itself is correct;
+    it("correctly instantiates baseMage using getMage()", () => {
+      // Note that this does not verify that `getMage()` itself is correct;
       // this is the responsibility of Tokens.test.
       balance.deposited.crates.forEach((crate) => {
-        expect(crate.baseStalk.eq(sdk.tokens.BEAN.getStalk(crate.bdv))).to.be.true;
+        expect(crate.baseMage.eq(sdk.tokens.MOON.getMage(crate.bdv))).to.be.true;
       });
     });
   });
 
-  describe("balanceOfStalk", () => {
-    it("Returns a TokenValue with STALK decimals", async () => {
-      const result = await sdk.silo.getStalk(BF_MULTISIG);
+  describe("balanceOfMage", () => {
+    it("Returns a TokenValue with MAGE decimals", async () => {
+      const result = await sdk.silo.getMage(BF_MULTISIG);
       expect(result).to.be.instanceOf(TokenValue);
       expect(result.decimals).to.eq(10);
     });
-    it.todo("Adds grown stalk when requested");
+    it.todo("Adds grown mage when requested");
   });
 
   describe("balanceOfSeeds", () => {
@@ -157,20 +157,20 @@ describe("Silo Balance loading", () => {
     });
   });
 
-  describe("Grown Stalk calculations", () => {
+  describe("Grown Mage calculations", () => {
     const seeds = sdk.tokens.SEEDS.amount(1);
     it("returns zero when deltaSeasons = 0", () => {
-      expect(calculateGrownStalk(6074, 6074, seeds).toHuman()).to.eq("0");
+      expect(calculateGrownMage(6074, 6074, seeds).toHuman()).to.eq("0");
     });
     it("throws if currentSeason < depositSeason", () => {
-      expect(() => calculateGrownStalk(5000, 6074, seeds).toHuman()).to.throw();
+      expect(() => calculateGrownMage(5000, 6074, seeds).toHuman()).to.throw();
     });
     it("works when deltaSeasons > 0", () => {
-      // 1 seed grows 1/10_000 STALK per Season
-      expect(calculateGrownStalk(6075, 6074, seeds).toHuman()).to.eq((1 / 10_000).toString());
-      expect(calculateGrownStalk(6075, 6074, seeds.mul(10)).toHuman()).to.eq((10 / 10_000).toString());
-      expect(calculateGrownStalk(6076, 6074, seeds).toHuman()).to.eq((2 / 10_000).toString());
-      expect(calculateGrownStalk(6076, 6074, seeds.mul(10)).toHuman()).to.eq((20 / 10_000).toString());
+      // 1 seed grows 1/10_000 MAGE per Season
+      expect(calculateGrownMage(6075, 6074, seeds).toHuman()).to.eq((1 / 10_000).toString());
+      expect(calculateGrownMage(6075, 6074, seeds.mul(10)).toHuman()).to.eq((10 / 10_000).toString());
+      expect(calculateGrownMage(6076, 6074, seeds).toHuman()).to.eq((2 / 10_000).toString());
+      expect(calculateGrownMage(6076, 6074, seeds.mul(10)).toHuman()).to.eq((20 / 10_000).toString());
     });
   });
 });
@@ -179,11 +179,11 @@ describe("Deposit Permits", function () {
   it("permits", async () => {
     const owner = account;
     const spender = sdk.contracts.root.address;
-    const token = sdk.tokens.BEAN.address;
-    const amount = sdk.tokens.BEAN.amount("100").toString();
+    const token = sdk.tokens.MOON.address;
+    const amount = sdk.tokens.MOON.amount("100").toString();
 
-    // const startAllowance = await sdk.contracts.beanstalk.depositAllowance(owner, spender, token);
-    // const depositPermitNonces = await sdk.contracts.beanstalk.depositPermitNonces(owner);
+    // const startAllowance = await sdk.contracts.moonmage.depositAllowance(owner, spender, token);
+    // const depositPermitNonces = await sdk.contracts.moonmage.depositPermitNonces(owner);
     // console.log("Initial allowance: ", startAllowance.toString())
     // console.log("Nonce: ", depositPermitNonces.toString())
 
@@ -202,7 +202,7 @@ describe("Deposit Permits", function () {
     // console.log("Signed permit", permitData, sig)
 
     // Send permit
-    await sdk.contracts.beanstalk
+    await sdk.contracts.moonmage
       .permitDeposit(
         owner,
         spender,
@@ -216,7 +216,7 @@ describe("Deposit Permits", function () {
       .then((txn) => txn.wait());
 
     // Verify
-    const allowance = await sdk.contracts.beanstalk.depositAllowance(owner, spender, token);
+    const allowance = await sdk.contracts.moonmage.depositAllowance(owner, spender, token);
     expect(allowance.toString()).to.be.eq(amount);
   });
 });

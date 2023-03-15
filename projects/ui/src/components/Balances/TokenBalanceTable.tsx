@@ -2,8 +2,8 @@ import { Typography, Stack, Grid, Card, Box } from '@mui/material';
 import React from 'react';
 import Row from '../Common/Row';
 import { displayFullBN } from '~/util';
-import { TokenBalanceWithFiatValue } from '~/hooks/farmer/useFarmerBalancesWithFiatValue';
-import { BeanstalkPalette } from '../App/muiTheme';
+import { TokenBalanceWithFiatValue } from '~/hooks/cosmomage/useCosmonautBalancesWithFiatValue';
+import { MoonmagePalette } from '../App/muiTheme';
 
 const TokenBalanceTable: React.FC<{
   rows: TokenBalanceWithFiatValue[];
@@ -44,7 +44,7 @@ const TokenBalanceTable: React.FC<{
                 <Stack
                   {...{ px: 2, py: 1 }}
                   sx={{
-                    background: BeanstalkPalette.white,
+                    background: MoonmagePalette.white,
                     borderRadius: '6px',
                     border: '1px solid',
                     borderColor: 'divider',

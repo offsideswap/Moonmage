@@ -1,5 +1,5 @@
 const { upgradeWithNewFacets } = require('../scripts/diamond.js');
-const { BEANSTALK, PRICE_DEPLOYER } = require('../test/utils/constants.js');
+const { MOONMAGE, PRICE_DEPLOYER } = require('../test/utils/constants.js');
 const { impersonateSigner } = require('../utils/signer.js');
 
 async function replant8 (
@@ -9,7 +9,7 @@ async function replant8 (
     console.log('-----------------------------------')
     console.log('Replant8: Deploy New Tokens\n')
     await upgradeWithNewFacets({
-      diamondAddress: BEANSTALK,
+      diamondAddress: MOONMAGE,
       facetNames: [],
       initFacetName: 'Replant8',
       bip: false,
@@ -25,7 +25,7 @@ async function replant8 (
     });
     await receipt.wait()
 
-    const PriceContract = await ethers.getContractFactory("BeanstalkPrice", deployAccount);
+    const PriceContract = await ethers.getContractFactory("MoonmagePrice", deployAccount);
     const priceContract = await PriceContract.deploy();
     await priceContract.deployed()
     console.log(priceContract.address);

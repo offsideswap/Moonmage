@@ -6,7 +6,7 @@ pragma solidity =0.7.6;
 pragma experimental ABIEncoderV2;
 
 import "../C.sol";
-import "../interfaces/IBean.sol";
+import "../interfaces/IMoon.sol";
 import "./LibAppStorage.sol";
 import "./LibSafeMath32.sol";
 
@@ -21,7 +21,7 @@ library LibDibbler {
     event Sow(
         address indexed account,
         uint256 index,
-        uint256 beans,
+        uint256 moons,
         uint256 pods
     );
 
@@ -41,7 +41,7 @@ library LibDibbler {
         returns (uint256)
     {
         AppStorage storage s = LibAppStorage.diamondStorage();
-        uint256 pods = beansToPods(amount, s.w.yield);
+        uint256 pods = moonsToPods(amount, s.w.yield);
         sowPlot(account, amount, pods);
         s.f.pods = s.f.pods.add(pods);
         saveSowTime();
@@ -50,20 +50,20 @@ library LibDibbler {
 
     function sowPlot(
         address account,
-        uint256 beans,
+        uint256 moons,
         uint256 pods
     ) private {
         AppStorage storage s = LibAppStorage.diamondStorage();
         s.a[account].field.plots[s.f.pods] = pods;
-        emit Sow(account, s.f.pods, beans, pods);
+        emit Sow(account, s.f.pods, moons, pods);
     }
 
-    function beansToPods(uint256 beans, uint256 weather)
+    function moonsToPods(uint256 moons, uint256 weather)
         private
         pure
         returns (uint256)
     {
-        return beans.add(beans.mul(weather).div(100));
+        return moons.add(moons.mul(weather).div(100));
     }
 
     function saveSowTime() private {

@@ -1,9 +1,9 @@
 import React from 'react';
 import SeasonPlot, { SeasonPlotBaseProps } from '~/components/Common/Charts/SeasonPlot';
 import { SeasonalPodRateDocument, SeasonalPodRateQuery } from '~/generated/graphql';
-import useSeason from '~/hooks/beanstalk/useSeason';
-import usePodRate from '~/hooks/beanstalk/usePodRate';
-import { SnapshotData } from '~/hooks/beanstalk/useSeasonsQuery';
+import useSeason from '~/hooks/moonmage/useSeason';
+import usePodRate from '~/hooks/moonmage/usePodRate';
+import { SnapshotData } from '~/hooks/moonmage/useSeasonsQuery';
 import { LineChartProps } from '~/components/Common/Charts/LineChart';
 import { tickFormatPercentage } from '~/components/Analytics/formatters';
 
@@ -13,7 +13,7 @@ const getValue = (season: SnapshotData<SeasonalPodRateQuery>) => parseFloat(seas
 const formatValue = (value: number) => `${value.toFixed(2)}%`;
 const statProps = {
   title: 'Pod Rate',
-  titleTooltip: 'The ratio of outstanding Pods per Bean, displayed as a percentage. The Pod Rate is used by Beanstalk as a proxy for its health.',
+  titleTooltip: 'The ratio of outstanding Pods per Moon, displayed as a percentage. The Pod Rate is used by Moonmage as a proxy for its health.',
   gap: 0.25,
   sx: { ml: 0 }
 };

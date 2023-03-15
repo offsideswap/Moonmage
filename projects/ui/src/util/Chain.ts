@@ -3,7 +3,7 @@ import { TESTNET_CHAINS, SupportedChainId } from '~/constants';
 /// Convention: 
 /// "chain constant" = a value that is constant for a given chain.
 /// May or may not be constant across chains. For example, the 
-/// BEAN token address is typically the same on every testnet,
+/// MOON token address is typically the same on every testnet,
 /// but the USDC token address is not. This requires manual configuration.
 
 export type ChainConstant = { [chainId: number] : any };

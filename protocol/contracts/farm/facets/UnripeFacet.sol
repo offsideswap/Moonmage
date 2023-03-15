@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/cryptography/MerkleProof.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import {SafeMath} from "@openzeppelin/contracts/math/SafeMath.sol";
-import {IBean} from "../../interfaces/IBean.sol";
+import {IMoon} from "../../interfaces/IMoon.sol";
 import {LibDiamond} from "../../libraries/LibDiamond.sol";
 import {LibUnripe} from "../../libraries/LibUnripe.sol";
 import {LibTransfer} from "../../libraries/Token/LibTransfer.sol";
@@ -18,7 +18,7 @@ import "../ReentrancyGuard.sol";
 
 /// @author ZrowGz, Publius
 /// @title VestingFacet
-/// @notice Manage the logic of the vesting process for the Barnraised Funds
+/// @notice Manage the logic of the vesting process for the Shipraised Funds
 
 contract UnripeFacet is ReentrancyGuard {
     using SafeERC20 for IERC20;
@@ -56,7 +56,7 @@ contract UnripeFacet is ReentrancyGuard {
     ) external payable nonReentrant returns (uint256 underlyingAmount) {
         uint256 unripeSupply = IERC20(unripeToken).totalSupply();
 
-        amount = LibTransfer.burnToken(IBean(unripeToken), amount, msg.sender, fromMode);
+        amount = LibTransfer.burnToken(IMoon(unripeToken), amount, msg.sender, fromMode);
 
         underlyingAmount = _getPenalizedUnderlying(unripeToken, amount, unripeSupply);
 
@@ -176,8 +176,8 @@ contract UnripeFacet is ReentrancyGuard {
         view
         returns (uint256 percent)
     {
-        if (unripeToken == C.unripeBeanAddress()) {
-            return LibUnripe.percentBeansRecapped();
+        if (unripeToken == C.unripeMoonAddress()) {
+            return LibUnripe.percentMoonsRecapped();
         } else if (unripeToken == C.unripeLPAddress()) {
             return LibUnripe.percentLPRecapped();
         }

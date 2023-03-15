@@ -3,7 +3,7 @@ import commandLineUsage from "command-line-usage";
 export const help = () => {
   const sections = [
     {
-      header: "Beanstalk Dev CLI",
+      header: "Moonmage Dev CLI",
       content: "Utilities to make developer experience smoother"
     },
     {
@@ -47,7 +47,7 @@ export const help = () => {
       content: [
         { name: "{bold.greenBright balance}", summary: "Display balance(s). Optionally specify account or token" },
         { name: "{bold.greenBright setbalance}", summary: "Set balance(s). Optionally specify account, token, or amount" },
-        { name: "{bold.greenBright setprice}", summary: "Set BEAN price by setting liquidity. Defaults to 20M BEAN and 20M 3CRV. Parameters are millions. See examples below" },
+        { name: "{bold.greenBright setprice}", summary: "Set MOON price by setting liquidity. Defaults to 20M MOON and 20M 3CRV. Parameters are millions. See examples below" },
         { name: "{bold.greenBright sunrise}", summary: "Calls the sunrise() function" },
         { name: "{bold.greenBright help}", summary: "You're looking at it :)" }
       ]
@@ -57,36 +57,36 @@ export const help = () => {
       content: [
         {
           desc: "1. Show all balances. ",
-          example: "$ bean balance"
+          example: "$ moon balance"
         },
         {
           desc: "2. Show all balances for a specific account and token",
-          example: "$ bean balance --token BEAN --account 0x123"
+          example: "$ moon balance --token MOON --account 0x123"
         },
         {
           desc: "3. Set ALL balances to 50,000 for default account",
-          example: "$ bean setbalance"
+          example: "$ moon setbalance"
         },
         {
-          desc: "4. Set BEAN balance for account 0x123 to 3.14",
-          example: "$ bean setbalance -a 0x123 -t BEAN -m 3.14"
+          desc: "4. Set MOON balance for account 0x123 to 3.14",
+          example: "$ moon setbalance -a 0x123 -t MOON -m 3.14"
         },
         {
-          desc: "5. Set BEAN price above a dollar (20M BEAN, 30M 3CRV)",
-          example: "$ bean setprice 20 30"
+          desc: "5. Set MOON price above a dollar (20M MOON, 30M 3CRV)",
+          example: "$ moon setprice 20 30"
         },
         {
           desc: "5. Call sunrise",
-          example: "$ bean sunrise"
+          example: "$ moon sunrise"
         },
         {
           desc: "6. Call sunrise, forcing blockchain into the future",
-          example: "$ bean sunrise --force"
+          example: "$ moon sunrise --force"
         }
       ]
     },
     {
-      content: "For bugs or issues: {underline https://github.com/BeanstalkFarms/Beanstalk-SDK/}"
+      content: "For bugs or issues: {underline https://github.com/MoonmageFarms/Moonmage-SDK/}"
     }
   ];
   const usage = commandLineUsage(sections);

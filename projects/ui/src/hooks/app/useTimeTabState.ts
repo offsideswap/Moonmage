@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { TimeTabState } from '~/components/Common/Charts/TimeTabs';
-import { SeasonAggregation, SeasonRange } from '../beanstalk/useSeasonsQuery';
+import { SeasonAggregation, SeasonRange } from '../moonmage/useSeasonsQuery';
 
 export type TimeTabStateParams = [
   TimeTabState,

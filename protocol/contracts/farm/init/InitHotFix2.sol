@@ -12,8 +12,8 @@ contract InitHotFix2 {
     AppStorage internal s;
     using SafeMath for uint256;
 
-    event BeanDeposit(address indexed account, uint256 season, uint256 beans);
-    event BeanRemove(address indexed account, uint32[] crates, uint256[] crateBeans, uint256 beans);
+    event MoonDeposit(address indexed account, uint256 season, uint256 moons);
+    event MoonRemove(address indexed account, uint32[] crates, uint256[] crateMoons, uint256 moons);
 
     function init() external {
         fixCrates(address(0xf393fb8C4BbF7e37f583D0593AD1d1b2443E205c), 4_294_966_636, 4_294_966_637);
@@ -38,27 +38,27 @@ contract InitHotFix2 {
 
     function fixCrates(address account, uint32 s1, uint32 s2) internal {
         uint256[] memory bs = new uint256[](2);
-        bs[0] = removeBeanDeposit(account, s1);
-        bs[1] = removeBeanDeposit(account, s2);
+        bs[0] = removeMoonDeposit(account, s1);
+        bs[1] = removeMoonDeposit(account, s2);
         uint32[] memory ss = new uint32[](2);
         ss[0] = s1; ss[1] = s2;
-        uint256 beansRemoved = bs[0].add(bs[1]);
-        emit BeanRemove(account, ss, bs, beansRemoved);
-        addBeanDeposit(account, 1, beansRemoved);
+        uint256 moonsRemoved = bs[0].add(bs[1]);
+        emit MoonRemove(account, ss, bs, moonsRemoved);
+        addMoonDeposit(account, 1, moonsRemoved);
 
     }
 
-    function removeBeanDeposit(address account, uint32 id)
+    function removeMoonDeposit(address account, uint32 id)
         private
         returns (uint256)
     {
-        uint256 crateAmount = s.a[account].bean.deposits[id];
-        delete s.a[account].bean.deposits[id];
+        uint256 crateAmount = s.a[account].moon.deposits[id];
+        delete s.a[account].moon.deposits[id];
         return crateAmount;
     }
 
-    function addBeanDeposit(address account, uint32 _s, uint256 amount) internal {
-        s.a[account].bean.deposits[_s] += amount;
-        emit BeanDeposit(account, _s, amount);
+    function addMoonDeposit(address account, uint32 _s, uint256 amount) internal {
+        s.a[account].moon.deposits[_s] += amount;
+        emit MoonDeposit(account, _s, amount);
     }
 }

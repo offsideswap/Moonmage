@@ -11,7 +11,7 @@ import "../ReentrancyGuard.sol";
 
 /**
  * @author Publius
- * @title Field sows Beans.
+ * @title Field sows Moons.
  **/
 contract FieldFacet is ReentrancyGuard {
     using SafeMath for uint256;
@@ -20,10 +20,10 @@ contract FieldFacet is ReentrancyGuard {
     event Sow(
         address indexed account,
         uint256 index,
-        uint256 beans,
+        uint256 moons,
         uint256 pods
     );
-    event Harvest(address indexed account, uint256[] plots, uint256 beans);
+    event Harvest(address indexed account, uint256[] plots, uint256 moons);
     event PodListingCancelled(address indexed account, uint256 index);
 
     /**
@@ -56,7 +56,7 @@ contract FieldFacet is ReentrancyGuard {
         internal
         returns (uint256 pods)
     {
-        amount = LibTransfer.burnToken(C.bean(), amount, msg.sender, mode);
+        amount = LibTransfer.burnToken(C.moon(), amount, msg.sender, mode);
         pods = LibDibbler.sow(amount, msg.sender);
     }
 
@@ -68,21 +68,21 @@ contract FieldFacet is ReentrancyGuard {
         external
         payable
     {
-        uint256 beansHarvested = _harvest(plots);
-        LibTransfer.sendToken(C.bean(), beansHarvested, msg.sender, mode);
+        uint256 moonsHarvested = _harvest(plots);
+        LibTransfer.sendToken(C.moon(), moonsHarvested, msg.sender, mode);
     }
 
     function _harvest(uint256[] calldata plots)
         internal
-        returns (uint256 beansHarvested)
+        returns (uint256 moonsHarvested)
     {
         for (uint256 i; i < plots.length; ++i) {
             require(plots[i] < s.f.harvestable, "Field: Plot not Harvestable.");
             uint256 harvested = harvestPlot(msg.sender, plots[i]);
-            beansHarvested = beansHarvested.add(harvested);
+            moonsHarvested = moonsHarvested.add(harvested);
         }
-        s.f.harvested = s.f.harvested.add(beansHarvested);
-        emit Harvest(msg.sender, plots, beansHarvested);
+        s.f.harvested = s.f.harvested.add(moonsHarvested);
+        emit Harvest(msg.sender, plots, moonsHarvested);
     }
 
     function harvestPlot(address account, uint256 plotId)

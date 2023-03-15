@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import { Box, BoxProps, ClickAwayListener } from '@mui/material';
-import { BeanstalkPalette } from '~/components/App/muiTheme';
+import { MoonmagePalette } from '~/components/App/muiTheme';
 import { FC } from '~/types';
 
 const BorderEffect: FC<
@@ -21,21 +21,21 @@ const BorderEffect: FC<
       if (!ref.current || activeRef.current || disabled) return;
       ref.current.style.padding = '1px';
       ref.current.style.border = '1px solid';
-      ref.current.style.borderColor = BeanstalkPalette.textBlue;
+      ref.current.style.borderColor = MoonmagePalette.textBlue;
     };
 
     const handleMouseLeave = () => {
       if (!ref.current || activeRef.current || disabled) return;
       ref.current.style.padding = '1px';
       ref.current.style.border = '1px solid';
-      ref.current.style.borderColor = BeanstalkPalette.inputGrey;
+      ref.current.style.borderColor = MoonmagePalette.inputGrey;
     };
 
     const handleOnClick = () => {
       if (!ref.current || activeRef.current || disabled) return;
       ref.current.style.padding = '0px';
       ref.current.style.border = '2px solid';
-      ref.current.style.borderColor = BeanstalkPalette.theme.winter.primary;
+      ref.current.style.borderColor = MoonmagePalette.theme.winter.primary;
       activeRef.current = true;
     };
 
@@ -43,7 +43,7 @@ const BorderEffect: FC<
       if (!ref.current || !activeRef.current || disabled) return;
       ref.current.style.padding = '1px';
       ref.current.style.border = '1px solid';
-      ref.current.style.borderColor = BeanstalkPalette.inputGrey;
+      ref.current.style.borderColor = MoonmagePalette.inputGrey;
       activeRef.current = false;
     };
 
@@ -58,7 +58,7 @@ const BorderEffect: FC<
   useEffect(() => {
     if (!enabled || !ref.current) return;
     if (disabled) {
-      ref.current.style.borderColor = BeanstalkPalette.inputGrey;
+      ref.current.style.borderColor = MoonmagePalette.inputGrey;
     }
   }, [enabled, disabled]);
 
@@ -72,8 +72,8 @@ const BorderEffect: FC<
         border: '1px solid',
         padding: '1px',
         boxSizing: 'border-box',
-        borderColor: BeanstalkPalette.inputGrey,
-        backgroundColor: BeanstalkPalette.white,
+        borderColor: MoonmagePalette.inputGrey,
+        backgroundColor: MoonmagePalette.white,
       }}
       width={fullWidth ? '100%' : undefined}
       onMouseOver={actions.handleMouseOver}

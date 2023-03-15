@@ -1,14 +1,14 @@
 {
-  "name": "@beanstalk/sdk",
+  "name": "@moonmage/sdk",
   "version": "0.1.0",
-  "description": "A JavaScript framework for interacting with the Beanstalk protocol and ecosystem",
+  "description": "A JavaScript framework for interacting with the Moonmage protocol and ecosystem",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/BeanstalkFarms/Beanstalk.git",
+    "url": "https://github.com/MoonmageFarms/Moonmage.git",
     "directory": "projects/sdk"
   },
-  "homepage": "https://bean.money",
+  "homepage": "https://moon.money",
   "keywords": [
     "stablecoin",
     "eth",
@@ -30,7 +30,7 @@
   },
   "scripts": {
     "generate": "echo '\nSDK Generate' && yarn generate:typechain && yarn generate:graphql",
-    "generate:typechain": "typechain --target=ethers-v5 --ts-nocheck --out-dir=./src/constants/generated/ '{./src/constants/abi/**/*.json,../../protocol/abi/Beanstalk.json}'",
+    "generate:typechain": "typechain --target=ethers-v5 --ts-nocheck --out-dir=./src/constants/generated/ '{./src/constants/abi/**/*.json,../../protocol/abi/Moonmage.json}'",
     "generate:graphql": "graphql-codegen --config codegen.ts",
     "clean:generated": "rimraf ./src/constants/generated && rimraf ./src/constants/generated-gql",
     "clean:build": "rimraf dist",

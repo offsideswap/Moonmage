@@ -9,7 +9,7 @@ export default {
   component: TokenInputField,
   args: {
     balance: new BigNumber(100),
-    // token: BEAN[1],
+    // token: MOON[1],
     InputLabelProps: {
       disableAnimation: true,
     }

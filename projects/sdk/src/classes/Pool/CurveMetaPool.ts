@@ -7,7 +7,7 @@ export class CurveMetaPool extends Pool {
   // This returns the index of the input token depending if
   // it's an underlying token or not.
   // Index shapes are as follows:
-  // [ BEAN, 3CRV ]
+  // [ MOON, 3CRV ]
   // [ DAI, USDC, USDT ] for underlying
   public getTokenIndex(token: Token) {
     let i = this.tokens.indexOf(token as ERC20Token);

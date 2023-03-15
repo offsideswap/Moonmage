@@ -1,8 +1,8 @@
 import { ethers } from 'ethers';
-import { EventCacheName, FarmerEvents } from '~/state/farmer/events2';
+import { EventCacheName, CosmonautEvents } from '~/state/cosmomage/events2';
 
 /**
- * Return the key at which Farmer events should be held in localStorage.
+ * Return the key at which Cosmonaut events should be held in localStorage.
  * @param chainId
  * @param account 
  * @param cacheId 
@@ -25,7 +25,7 @@ export const clearApolloCache = () => {
  */
 export const loadState = () => {
   try {
-    const serializedState = localStorage.getItem('beanstalk.s');
+    const serializedState = localStorage.getItem('moonmage.s');
     if (serializedState === null) {
       return undefined;
     }
@@ -45,7 +45,7 @@ export const saveState = (state: any) => {
   if (state.app.settings) {
     try {
       const serializedState = JSON.stringify({ app: { settings: state.app.settings } });
-      localStorage.setItem('beanstalk.s', serializedState);
+      localStorage.setItem('moonmage.s', serializedState);
     } catch (err) {
       // pass
       console.warn('Failed to save state');
@@ -57,7 +57,7 @@ export const saveState = (state: any) => {
  * Rehydrate BigNumbers from stored value in Redux
  * @unused
  */
-export const rehydrateEvents2 = (events2: FarmerEvents | undefined) => {
+export const rehydrateEvents2 = (events2: CosmonautEvents | undefined) => {
   try {
     if (!events2) return;
     const cache = { ...events2 };

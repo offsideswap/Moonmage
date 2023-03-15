@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import Token from '~/classes/Token';
 import { ZERO_BN } from '~/constants';
-import { STALK } from '~/constants/tokens';
+import { MAGE } from '~/constants/tokens';
 
 // -------------------------
 // BigNumber Comparators
@@ -163,27 +163,27 @@ export function displayUSD(
 }
 
 /**
- * Standard Bean price display: truncate with ROUND_FLOOR.
+ * Standard Moon price display: truncate with ROUND_FLOOR.
  * 
  * 0.99995 => "0.9999"
  * 1.00006 => "1.0000"
  * 
- * @param price Bean price
+ * @param price Moon price
  * @param decimals number of decimals to display
- * @returns string; truncated Bean price
+ * @returns string; truncated Moon price
  */
-export function displayBeanPrice(
+export function displayMoonPrice(
   price: BigNumber,
   decimals: number = 4,
 ) {
   return price.dp(decimals, BigNumber.ROUND_FLOOR).toFixed(decimals);
 }
 
-export function displayStalk(
-  stalk: BigNumber,
-  decimals : number = STALK.displayDecimals,
+export function displayMage(
+  mage: BigNumber,
+  decimals : number = MAGE.displayDecimals,
 ) {
-  return stalk.lt(0.0001) ? '0' : displayFullBN(stalk, decimals);
+  return mage.lt(0.0001) ? '0' : displayFullBN(mage, decimals);
 }
 
 export function displayPercentage(

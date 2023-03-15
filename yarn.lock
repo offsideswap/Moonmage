@@ -2086,11 +2086,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@beanstalk/cli@workspace:projects/cli":
+"@moonmage/cli@workspace:projects/cli":
   version: 0.0.0-use.local
-  resolution: "@beanstalk/cli@workspace:projects/cli"
+  resolution: "@moonmage/cli@workspace:projects/cli"
   dependencies:
-    "@beanstalk/sdk": "workspace:*"
+    "@moonmage/sdk": "workspace:*"
     "@types/command-line-args": ^5
     "@types/node": 18.11.9
     "@types/rimraf": ^3
@@ -2103,15 +2103,15 @@ __metadata:
     ts-node: 10.9.1
     typescript: 4.9.3
   bin:
-    bean: build/cli.js
+    moon: build/cli.js
   languageName: unknown
   linkType: soft
 
-"@beanstalk/examples@workspace:projects/examples":
+"@moonmage/examples@workspace:projects/examples":
   version: 0.0.0-use.local
-  resolution: "@beanstalk/examples@workspace:projects/examples"
+  resolution: "@moonmage/examples@workspace:projects/examples"
   dependencies:
-    "@beanstalk/sdk": "workspace:*"
+    "@moonmage/sdk": "workspace:*"
     "@swc/core": 1.3.11
     "@swc/register": 0.1.10
     bignumber.js: 9.1.0
@@ -2121,9 +2121,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@beanstalk/protocol@workspace:*, @beanstalk/protocol@workspace:protocol":
+"@moonmage/protocol@workspace:*, @moonmage/protocol@workspace:protocol":
   version: 0.0.0-use.local
-  resolution: "@beanstalk/protocol@workspace:protocol"
+  resolution: "@moonmage/protocol@workspace:protocol"
   dependencies:
     "@nomiclabs/hardhat-ethers": ^2.2.1
     "@nomiclabs/hardhat-etherscan": ^3.1.2
@@ -2151,9 +2151,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@beanstalk/sdk@workspace:*, @beanstalk/sdk@workspace:projects/sdk":
+"@moonmage/sdk@workspace:*, @moonmage/sdk@workspace:projects/sdk":
   version: 0.0.0-use.local
-  resolution: "@beanstalk/sdk@workspace:projects/sdk"
+  resolution: "@moonmage/sdk@workspace:projects/sdk"
   dependencies:
     "@ethersproject/bytes": 5.7.0
     "@ethersproject/logger": 5.7.0
@@ -35966,9 +35966,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"subgraph-bean@workspace:projects/subgraph-bean":
+"subgraph-moon@workspace:projects/subgraph-moon":
   version: 0.0.0-use.local
-  resolution: "subgraph-bean@workspace:projects/subgraph-bean"
+  resolution: "subgraph-moon@workspace:projects/subgraph-moon"
   dependencies:
     "@graphprotocol/graph-cli": 0.30.4
     "@graphprotocol/graph-ts": 0.27.0
@@ -35976,9 +35976,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"subgraph-beanstalk@workspace:projects/subgraph-beanstalk":
+"subgraph-moonmage@workspace:projects/subgraph-moonmage":
   version: 0.0.0-use.local
-  resolution: "subgraph-beanstalk@workspace:projects/subgraph-beanstalk"
+  resolution: "subgraph-moonmage@workspace:projects/subgraph-moonmage"
   dependencies:
     "@graphprotocol/graph-cli": ^0.30.4
     "@graphprotocol/graph-ts": ^0.27.0
@@ -37555,8 +37555,8 @@ __metadata:
   resolution: "ui@workspace:projects/ui"
   dependencies:
     "@apollo/client": ^3.4.10
-    "@beanstalk/protocol": "workspace:*"
-    "@beanstalk/sdk": "workspace:*"
+    "@moonmage/protocol": "workspace:*"
+    "@moonmage/sdk": "workspace:*"
     "@emotion/react": ^11.10.5
     "@emotion/styled": ^11.10.5
     "@graphql-codegen/cli": 2.7.0

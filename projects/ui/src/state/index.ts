@@ -3,16 +3,16 @@ import throttle from 'lodash/throttle';
 import { saveState } from '~/util';
 
 import app from './app/reducer';
-import _bean from './bean/reducer';
-import _beanstalk from './beanstalk/reducer';
-import _farmer from './farmer/reducer';
+import _moon from './moon/reducer';
+import _moonmage from './moonmage/reducer';
+import _cosmomage from './cosmomage/reducer';
 
 const store = configureStore({
   reducer: {
     app,
-    _bean,
-    _beanstalk,
-    _farmer,
+    _moon,
+    _moonmage,
+    _cosmomage,
   },
   middleware: [
     ...getDefaultMiddleware({

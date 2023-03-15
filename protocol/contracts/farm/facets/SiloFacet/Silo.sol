@@ -20,7 +20,7 @@ contract Silo is SiloExit {
 
     event Plant(
         address indexed account,
-        uint256 beans
+        uint256 moons
     );
 
     event ClaimPlenty(
@@ -33,7 +33,7 @@ contract Silo is SiloExit {
         int256 delta
     );
 
-    event StalkBalanceChanged(
+    event MageBalanceChanged(
         address indexed account,
         int256 delta,
         int256 deltaRoots
@@ -48,39 +48,39 @@ contract Silo is SiloExit {
         if (_lastUpdate >= season()) return;
         // Increment Plenty if a SOP has occured or save Rain Roots if its Raining.
         handleRainAndSops(account, _lastUpdate);
-        // Earn Grown Stalk -> The Stalk gained from Seeds.
-        earnGrownStalk(account);
+        // Earn Grown Mage -> The Mage gained from Seeds.
+        earnGrownMage(account);
         s.a[account].lastUpdate = season();
     }
 
-    function _plant(address account) internal returns (uint256 beans) {
+    function _plant(address account) internal returns (uint256 moons) {
         // Need to update account before we make a Deposit
         _update(account);
-        uint256 accountStalk = s.a[account].s.stalk;
-        // Calculate balance of Earned Beans.
-        beans = _balanceOfEarnedBeans(account, accountStalk);
-        if (beans == 0) return 0;
-        s.earnedBeans = s.earnedBeans.sub(beans);
-        // Deposit Earned Beans
+        uint256 accountMage = s.a[account].s.mage;
+        // Calculate balance of Earned Moons.
+        moons = _balanceOfEarnedMoons(account, accountMage);
+        if (moons == 0) return 0;
+        s.earnedMoons = s.earnedMoons.sub(moons);
+        // Deposit Earned Moons
         LibTokenSilo.addDeposit(
             account,
-            C.beanAddress(),
+            C.moonAddress(),
             season(),
-            beans,
-            beans
+            moons,
+            moons
         );
-        uint256 seeds = beans.mul(C.getSeedsPerBean());
+        uint256 seeds = moons.mul(C.getSeedsPerMoon());
 
         // Earned Seeds don't auto-compound, so we need to mint new Seeds
         LibSilo.incrementBalanceOfSeeds(account, seeds);
 
-        // Earned Stalk auto-compounds and thus is minted alongside Earned Beans
-        // Farmers don't receive additional Roots from Earned Stalk.
-        uint256 stalk = beans.mul(C.getStalkPerBean());
-        s.a[account].s.stalk = accountStalk.add(stalk);
+        // Earned Mage auto-compounds and thus is minted alongside Earned Moons
+        // Cosmonauts don't receive additional Roots from Earned Mage.
+        uint256 mage = moons.mul(C.getMagePerMoon());
+        s.a[account].s.mage = accountMage.add(mage);
 
-        emit StalkBalanceChanged(account, int256(stalk), 0);
-        emit Plant(account, beans);
+        emit MageBalanceChanged(account, int256(mage), 0);
+        emit Plant(account, moons);
     }
 
     function _claimPlenty(address account) internal {
@@ -92,10 +92,10 @@ contract Silo is SiloExit {
         emit ClaimPlenty(account, plenty);
     }
 
-    function earnGrownStalk(address account) private {
+    function earnGrownMage(address account) private {
         // If they have no seeds, we can save gas.
         if (s.a[account].s.seeds == 0) return;
-        LibSilo.incrementBalanceOfStalk(account, balanceOfGrownStalk(account));
+        LibSilo.incrementBalanceOfMage(account, balanceOfGrownMage(account));
     }
 
     function handleRainAndSops(address account, uint32 _lastUpdate) private {

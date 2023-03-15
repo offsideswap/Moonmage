@@ -3,7 +3,7 @@ import React, { useMemo, useState } from 'react';
 import { scaleBand, scaleLinear } from '@visx/scale';
 
 import { BarRounded } from '@visx/shape';
-import { BeanstalkPalette } from '~/components/App/muiTheme';
+import { MoonmagePalette } from '~/components/App/muiTheme';
 import { Group } from '@visx/group';
 import { chartHelpers } from './ChartPropProvider';
 import { withTooltip } from '@visx/tooltip';
@@ -97,7 +97,7 @@ const useBarChart = ({
               y={yPosition}
               width={barWidth}
               height={barHeight}
-              fill={BeanstalkPalette.theme.winter.primary}
+              fill={MoonmagePalette.theme.winter.primary}
             />
             <BarRounded
               key={`hover-bar-${x}`}

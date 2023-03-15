@@ -15,25 +15,25 @@ import {
 import { TokenSelectMode } from '~/components/Common/Form/TokenSelectDialog';
 import StyledAccordionSummary from '~/components/Common/Accordion/AccordionSummary';
 import TokenInputField from '~/components/Common/Form/TokenInputField';
-import { BeanstalkPalette } from '~/components/App/muiTheme';
+import { MoonmagePalette } from '~/components/App/muiTheme';
 import FarmModeField from '~/components/Common/Form/FarmModeField';
 import Token, { ERC20Token, NativeToken } from '~/classes/Token';
-import { Beanstalk } from '~/generated/index';
+import { Moonmage } from '~/generated/index';
 import useToggle from '~/hooks/display/useToggle';
-import { useBeanstalkContract } from '~/hooks/ledger/useContract';
-import useFarmerBalances from '~/hooks/farmer/useFarmerBalances';
+import { useMoonmageContract } from '~/hooks/ledger/useContract';
+import useCosmonautBalances from '~/hooks/cosmomage/useCosmonautBalances';
 import useTokenMap from '~/hooks/chain/useTokenMap';
 import { useSigner } from '~/hooks/ledger/useSigner';
 import useAccount from '~/hooks/ledger/useAccount';
-import usePreferredToken, { PreferredToken } from '~/hooks/farmer/usePreferredToken';
-import { FarmToMode } from '~/lib/Beanstalk/Farm';
+import usePreferredToken, { PreferredToken } from '~/hooks/cosmomage/usePreferredToken';
+import { FarmToMode } from '~/lib/Moonmage/Farm';
 import { ActionType } from '~/util/Actions';
 import { displayBN, displayFullBN, optimizeFromMode, toStringBaseUnitBN } from '~/util';
-import { UNRIPE_BEAN, UNRIPE_BEAN_CRV3, UNRIPE_TOKENS } from '~/constants/tokens';
+import { UNRIPE_MOON, UNRIPE_MOON_CRV3, UNRIPE_TOKENS } from '~/constants/tokens';
 import { ZERO_BN } from '~/constants';
-import { useFetchFarmerBalances } from '~/state/farmer/balances/updater';
+import { useFetchCosmonautBalances } from '~/state/cosmomage/balances/updater';
 import { AppState } from '~/state';
-import useUnripeUnderlyingMap from '~/hooks/beanstalk/useUnripeUnderlying';
+import useUnripeUnderlyingMap from '~/hooks/moonmage/useUnripeUnderlying';
 import Row from '~/components/Common/Row';
 import { FC } from '~/types';
 import TransactionToast from '~/components/Common/TxnToast';
@@ -45,14 +45,14 @@ type ChopFormValues = FormState & {
 
 const ChopForm: FC<
   FormikProps<ChopFormValues> & {
-    balances: ReturnType<typeof useFarmerBalances>;
-    beanstalk: Beanstalk;
+    balances: ReturnType<typeof useCosmonautBalances>;
+    moonmage: Moonmage;
   }
 > = ({
   values,
   setFieldValue,
   balances,
-  beanstalk,
+  moonmage,
 }) => {
   const erc20TokenMap = useTokenMap<ERC20Token | NativeToken>(UNRIPE_TOKENS);
   const [isTokenSelectVisible, showTokenSelect, hideTokenSelect] = useToggle();
@@ -65,7 +65,7 @@ const ChopForm: FC<
   const outputToken    = unripeUnderlying[inputToken.address];
 
   /// Chop Penalty  = 99% <-> Chop Rate     = 0.01
-  const unripeTokens = useSelector<AppState, AppState['_bean']['unripe']>((_state) => _state._bean.unripe);
+  const unripeTokens = useSelector<AppState, AppState['_moon']['unripe']>((_state) => _state._moon.unripe);
   const amountOut = state.amount?.multipliedBy(unripeTokens[inputToken.address]?.chopRate || ZERO_BN);
   const chopPenalty = unripeTokens[inputToken.address]?.chopPenalty || new BigNumber(100);
 
@@ -127,9 +127,9 @@ const ChopForm: FC<
           <Row justifyContent="space-between" px={0.5}>
             <Typography variant="body1" color="text.tertiary">Chop Penalty</Typography>
             {!unripeTokens[inputToken.address] ? (
-              <CircularProgress size={16} thickness={5} sx={{ color: BeanstalkPalette.theme.winter.red }} />
+              <CircularProgress size={16} thickness={5} sx={{ color: MoonmagePalette.theme.winter.red }} />
             ) : (
-              <Typography variant="body1" color={BeanstalkPalette.theme.winter.error}>
+              <Typography variant="body1" color={MoonmagePalette.theme.winter.error}>
                 {displayFullBN(chopPenalty, 5)}%
               </Typography>
             )}
@@ -169,7 +169,7 @@ const ChopForm: FC<
           color="primary"
           size="large"
           disabled={!isSubmittable}
-          contract={beanstalk}
+          contract={moonmage}
           tokens={values.tokens}
           mode="auto"
         >
@@ -184,11 +184,11 @@ const ChopForm: FC<
 
 const PREFERRED_TOKENS : PreferredToken[] = [
   {
-    token: UNRIPE_BEAN,
+    token: UNRIPE_MOON,
     minimum: new BigNumber(1),
   },
   {
-    token: UNRIPE_BEAN_CRV3,
+    token: UNRIPE_MOON_CRV3,
     minimum: new BigNumber(1),
   }
 ];
@@ -197,11 +197,11 @@ const Chop: FC<{}> = () => {
   /// Ledger
   const account           = useAccount();
   const { data: signer }  = useSigner();
-  const beanstalk         = useBeanstalkContract(signer);
+  const moonmage         = useMoonmageContract(signer);
 
-  /// Farmer
-  const farmerBalances    = useFarmerBalances();
-  const [refetchFarmerBalances] = useFetchFarmerBalances();
+  /// Cosmonaut
+  const cosmomageBalances    = useCosmonautBalances();
+  const [refetchCosmonautBalances] = useFetchCosmonautBalances();
   
   /// Form
   const middleware = useFormMiddleware();
@@ -236,16 +236,16 @@ const Chop: FC<{}> = () => {
           success: 'Chop successful.',
         });
 
-        const txn = await beanstalk.chop(
+        const txn = await moonmage.chop(
           state.token.address,
           toStringBaseUnitBN(state.amount, state.token.decimals),
-          optimizeFromMode(state.amount, farmerBalances[state.token.address]),
+          optimizeFromMode(state.amount, cosmomageBalances[state.token.address]),
           values.destination
         );
         txToast.confirming(txn);
 
         const receipt = await txn.wait();
-        await Promise.all([refetchFarmerBalances()]); // should we also refetch the penalty?
+        await Promise.all([refetchCosmonautBalances()]); // should we also refetch the penalty?
         txToast.success(receipt);
         formActions.resetForm();
       } catch (err) {
@@ -260,9 +260,9 @@ const Chop: FC<{}> = () => {
     },
     [
       account,
-      beanstalk,
-      refetchFarmerBalances,
-      farmerBalances,
+      moonmage,
+      refetchCosmonautBalances,
+      cosmomageBalances,
       middleware,
     ]
   );
@@ -275,8 +275,8 @@ const Chop: FC<{}> = () => {
     >
       {(formikProps: FormikProps<ChopFormValues>) => (
         <ChopForm
-          balances={farmerBalances}
-          beanstalk={beanstalk}
+          balances={cosmomageBalances}
+          moonmage={moonmage}
           {...formikProps}
         />
       )}

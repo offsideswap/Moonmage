@@ -1,7 +1,7 @@
 import { Stack, Typography } from '@mui/material';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import Rinse from '~/components/Barn/Actions/Rinse';
+import Rinse from '~/components/Ship/Actions/Rinse';
 import Dot from '~/components/Common/Dot';
 import {
   Module,
@@ -11,10 +11,10 @@ import Row from '~/components/Common/Row';
 import { AppState } from '~/state';
 
 const QuickRinse: React.FC<{}> = () => {
-  const farmerBarn = useSelector<AppState, AppState['_farmer']['barn']>(
-    (state) => state._farmer.barn
+  const cosmomageShip = useSelector<AppState, AppState['_cosmomage']['ship']>(
+    (state) => state._cosmomage.ship
   );
-  const rinsable = farmerBarn.fertilizedSprouts;
+  const rinsable = cosmomageShip.fertilizedSprouts;
 
   return rinsable?.gt(0) ? (
     <Module sx={{ width: '100%' }}>

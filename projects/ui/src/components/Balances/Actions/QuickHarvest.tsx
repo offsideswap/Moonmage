@@ -11,11 +11,11 @@ import Harvest from '~/components/Field/Actions/Harvest';
 import { AppState } from '~/state';
 
 const QuickHarvest: React.FC<{}> = () => {
-  const farmerField = useSelector<AppState, AppState['_farmer']['field']>(
-    (state) => state._farmer.field
+  const cosmomageField = useSelector<AppState, AppState['_cosmomage']['field']>(
+    (state) => state._cosmomage.field
   );
 
-  return farmerField.harvestablePods?.gt(0) ? (
+  return cosmomageField.harvestablePods?.gt(0) ? (
     <Module sx={{ width: '100%' }}>      
       <ModuleContent pt={1.5} px={1} pb={1}>
         <Stack spacing={1.5}>

@@ -1,20 +1,20 @@
 import React from 'react';
 import SeasonPlot, { SeasonPlotBaseProps } from '~/components/Common/Charts/SeasonPlot';
 import { SeasonalSownDocument, SeasonalSownQuery } from '~/generated/graphql';
-import useSeason from '~/hooks/beanstalk/useSeason';
-import { SnapshotData } from '~/hooks/beanstalk/useSeasonsQuery';
+import useSeason from '~/hooks/moonmage/useSeason';
+import { SnapshotData } from '~/hooks/moonmage/useSeasonsQuery';
 import { toTokenUnitsBN } from '~/util';
-import { BEAN } from '~/constants/tokens';
+import { MOON } from '~/constants/tokens';
 import { LineChartProps } from '~/components/Common/Charts/LineChart';
 import { tickFormatTruncated } from '~/components/Analytics/formatters'; 
 
 import { FC } from '~/types';
 
-const getValue = (season: SnapshotData<SeasonalSownQuery>) => toTokenUnitsBN(season.sownBeans, BEAN[1].decimals).toNumber();
+const getValue = (season: SnapshotData<SeasonalSownQuery>) => toTokenUnitsBN(season.sownMoons, MOON[1].decimals).toNumber();
 const formatValue = (value: number) => `${value.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
 const statProps = {
-  title: 'Beans Sown',
-  titleTooltip: 'The total number of Beans Sown at the end of each Season.',
+  title: 'Moons Sown',
+  titleTooltip: 'The total number of Moons Sown at the end of each Season.',
   gap: 0.25,
   sx: { ml: 0 }
 };

@@ -8,7 +8,7 @@ import { Axis, Orientation } from '@visx/axis';
 import { useTooltip, useTooltipInPortal, TooltipWithBounds } from '@visx/tooltip';
 import { Box, Card, Stack, Typography } from '@mui/material';
 import ParentSize from '@visx/responsive/lib/components/ParentSize';
-import { BeanstalkPalette } from '~/components/App/muiTheme';
+import { MoonmagePalette } from '~/components/App/muiTheme';
 
 import { displayBN } from '~/util';
 import ChartPropProvider, {
@@ -255,7 +255,7 @@ const Graph = (props: Props) => {
             <Line
               from={{ x: tooltipLeft, y: dataRegion.yTop }}
               to={{ x: tooltipLeft, y: dataRegion.yBottom }}
-              stroke={BeanstalkPalette.lightGrey}
+              stroke={MoonmagePalette.lightGrey}
               strokeWidth={1}
               pointerEvents="none"
             />
@@ -299,7 +299,7 @@ const Graph = (props: Props) => {
             <Line
               from={{ x: tooltipLeft, y: dataRegion.yTop }}
               to={{ x: tooltipLeft, y: dataRegion.yBottom }}
-              stroke={BeanstalkPalette.lightGrey}
+              stroke={MoonmagePalette.lightGrey}
               strokeWidth={1}
               pointerEvents="none"
             />
@@ -314,7 +314,7 @@ const Graph = (props: Props) => {
                     position: 'absolute'
                   }}
                 >
-                  <Card sx={{ p: 1, backgroundColor: BeanstalkPalette.lightestBlue, border: '1px solid', borderColor: 'divider' }}>
+                  <Card sx={{ p: 1, backgroundColor: MoonmagePalette.lightestBlue, border: '1px solid', borderColor: 'divider' }}>
                     {typeof tooltip === 'boolean' ? (
                       <Stack gap={0.5}>
                         {reversedKeys.map((key, index) => (
@@ -352,7 +352,7 @@ const Graph = (props: Props) => {
   );
 };
 
-// For reference on how to use this chart, refer to BeanVs3Crv.tsx
+// For reference on how to use this chart, refer to MoonVs3Crv.tsx
 const StackedAreaChart: React.FC<BaseChartProps> = (props) => (
   <ChartPropProvider>
     {({ ...providerProps }) => (

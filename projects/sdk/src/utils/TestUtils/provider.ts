@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { BeanstalkSDK, DataSource } from "src/lib/BeanstalkSDK";
+import { MoonmageSDK, DataSource } from "src/lib/MoonmageSDK";
 import { BlockchainUtils } from "./BlockchainUtils";
 
 // private key + account mapping
@@ -27,7 +27,7 @@ export const setupConnection = (provider: ethers.providers.JsonRpcProvider = get
 
 export const getTestUtils = () => {
   const { signer, account } = setupConnection();
-  const sdk = new BeanstalkSDK({
+  const sdk = new MoonmageSDK({
     signer,
     source: DataSource.LEDGER
   });

@@ -5,7 +5,7 @@
 pragma solidity =0.7.6;
 pragma experimental ABIEncoderV2;
 
-import {IBean} from "../../interfaces/IBean.sol";
+import {IMoon} from "../../interfaces/IMoon.sol";
 
 /**
  * @author Publius

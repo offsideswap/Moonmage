@@ -1,15 +1,15 @@
 import { ContractTransaction } from "ethers";
 import { Token } from "src/classes/Token";
 import { TokenValue } from "src/classes/TokenValue";
-import { BeanstalkSDK } from "../BeanstalkSDK";
+import { MoonmageSDK } from "../MoonmageSDK";
 import { DepositCrate } from "../silo/types";
 import { sortCratesBySeason } from "./utils";
 import { pickCrates } from "./utils";
 
 export class Withdraw {
-  static sdk: BeanstalkSDK;
+  static sdk: MoonmageSDK;
 
-  constructor(sdk: BeanstalkSDK) {
+  constructor(sdk: MoonmageSDK) {
     Withdraw.sdk = sdk;
   }
 
@@ -42,10 +42,10 @@ export class Withdraw {
 
     if (seasons.length === 1) {
       Withdraw.sdk.debug("silo.withdraw(): withdrawDeposit()", { address: token.address, season: seasons[0], amount: amounts[0] });
-      contractCall = Withdraw.sdk.contracts.beanstalk.withdrawDeposit(token.address, seasons[0], amounts[0]);
+      contractCall = Withdraw.sdk.contracts.moonmage.withdrawDeposit(token.address, seasons[0], amounts[0]);
     } else {
       Withdraw.sdk.debug("silo.withdraw(): withdrawDeposits()", { address: token.address, seasons: seasons, amounts: amounts });
-      contractCall = Withdraw.sdk.contracts.beanstalk.withdrawDeposits(token.address, seasons, amounts);
+      contractCall = Withdraw.sdk.contracts.moonmage.withdrawDeposits(token.address, seasons, amounts);
     }
 
     return contractCall;
@@ -60,7 +60,7 @@ export class Withdraw {
     return {
       amount: pickedCrates.totalAmount,
       bdv: pickedCrates.totalBDV,
-      stalk: pickedCrates.totalStalk,
+      mage: pickedCrates.totalMage,
       seeds: token.getSeeds(pickedCrates.totalBDV),
       actions: [],
       crates: pickedCrates.crates

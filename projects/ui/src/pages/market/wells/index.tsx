@@ -6,7 +6,7 @@ import {
 } from '@mui/material';
 
 import PageHeader from '~/components/Common/PageHeader';
-import Price from '~/components/Analytics/Bean/Price';
+import Price from '~/components/Analytics/Moon/Price';
 import Wells from '~/components/Market/Wells/Wells';
 
 const WellHomePage: React.FC = () => (

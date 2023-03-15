@@ -1,5 +1,5 @@
 /* Governance */
-export const BASE_COMMIT_INCENTIVE = 1e8; /* 100 beans */
+export const BASE_COMMIT_INCENTIVE = 1e8; /* 100 moons */
 export const GOVERNANCE_PERIOD = 168; /* 168 seasons */
 export const GOVERNANCE_EMERGENCY_PERIOD = 86400; /* 86400 seconds = 1 day */
 export const GOVERNANCE_PASS_THRESHOLD = 5e17; /* 1/2 */
@@ -9,15 +9,15 @@ export const GOVERNANCE_EXPIRATION = 25; /* 24 + 1 seasons */
 export const GOVERNANCE_PROPOSAL_THRESHOLD = 1e16; /* 0.5% */
 
 /* Silo */
-export const BASE_ADVANCE_INCENTIVE = 1e8; /* 100 beans */
+export const BASE_ADVANCE_INCENTIVE = 1e8; /* 100 moons */
 
-export const BEAN_TO_STALK = 1;
-export const BEAN_TO_SEEDS = 2;
-export const LP_TO_STALK = 1;
+export const MOON_TO_MAGE = 1;
+export const MOON_TO_SEEDS = 2;
+export const LP_TO_MAGE = 1;
 export const LP_TO_SEEDS = 4;
-export const CURVE_BDV_TO_STALK = 1;
+export const CURVE_BDV_TO_MAGE = 1;
 export const CURVE_BDV_TO_SEEDS = 4;
-export const LUSD_BDV_TO_STALK = 1;
+export const LUSD_BDV_TO_MAGE = 1;
 export const LUSD_BDV_TO_SEEDS = 3;
 
 export const UNISWAP_BASE_LP = 1e-15;
@@ -58,7 +58,7 @@ export const PEG_WEATHER_CASES = [
 
 /* Website Settings */
 export const BASE_SLIPPAGE = 0.995; /* 0.5% slippage */
-export const CONVERT_BEAN_SLIPPAGE = 0.980; /* 2.0% slippage */
+export const CONVERT_MOON_SLIPPAGE = 0.980; /* 2.0% slippage */
 export const CONVERT_LP_SLIPPAGE = 0.990; /* 1.0% slippage */
 export const SLIPPAGE_THRESHOLD = 0.97; /* 3% slippage threshold for frontrunning */
 export const LP_FEE = 0.003; /* 0.3% LP fee */

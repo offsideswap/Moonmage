@@ -16,7 +16,7 @@ import FieldConditions from '../components/Field/FieldConditions';
 import { PODS } from '../constants/tokens';
 import useAccount from '../hooks/ledger/useAccount';
 import GuideButton from '~/components/Common/Guide/GuideButton';
-import { HOW_TO_HARVEST_PODS, HOW_TO_SOW_BEANS, HOW_TO_TRANSFER_PODS } from '~/util/Guides';
+import { HOW_TO_HARVEST_PODS, HOW_TO_SOW_MOONS, HOW_TO_TRANSFER_PODS } from '~/util/Guides';
 
 import { FC } from '~/types';
 
@@ -53,9 +53,9 @@ const FieldPage: FC<{}> = () => {
   const authState = !account ? 'disconnected' : 'ready';
   
   /// Data
-  const farmerField = useSelector<AppState, AppState['_farmer']['field']>((state) => state._farmer.field);
-  const beanstalkField = useSelector<AppState, AppState['_beanstalk']['field']>((state) => state._beanstalk.field);
-  const harvestablePods = farmerField.harvestablePods;
+  const cosmomageField = useSelector<AppState, AppState['_cosmomage']['field']>((state) => state._cosmomage.field);
+  const moonmageField = useSelector<AppState, AppState['_moonmage']['field']>((state) => state._moonmage.field);
+  const harvestablePods = cosmomageField.harvestablePods;
 
   const rows: any[] = useMemo(() => {
     const data: any[] = [];
@@ -66,43 +66,43 @@ const FieldPage: FC<{}> = () => {
         amount: harvestablePods,
       });
     }
-    if (Object.keys(farmerField.plots).length > 0) {
+    if (Object.keys(cosmomageField.plots).length > 0) {
       data.push(
-        ...Object.keys(farmerField.plots).map((index) => ({
+        ...Object.keys(cosmomageField.plots).map((index) => ({
           id: index,
-          placeInLine: new BigNumber(index).minus(beanstalkField.harvestableIndex),
-          amount: new BigNumber(farmerField.plots[index]),
+          placeInLine: new BigNumber(index).minus(moonmageField.harvestableIndex),
+          amount: new BigNumber(cosmomageField.plots[index]),
         }))
       );
     }
     return data;
-  }, [beanstalkField.harvestableIndex, farmerField.plots, harvestablePods]);
+  }, [moonmageField.harvestableIndex, cosmomageField.plots, harvestablePods]);
 
   return (
     <Container maxWidth="sm">
       <Stack spacing={2}>
         <PageHeader
           title="The Field"
-          description="Earn yield by lending Beans to Beanstalk"
-          href="https://docs.bean.money/almanac/farm/field"
+          description="Earn yield by lending Moons to Moonmage"
+          href="https://docs.moon.money/almanac/farm/field"
           OuterStackProps={{ direction: 'row' }}
           control={
             <GuideButton
-              title="The Farmers' Almanac: Field Guides"
+              title="The Cosmonauts' Almanac: Field Guides"
               guides={[
-                HOW_TO_SOW_BEANS,
+                HOW_TO_SOW_MOONS,
                 HOW_TO_TRANSFER_PODS,
                 HOW_TO_HARVEST_PODS
               ]}
             />
           }
         />
-        <FieldConditions beanstalkField={beanstalkField} />
+        <FieldConditions moonmageField={moonmageField} />
         <FieldActions />
         <TableCard
           title="Pod Balance"
           state={authState}
-          amount={farmerField.pods}
+          amount={cosmomageField.pods}
           rows={rows}
           columns={podlineColumns}
           sort={{ field: 'placeInLine', sort: 'asc' }}

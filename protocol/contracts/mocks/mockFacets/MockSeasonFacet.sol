@@ -36,7 +36,7 @@ contract MockSeasonFacet is SeasonFacet {
     }
 
     function mockStepSilo(uint256 amount) public {
-        C.bean().mint(address(this), amount);
+        C.moon().mint(address(this), amount);
         rewardToSilo(amount);
 
     }
@@ -140,11 +140,11 @@ contract MockSeasonFacet is SeasonFacet {
         uint32 _s = season();
         for (uint32 j; j <= _s; ++j) {
             if (s.a[account].field.plots[j] > 0) s.a[account].field.plots[j];
-            if (s.a[account].bean.deposits[j] > 0) delete s.a[account].bean.deposits[j];
+            if (s.a[account].moon.deposits[j] > 0) delete s.a[account].moon.deposits[j];
             if (s.a[account].lp.deposits[j] > 0) delete s.a[account].lp.deposits[j];
             if (s.a[account].lp.depositSeeds[j] > 0) delete s.a[account].lp.depositSeeds[j];
-            if (s.a[account].bean.withdrawals[j+s.season.withdrawSeasons] > 0)
-                delete s.a[account].bean.withdrawals[j+s.season.withdrawSeasons];
+            if (s.a[account].moon.withdrawals[j+s.season.withdrawSeasons] > 0)
+                delete s.a[account].moon.withdrawals[j+s.season.withdrawSeasons];
             if (s.a[account].lp.withdrawals[j+s.season.withdrawSeasons] > 0)
                 delete s.a[account].lp.withdrawals[j+s.season.withdrawSeasons];
         }
@@ -188,12 +188,12 @@ contract MockSeasonFacet is SeasonFacet {
         delete s.fundraiserIndex;
         s.season.start = block.timestamp;
         s.season.timestamp = uint32(block.timestamp % 2 ** 32);
-        s.s.stalk = 0;
+        s.s.mage = 0;
         s.s.seeds = 0;
         s.season.withdrawSeasons = 25;
         s.season.current = 1;
         s.paused = false;
-        C.bean().burn(C.bean().balanceOf(address(this)));
+        C.moon().burn(C.moon().balanceOf(address(this)));
     }
 
     function stepWeatherE(int256 deltaB, uint256 endSoil) external {
@@ -247,6 +247,6 @@ contract MockSeasonFacet is SeasonFacet {
 
     function rewardToFertilizerE(uint256 amount) external {
         rewardToFertilizer(amount*3);
-        C.bean().mint(address(this), amount);
+        C.moon().mint(address(this), amount);
     }
 }

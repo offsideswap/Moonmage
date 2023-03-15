@@ -18,12 +18,12 @@ library LibPlainCurveConvert {
     uint256 private constant i = 0;
     uint256 private constant j = 1;
 
-    function beansAtPeg(
+    function moonsAtPeg(
         address pool,
         uint256[2] memory balances,
         address[2] memory metaPool,
         uint256[2] memory decimals
-    ) internal view returns (uint256 beans) {
+    ) internal view returns (uint256 moons) {
         uint256 pool0Price = LibMetaCurve.price(metaPool[i], decimals[i]);
         uint256 pool1Price = LibMetaCurve.price(metaPool[j], decimals[j]);
 
@@ -32,14 +32,14 @@ library LibPlainCurveConvert {
         uint256 a = ICurvePool(pool).A_precise();
         uint256 D = LibCurve.getD(xp, a);
 
-        // The getPrice function will need to be refactored if Bean is not the first token in the pool.
+        // The getPrice function will need to be refactored if Moon is not the first token in the pool.
         uint256 poolPrice = LibCurve.getPrice(xp, rates, a, D);
 
         uint256 pricePadding = decimals[j] - decimals[i];
         uint256 targetPrice = pool0Price.mul(10**pricePadding).div(pool1Price);
 
         return
-            getPlainPegBeansAtPeg(
+            getPlainPegMoonsAtPeg(
                 xp,
                 D,
                 36 - decimals[i],
@@ -50,16 +50,16 @@ library LibPlainCurveConvert {
     }
 
     struct DeltaB {
-        uint256 pegBeans;
-        int256 currentBeans;
+        uint256 pegMoons;
+        int256 currentMoons;
         int256 deltaBToPeg;
         int256 deltaPriceToTarget;
         int256 deltaPriceToPeg;
         int256 estDeltaB;
-        uint256 kBeansAtPeg;
+        uint256 kMoonsAtPeg;
     }
 
-    function getPlainPegBeansAtPeg(
+    function getPlainPegMoonsAtPeg(
         uint256[2] memory xp,
         uint256 D,
         uint256 padding,
@@ -68,9 +68,9 @@ library LibPlainCurveConvert {
         uint256 poolPrice
     ) private pure returns (uint256 b) {
         DeltaB memory db;
-        db.currentBeans = int256(xp[0]);
-        db.pegBeans = D / 2;
-        db.deltaBToPeg = int256(db.pegBeans) - db.currentBeans;
+        db.currentMoons = int256(xp[0]);
+        db.pegMoons = D / 2;
+        db.deltaBToPeg = int256(db.pegMoons) - db.currentMoons;
 
         uint256 prevPrice;
         uint256 x;
@@ -79,7 +79,7 @@ library LibPlainCurveConvert {
         for (uint256 k = 0; k < 256; k++) {
             db.deltaPriceToTarget = int256(targetPrice) - int256(poolPrice);
             db.deltaPriceToPeg = 1e6 - int256(poolPrice);
-            db.deltaBToPeg = int256(db.pegBeans) - int256(xp[0]);
+            db.deltaBToPeg = int256(db.pegMoons) - int256(xp[0]);
             db.estDeltaB =
                 (db.deltaBToPeg *
                     int256(

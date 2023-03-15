@@ -1,8 +1,8 @@
 const { expect } = require('chai')
 const { deploy } = require('../scripts/deploy.js')
 const { EXTERNAL, INTERNAL, INTERNAL_EXTERNAL, INTERNAL_TOLERANT } = require('./utils/balances.js')
-const { BEAN, THREE_CURVE, THREE_POOL, BEAN_3_CURVE } = require('./utils/constants')
-const { to18, to6, toStalk } = require('./utils/helpers.js')
+const { MOON, THREE_CURVE, THREE_POOL, MOON_3_CURVE } = require('./utils/constants')
+const { to18, to6, toMage } = require('./utils/helpers.js')
 const { takeSnapshot, revertToSnapshot } = require("./utils/snapshot")
 
 let user,user2,owner;
@@ -15,33 +15,33 @@ describe('Sop', function () {
     user2Address = user2.address;
     const contracts = await deploy("Test", false, true)
     ownerAddress = contracts.account;
-    this.diamond = contracts.beanstalkDiamond;
+    this.diamond = contracts.moonmageDiamond;
     this.season = await ethers.getContractAt('MockSeasonFacet', this.diamond.address)
     this.silo = await ethers.getContractAt('MockSiloFacet', this.diamond.address)
     this.field = await ethers.getContractAt('MockFieldFacet', this.diamond.address)
-    this.bean = await ethers.getContractAt('Bean', BEAN)
+    this.moon = await ethers.getContractAt('Moon', MOON)
     this.threeCurve = await ethers.getContractAt('MockToken', THREE_CURVE)
     this.threePool = await ethers.getContractAt('Mock3Curve', THREE_POOL)
-    this.beanMetapool = await ethers.getContractAt('IMockCurvePool', BEAN_3_CURVE)
+    this.moonMetapool = await ethers.getContractAt('IMockCurvePool', MOON_3_CURVE)
 
     await this.season.siloSunrise(0)
-    await this.bean.connect(user).approve(this.silo.address, '100000000000')
-    await this.bean.connect(user2).approve(this.silo.address, '100000000000') 
-    await this.bean.connect(user).approve(this.beanMetapool.address, '100000000000')
-    await this.bean.mint(userAddress, to6('10000'))
-    await this.bean.mint(user2Address, to6('10000'))
+    await this.moon.connect(user).approve(this.silo.address, '100000000000')
+    await this.moon.connect(user2).approve(this.silo.address, '100000000000') 
+    await this.moon.connect(user).approve(this.moonMetapool.address, '100000000000')
+    await this.moon.mint(userAddress, to6('10000'))
+    await this.moon.mint(user2Address, to6('10000'))
 
     await this.threeCurve.mint(userAddress, to18('100000'))
     await this.threePool.set_virtual_price(to18('1'))
-    await this.threeCurve.connect(user).approve(this.beanMetapool.address, to18('100000000000'))
+    await this.threeCurve.connect(user).approve(this.moonMetapool.address, to18('100000000000'))
 
-    await this.beanMetapool.set_A_precise('1000')
-    await this.beanMetapool.set_virtual_price(ethers.utils.parseEther('1'))
-    await this.beanMetapool.connect(user).approve(this.threeCurve.address, to18('100000000000'))
-    await this.beanMetapool.connect(user).approve(this.silo.address, to18('100000000000'))
-    await this.beanMetapool.connect(user).add_liquidity([to6('1000'), to18('1000')], to18('2000'))
-    this.result = await this.silo.connect(user).deposit(this.bean.address, to6('1000'), EXTERNAL)
-    this.result = await this.silo.connect(user2).deposit(this.bean.address, to6('1000'), EXTERNAL)
+    await this.moonMetapool.set_A_precise('1000')
+    await this.moonMetapool.set_virtual_price(ethers.utils.parseEther('1'))
+    await this.moonMetapool.connect(user).approve(this.threeCurve.address, to18('100000000000'))
+    await this.moonMetapool.connect(user).approve(this.silo.address, to18('100000000000'))
+    await this.moonMetapool.connect(user).add_liquidity([to6('1000'), to18('1000')], to18('2000'))
+    this.result = await this.silo.connect(user).deposit(this.moon.address, to6('1000'), EXTERNAL)
+    this.result = await this.silo.connect(user2).deposit(this.moon.address, to6('1000'), EXTERNAL)
   })
 
   beforeEach(async function () {
@@ -96,7 +96,7 @@ describe('Sop', function () {
     })
 
     it('sops p < 1', async function () {
-      await this.beanMetapool.connect(user).add_liquidity([to6('100'), to18('0')], to18('50'))
+      await this.moonMetapool.connect(user).add_liquidity([to6('100'), to18('0')], to18('50'))
       await this.season.rainSunrises(25);
       const season = await this.season.time();
       const rain = await this.season.rain()
@@ -107,7 +107,7 @@ describe('Sop', function () {
 
   describe('1 sop', async function () {
     beforeEach(async function () {
-      await this.beanMetapool.connect(user).add_liquidity([to6('0'), to18('200')], to18('50'))
+      await this.moonMetapool.connect(user).add_liquidity([to6('0'), to18('200')], to18('50'))
       await this.season.rainSunrise();
       await this.silo.update(user2Address);
       await this.season.rainSunrises(24);
@@ -115,7 +115,7 @@ describe('Sop', function () {
 
     it('sops p > 1', async function () {
       const season = await this.season.time();
-      const balances = await this.beanMetapool.get_balances()
+      const balances = await this.moonMetapool.get_balances()
       const scaledBalance1 = balances[1].div(ethers.utils.parseEther('0.000001'));
       expect(balances[0]).to.be.within(scaledBalance1.sub(1),scaledBalance1.add(1))
       expect(season.lastSop).to.be.equal(season.rainStart);
@@ -161,18 +161,18 @@ describe('Sop', function () {
 
   describe('multiple sop', async function () {
     beforeEach(async function () {
-      await this.beanMetapool.connect(user).add_liquidity([to6('0'), to18('200')], to18('50'))
+      await this.moonMetapool.connect(user).add_liquidity([to6('0'), to18('200')], to18('50'))
       await this.season.rainSunrise();
       await this.silo.update(user2Address);
       await this.season.rainSunrises(24);
       await this.season.droughtSunrise();
-      await this.beanMetapool.connect(user).add_liquidity([to6('0'), to18('200')], to18('50'))
+      await this.moonMetapool.connect(user).add_liquidity([to6('0'), to18('200')], to18('50'))
       await this.season.rainSunrises(25);
     })
 
     it('sops p > 1', async function () {
       const season = await this.season.time();
-      const balances = await this.beanMetapool.get_balances()
+      const balances = await this.moonMetapool.get_balances()
       const scaledBalance1 = balances[1].div(ethers.utils.parseEther('0.000001'));
       expect(balances[0]).to.be.within(scaledBalance1.sub(1),scaledBalance1.add(1))
       expect(season.lastSop).to.be.equal(season.rainStart);

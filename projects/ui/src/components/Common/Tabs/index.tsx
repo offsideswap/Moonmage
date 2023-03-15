@@ -16,7 +16,7 @@ export const ChipLabel : FC<{ name: string; token?: Token }> = ({ name, children
           color="primary"
           sx={{
             fontWeight: 'bold',
-            // background: BeanstalkPalette.theme.winter.primaryHover,
+            // background: MoonmagePalette.theme.winter.primaryHover,
             // color: 'primary.main'
           }}
         />

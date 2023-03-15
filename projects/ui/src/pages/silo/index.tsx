@@ -7,15 +7,15 @@ import Whitelist from '~/components/Silo/Whitelist';
 import PageHeader from '~/components/Common/PageHeader';
 import RewardsDialog from '~/components/Silo/RewardsDialog';
 import DropdownIcon from '~/components/Common/DropdownIcon';
-import useWhitelist from '~/hooks/beanstalk/useWhitelist';
-import usePools from '~/hooks/beanstalk/usePools';
-import useFarmerBalancesBreakdown from '~/hooks/farmer/useFarmerBalancesBreakdown';
+import useWhitelist from '~/hooks/moonmage/useWhitelist';
+import usePools from '~/hooks/moonmage/usePools';
+import useCosmonautBalancesBreakdown from '~/hooks/cosmomage/useCosmonautBalancesBreakdown';
 import useToggle from '~/hooks/display/useToggle';
-import useRevitalized from '~/hooks/farmer/useRevitalized';
-import useSeason from '~/hooks/beanstalk/useSeason';
+import useRevitalized from '~/hooks/cosmomage/useRevitalized';
+import useSeason from '~/hooks/moonmage/useSeason';
 import { AppState } from '~/state';
-import { UNRIPE_BEAN, UNRIPE_BEAN_CRV3 } from '~/constants/tokens';
-import useFarmerSiloBalances from '~/hooks/farmer/useFarmerSiloBalances';
+import { UNRIPE_MOON, UNRIPE_MOON_CRV3 } from '~/constants/tokens';
+import useCosmonautSiloBalances from '~/hooks/cosmomage/useCosmonautSiloBalances';
 import useGetChainToken from '~/hooks/chain/useGetChainToken';
 import GuideButton from '~/components/Common/Guide/GuideButton';
 import {
@@ -34,18 +34,18 @@ const SiloPage : FC<{}> = () => {
   const pools     = usePools();
 
   /// State
-  const farmerSilo    = useSelector<AppState, AppState['_farmer']['silo']>((state) => state._farmer.silo);
-  const beanstalkSilo = useSelector<AppState, AppState['_beanstalk']['silo']>((state) => state._beanstalk.silo);
-  const breakdown     = useFarmerBalancesBreakdown();
-  const balances      = useFarmerSiloBalances();
+  const cosmomageSilo    = useSelector<AppState, AppState['_cosmomage']['silo']>((state) => state._cosmomage.silo);
+  const moonmageSilo = useSelector<AppState, AppState['_moonmage']['silo']>((state) => state._moonmage.silo);
+  const breakdown     = useCosmonautBalancesBreakdown();
+  const balances      = useCosmonautSiloBalances();
   const season        = useSeason();
-  const { revitalizedStalk, revitalizedSeeds } = useRevitalized();
+  const { revitalizedMage, revitalizedSeeds } = useRevitalized();
 
   /// Calculate Unripe Silo Balance
-  const urBean      = getChainToken(UNRIPE_BEAN);
-  const urBeanCrv3  = getChainToken(UNRIPE_BEAN_CRV3);
-  const unripeDepositedBalance = balances[urBean.address]?.deposited.amount
-    .plus(balances[urBeanCrv3.address]?.deposited.amount);
+  const urMoon      = getChainToken(UNRIPE_MOON);
+  const urMoonCrv3  = getChainToken(UNRIPE_MOON_CRV3);
+  const unripeDepositedBalance = balances[urMoon.address]?.deposited.amount
+    .plus(balances[urMoonCrv3.address]?.deposited.amount);
 
   /// Local state
   const [open, show, hide] = useToggle();
@@ -59,13 +59,13 @@ const SiloPage : FC<{}> = () => {
       <Stack gap={2}>
         <PageHeader
           title="The Silo"
-          description="Earn yield and participate in Beanstalk governance by depositing whitelisted assets"
-          href="https://docs.bean.money/almanac/farm/silo"
+          description="Earn yield and participate in Moonmage governance by depositing whitelisted assets"
+          href="https://docs.moon.money/almanac/farm/silo"
           // makes guide display to the right of the title on mobile
           OuterStackProps={{ direction: 'row' }}
           control={
             <GuideButton
-              title="The Farmers' Almanac: Silo Guides"
+              title="The Cosmonauts' Almanac: Silo Guides"
               guides={[
                 HOW_TO_DEPOSIT_IN_THE_SILO,
                 CLAIM_SILO_REWARDS,
@@ -74,8 +74,8 @@ const SiloPage : FC<{}> = () => {
           }
         />
         <Overview
-          farmerSilo={farmerSilo}
-          beanstalkSilo={beanstalkSilo}
+          cosmomageSilo={cosmomageSilo}
+          moonmageSilo={moonmageSilo}
           breakdown={breakdown}
           season={season}
         />
@@ -89,10 +89,10 @@ const SiloPage : FC<{}> = () => {
               rowGap={1.5}
             >
               <RewardsBar
-                beans={farmerSilo.beans}
-                stalk={farmerSilo.stalk}
-                seeds={farmerSilo.seeds}
-                revitalizedStalk={revitalizedStalk}
+                moons={cosmomageSilo.moons}
+                mage={cosmomageSilo.mage}
+                seeds={cosmomageSilo.seeds}
+                revitalizedMage={revitalizedMage}
                 revitalizedSeeds={revitalizedSeeds}
                 hideRevitalized={unripeDepositedBalance?.eq(0)}
               />
@@ -116,15 +116,15 @@ const SiloPage : FC<{}> = () => {
         </Card>
         <Whitelist
           config={config}
-          farmerSilo={farmerSilo}
+          cosmomageSilo={cosmomageSilo}
         />
         <RewardsDialog
           open={open}
           handleClose={hide}
-          beans={farmerSilo.beans}
-          stalk={farmerSilo.stalk}
-          seeds={farmerSilo.seeds}
-          revitalizedStalk={revitalizedStalk}
+          moons={cosmomageSilo.moons}
+          mage={cosmomageSilo.mage}
+          seeds={cosmomageSilo.seeds}
+          revitalizedMage={revitalizedMage}
           revitalizedSeeds={revitalizedSeeds}
         />
       </Stack>

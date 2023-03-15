@@ -10,36 +10,36 @@ import {
 } from '@mui/material';
 import BigNumber from 'bignumber.js';
 import { useSelector } from 'react-redux';
-import drySeasonIcon from '~/img/beanstalk/sun/dry-season.svg';
-import rainySeasonIcon from '~/img/beanstalk/sun/rainy-season.svg';
+import drySeasonIcon from '~/img/moonmage/sun/dry-season.svg';
+import rainySeasonIcon from '~/img/moonmage/sun/rainy-season.svg';
 import SunriseButton from '~/components/Sun/SunriseButton';
 import { SunButtonQuery, useSunButtonQuery } from '~/generated/graphql';
-import usePrice from '~/hooks/beanstalk/usePrice';
-import useSeason from '~/hooks/beanstalk/useSeason';
+import usePrice from '~/hooks/moonmage/usePrice';
+import useSeason from '~/hooks/moonmage/useSeason';
 import { toTokenUnitsBN } from '~/util';
-import { BEAN } from '~/constants/tokens';
+import { MOON } from '~/constants/tokens';
 import { NEW_BN } from '~/constants';
 import { AppState } from '~/state';
 import FolderMenu from '../FolderMenu';
 import SeasonCard from '../../Sun/SeasonCard';
-import usePeg from '~/hooks/beanstalk/usePeg';
+import usePeg from '~/hooks/moonmage/usePeg';
 
 import { FC } from '~/types';
 
 const castField = (data: SunButtonQuery['fields'][number]) => ({
   season:   new BigNumber(data.season),
-  issuedSoil:  toTokenUnitsBN(data.issuedSoil, BEAN[1].decimals),
+  issuedSoil:  toTokenUnitsBN(data.issuedSoil, MOON[1].decimals),
   temperature: new BigNumber(data.temperature),
   podRate:  new BigNumber(data.podRate),
 });
 const castSeason = (data: SunButtonQuery['seasons'][number]) => ({
   season:      new BigNumber(data.season),
   price:       new BigNumber(data.price),
-  rewardBeans: toTokenUnitsBN(
+  rewardMoons: toTokenUnitsBN(
     data.season <= 6074
-      ? data.deltaBeans
-      : data.rewardBeans,
-    BEAN[1].decimals
+      ? data.deltaMoons
+      : data.rewardMoons,
+    MOON[1].decimals
   ),
 });
 
@@ -49,9 +49,9 @@ const PriceButton: FC<ButtonProps> = ({ ...props }) => {
   /// DATA
   const season    = useSeason();
   const price     = usePrice();
-  const awaiting  = useSelector<AppState, boolean>((state) => state._beanstalk.sun.sunrise.awaiting);
+  const awaiting  = useSelector<AppState, boolean>((state) => state._moonmage.sun.sunrise.awaiting);
   const { data }  = useSunButtonQuery({ fetchPolicy: 'cache-and-network' });
-  const beanstalkField = useSelector<AppState, AppState['_beanstalk']['field']>((state) => state._beanstalk.field);
+  const moonmageField = useSelector<AppState, AppState['_moonmage']['field']>((state) => state._moonmage.field);
   const peg = usePeg();
 
   const bySeason = useMemo(() => {
@@ -129,7 +129,7 @@ const PriceButton: FC<ButtonProps> = ({ ...props }) => {
             </Grid>
             <Grid item xs={3} md={2} textAlign="right">
               <Typography variant="bodySmall">
-                New Beans
+                New Moons
               </Typography>
             </Grid>
             <Grid item xs={3} md={2} textAlign="right">
@@ -158,10 +158,10 @@ const PriceButton: FC<ButtonProps> = ({ ...props }) => {
         </Box>
         <SeasonCard
           season={season.plus(1)}
-          rewardBeans={peg.rewardBeans}
+          rewardMoons={peg.rewardMoons}
           issuedSoil={peg.soilStart}
           podRate={NEW_BN}
-          temperature={beanstalkField.weather.yield.plus(peg.deltaTemperature)} // FIXME expected
+          temperature={moonmageField.weather.yield.plus(peg.deltaTemperature)} // FIXME expected
           deltaDemand={peg.deltaPodDemand}
           deltaTemperature={peg.deltaTemperature}
           isNew
@@ -175,7 +175,7 @@ const PriceButton: FC<ButtonProps> = ({ ...props }) => {
               key={s.season.toString()}
               season={s.season}
               // Season
-              rewardBeans={s.rewardBeans}
+              rewardMoons={s.rewardMoons}
               // Field
               temperature={s.temperature}
               deltaTemperature={deltaTemperature}

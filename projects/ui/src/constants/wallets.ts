@@ -16,7 +16,7 @@ export const CONNECTOR_LOGOS : { [key: string] : string } = {
 export const CONNECT_WALLET_ERRORS : { 
   [key: string] : (c?: Connector) => string } = {
   UserRejectedRequestError: () => 'The connection was cancelled while in progress. Try connecting again.',
-  'Already processing eth_requestAccounts. Please wait.': (c) => `Connection already in progress. Try unlocking ${c?.name || 'your wallet'} to allow Beanstalk to connect.`,
+  'Already processing eth_requestAccounts. Please wait.': (c) => `Connection already in progress. Try unlocking ${c?.name || 'your wallet'} to allow Moonmage to connect.`,
 };
 
 export const SWITCH_NETWORK_ERRORS : { 

@@ -1,5 +1,5 @@
-import { FarmFromMode, FarmToMode, TokenValue, TestUtils, Clipboard, DataSource, Token, Workflow, ERC20Token } from "@beanstalk/sdk";
-import { ERC20 } from "@beanstalk/sdk/dist/types/constants/generated";
+import { FarmFromMode, FarmToMode, TokenValue, TestUtils, Clipboard, DataSource, Token, Workflow, ERC20Token } from "@moonmage/sdk";
+import { ERC20 } from "@moonmage/sdk/dist/types/constants/generated";
 import { ethers } from "ethers";
 import { sdk, chain, account } from "../setup";
 import { logBalances } from "./log";
@@ -8,18 +8,18 @@ import { logBalances } from "./log";
  * Running this example (November 2022)
  *
  * 1. Turn on a local Anvil node, ideally with --fork-block-number set to a recent block.
- * 2. Deploy Beanstalk V2.1 (includes Pipeline, Roots, etc.):
+ * 2. Deploy Moonmage V2.1 (includes Pipeline, Roots, etc.):
  *
  *    ```
  *    const { deployV2_1 } = require("./utils/mocks")
- *    task('beanstalkV2_1', async function () {
+ *    task('moonmageV2_1', async function () {
  *      await deployV2_1()
  *    })
  *    ```
  *
  *    then:
  *
- *    `npx hardhat beanstalkV2_1 --network localhost`
+ *    `npx hardhat moonmageV2_1 --network localhost`
  *
  * 3. Make sure the SDK is built: `yarn sdk:build` from root of this monorepo.
  * 4. `cd ./projects/examples`
@@ -30,7 +30,7 @@ export async function roots_via_swap(inputToken: Token, spender: string, amount:
   ////////// Setup //////////
 
   const account = await sdk.getAccount();
-  const depositToken = sdk.tokens.BEAN;
+  const depositToken = sdk.tokens.MOON;
   console.log("Using account:", account);
 
   // Check `account`' balance of `inputToken`, validate `amount`
@@ -52,7 +52,7 @@ export async function roots_via_swap(inputToken: Token, spender: string, amount:
 
   console.log("\n\n Estinating amount out from Swap...");
   const amountFromSwap = await swap.estimate(amount);
-  console.log(`Swap Estimate: ${amount.toHuman()} ${inputToken.symbol} --> ${amountFromSwap.toHuman()} BEAN`);
+  console.log(`Swap Estimate: ${amount.toHuman()} ${inputToken.symbol} --> ${amountFromSwap.toHuman()} MOON`);
   console.log("\n\nExtending Farm...");
 
   ////////// Initialize Farm //////////
@@ -62,7 +62,7 @@ export async function roots_via_swap(inputToken: Token, spender: string, amount:
   // To perform a swap from EXTERNAL, we may need an allowance.
   // We can skip this step if:
   //    `inputToken` = ETH
-  //    `inputToken.allowance(account, beanstalk) > amountInStep`
+  //    `inputToken.allowance(account, moonmage) > amountInStep`
   depotFarm.add(new sdk.farm.actions.PermitERC20((context) => context.data.permit), {
     onlyExecute: true,
     skip: (amountInStep) => inputToken.hasEnoughAllowance(account, spender, amountInStep)
@@ -71,7 +71,7 @@ export async function roots_via_swap(inputToken: Token, spender: string, amount:
   ////////// Load Pipeline //////////
 
   depotFarm.add(
-    // HEADS UP: loadPipeline uses beanstalk.interface
+    // HEADS UP: loadPipeline uses moonmage.interface
     // Depot uses the exact same signatures as TokenFacet so this works.
     sdk.farm.presets.loadPipeline(inputToken as ERC20Token, loadPipelineFrom),
     { onlyExecute: true }
@@ -84,19 +84,19 @@ export async function roots_via_swap(inputToken: Token, spender: string, amount:
   ////////// Setup Pipeline Approvals //////////
 
   pipe.add(
-    // Approve [spender = BEANSTALK] to use [account = PIPELINE]'s `inputToken`.
+    // Approve [spender = MOONMAGE] to use [account = PIPELINE]'s `inputToken`.
     // This is needed to start the Swap process.
-    function approveBean(amountInStep) {
+    function approveMoon(amountInStep) {
       return pipe.wrap(
         (inputToken as ERC20Token).getContract(),
         "approve",
-        [sdk.contracts.beanstalk.address, ethers.constants.MaxUint256],
+        [sdk.contracts.moonmage.address, ethers.constants.MaxUint256],
         amountInStep // pass-thru
       );
     },
     {
       // hasEnoughAllowance will return true if `inputToken instance
-      skip: (amountInStep) => inputToken.hasEnoughAllowance(sdk.contracts.pipeline.address, sdk.contracts.beanstalk.address, amountInStep)
+      skip: (amountInStep) => inputToken.hasEnoughAllowance(sdk.contracts.pipeline.address, sdk.contracts.moonmage.address, amountInStep)
     }
   );
 
@@ -106,7 +106,7 @@ export async function roots_via_swap(inputToken: Token, spender: string, amount:
       ...(swap.getFarm().generators as unknown as any) // FIXME
     ],
     {
-      skip: inputToken === sdk.tokens.BEAN
+      skip: inputToken === sdk.tokens.MOON
     }
   );
 
@@ -114,8 +114,8 @@ export async function roots_via_swap(inputToken: Token, spender: string, amount:
     // Get PIPELINE's current balance of `depositToken`.
     async function getBalance() {
       return {
-        target: sdk.contracts.beanstalk.address,
-        callData: sdk.contracts.beanstalk.interface.encodeFunctionData("getExternalBalance", [
+        target: sdk.contracts.moonmage.address,
+        callData: sdk.contracts.moonmage.interface.encodeFunctionData("getExternalBalance", [
           sdk.contracts.pipeline.address,
           depositToken.address
         ])
@@ -125,17 +125,17 @@ export async function roots_via_swap(inputToken: Token, spender: string, amount:
   );
 
   pipe.add(
-    // Approve BEANSTALK to use PIPELINE's `depositToken`.
-    function approveBean(amountInStep) {
+    // Approve MOONMAGE to use PIPELINE's `depositToken`.
+    function approveMoon(amountInStep) {
       return pipe.wrap(
         depositToken.getContract(),
         "approve",
-        [sdk.contracts.beanstalk.address, ethers.constants.MaxUint256],
+        [sdk.contracts.moonmage.address, ethers.constants.MaxUint256],
         amountInStep // pass-thru
       );
     },
     {
-      skip: (amountInStep) => depositToken.hasEnoughAllowance(sdk.contracts.pipeline.address, sdk.contracts.beanstalk.address, amountInStep)
+      skip: (amountInStep) => depositToken.hasEnoughAllowance(sdk.contracts.pipeline.address, sdk.contracts.moonmage.address, amountInStep)
     }
   );
 
@@ -143,7 +143,7 @@ export async function roots_via_swap(inputToken: Token, spender: string, amount:
     // Approve ROOT to use PIPELINE's `depositToken` Deposit.
     function approveDeposit(amountInStep) {
       return pipe.wrap(
-        sdk.contracts.beanstalk,
+        sdk.contracts.moonmage,
         "approveDeposit",
         [sdk.contracts.root.address, depositToken.address, ethers.constants.MaxUint256],
         amountInStep
@@ -155,7 +155,7 @@ export async function roots_via_swap(inputToken: Token, spender: string, amount:
 
   pipe.add(async function deposit(amountInStep, context) {
     return pipe.wrap(
-      sdk.contracts.beanstalk,
+      sdk.contracts.moonmage,
       "deposit",
       [/* 0 */ depositToken.address, /* 1 */ amountInStep, /* 2 */ FarmFromMode.EXTERNAL],
       amountInStep, // pass-thru
@@ -229,14 +229,14 @@ export async function roots_via_swap(inputToken: Token, spender: string, amount:
       return pipe.wrap(
         sdk.tokens.ROOT.getContract(),
         "approve",
-        [sdk.contracts.beanstalk.address, ethers.constants.MaxUint256],
+        [sdk.contracts.moonmage.address, ethers.constants.MaxUint256],
         amountInStep // pass-thru
       );
     },
     {
-      // Only run this step if BEANSTALK doesn't have enough approval to transfer ROOT from PIPELINE.
+      // Only run this step if MOONMAGE doesn't have enough approval to transfer ROOT from PIPELINE.
       skip: (amountInStep) =>
-        sdk.tokens.ROOT.hasEnoughAllowance(sdk.contracts.pipeline.address, sdk.contracts.beanstalk.address, amountInStep)
+        sdk.tokens.ROOT.hasEnoughAllowance(sdk.contracts.pipeline.address, sdk.contracts.moonmage.address, amountInStep)
     }
   );
 
@@ -247,7 +247,7 @@ export async function roots_via_swap(inputToken: Token, spender: string, amount:
       )} \n\n`
     );
     return pipe.wrap(
-      sdk.contracts.beanstalk,
+      sdk.contracts.moonmage,
       "transferToken",
       [
         /*  36 0 */ sdk.tokens.ROOT.address,
@@ -299,7 +299,7 @@ export async function roots_via_swap(inputToken: Token, spender: string, amount:
     const receipt = await txn.wait();
     console.log("Transaction executed");
 
-    TestUtils.Logger.printReceipt([sdk.contracts.beanstalk, sdk.tokens.BEAN.getContract(), sdk.contracts.root], receipt);
+    TestUtils.Logger.printReceipt([sdk.contracts.moonmage, sdk.tokens.MOON.getContract(), sdk.contracts.root], receipt);
 
     await logBalances(account, inputToken, depositToken, "AFTER");
   } catch (e) {
@@ -308,14 +308,14 @@ export async function roots_via_swap(inputToken: Token, spender: string, amount:
 }
 
 (async () => {
-  //await (await (sdk.tokens.USDC as ERC20Token).approve(sdk.contracts.beanstalk.address, sdk.tokens.USDC.amount(101).toBigNumber())).wait();
-  const tokenIn = sdk.tokens.BEAN;
+  //await (await (sdk.tokens.USDC as ERC20Token).approve(sdk.contracts.moonmage.address, sdk.tokens.USDC.amount(101).toBigNumber())).wait();
+  const tokenIn = sdk.tokens.MOON;
   const amountIn = tokenIn.amount(100);
 
   // await chain.setUSDTBalance(account, amountIn);
-  // await sdk.tokens.DAI.approve(sdk.contracts.beanstalk.address, tokenIn.amount(500).toBigNumber()).then((r) => r.wait());
-  await test.setBEANBalance(account, amountIn);
-  // await sdk.tokens.BEAN.approve(sdk.contracts.depot.address, tokenIn.amount(500).toBigNumber()).then((r) => r.wait());
+  // await sdk.tokens.DAI.approve(sdk.contracts.moonmage.address, tokenIn.amount(500).toBigNumber()).then((r) => r.wait());
+  await test.setMOONBalance(account, amountIn);
+  // await sdk.tokens.MOON.approve(sdk.contracts.depot.address, tokenIn.amount(500).toBigNumber()).then((r) => r.wait());
 
   console.log(`Approved and set initial balance to ${amountIn.toHuman()} ${tokenIn.symbol}.`);
 

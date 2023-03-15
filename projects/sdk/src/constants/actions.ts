@@ -15,11 +15,11 @@ export enum ActionType {
   TRANSFER,
 
   /// FIELD
-  BUY_BEANS,
-  BURN_BEANS,
+  BUY_MOONS,
+  BURN_MOONS,
   RECEIVE_PODS,
   HARVEST,
-  RECEIVE_BEANS,
+  RECEIVE_MOONS,
   TRANSFER_PODS,
 
   /// MARKET
@@ -27,7 +27,7 @@ export enum ActionType {
   BUY_PODS,
   SELL_PODS,
 
-  /// BARN
+  /// SHIP
   RINSE,
   BUY_FERTILIZER,
   RECEIVE_FERT_REWARDS

@@ -5,7 +5,7 @@ import NFTImage from './NFTImage';
 import Row from '~/components/Common/Row';
 
 import { FC } from '~/types';
-import { BeanstalkPalette } from '../App/muiTheme';
+import { MoonmagePalette } from '../App/muiTheme';
 
 export interface NFTContentProps {
   collection: string;
@@ -25,7 +25,7 @@ const NFTDetails: FC<NFTContentProps> = ({ nft, collection }) => (
         textAlign="right"
         color={
           nft.claimed === ClaimStatus.UNCLAIMED
-            ? BeanstalkPalette.logoGreen
+            ? MoonmagePalette.logoGreen
             : 'text.tertiary'
         }
       >

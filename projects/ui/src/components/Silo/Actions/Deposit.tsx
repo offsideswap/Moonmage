@@ -5,38 +5,38 @@ import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
 import { useSelector } from 'react-redux';
 import { Token } from '~/classes';
-import { BEAN, CRV3, DAI, ETH, SEEDS, STALK, UNRIPE_BEAN, UNRIPE_BEAN_CRV3, USDC, USDT, WETH } from '~/constants/tokens';
+import { MOON, CRV3, DAI, ETH, SEEDS, MAGE, UNRIPE_MOON, UNRIPE_MOON_CRV3, USDC, USDT, WETH } from '~/constants/tokens';
 import TokenSelectDialog, { TokenSelectMode } from '~/components/Common/Form/TokenSelectDialog';
 import TokenOutputField from '~/components/Common/Form/TokenOutputField';
 import StyledAccordionSummary from '~/components/Common/Accordion/AccordionSummary';
 import { FormState, SettingInput, TxnSettings } from '~/components/Common/Form';
 import TokenQuoteProvider from '~/components/Common/Form/TokenQuoteProvider';
 import TxnPreview from '~/components/Common/Form/TxnPreview';
-import BeanstalkSDK from '~/lib/Beanstalk';
-import { useBeanstalkContract } from '~/hooks/ledger/useContract';
-import useFarmerBalances from '~/hooks/farmer/useFarmerBalances';
-import { Balance, FarmerBalances } from '~/state/farmer/balances';
+import MoonmageSDK from '~/lib/Moonmage';
+import { useMoonmageContract } from '~/hooks/ledger/useContract';
+import useCosmonautBalances from '~/hooks/cosmomage/useCosmonautBalances';
+import { Balance, CosmonautBalances } from '~/state/cosmomage/balances';
 import { displayFullBN, toStringBaseUnitBN, toTokenUnitsBN } from '~/util/Tokens';
 import TransactionToast from '~/components/Common/TxnToast';
-import { Beanstalk } from '~/generated/index';
+import { Moonmage } from '~/generated/index';
 import { QuoteHandler } from '~/hooks/ledger/useQuote';
 import { ZERO_BN } from '~/constants';
 import { ERC20Token, NativeToken } from '~/classes/Token';
 import Pool from '~/classes/Pool';
 import SmartSubmitButton from '~/components/Common/Form/SmartSubmitButton';
-import Farm, { FarmFromMode, FarmToMode } from '~/lib/Beanstalk/Farm';
+import Farm, { FarmFromMode, FarmToMode } from '~/lib/Moonmage/Farm';
 import useGetChainToken from '~/hooks/chain/useGetChainToken';
 import TxnSeparator from '~/components/Common/Form/TxnSeparator';
 import useToggle from '~/hooks/display/useToggle';
 import { combineBalances, optimizeFromMode } from '~/util/Farm';
-import usePreferredToken from '~/hooks/farmer/usePreferredToken';
+import usePreferredToken from '~/hooks/cosmomage/usePreferredToken';
 import useTokenMap from '~/hooks/chain/useTokenMap';
 import { useSigner } from '~/hooks/ledger/useSigner';
-import { useFetchFarmerSilo } from '~/state/farmer/silo/updater';
-import { useFetchFarmerBalances } from '~/state/farmer/balances/updater';
+import { useFetchCosmonautSilo } from '~/state/cosmomage/silo/updater';
+import { useFetchCosmonautBalances } from '~/state/cosmomage/balances/updater';
 import { AppState } from '~/state';
-import { useFetchPools } from '~/state/bean/pools/updater';
-import { useFetchBeanstalkSilo } from '~/state/beanstalk/silo/updater';
+import { useFetchPools } from '~/state/moon/pools/updater';
+import { useFetchMoonmageSilo } from '~/state/moonmage/silo/updater';
 import useFarm from '~/hooks/sdk/useFarm';
 import { FC } from '~/types';
 import useFormMiddleware from '~/hooks/ledger/useFormMiddleware';
@@ -56,7 +56,7 @@ const DepositForm : FC<
     tokenList: (ERC20Token | NativeToken)[];
     whitelistedToken: ERC20Token | NativeToken;
     amountToBdv: (amount: BigNumber) => BigNumber;
-    balances: FarmerBalances;
+    balances: CosmonautBalances;
     contract: ethers.Contract;
     handleQuote: QuoteHandler;
   }
@@ -74,7 +74,7 @@ const DepositForm : FC<
   setFieldValue,
 }) => {
   const [isTokenSelectVisible, showTokenSelect, hideTokenSelect] = useToggle();
-  const { amount, bdv, stalk, seeds, actions } = BeanstalkSDK.Silo.Deposit.deposit(
+  const { amount, bdv, mage, seeds, actions } = MoonmageSDK.Silo.Deposit.deposit(
     whitelistedToken,
     values.tokens,
     amountToBdv,
@@ -135,13 +135,13 @@ const DepositForm : FC<
             <Stack direction={{ xs: 'column', md: 'row' }} gap={1} justifyContent="center">
               <Box sx={{ flex: 1 }}>
                 <TokenOutputField
-                  token={STALK}
-                  amount={stalk}
+                  token={MAGE}
+                  amount={mage}
                   amountTooltip={(
                     <>
                       1 {whitelistedToken.symbol} = {displayFullBN(amountToBdv(new BigNumber(1)))} BDV<br />
-                      1 BDV &rarr; {whitelistedToken.getStalk().toString()} STALK
-                      {/* {displayFullBN(bdv, BEAN[1].displayDecimals)} BDV &rarr; {displayFullBN(stalk, STALK.displayDecimals)} STALK */}
+                      1 BDV &rarr; {whitelistedToken.getMage().toString()} MAGE
+                      {/* {displayFullBN(bdv, MOON[1].displayDecimals)} BDV &rarr; {displayFullBN(mage, MAGE.displayDecimals)} MAGE */}
                     </>
                   )}
                 />
@@ -154,7 +154,7 @@ const DepositForm : FC<
                     <>
                       1 {whitelistedToken.symbol} = {displayFullBN(amountToBdv(new BigNumber(1)))} BDV<br />
                       1 BDV &rarr; {whitelistedToken.getSeeds().toString()} SEEDS
-                      {/* {displayFullBN(bdv, BEAN[1].displayDecimals)} BDV &rarr; {displayFullBN(seeds, SEEDS.displayDecimals)} SEED */}
+                      {/* {displayFullBN(bdv, MOON[1].displayDecimals)} BDV &rarr; {displayFullBN(seeds, SEEDS.displayDecimals)} SEED */}
                     </>
                   )}
                 />
@@ -201,33 +201,33 @@ const Deposit : FC<{
 }) => {
   /// Chain Constants
   const getChainToken = useGetChainToken();
-  const Bean          = getChainToken(BEAN);
+  const Moon          = getChainToken(MOON);
   const Eth           = getChainToken(ETH);
   const Weth          = getChainToken(WETH);
-  const urBean        = getChainToken(UNRIPE_BEAN);
-  const urBeanCrv3    = getChainToken(UNRIPE_BEAN_CRV3);
+  const urMoon        = getChainToken(UNRIPE_MOON);
+  const urMoonCrv3    = getChainToken(UNRIPE_MOON_CRV3);
 
   /// FIXME: name
   /// FIXME: finish deposit functionality for other tokens
   const middleware = useFormMiddleware();
-  const initTokenList = useMemo(() => (whitelistedToken === Bean ? [
-    BEAN,
+  const initTokenList = useMemo(() => (whitelistedToken === Moon ? [
+    MOON,
     ETH,
   ] : [
-    BEAN,
+    MOON,
     ETH,
     whitelistedToken,
     CRV3,
     DAI,
     USDC,
     USDT
-  ]), [Bean, whitelistedToken]);
+  ]), [Moon, whitelistedToken]);
   const allAvailableTokens = useTokenMap(initTokenList);
 
   /// Derived
   const isUnripe = (
-    whitelistedToken === urBean || 
-    whitelistedToken === urBeanCrv3
+    whitelistedToken === urMoon || 
+    whitelistedToken === urMoonCrv3
   );
 
   /// Token List
@@ -253,22 +253,22 @@ const Deposit : FC<{
   ]);
   const baseToken = usePreferredToken(preferredTokens, 'use-best') as (ERC20Token | NativeToken);
 
-  /// Beanstalk
-  const bdvPerToken = useSelector<AppState, AppState['_beanstalk']['silo']['balances'][string]['bdvPerToken'] | BigNumber>(
-    (state) => state._beanstalk.silo.balances[whitelistedToken.address]?.bdvPerToken || ZERO_BN
+  /// Moonmage
+  const bdvPerToken = useSelector<AppState, AppState['_moonmage']['silo']['balances'][string]['bdvPerToken'] | BigNumber>(
+    (state) => state._moonmage.silo.balances[whitelistedToken.address]?.bdvPerToken || ZERO_BN
   );
   const amountToBdv = useCallback((amount: BigNumber) => bdvPerToken.times(amount), [bdvPerToken]);
 
-  /// Farmer
-  const balances                = useFarmerBalances();
-  const [refetchFarmerSilo]     = useFetchFarmerSilo();
-  const [refetchFarmerBalances] = useFetchFarmerBalances();
+  /// Cosmonaut
+  const balances                = useCosmonautBalances();
+  const [refetchCosmonautSilo]     = useFetchCosmonautSilo();
+  const [refetchCosmonautBalances] = useFetchCosmonautBalances();
   const [refetchPools]          = useFetchPools();
-  const [refetchSilo]           = useFetchBeanstalkSilo();
+  const [refetchSilo]           = useFetchMoonmageSilo();
 
   /// Network
   const { data: signer } = useSigner();
-  const beanstalk = useBeanstalkContract(signer);
+  const moonmage = useMoonmageContract(signer);
 
   /// Farm
   const farm = useFarm();
@@ -302,11 +302,11 @@ const Deposit : FC<{
       //
       let estimate;
 
-      // Depositing BEAN
-      if (tokenOut === getChainToken(BEAN)) {
+      // Depositing MOON
+      if (tokenOut === getChainToken(MOON)) {
         if (tokenIn === Weth) {
           estimate = await Farm.estimate(
-            farm.buyBeans(), // this assumes we're coming from WETH
+            farm.buyMoons(), // this assumes we're coming from WETH
             [amountIn]
           );
         }
@@ -320,9 +320,9 @@ const Deposit : FC<{
         const isMetapool = true;
         if (isMetapool) {
           // ...and we're depositing one of the underlying pool tokens.
-          // Ex. for BEAN:3CRV this could be [BEAN, (DAI, USDC, USDT)].
-          // pool.tokens      = [BEAN, CRV3]
-          // pool.underlying  = [BEAN, DAI, USDC, USDT] 
+          // Ex. for MOON:3CRV this could be [MOON, (DAI, USDC, USDT)].
+          // pool.tokens      = [MOON, CRV3]
+          // pool.underlying  = [MOON, DAI, USDC, USDT] 
           const tokenIndex = pool.tokens.indexOf(tokenIn);
           const underlyingTokenIndex = pool.underlying.indexOf(tokenIn);
           console.debug('[Deposit] LP Deposit', {
@@ -340,7 +340,7 @@ const Deposit : FC<{
             estimate = await Farm.estimate([
               farm.addLiquidity(
                 pool.address,
-                // FIXME: bean:lusd was a plain pool, bean:eth on curve would be a crypto pool
+                // FIXME: moon:lusd was a plain pool, moon:eth on curve would be a crypto pool
                 // perhaps the Curve pool instance needs to track a registry
                 farm.contracts.curve.registries.metaFactory.address,
                 // FIXME: find a better way to define this above
@@ -405,7 +405,7 @@ const Deposit : FC<{
               farm.addLiquidity(
                 pool.address,
                 farm.contracts.curve.registries.metaFactory.address,
-                [0, 1],    // [BEAN, CRV3] use CRV3 from previous call
+                [0, 1],    // [MOON, CRV3] use CRV3 from previous call
               ),
             ], [amountIn]);
           }
@@ -442,7 +442,7 @@ const Deposit : FC<{
       if (!formData?.amount || formData.amount.eq(0)) throw new Error('Enter an amount to deposit');
 
       // FIXME: getting BDV per amount here
-      const { amount } = BeanstalkSDK.Silo.Deposit.deposit(
+      const { amount } = MoonmageSDK.Silo.Deposit.deposit(
         whitelistedToken,
         values.tokens,
         amountToBdv,
@@ -453,8 +453,8 @@ const Deposit : FC<{
         success: 'Deposit successful.',
       });
 
-      // TEMP: recast as Beanstalk 
-      const b = ((beanstalk as unknown) as Beanstalk);
+      // TEMP: recast as Moonmage 
+      const b = ((moonmage as unknown) as Moonmage);
       const data : string[] = [];
       const inputToken = formData.token;
       let value = ZERO_BN;
@@ -513,8 +513,8 @@ const Deposit : FC<{
 
       const receipt = await txn.wait();
       await Promise.all([
-        refetchFarmerSilo(),
-        refetchFarmerBalances(),
+        refetchCosmonautSilo(),
+        refetchCosmonautBalances(),
         refetchPools(),
         refetchSilo(),
       ]);
@@ -531,11 +531,11 @@ const Deposit : FC<{
     }
   }, [
     Eth,
-    beanstalk,
+    moonmage,
     whitelistedToken,
     amountToBdv,
-    refetchFarmerSilo,
-    refetchFarmerBalances,
+    refetchCosmonautSilo,
+    refetchCosmonautBalances,
     refetchPools,
     refetchSilo,
     middleware,
@@ -554,7 +554,7 @@ const Deposit : FC<{
             tokenList={tokenList as (ERC20Token | NativeToken)[]}
             whitelistedToken={whitelistedToken}
             balances={balances}
-            contract={beanstalk}
+            contract={moonmage}
             {...formikProps}
           />
         </>

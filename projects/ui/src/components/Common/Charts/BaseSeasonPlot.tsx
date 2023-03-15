@@ -8,7 +8,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 
 import { ApolloError } from '@apollo/client';
 import ChartInfoOverlay from './ChartInfoOverlay';
-import { MinimumViableSnapshotQuery } from '~/hooks/beanstalk/useSeasonsQuery';
+import { MinimumViableSnapshotQuery } from '~/hooks/moonmage/useSeasonsQuery';
 import MultiLineChart from './MultiLineChart';
 import QueryState from './QueryState';
 import Row from '../Row';

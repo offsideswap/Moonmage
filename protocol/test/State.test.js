@@ -1,7 +1,7 @@
 // const { expect } = require('chai')
 // const { deploy } = require('../scripts/deploy.js')
 // const { parseJson } = require('./utils/helpers.js')
-// const { BEAN } = require('./utils/constants')
+// const { MOON } = require('./utils/constants')
 
 // // Set the test data
 // const [columns, tests] = parseJson('./coverage_data/weather.json')
@@ -16,18 +16,18 @@
 //     user2Address = user2.address
 //     const contracts = await deploy("Test", false, true)
 //     await upgradeWithNewFacets({
-//       diamondAddress: BEANSTALK,
+//       diamondAddress: MOONMAGE,
 //       facetNames: ['StateFacet'],
 //       initFacetName: undefined,
 //       bip: false,
 //       verbose: true,
 //       account: owner
 //     });
-//     this.state = await ethers.getContractAt('StateFacet', BEAN)
+//     this.state = await ethers.getContractAt('StateFacet', MOON)
 
 //   });
 
 //   it('gets the deposits', async function () {
-//     await this.state.getDeposits(owner.address, BEAN, 0, 1000)
+//     await this.state.getDeposits(owner.address, MOON, 0, 1000)
 //   })
 // })

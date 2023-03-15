@@ -1,12 +1,12 @@
 import { ContractTransaction } from "ethers";
 import { Token } from "src/classes/Token";
 import { TokenValue } from "src/classes/TokenValue";
-import { BeanstalkSDK } from "../BeanstalkSDK";
+import { MoonmageSDK } from "../MoonmageSDK";
 
 export class Transfer {
-  static sdk: BeanstalkSDK;
+  static sdk: MoonmageSDK;
 
-  constructor(sdk: BeanstalkSDK) {
+  constructor(sdk: MoonmageSDK) {
     Transfer.sdk = sdk;
   }
 
@@ -47,7 +47,7 @@ export class Transfer {
 
     const sender = await Transfer.sdk.getAccount();
     if (seasons.length === 1) {
-      contractCall = Transfer.sdk.contracts.beanstalk.transferDeposit(
+      contractCall = Transfer.sdk.contracts.moonmage.transferDeposit(
         sender,
         destinationAddress,
         token.address,
@@ -55,7 +55,7 @@ export class Transfer {
         amounts[0]
       );
     } else {
-      contractCall = Transfer.sdk.contracts.beanstalk.transferDeposits(
+      contractCall = Transfer.sdk.contracts.moonmage.transferDeposits(
         sender,
         destinationAddress,
         token.address,

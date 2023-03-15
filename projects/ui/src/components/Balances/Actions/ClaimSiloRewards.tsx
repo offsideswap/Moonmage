@@ -15,21 +15,21 @@ import {
   Module,
   ModuleContent,
 } from '~/components/Common/Module';
-import beanIcon from '~/img/tokens/bean-logo-circled.svg';
-import stalkIcon from '~/img/beanstalk/stalk-icon-winter.svg';
-import seedIcon from '~/img/beanstalk/seed-icon-winter.svg';
+import moonIcon from '~/img/tokens/moon-logo-circled.svg';
+import mageIcon from '~/img/moonmage/mage-icon-winter.svg';
+import seedIcon from '~/img/moonmage/seed-icon-winter.svg';
 
-import useRevitalized from '~/hooks/farmer/useRevitalized';
+import useRevitalized from '~/hooks/cosmomage/useRevitalized';
 import { AppState } from '~/state';
 import RewardItem from '../../Silo/RewardItem';
-import useFarmerBalancesBreakdown from '~/hooks/farmer/useFarmerBalancesBreakdown';
+import useCosmonautBalancesBreakdown from '~/hooks/cosmomage/useCosmonautBalancesBreakdown';
 import DropdownIcon from '~/components/Common/DropdownIcon';
 import useToggle from '~/hooks/display/useToggle';
 import useGetChainToken from '~/hooks/chain/useGetChainToken';
-import useFarmerSiloBalances from '~/hooks/farmer/useFarmerSiloBalances';
+import useCosmonautSiloBalances from '~/hooks/cosmomage/useCosmonautSiloBalances';
 import RewardsForm, { ClaimRewardsFormParams } from '../../Silo/RewardsForm';
-import { ClaimRewardsAction } from '~/lib/Beanstalk/Farm';
-import { UNRIPE_BEAN, UNRIPE_BEAN_CRV3 } from '~/constants/tokens';
+import { ClaimRewardsAction } from '~/lib/Moonmage/Farm';
+import { UNRIPE_MOON, UNRIPE_MOON_CRV3 } from '~/constants/tokens';
 import DescriptionButton from '../../Common/DescriptionButton';
 import GasTag from '../../Common/GasTag';
 import { hoverMap } from '~/constants/silo';
@@ -74,7 +74,7 @@ const ClaimRewardsContent: React.FC<
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const getChainToken = useGetChainToken();
-  const balances = useFarmerSiloBalances();
+  const balances = useCosmonautSiloBalances();
 
   /// The currently hovered action.
   const [hoveredAction, setHoveredAction] = useState<
@@ -85,11 +85,11 @@ const ClaimRewardsContent: React.FC<
   const selectedAction = values.action;
 
   /// Calculate Unripe Silo Balance
-  const urBean = getChainToken(UNRIPE_BEAN);
-  const urBeanCrv3 = getChainToken(UNRIPE_BEAN_CRV3);
+  const urMoon = getChainToken(UNRIPE_MOON);
+  const urMoonCrv3 = getChainToken(UNRIPE_MOON_CRV3);
   const unripeDepositedBalance = balances[
-    urBean.address
-  ]?.deposited.amount.plus(balances[urBeanCrv3.address]?.deposited.amount);
+    urMoon.address
+  ]?.deposited.amount.plus(balances[urMoonCrv3.address]?.deposited.amount);
 
   /// Handlers
   const onMouseOver = useCallback(
@@ -211,11 +211,11 @@ const ClaimRewardsContent: React.FC<
 };
 
 const RewardsContent: React.FC<{}> = () => {
-  const farmerSilo = useSelector<AppState, AppState['_farmer']['silo']>(
-    (state) => state._farmer.silo
+  const cosmomageSilo = useSelector<AppState, AppState['_cosmomage']['silo']>(
+    (state) => state._cosmomage.silo
   );
-  const breakdown = useFarmerBalancesBreakdown();
-  const { revitalizedStalk, revitalizedSeeds } = useRevitalized();
+  const breakdown = useCosmonautBalancesBreakdown();
+  const { revitalizedMage, revitalizedSeeds } = useRevitalized();
   const [open, show, hide] = useToggle();
 
   return (
@@ -224,25 +224,25 @@ const RewardsContent: React.FC<{}> = () => {
         <Grid spacing={1} container width="100%" justifyContent="flex-start">
           <Grid item xs={4}>
             <RewardItem
-              title="Earned Beans"
+              title="Earned Moons"
               amount={
-                farmerSilo.beans.earned?.gt(0)
-                  ? farmerSilo.beans.earned
+                cosmomageSilo.moons.earned?.gt(0)
+                  ? cosmomageSilo.moons.earned
                   : ZERO_BN
               }
-              icon={beanIcon}
+              icon={moonIcon}
               titleColor="primary.main"
             />
           </Grid>
           <Grid item xs={4}>
             <RewardItem
-              title="Earned Stalk"
+              title="Earned Mage"
               amount={
-                farmerSilo.stalk.earned?.gt(0)
-                  ? farmerSilo.stalk.earned
+                cosmomageSilo.mage.earned?.gt(0)
+                  ? cosmomageSilo.mage.earned
                   : ZERO_BN
               }
-              icon={stalkIcon}
+              icon={mageIcon}
               titleColor="primary.main"
             />
           </Grid>
@@ -250,8 +250,8 @@ const RewardsContent: React.FC<{}> = () => {
             <RewardItem
               title="Plantable Seeds"
               amount={
-                farmerSilo.seeds.earned?.gt(0)
-                  ? farmerSilo.stalk.earned
+                cosmomageSilo.seeds.earned?.gt(0)
+                  ? cosmomageSilo.mage.earned
                   : ZERO_BN
               }
               icon={seedIcon}
@@ -261,20 +261,20 @@ const RewardsContent: React.FC<{}> = () => {
         </Grid>
         <Stack>
           <RewardItem
-            title="Grown Stalk"
+            title="Grown Mage"
             amount={
-              farmerSilo.stalk.grown?.gt(0) ? farmerSilo.stalk.grown : ZERO_BN
+              cosmomageSilo.mage.grown?.gt(0) ? cosmomageSilo.mage.grown : ZERO_BN
             }
-            icon={stalkIcon}
+            icon={mageIcon}
             titleColor="text.primary"
           />
         </Stack>
         <Grid container spacing={1}>
           <Grid item xs={4}>
             <RewardItem
-              title="Revitalized Stalk"
-              amount={revitalizedStalk?.gt(0) ? revitalizedStalk : ZERO_BN}
-              icon={stalkIcon}
+              title="Revitalized Mage"
+              amount={revitalizedMage?.gt(0) ? revitalizedMage : ZERO_BN}
+              icon={mageIcon}
               titleColor="text.primary"
             />
           </Grid>

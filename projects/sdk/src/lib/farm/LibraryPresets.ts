@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { ERC20Token, NativeToken } from "src/classes/Token";
 import { BasicPreparedResult, RunContext, StepGenerator } from "src/classes/Workflow";
-import { BeanstalkSDK } from "src/lib/BeanstalkSDK";
+import { MoonmageSDK } from "src/lib/MoonmageSDK";
 import { FarmFromMode, FarmToMode } from "../farm/types";
 import { EIP2612PermitMessage, SignedPermit } from "../permit";
 import { Exchange, ExchangeUnderlying } from "./actions/index";
@@ -12,13 +12,13 @@ export type ActionBuilder = (
 ) => StepGenerator<BasicPreparedResult> | StepGenerator<BasicPreparedResult>[];
 
 export class LibraryPresets {
-  static sdk: BeanstalkSDK;
+  static sdk: MoonmageSDK;
   public readonly weth2usdt: ActionBuilder;
-  public readonly usdt2bean: ActionBuilder;
+  public readonly usdt2moon: ActionBuilder;
   public readonly usdt2weth: ActionBuilder;
-  public readonly bean2usdt: ActionBuilder;
-  public readonly weth2bean: ActionBuilder;
-  public readonly bean2weth: ActionBuilder;
+  public readonly moon2usdt: ActionBuilder;
+  public readonly weth2moon: ActionBuilder;
+  public readonly moon2weth: ActionBuilder;
 
   /**
    * Load the Pipeline in preparation for a set Pipe actions.
@@ -37,13 +37,13 @@ export class LibraryPresets {
       return generators;
     }
 
-    // give beanstalk permission to send this ERC-20 token from my balance -> pipeline
+    // give moonmage permission to send this ERC-20 token from my balance -> pipeline
     if (_permit) {
       if (_from === FarmFromMode.EXTERNAL) {
         generators.push(async function permitERC20(_amountInStep: ethers.BigNumber, context: RunContext) {
           const permit = typeof _permit === "function" ? _permit(context) : _permit;
           const owner = await LibraryPresets.sdk.getAccount();
-          const spender = LibraryPresets.sdk.contracts.beanstalk.address;
+          const spender = LibraryPresets.sdk.contracts.moonmage.address;
 
           LibraryPresets.sdk.debug(`[permitERC20.run()]`, {
             token: _token.address,
@@ -54,8 +54,8 @@ export class LibraryPresets {
           });
 
           return {
-            target: LibraryPresets.sdk.contracts.beanstalk.address,
-            callData: LibraryPresets.sdk.contracts.beanstalk.interface.encodeFunctionData("permitERC20", [
+            target: LibraryPresets.sdk.contracts.moonmage.address,
+            callData: LibraryPresets.sdk.contracts.moonmage.interface.encodeFunctionData("permitERC20", [
               _token.address, // token address
               owner, // owner
               spender, // spender
@@ -85,8 +85,8 @@ export class LibraryPresets {
       });
 
       return {
-        target: LibraryPresets.sdk.contracts.beanstalk.address,
-        callData: LibraryPresets.sdk.contracts.beanstalk.interface.encodeFunctionData("transferToken", [
+        target: LibraryPresets.sdk.contracts.moonmage.address,
+        callData: LibraryPresets.sdk.contracts.moonmage.interface.encodeFunctionData("transferToken", [
           _token.address, // token
           recipient, // recipient
           _amountInStep.toString(), // amount
@@ -99,7 +99,7 @@ export class LibraryPresets {
     return generators;
   }
 
-  constructor(sdk: BeanstalkSDK) {
+  constructor(sdk: MoonmageSDK) {
     LibraryPresets.sdk = sdk;
 
     ///////// WETH <> USDT ///////////
@@ -123,20 +123,20 @@ export class LibraryPresets {
         toMode
       );
 
-    ///////// BEAN <> USDT ///////////
-    this.usdt2bean = (fromMode?: FarmFromMode, toMode?: FarmToMode) =>
-      new ExchangeUnderlying(sdk.contracts.curve.pools.beanCrv3.address, sdk.tokens.USDT, sdk.tokens.BEAN, fromMode, toMode);
+    ///////// MOON <> USDT ///////////
+    this.usdt2moon = (fromMode?: FarmFromMode, toMode?: FarmToMode) =>
+      new ExchangeUnderlying(sdk.contracts.curve.pools.moonCrv3.address, sdk.tokens.USDT, sdk.tokens.MOON, fromMode, toMode);
 
-    this.bean2usdt = (fromMode?: FarmFromMode, toMode?: FarmToMode) =>
-      new ExchangeUnderlying(sdk.contracts.curve.pools.beanCrv3.address, sdk.tokens.BEAN, sdk.tokens.USDT, fromMode, toMode);
+    this.moon2usdt = (fromMode?: FarmFromMode, toMode?: FarmToMode) =>
+      new ExchangeUnderlying(sdk.contracts.curve.pools.moonCrv3.address, sdk.tokens.MOON, sdk.tokens.USDT, fromMode, toMode);
 
-    //////// WETH <> BEAN
-    this.weth2bean = (fromMode?: FarmFromMode, toMode?: FarmToMode) => [
+    //////// WETH <> MOON
+    this.weth2moon = (fromMode?: FarmFromMode, toMode?: FarmToMode) => [
       this.weth2usdt(fromMode, FarmToMode.INTERNAL) as StepGenerator,
-      this.usdt2bean(FarmFromMode.INTERNAL, toMode) as StepGenerator
+      this.usdt2moon(FarmFromMode.INTERNAL, toMode) as StepGenerator
     ];
-    this.bean2weth = (fromMode?: FarmFromMode, toMode?: FarmToMode) => [
-      this.bean2usdt(fromMode, FarmToMode.INTERNAL) as StepGenerator,
+    this.moon2weth = (fromMode?: FarmFromMode, toMode?: FarmToMode) => [
+      this.moon2usdt(fromMode, FarmToMode.INTERNAL) as StepGenerator,
       this.usdt2weth(FarmFromMode.INTERNAL, toMode) as StepGenerator
     ];
   }

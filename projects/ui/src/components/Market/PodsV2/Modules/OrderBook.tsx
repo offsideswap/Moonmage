@@ -8,7 +8,7 @@ import Centered from '~/components/Common/ZeroState/Centered';
 import useOrderbook, {
   OrderbookAggregation,
   OrderbookPrecision,
-} from '~/hooks/beanstalk/useOrderbook';
+} from '~/hooks/moonmage/useOrderbook';
 import { scrollbarStyles } from '../Common/tableStyles';
 import OrderBookRow from '../Tables/OrderbookRow';
 import OrderbookTableHeader from '../Tables/OrderbookTableHeader';

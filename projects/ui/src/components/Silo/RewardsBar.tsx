@@ -1,24 +1,24 @@
 import React from 'react';
 import { Box, Stack } from '@mui/material';
 import BigNumber from 'bignumber.js';
-import beanIcon from '~/img/tokens/bean-logo-circled.svg';
-import stalkIcon from '~/img/beanstalk/stalk-icon-winter.svg';
-import seedIcon from '~/img/beanstalk/seed-icon-winter.svg';
+import moonIcon from '~/img/tokens/moon-logo-circled.svg';
+import mageIcon from '~/img/moonmage/mage-icon-winter.svg';
+import seedIcon from '~/img/moonmage/seed-icon-winter.svg';
 import { NEW_BN } from '~/constants';
-import { FarmerSiloRewards } from '~/state/farmer/silo';
+import { CosmonautSiloRewards } from '~/state/cosmomage/silo';
 import RewardItem from './RewardItem';
-import { ClaimRewardsAction } from '../../lib/Beanstalk/Farm';
+import { ClaimRewardsAction } from '../../lib/Moonmage/Farm';
 import { hoverMap } from '../../constants/silo';
 import Row from '~/components/Common/Row';
 
 import { FC } from '~/types';
 
 export type RewardsBarProps = {
-  beans: FarmerSiloRewards['beans'];
-  stalk: FarmerSiloRewards['stalk'];
-  seeds: FarmerSiloRewards['seeds'];
+  moons: CosmonautSiloRewards['moons'];
+  mage: CosmonautSiloRewards['mage'];
+  seeds: CosmonautSiloRewards['seeds'];
   /// TEMP
-  revitalizedStalk?: BigNumber;
+  revitalizedMage?: BigNumber;
   revitalizedSeeds?: BigNumber;
   /**
    * Either the selected or hovered action.
@@ -35,10 +35,10 @@ export type RewardsBarProps = {
 
 const RewardsBar: FC<RewardsBarProps & { compact?: boolean }> = (
   {
-    beans,
-    stalk,
+    moons,
+    mage,
     seeds,
-    revitalizedStalk = NEW_BN,
+    revitalizedMage = NEW_BN,
     revitalizedSeeds = NEW_BN,
     action,
     hideRevitalized,
@@ -55,18 +55,18 @@ const RewardsBar: FC<RewardsBarProps & { compact?: boolean }> = (
       {/* Earned */}
       <Row gap={{ xs: GAP_XS, md: GAP_MD, lg: GAP_LG }}>
         <RewardItem
-          title="Earned Beans"
-          tooltip="The number of Beans earned since your last Plant. Upon Plant, Earned Beans are Deposited in the current Season."
-          amount={beans.earned}
-          icon={beanIcon}
+          title="Earned Moons"
+          tooltip="The number of Moons earned since your last Plant. Upon Plant, Earned Moons are Deposited in the current Season."
+          amount={moons.earned}
+          icon={moonIcon}
           compact={compact}
           isClaimable={action && (action === ClaimRewardsAction.PLANT_AND_MOW || action === ClaimRewardsAction.CLAIM_ALL)}
         />
         <RewardItem
-          title="Earned Stalk"
-          tooltip="Stalk earned from Earned Beans. Earned Stalk automatically contribute to Stalk ownership and do not require any action to claim them."
-          amount={stalk.earned}
-          icon={stalkIcon}
+          title="Earned Mage"
+          tooltip="Mage earned from Earned Moons. Earned Mage automatically contribute to Mage ownership and do not require any action to claim them."
+          amount={mage.earned}
+          icon={mageIcon}
           compact={compact}
           isClaimable={action && (action === ClaimRewardsAction.PLANT_AND_MOW || action === ClaimRewardsAction.CLAIM_ALL)}
         />
@@ -76,17 +76,17 @@ const RewardsBar: FC<RewardsBarProps & { compact?: boolean }> = (
       <Row gap={{ xs: GAP_XS, md: GAP_MD, lg: GAP_LG }}>
         <RewardItem
           title="Plantable Seeds"
-          tooltip="Seeds earned in conjunction with Earned Beans. Plantable Seeds must be Planted in order to grow Stalk."
+          tooltip="Seeds earned in conjunction with Earned Moons. Plantable Seeds must be Planted in order to grow Mage."
           amount={seeds.earned}
           icon={seedIcon}
           compact={compact}
           isClaimable={selectedActionIncludes(ClaimRewardsAction.PLANT_AND_MOW)}
         />
         <RewardItem
-          title="Grown Stalk"
-          tooltip="Stalk earned from Seeds. Grown Stalk does not contribute to Stalk ownership until it is Mown. Grown Stalk is Mown at the beginning of any Silo interaction."
-          amount={stalk.grown}
-          icon={stalkIcon}
+          title="Grown Mage"
+          tooltip="Mage earned from Seeds. Grown Mage does not contribute to Mage ownership until it is Mown. Grown Mage is Mown at the beginning of any Silo interaction."
+          amount={mage.grown}
+          icon={mageIcon}
           compact={compact}
           isClaimable={selectedActionIncludes(ClaimRewardsAction.MOW)}
         />
@@ -95,16 +95,16 @@ const RewardsBar: FC<RewardsBarProps & { compact?: boolean }> = (
       {/* Revitalized */}
       <Row gap={{ xs: GAP_XS, md: GAP_MD, lg: GAP_LG }}>
         <RewardItem
-          title="Revitalized Stalk"
-          tooltip="Stalk that have vested for pre-exploit Silo Members. Revitalized Stalk are minted as the percentage of Fertilizer sold increases. Revitalized Stalk does not contribute to Stalk ownership until Enrooted."
-          amount={revitalizedStalk}
-          icon={stalkIcon}
+          title="Revitalized Mage"
+          tooltip="Mage that have vested for pre-exploit Silo Members. Revitalized Mage are minted as the percentage of Fertilizer sold increases. Revitalized Mage does not contribute to Mage ownership until Enrooted."
+          amount={revitalizedMage}
+          icon={mageIcon}
           compact={compact}
           isClaimable={hideRevitalized ? false : selectedActionIncludes(ClaimRewardsAction.ENROOT_AND_MOW)}
         />
         <RewardItem
           title="Revitalized Seeds"
-          tooltip="Seeds that have vested for pre-exploit Silo Members. Revitalized Seeds are minted as the percentage of Fertilizer sold increases. Revitalized Seeds do not generate Stalk until Enrooted."
+          tooltip="Seeds that have vested for pre-exploit Silo Members. Revitalized Seeds are minted as the percentage of Fertilizer sold increases. Revitalized Seeds do not generate Mage until Enrooted."
           amount={revitalizedSeeds}
           icon={seedIcon}
           compact={compact}

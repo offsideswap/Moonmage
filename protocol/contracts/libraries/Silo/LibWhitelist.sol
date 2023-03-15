@@ -18,9 +18,9 @@ interface IBS {
 
     function curveToBDV(uint256 amount) external view returns (uint256);
 
-    function beanToBDV(uint256 amount) external pure returns (uint256);
+    function moonToBDV(uint256 amount) external pure returns (uint256);
 
-    function unripeBeanToBDV(uint256 amount) external view returns (uint256);
+    function unripeMoonToBDV(uint256 amount) external view returns (uint256);
 
     function unripeLPToBDV(uint256 amount) external view returns (uint256);
 }
@@ -31,48 +31,48 @@ library LibWhitelist {
         address indexed token,
         bytes4 selector,
         uint256 seeds,
-        uint256 stalk
+        uint256 mage
     );
 
     event DewhitelistToken(address indexed token);
 
-    uint32 private constant BEAN_3CRV_STALK = 10000;
-    uint32 private constant BEAN_3CRV_SEEDS = 4;
+    uint32 private constant MOON_3CRV_MAGE = 10000;
+    uint32 private constant MOON_3CRV_SEEDS = 4;
 
-    uint32 private constant BEAN_STALK = 10000;
-    uint32 private constant BEAN_SEEDS = 2;
+    uint32 private constant MOON_MAGE = 10000;
+    uint32 private constant MOON_SEEDS = 2;
 
     function whitelistPools() internal {
-        whitelistBean3Crv();
-        whitelistBean();
-        whitelistUnripeBean();
+        whitelistMoon3Crv();
+        whitelistMoon();
+        whitelistUnripeMoon();
         whitelistUnripeLP();
     }
 
-    function whitelistBean3Crv() internal {
+    function whitelistMoon3Crv() internal {
         whitelistToken(
             C.curveMetapoolAddress(),
             IBS.curveToBDV.selector,
-            BEAN_3CRV_STALK,
-            BEAN_3CRV_SEEDS
+            MOON_3CRV_MAGE,
+            MOON_3CRV_SEEDS
         );
     }
 
-    function whitelistBean() internal {
+    function whitelistMoon() internal {
         whitelistToken(
-            C.beanAddress(),
-            IBS.beanToBDV.selector,
-            BEAN_STALK,
-            BEAN_SEEDS
+            C.moonAddress(),
+            IBS.moonToBDV.selector,
+            MOON_MAGE,
+            MOON_SEEDS
         );
     }
 
-    function whitelistUnripeBean() internal {
+    function whitelistUnripeMoon() internal {
         whitelistToken(
-            C.unripeBeanAddress(),
-            IBS.unripeBeanToBDV.selector,
-            BEAN_STALK,
-            BEAN_SEEDS
+            C.unripeMoonAddress(),
+            IBS.unripeMoonToBDV.selector,
+            MOON_MAGE,
+            MOON_SEEDS
         );
     }
 
@@ -80,8 +80,8 @@ library LibWhitelist {
         whitelistToken(
             C.unripeLPAddress(),
             IBS.unripeLPToBDV.selector,
-            BEAN_3CRV_STALK,
-            BEAN_3CRV_SEEDS
+            MOON_3CRV_MAGE,
+            MOON_3CRV_SEEDS
         );
     }
 
@@ -94,14 +94,14 @@ library LibWhitelist {
     function whitelistToken(
         address token,
         bytes4 selector,
-        uint32 stalk,
+        uint32 mage,
         uint32 seeds
     ) internal {
         AppStorage storage s = LibAppStorage.diamondStorage();
         s.ss[token].selector = selector;
-        s.ss[token].stalk = stalk;
+        s.ss[token].mage = mage;
         s.ss[token].seeds = seeds;
 
-        emit WhitelistToken(token, selector, stalk, seeds);
+        emit WhitelistToken(token, selector, mage, seeds);
     }
 }

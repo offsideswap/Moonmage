@@ -110,7 +110,7 @@ const cache = new InMemoryCache({
       fields: {
         seasons: mergeUsingSeasons([]),
         fieldHourlySnapshots: mergeUsingSeasons([]),
-        beanHourlySnapshots: mergeUsingSeasons([]),
+        moonHourlySnapshots: mergeUsingSeasons([]),
         siloAssetHourlySnapshots: mergeUsingSeasons(['$siloAsset']),
         siloHourlySnapshots: mergeUsingSeasons([]),
         siloYields: mergeUsingSeasons([]),
@@ -144,12 +144,12 @@ try {
   console.warn('Failed to read subgraph env from state, skipping.');
 }
 
-const beanstalkLink = new HttpLink({
-  uri: sgEnv.subgraphs.beanstalk,
+const moonmageLink = new HttpLink({
+  uri: sgEnv.subgraphs.moonmage,
 });
 
-const beanLink = new HttpLink({
-  uri: sgEnv.subgraphs.bean,
+const moonLink = new HttpLink({
+  uri: sgEnv.subgraphs.moon,
 });
 
 const snapshotLink = new HttpLink({
@@ -160,12 +160,12 @@ const snapshotLink = new HttpLink({
 
 export const apolloClient = new ApolloClient({
   link: ApolloLink.split(
-    (operation) => operation.getContext().subgraph === 'bean',
-    beanLink, // true
+    (operation) => operation.getContext().subgraph === 'moon',
+    moonLink, // true
     ApolloLink.split(
       (operation) => operation.getContext().subgraph === 'snapshot',
       snapshotLink, // true
-      beanstalkLink, // false
+      moonmageLink, // false
     ),
   ),
   cache,

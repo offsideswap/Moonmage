@@ -3,20 +3,20 @@ const { deploy } = require('../scripts/deploy.js')
 const { deployFertilizer, impersonateFertilizer } = require('../scripts/deployFertilizer.js')
 const { EXTERNAL, INTERNAL } = require('./utils/balances.js')
 const { takeSnapshot, revertToSnapshot } = require("./utils/snapshot");
-const { BEAN, FERTILIZER, USDC, BEAN_3_CURVE, THREE_CURVE, UNRIPE_BEAN, UNRIPE_LP } = require('./utils/constants');
+const { MOON, FERTILIZER, USDC, MOON_3_CURVE, THREE_CURVE, UNRIPE_MOON, UNRIPE_LP } = require('./utils/constants');
 const { to6, to18 } = require('./utils/helpers.js');
 let user,user2,owner,fert
 let userAddress, ownerAddress, user2Address
 
 let snapshotId
 
-function beansForUsdc(amount) {
+function moonsForUsdc(amount) {
   return ethers.BigNumber.from(amount)
     .mul(ethers.BigNumber.from('32509005432722'))
     .div(ethers.BigNumber.from('77000000'))
 }
 
-function lpBeansForUsdc(amount) {
+function lpMoonsForUsdc(amount) {
   return ethers.BigNumber.from(amount)
     .mul(ethers.BigNumber.from('866616'))
 }
@@ -30,7 +30,7 @@ describe('Fertilize', function () {
     // this.fert = await deployFertilizer(owner, false, mock=true)
     this.fert = await impersonateFertilizer()
     ownerAddress = contracts.account
-    this.diamond = contracts.beanstalkDiamond
+    this.diamond = contracts.moonmageDiamond
     await this.fert.transferOwnership(this.diamond.address)
     // await user.sendTransaction({to: FERTILIZER, value: ethers.utils.parseEther("0.1")});
     // await hre.network.provider.request({method: "hardhat_impersonateAccount", params: [FERTILIZER]});
@@ -39,18 +39,18 @@ describe('Fertilize', function () {
     this.unripe = await ethers.getContractAt('MockUnripeFacet', this.diamond.address)
     this.season = await ethers.getContractAt('MockSeasonFacet', this.diamond.address)
     this.token = await ethers.getContractAt('TokenFacet', this.diamond.address)
-    this.usdc = await ethers.getContractAt('IBean', USDC)
-    this.bean = await ethers.getContractAt('IBean', BEAN)
-    this.beanMetapool = await ethers.getContractAt('IBean', BEAN_3_CURVE)
-    this.threeCurve = await ethers.getContractAt('IBean', THREE_CURVE)
+    this.usdc = await ethers.getContractAt('IMoon', USDC)
+    this.moon = await ethers.getContractAt('IMoon', MOON)
+    this.moonMetapool = await ethers.getContractAt('IMoon', MOON_3_CURVE)
+    this.threeCurve = await ethers.getContractAt('IMoon', THREE_CURVE)
 
-    this.unripeBean = await ethers.getContractAt('MockToken', UNRIPE_BEAN)
+    this.unripeMoon = await ethers.getContractAt('MockToken', UNRIPE_MOON)
     this.unripeLP = await ethers.getContractAt('MockToken', UNRIPE_LP)
-    await this.unripeBean.mint(user2.address, to6('1000'))
+    await this.unripeMoon.mint(user2.address, to6('1000'))
     await this.unripeLP.mint(user2.address, to6('942.297473'))
 
-    this.threeCurve = await ethers.getContractAt('IBean', THREE_CURVE)
-    this.threeCurve = await ethers.getContractAt('IBean', THREE_CURVE)
+    this.threeCurve = await ethers.getContractAt('IMoon', THREE_CURVE)
+    this.threeCurve = await ethers.getContractAt('IMoon', THREE_CURVE)
 
     await this.usdc.mint(owner.address, to18('1000000000'));
     await this.usdc.mint(user.address, to6('1000'));
@@ -114,7 +114,7 @@ describe('Fertilize', function () {
       })
   
       it("updates totals", async function () {
-        expect(await this.fertilizer.totalUnfertilizedBeans()).to.be.equal(to6('1.2'))
+        expect(await this.fertilizer.totalUnfertilizedMoons()).to.be.equal(to6('1.2'))
         expect(await this.fertilizer.getFirst()).to.be.equal(to6('1.2'))
         expect(await this.fertilizer.getNext(to6('1.2'))).to.be.equal(0)
         expect(await this.fertilizer.getActiveFertilizer()).to.be.equal('1')
@@ -123,15 +123,15 @@ describe('Fertilize', function () {
       })
 
       it('updates token balances', async function () {
-        expect(await this.bean.balanceOf(this.fertilizer.address)).to.be.equal(to6('2'))
-        expect(await this.beanMetapool.balanceOf(this.fertilizer.address)).to.be.equal('1866180825834066049')
+        expect(await this.moon.balanceOf(this.fertilizer.address)).to.be.equal(to6('2'))
+        expect(await this.moonMetapool.balanceOf(this.fertilizer.address)).to.be.equal('1866180825834066049')
 
-        expect(await this.threeCurve.balanceOf(this.beanMetapool.address)).to.be.equal(to18('1'))
-        expect(await this.bean.balanceOf(this.beanMetapool.address)).to.be.equal(lpBeansForUsdc('1'))
+        expect(await this.threeCurve.balanceOf(this.moonMetapool.address)).to.be.equal(to18('1'))
+        expect(await this.moon.balanceOf(this.moonMetapool.address)).to.be.equal(lpMoonsForUsdc('1'))
       })
 
       it('updates underlying balances', async function () {
-        expect(await this.unripe.getTotalUnderlying(UNRIPE_BEAN)).to.be.equal(to6('2'))
+        expect(await this.unripe.getTotalUnderlying(UNRIPE_MOON)).to.be.equal(to6('2'))
         expect(await this.unripe.getTotalUnderlying(UNRIPE_LP)).to.be.equal('1866180825834066049')
       })
 
@@ -153,11 +153,11 @@ describe('Fertilize', function () {
       beforeEach(async function () {
         await this.fertilizer.connect(owner).addFertilizerOwner('10000', '1', '0')
         await this.fertilizer.connect(owner).addFertilizerOwner('10000', '1', '0')
-        this.depositedBeans = beansForUsdc('1').add(beansForUsdc('1'))
+        this.depositedMoons = moonsForUsdc('1').add(moonsForUsdc('1'))
       })
 
       it("updates totals", async function () {
-        expect(await this.fertilizer.totalUnfertilizedBeans()).to.be.equal(to6('2.4'))
+        expect(await this.fertilizer.totalUnfertilizedMoons()).to.be.equal(to6('2.4'))
         expect(await this.fertilizer.getFirst()).to.be.equal(to6('1.2'))
         expect(await this.fertilizer.getNext(to6('1.2'))).to.be.equal(0)
         expect(await this.fertilizer.getActiveFertilizer()).to.be.equal('2')
@@ -165,15 +165,15 @@ describe('Fertilize', function () {
       })
 
       it('updates token balances', async function () {
-        expect(await this.bean.balanceOf(this.fertilizer.address)).to.be.equal(to6('3.999999'))
-        expect(await this.beanMetapool.balanceOf(this.fertilizer.address)).to.be.equal('3732361651668132099')
+        expect(await this.moon.balanceOf(this.fertilizer.address)).to.be.equal(to6('3.999999'))
+        expect(await this.moonMetapool.balanceOf(this.fertilizer.address)).to.be.equal('3732361651668132099')
 
-        expect(await this.threeCurve.balanceOf(this.beanMetapool.address)).to.be.equal(to18('2'))
-        expect(await this.bean.balanceOf(this.beanMetapool.address)).to.be.equal(lpBeansForUsdc('2'))
+        expect(await this.threeCurve.balanceOf(this.moonMetapool.address)).to.be.equal(to18('2'))
+        expect(await this.moon.balanceOf(this.moonMetapool.address)).to.be.equal(lpMoonsForUsdc('2'))
       })
 
       it('updates underlying balances', async function () {
-        expect(await this.unripe.getTotalUnderlying(UNRIPE_BEAN)).to.be.equal(to6('3.999999'))
+        expect(await this.unripe.getTotalUnderlying(UNRIPE_MOON)).to.be.equal(to6('3.999999'))
         expect(await this.unripe.getTotalUnderlying(UNRIPE_LP)).to.be.equal('3732361651668132099')
       })
 
@@ -186,11 +186,11 @@ describe('Fertilize', function () {
       beforeEach(async function () {
         await this.fertilizer.connect(owner).addFertilizerOwner('0', '5', '0')
         await this.fertilizer.connect(owner).addFertilizerOwner('10000', '1', '0')
-        this.lpBeans = lpBeansForUsdc('5').add(lpBeansForUsdc('1'))
+        this.lpMoons = lpMoonsForUsdc('5').add(lpMoonsForUsdc('1'))
       })
 
       it("updates totals", async function () {
-        expect(await this.fertilizer.totalUnfertilizedBeans()).to.be.equal(to6('31.2'))
+        expect(await this.fertilizer.totalUnfertilizedMoons()).to.be.equal(to6('31.2'))
         expect(await this.fertilizer.getFirst()).to.be.equal(to6('1.2'))
         expect(await this.fertilizer.getNext(to6('1.2'))).to.be.equal(to6('6'))
         expect(await this.fertilizer.getActiveFertilizer()).to.be.equal('6')
@@ -199,15 +199,15 @@ describe('Fertilize', function () {
       })
 
       it('updates token balances', async function () {
-        expect(await this.bean.balanceOf(this.fertilizer.address)).to.be.equal(to6('11.999999'))
-        expect(await this.beanMetapool.balanceOf(this.fertilizer.address)).to.be.equal('11197084955004396299')
+        expect(await this.moon.balanceOf(this.fertilizer.address)).to.be.equal(to6('11.999999'))
+        expect(await this.moonMetapool.balanceOf(this.fertilizer.address)).to.be.equal('11197084955004396299')
 
-        expect(await this.threeCurve.balanceOf(this.beanMetapool.address)).to.be.equal(to18('6'))
-        expect(await this.bean.balanceOf(this.beanMetapool.address)).to.be.equal(this.lpBeans)
+        expect(await this.threeCurve.balanceOf(this.moonMetapool.address)).to.be.equal(to18('6'))
+        expect(await this.moon.balanceOf(this.moonMetapool.address)).to.be.equal(this.lpMoons)
       })
 
       it('updates underlying balances', async function () {
-        expect(await this.unripe.getTotalUnderlying(UNRIPE_BEAN)).to.be.equal(to6('11.999999'))
+        expect(await this.unripe.getTotalUnderlying(UNRIPE_MOON)).to.be.equal(to6('11.999999'))
         expect(await this.unripe.getTotalUnderlying(UNRIPE_LP)).to.be.equal('11197084955004396299')
       })
 
@@ -252,11 +252,11 @@ describe('Fertilize', function () {
       beforeEach(async function () {
         await this.season.teleportSunrise('6274')
         this.result = await this.fertilizer.connect(user).mintFertilizer('100', '0', EXTERNAL)
-        this.lpBeans = lpBeansForUsdc('100')
+        this.lpMoons = lpMoonsForUsdc('100')
       })
 
       it("updates totals", async function () {
-        expect(await this.fertilizer.totalUnfertilizedBeans()).to.be.equal(to6('250'))
+        expect(await this.fertilizer.totalUnfertilizedMoons()).to.be.equal(to6('250'))
         expect(await this.fertilizer.getFirst()).to.be.equal(to6('2.5'))
         expect(await this.fertilizer.getNext(to6('2.5'))).to.be.equal(0)
         expect(await this.fertilizer.getActiveFertilizer()).to.be.equal('100')
@@ -265,15 +265,15 @@ describe('Fertilize', function () {
       })
 
       it('updates token balances', async function () {
-        expect(await this.bean.balanceOf(this.fertilizer.address)).to.be.equal(to6('200'))
-        expect(await this.beanMetapool.balanceOf(this.fertilizer.address)).to.be.equal('186618082583406604989')
+        expect(await this.moon.balanceOf(this.fertilizer.address)).to.be.equal(to6('200'))
+        expect(await this.moonMetapool.balanceOf(this.fertilizer.address)).to.be.equal('186618082583406604989')
 
-        expect(await this.threeCurve.balanceOf(this.beanMetapool.address)).to.be.equal(to18('100'))
-        expect(await this.bean.balanceOf(this.beanMetapool.address)).to.be.equal(this.lpBeans)
+        expect(await this.threeCurve.balanceOf(this.moonMetapool.address)).to.be.equal(to18('100'))
+        expect(await this.moon.balanceOf(this.moonMetapool.address)).to.be.equal(this.lpMoons)
       })
 
       it('updates underlying balances', async function () {
-        expect(await this.unripe.getTotalUnderlying(UNRIPE_BEAN)).to.be.equal(to6('200'))
+        expect(await this.unripe.getTotalUnderlying(UNRIPE_MOON)).to.be.equal(to6('200'))
         expect(await this.unripe.getTotalUnderlying(UNRIPE_LP)).to.be.equal('186618082583406604989')
       })
 
@@ -299,11 +299,11 @@ describe('Fertilize', function () {
         await this.season.teleportSunrise('6274')
         this.result = await this.fertilizer.connect(user).mintFertilizer('50', '0', EXTERNAL)
         this.result = await this.fertilizer.connect(user).mintFertilizer('50', '0', EXTERNAL)
-        this.lpBeans = lpBeansForUsdc('100');
+        this.lpMoons = lpMoonsForUsdc('100');
       })
 
       it("updates totals", async function () {
-        expect(await this.fertilizer.totalUnfertilizedBeans()).to.be.equal(to6('250'))
+        expect(await this.fertilizer.totalUnfertilizedMoons()).to.be.equal(to6('250'))
         expect(await this.fertilizer.getFirst()).to.be.equal(to6('2.5'))
         expect(await this.fertilizer.getNext(to6('2.5'))).to.be.equal(0)
         expect(await this.fertilizer.getActiveFertilizer()).to.be.equal('100')
@@ -312,15 +312,15 @@ describe('Fertilize', function () {
       })
 
       it('updates token balances', async function () {
-        expect(await this.bean.balanceOf(this.fertilizer.address)).to.be.equal('199999999') // Rounds down
-        expect(await this.beanMetapool.balanceOf(this.fertilizer.address)).to.be.equal('186618082583406604989')
+        expect(await this.moon.balanceOf(this.fertilizer.address)).to.be.equal('199999999') // Rounds down
+        expect(await this.moonMetapool.balanceOf(this.fertilizer.address)).to.be.equal('186618082583406604989')
 
-        expect(await this.threeCurve.balanceOf(this.beanMetapool.address)).to.be.equal(to18('100'))
-        expect(await this.bean.balanceOf(this.beanMetapool.address)).to.be.equal(this.lpBeans)
+        expect(await this.threeCurve.balanceOf(this.moonMetapool.address)).to.be.equal(to18('100'))
+        expect(await this.moon.balanceOf(this.moonMetapool.address)).to.be.equal(this.lpMoons)
       })
 
       it('updates underlying balances', async function () {
-        expect(await this.unripe.getTotalUnderlying(UNRIPE_BEAN)).to.be.equal('199999999') // Rounds down
+        expect(await this.unripe.getTotalUnderlying(UNRIPE_MOON)).to.be.equal('199999999') // Rounds down
         expect(await this.unripe.getTotalUnderlying(UNRIPE_LP)).to.be.equal('186618082583406604989')
       })
 
@@ -348,12 +348,12 @@ describe('Fertilize', function () {
         await this.season.rewardToFertilizerE(to6('50'))
         await this.season.teleportSunrise('6274')
         this.result = await this.fertilizer.connect(user).mintFertilizer('100', '0', EXTERNAL)
-        this.lpBeans = lpBeansForUsdc('100').add(lpBeansForUsdc('100'))
+        this.lpMoons = lpMoonsForUsdc('100').add(lpMoonsForUsdc('100'))
       })
 
       it("updates totals", async function () {
-        expect(await this.fertilizer.totalFertilizerBeans()).to.be.equal(to6('600'))
-        expect(await this.fertilizer.totalFertilizedBeans()).to.be.equal(to6('50'))
+        expect(await this.fertilizer.totalFertilizerMoons()).to.be.equal(to6('600'))
+        expect(await this.fertilizer.totalFertilizedMoons()).to.be.equal(to6('50'))
         expect(await this.fertilizer.getFirst()).to.be.equal(to6('3'))
         expect(await this.fertilizer.getNext(to6('3'))).to.be.equal(to6('3.5'))
         expect(await this.fertilizer.getActiveFertilizer()).to.be.equal('200')
@@ -362,15 +362,15 @@ describe('Fertilize', function () {
       })
 
       it('updates token balances', async function () {
-        expect(await this.bean.balanceOf(this.fertilizer.address)).to.be.equal(to6('450'))
-        expect(await this.beanMetapool.balanceOf(this.fertilizer.address)).to.be.equal('373236165166813209979')
+        expect(await this.moon.balanceOf(this.fertilizer.address)).to.be.equal(to6('450'))
+        expect(await this.moonMetapool.balanceOf(this.fertilizer.address)).to.be.equal('373236165166813209979')
 
-        expect(await this.threeCurve.balanceOf(this.beanMetapool.address)).to.be.equal(to18('200'))
-        expect(await this.bean.balanceOf(this.beanMetapool.address)).to.be.equal(this.lpBeans)
+        expect(await this.threeCurve.balanceOf(this.moonMetapool.address)).to.be.equal(to18('200'))
+        expect(await this.moon.balanceOf(this.moonMetapool.address)).to.be.equal(this.lpMoons)
       })
 
       it('updates underlying balances', async function () {
-        expect(await this.unripe.getTotalUnderlying(UNRIPE_BEAN)).to.be.equal(to6('400'))
+        expect(await this.unripe.getTotalUnderlying(UNRIPE_MOON)).to.be.equal(to6('400'))
         expect(await this.unripe.getTotalUnderlying(UNRIPE_LP)).to.be.equal('373236165166813209979')
       })
 
@@ -403,12 +403,12 @@ describe('Fertilize', function () {
         await this.season.rewardToFertilizerE(to6('50'))
         await this.season.teleportSunrise('6174')
         this.result = await this.fertilizer.connect(user).mintFertilizer('100', '0', EXTERNAL)
-        this.lpBeans = lpBeansForUsdc('100').add(lpBeansForUsdc('100'))
+        this.lpMoons = lpMoonsForUsdc('100').add(lpMoonsForUsdc('100'))
       })
 
       it("updates totals", async function () {
-        expect(await this.fertilizer.totalFertilizerBeans()).to.be.equal(to6('650'))
-        expect(await this.fertilizer.totalFertilizedBeans()).to.be.equal(to6('50'))
+        expect(await this.fertilizer.totalFertilizerMoons()).to.be.equal(to6('650'))
+        expect(await this.fertilizer.totalFertilizedMoons()).to.be.equal(to6('50'))
         expect(await this.fertilizer.getFirst()).to.be.equal(to6('3.5'))
         expect(await this.fertilizer.getNext(to6('3'))).to.be.equal(to6('0'))
         expect(await this.fertilizer.getActiveFertilizer()).to.be.equal('200')
@@ -417,15 +417,15 @@ describe('Fertilize', function () {
       })
 
       it('updates token balances', async function () {
-        expect(await this.bean.balanceOf(this.fertilizer.address)).to.be.equal(to6('450'))
-        expect(await this.beanMetapool.balanceOf(this.fertilizer.address)).to.be.equal('373236165166813209979')
+        expect(await this.moon.balanceOf(this.fertilizer.address)).to.be.equal(to6('450'))
+        expect(await this.moonMetapool.balanceOf(this.fertilizer.address)).to.be.equal('373236165166813209979')
 
-        expect(await this.threeCurve.balanceOf(this.beanMetapool.address)).to.be.equal(to18('200'))
-        expect(await this.bean.balanceOf(this.beanMetapool.address)).to.be.equal(this.lpBeans)
+        expect(await this.threeCurve.balanceOf(this.moonMetapool.address)).to.be.equal(to18('200'))
+        expect(await this.moon.balanceOf(this.moonMetapool.address)).to.be.equal(this.lpMoons)
       })
 
       it('updates underlying balances', async function () {
-        expect(await this.unripe.getTotalUnderlying(UNRIPE_BEAN)).to.be.equal(to6('400'))
+        expect(await this.unripe.getTotalUnderlying(UNRIPE_MOON)).to.be.equal(to6('400'))
         expect(await this.unripe.getTotalUnderlying(UNRIPE_LP)).to.be.equal('373236165166813209979')
       })
 
@@ -445,8 +445,8 @@ describe('Fertilize', function () {
         expect(await this.fert.getMintId()).to.be.equal(to6('3.5'))
       })
 
-      it('updates claims fertilized Beans', async function () {
-        expect(await this.token.getInternalBalance(user.address, this.bean.address)).to.be.equal(to6('50'))
+      it('updates claims fertilized Moons', async function () {
+        expect(await this.token.getInternalBalance(user.address, this.moon.address)).to.be.equal(to6('50'))
       })
     })
 
@@ -460,8 +460,8 @@ describe('Fertilize', function () {
         this.result = await this.fertilizer.connect(user).mintFertilizer('100', '0', EXTERNAL)
       })
 
-      it('updates claims fertilized Beans', async function () {
-        expect(await this.token.getInternalBalance(user.address, this.bean.address)).to.be.equal(to6('50'))
+      it('updates claims fertilized Moons', async function () {
+        expect(await this.token.getInternalBalance(user.address, this.moon.address)).to.be.equal(to6('50'))
       })
     })
   })
@@ -481,16 +481,16 @@ describe('Fertilize', function () {
       expect(await this.fertilizer.balanceOfFertilized(userAddress, [to6('2.5')])).to.be.equal(to6('50'))
     });
 
-    describe("no Beans", async function () {
+    describe("no Moons", async function () {
       beforeEach(async function() {
-        const beansBefore = await this.bean.balanceOf(this.fertilizer.address)
+        const moonsBefore = await this.moon.balanceOf(this.fertilizer.address)
         await this.fertilizer.connect(user).claimFertilized([to6('2.5')], EXTERNAL)
-        this.deltaBeanstalkBeans = (await this.bean.balanceOf(this.fertilizer.address)).sub(beansBefore)
+        this.deltaMoonmageMoons = (await this.moon.balanceOf(this.fertilizer.address)).sub(moonsBefore)
       })
 
       it('transfer balances', async function () {
-        expect(await this.bean.balanceOf(user.address)).to.be.equal("0")
-        expect(this.deltaBeanstalkBeans).to.be.equal('0')
+        expect(await this.moon.balanceOf(user.address)).to.be.equal("0")
+        expect(this.deltaMoonmageMoons).to.be.equal('0')
       })
 
       it('gets balances', async function () {
@@ -504,17 +504,17 @@ describe('Fertilize', function () {
       })
     })
 
-    describe("Some Beans", async function () {
+    describe("Some Moons", async function () {
       beforeEach(async function() {
         await this.season.rewardToFertilizerE(to6('50'))
-        const beansBefore = await this.bean.balanceOf(this.fertilizer.address)
+        const moonsBefore = await this.moon.balanceOf(this.fertilizer.address)
         await this.fertilizer.connect(user).claimFertilized([to6('2.5')], EXTERNAL)
-        this.deltaBeanstalkBeans = (await this.bean.balanceOf(this.fertilizer.address)).sub(beansBefore)
+        this.deltaMoonmageMoons = (await this.moon.balanceOf(this.fertilizer.address)).sub(moonsBefore)
       })
 
       it('transfer balances', async function () {
-        expect(await this.bean.balanceOf(user.address)).to.be.equal(to6('50'))
-        expect(this.deltaBeanstalkBeans).to.be.equal(to6('-50'))
+        expect(await this.moon.balanceOf(user.address)).to.be.equal(to6('50'))
+        expect(this.deltaMoonmageMoons).to.be.equal(to6('-50'))
       })
 
       it('gets balances', async function () {
@@ -528,17 +528,17 @@ describe('Fertilize', function () {
       })
     })
 
-    describe("All Beans", async function () {
+    describe("All Moons", async function () {
       beforeEach(async function() {
         await this.season.rewardToFertilizerE(to6('250'))
-        const beansBefore = await this.bean.balanceOf(this.fertilizer.address)
+        const moonsBefore = await this.moon.balanceOf(this.fertilizer.address)
         await this.fertilizer.connect(user).claimFertilized([to6('2.5')], EXTERNAL)
-        this.deltaBeanstalkBeans = (await this.bean.balanceOf(this.fertilizer.address)).sub(beansBefore)
+        this.deltaMoonmageMoons = (await this.moon.balanceOf(this.fertilizer.address)).sub(moonsBefore)
       })
 
       it('transfer balances', async function () {
-        expect(await this.bean.balanceOf(user.address)).to.be.equal(to6('250'))
-        expect(this.deltaBeanstalkBeans).to.be.equal(to6('-250'))
+        expect(await this.moon.balanceOf(user.address)).to.be.equal(to6('250'))
+        expect(this.deltaMoonmageMoons).to.be.equal(to6('-250'))
       })
 
       it('gets balances', async function () {
@@ -553,7 +553,7 @@ describe('Fertilize', function () {
       })
     })
 
-    describe("Rest of Beans", async function () {
+    describe("Rest of Moons", async function () {
       beforeEach(async function() {
         await this.season.rewardToFertilizerE(to6('200'))
         await this.season.teleportSunrise('6474')
@@ -561,14 +561,14 @@ describe('Fertilize', function () {
         await this.fertilizer.connect(user).claimFertilized([to6('2.5')], EXTERNAL)
         await this.season.rewardToFertilizerE(to6('150'))
 
-        const beansBefore = await this.bean.balanceOf(this.fertilizer.address)
+        const moonsBefore = await this.moon.balanceOf(this.fertilizer.address)
         await this.fertilizer.connect(user).claimFertilized([to6('2.5')], EXTERNAL)
-        this.deltaBeanstalkBeans = (await this.bean.balanceOf(this.fertilizer.address)).sub(beansBefore)
+        this.deltaMoonmageMoons = (await this.moon.balanceOf(this.fertilizer.address)).sub(moonsBefore)
       })
 
       it('transfer balances', async function () {
-        expect(await this.bean.balanceOf(user.address)).to.be.equal(to6('250'))
-        expect(this.deltaBeanstalkBeans).to.be.equal(to6('-50'))
+        expect(await this.moon.balanceOf(user.address)).to.be.equal(to6('250'))
+        expect(this.deltaMoonmageMoons).to.be.equal(to6('-50'))
       })
 
       it('gets balances', async function () {
@@ -582,7 +582,7 @@ describe('Fertilize', function () {
       })
     })
 
-    describe("Rest of Beans and new Fertilizer", async function () {
+    describe("Rest of Moons and new Fertilizer", async function () {
       beforeEach(async function() {
         await this.season.rewardToFertilizerE(to6('200'))
         await this.season.teleportSunrise('6474')
@@ -590,14 +590,14 @@ describe('Fertilize', function () {
         await this.fertilizer.connect(user).claimFertilized([to6('2.5')], EXTERNAL)
         await this.season.rewardToFertilizerE(to6('150'))
 
-        const beansBefore = await this.bean.balanceOf(this.fertilizer.address)
+        const moonsBefore = await this.moon.balanceOf(this.fertilizer.address)
         await this.fertilizer.connect(user).claimFertilized([to6('2.5'), to6('3.5')], EXTERNAL)
-        this.deltaBeanstalkBeans = (await this.bean.balanceOf(this.fertilizer.address)).sub(beansBefore)
+        this.deltaMoonmageMoons = (await this.moon.balanceOf(this.fertilizer.address)).sub(moonsBefore)
       })
 
       it('transfer balances', async function () {
-        expect(await this.bean.balanceOf(user.address)).to.be.equal(to6('350'))
-        expect(this.deltaBeanstalkBeans).to.be.equal(to6('-150'))
+        expect(await this.moon.balanceOf(user.address)).to.be.equal(to6('350'))
+        expect(this.deltaMoonmageMoons).to.be.equal(to6('-150'))
       })
 
       it('gets balances', async function () {
@@ -619,14 +619,14 @@ describe('Fertilize', function () {
         await this.fertilizer.connect(user).claimFertilized([to6('2.5')], EXTERNAL)
         await this.season.rewardToFertilizerE(to6('200'))
 
-        const beansBefore = await this.bean.balanceOf(this.fertilizer.address)
+        const moonsBefore = await this.moon.balanceOf(this.fertilizer.address)
         await this.fertilizer.connect(user).claimFertilized([to6('2.5'), to6('3.5')], EXTERNAL)
-        this.deltaBeanstalkBeans = (await this.bean.balanceOf(this.fertilizer.address)).sub(beansBefore)
+        this.deltaMoonmageMoons = (await this.moon.balanceOf(this.fertilizer.address)).sub(moonsBefore)
       })
 
       it('transfer balances', async function () {
-        expect(await this.bean.balanceOf(user.address)).to.be.equal(to6('400'))
-        expect(this.deltaBeanstalkBeans).to.be.equal(to6('-200'))
+        expect(await this.moon.balanceOf(user.address)).to.be.equal(to6('400'))
+        expect(this.deltaMoonmageMoons).to.be.equal(to6('-200'))
       })
 
       it('gets balances', async function () {
@@ -658,15 +658,15 @@ describe('Fertilize', function () {
       })
     })
 
-    describe("Some Beans", async function () {
+    describe("Some Moons", async function () {
       beforeEach(async function() {
         await this.season.rewardToFertilizerE(to6('50'))
         await this.fert.connect(user).safeTransferFrom(user.address, user2.address, to6('2.5'), '50', ethers.constants.HashZero)
       })
 
       it('transfer balances', async function () {
-        expect(await this.token.getInternalBalance(user.address, BEAN)).to.be.equal(to6('50'))
-        expect(await this.token.getInternalBalance(user2.address, BEAN)).to.be.equal(to6('0'))
+        expect(await this.token.getInternalBalance(user.address, MOON)).to.be.equal(to6('50'))
+        expect(await this.token.getInternalBalance(user2.address, MOON)).to.be.equal(to6('0'))
       })
 
       it('gets balances', async function () {
@@ -682,15 +682,15 @@ describe('Fertilize', function () {
       })
     })
 
-    describe("All Beans", async function () {
+    describe("All Moons", async function () {
       beforeEach(async function() {
         await this.season.rewardToFertilizerE(to6('250'))
         await this.fert.connect(user).safeTransferFrom(user.address, user2.address, to6('2.5'), '50', ethers.constants.HashZero)
       })
 
       it('transfer balances', async function () {
-        expect(await this.token.getInternalBalance(user.address, BEAN)).to.be.equal(to6('250'))
-        expect(await this.token.getInternalBalance(user2.address, BEAN)).to.be.equal(to6('0'))
+        expect(await this.token.getInternalBalance(user.address, MOON)).to.be.equal(to6('250'))
+        expect(await this.token.getInternalBalance(user2.address, MOON)).to.be.equal(to6('0'))
       })
 
       it('gets balances', async function () {
@@ -706,7 +706,7 @@ describe('Fertilize', function () {
       })
     })
 
-    describe("Both some Beans", async function () {
+    describe("Both some Moons", async function () {
       beforeEach(async function() {
         this.result = await this.fertilizer.connect(user2).mintFertilizer('100', '0', EXTERNAL)
         await this.season.rewardToFertilizerE(to6('100'))
@@ -714,8 +714,8 @@ describe('Fertilize', function () {
       })
 
       it('transfer balances', async function () {
-        expect(await this.token.getInternalBalance(user.address, BEAN)).to.be.equal(to6('50'))
-        expect(await this.token.getInternalBalance(user2.address, BEAN)).to.be.equal(to6('50'))
+        expect(await this.token.getInternalBalance(user.address, MOON)).to.be.equal(to6('50'))
+        expect(await this.token.getInternalBalance(user2.address, MOON)).to.be.equal(to6('50'))
       })
 
       it('gets balances', async function () {
@@ -731,7 +731,7 @@ describe('Fertilize', function () {
       })
     })
 
-    describe("2 different types some Beans", async function () {
+    describe("2 different types some Moons", async function () {
       beforeEach(async function() {
         await this.season.rewardToFertilizerE(to6('200'))
         await this.season.teleportSunrise('6474')
@@ -741,8 +741,8 @@ describe('Fertilize', function () {
       })
 
       it('transfer balances', async function () {
-        expect(await this.token.getInternalBalance(user.address, BEAN)).to.be.equal(to6('350'))
-        expect(await this.token.getInternalBalance(user2.address, BEAN)).to.be.equal(to6('0'))
+        expect(await this.token.getInternalBalance(user.address, MOON)).to.be.equal(to6('350'))
+        expect(await this.token.getInternalBalance(user2.address, MOON)).to.be.equal(to6('0'))
       })
 
       it('gets balances', async function () {
@@ -761,7 +761,7 @@ describe('Fertilize', function () {
       })
     })
 
-    describe("Both some Beans", async function () {
+    describe("Both some Moons", async function () {
       beforeEach(async function() {
         this.result = await this.fertilizer.connect(user2).mintFertilizer('100', '0', EXTERNAL)
         await this.season.rewardToFertilizerE(to6('400'))
@@ -773,8 +773,8 @@ describe('Fertilize', function () {
       })
 
       it('transfer balances', async function () {
-        expect(await this.token.getInternalBalance(user.address, BEAN)).to.be.equal(to6('350'))
-        expect(await this.token.getInternalBalance(user2.address, BEAN)).to.be.equal(to6('350'))
+        expect(await this.token.getInternalBalance(user.address, MOON)).to.be.equal(to6('350'))
+        expect(await this.token.getInternalBalance(user2.address, MOON)).to.be.equal(to6('350'))
       })
 
       it('gets balances', async function () {

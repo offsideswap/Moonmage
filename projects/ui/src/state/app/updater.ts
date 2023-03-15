@@ -50,7 +50,7 @@ export default function AppUpdater() {
     navigate('/field');
   }, {}, [navigate]);
   useHotkeys('opt+r, alt+r', () => {
-    navigate('/barn');
+    navigate('/ship');
   }, {}, [navigate]);
   useHotkeys('opt+t, alt+t', () => {
     navigate('/market');

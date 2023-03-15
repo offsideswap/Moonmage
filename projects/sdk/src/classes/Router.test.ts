@@ -15,7 +15,7 @@ const graph: Graph = new Graph({
 graph.setNode("ETH");
 graph.setNode("WETH");
 graph.setNode("USDT");
-graph.setNode("BEAN");
+graph.setNode("MOON");
 graph.setNode("FOO");
 
 const makeEdge = (a: string, b: string) =>
@@ -23,7 +23,7 @@ const makeEdge = (a: string, b: string) =>
 
 makeEdge("ETH", "WETH");
 makeEdge("WETH", "USDT");
-makeEdge("USDT", "BEAN");
+makeEdge("USDT", "MOON");
 makeEdge("USDT", "FOO");
 
 const selfEdge = (node: string): RouteStep => {
@@ -40,22 +40,22 @@ describe("Router", function () {
   const router = new Router(sdk, graph, selfEdge);
 
   it("Finds Route", function () {
-    const route = router.getRoute("ETH", "BEAN");
+    const route = router.getRoute("ETH", "MOON");
     expect(route.length).toEqual(3);
-    expect(route.toString()).toEqual("ETH -> WETH -> USDT -> BEAN");
-    expect(route.toArray()).toEqual(["ETH", "WETH", "USDT", "BEAN"]);
+    expect(route.toString()).toEqual("ETH -> WETH -> USDT -> MOON");
+    expect(route.toArray()).toEqual(["ETH", "WETH", "USDT", "MOON"]);
   });
 
   it("Uses self route", async function () {
-    const route = router.getRoute("BEAN", "BEAN");
+    const route = router.getRoute("MOON", "MOON");
     expect(route.length).toEqual(1);
-    expect(route.toString()).toEqual("BEAN -> BEAN");
-    expect(route.toArray()).toEqual(["BEAN", "BEAN"]);
+    expect(route.toString()).toEqual("MOON -> MOON");
+    expect(route.toArray()).toEqual(["MOON", "MOON"]);
     expect(await route.getStep(0).build("").name).toEqual("devdebug");
   });
 
   it("Doesn't find a route", async function () {
-    const route = router.getRoute("BEAN", "FOO");
+    const route = router.getRoute("MOON", "FOO");
     expect(route.length).toEqual(0);
     expect(route.toString()).toEqual("");
   });

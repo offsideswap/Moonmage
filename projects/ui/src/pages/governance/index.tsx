@@ -5,7 +5,7 @@ import {
 } from '@mui/material';
 import PageHeader from '~/components/Common/PageHeader';
 import Proposals from '~/components/Governance/Proposals';
-import StalkholderCard from '~/components/Governance/StalkholderCard';
+import MageholderCard from '~/components/Governance/MageholderCard';
  import { HOW_TO_VOTE } from '~/util/Guides';
 import GuideButton from '~/components/Common/Guide/GuideButton';
 
@@ -16,11 +16,11 @@ const GovernancePage: FC<{}> = () => (
     <Stack gap={2}>
       <PageHeader
         title="Governance"
-        description="Participate in Beanstalk governance as a Stalkholder"
-        href="https://docs.bean.money/almanac/governance/proposals"
+        description="Participate in Moonmage governance as a Mageholder"
+        href="https://docs.moon.money/almanac/governance/proposals"
         control={
           <GuideButton
-            title="The Farmers' Almanac: Governance Guides"
+            title="The Cosmonauts' Almanac: Governance Guides"
             guides={[
               HOW_TO_VOTE,
             ]}
@@ -29,7 +29,7 @@ const GovernancePage: FC<{}> = () => (
       />
       <Grid container direction={{ xs: 'column', md: 'row' }} spacing={2}>
         <Grid item xs={12} lg={3.5}>
-          <StalkholderCard />
+          <MageholderCard />
         </Grid>
         <Grid item xs={12} lg={8.5}>
           <Proposals />

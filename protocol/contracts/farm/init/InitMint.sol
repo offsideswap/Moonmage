@@ -9,10 +9,10 @@ import "../../C.sol";
 
 /**
  * @author Publius
- * @title InitMint mints Beans
+ * @title InitMint mints Moons
  **/
 contract InitMint {
     function init(address payee, uint256 amount) external {
-        C.bean().mint(payee, amount);
+        C.moon().mint(payee, amount);
     }
 }

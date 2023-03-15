@@ -1,7 +1,7 @@
 import React from 'react';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import BigNumber from 'bignumber.js';
-import { BeanPoolState } from '~/state/bean/pools';
+import { MoonPoolState } from '~/state/moon/pools';
 import PoolCard from './PoolCard';
 
 export default {
@@ -9,7 +9,7 @@ export default {
   args: {}
 } as ComponentMeta<typeof PoolCard>;
 
-const poolState: BeanPoolState = {
+const poolState: MoonPoolState = {
   price: new BigNumber(100),
   reserves: [new BigNumber(100), new BigNumber(100)],
   deltaB: new BigNumber(100000),
@@ -21,7 +21,7 @@ const Template: ComponentStory<typeof PoolCard> = (args: any) => (
   <div>Currently broken (unexpected default), will need to investigate</div>
   // <PoolCard
   //   // {...args}
-  //   pool={BEAN_ETH_UNIV2_POOL_MAINNET}
+  //   pool={MOON_ETH_UNIV2_POOL_MAINNET}
   //   poolState={poolState}
   // />
 );

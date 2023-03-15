@@ -1,6 +1,6 @@
-const { USDC_MINTER, BEAN } = require('../test/utils/constants')
-const { getUsdc, getBean, getBeanstalkAdminControls } = require('./contracts.js')
-const { impersonateSigner, impersonateBeanstalkOwner } = require('./signer.js')
+const { USDC_MINTER, MOON } = require('../test/utils/constants')
+const { getUsdc, getMoon, getMoonmageAdminControls } = require('./contracts.js')
+const { impersonateSigner, impersonateMoonmageOwner } = require('./signer.js')
 
 async function mintUsdc(address, amount) {
     const signer = await impersonateSigner(USDC_MINTER)
@@ -8,9 +8,9 @@ async function mintUsdc(address, amount) {
     await usdc.connect(signer).mint(address, amount)
 }
 
-async function mintBeans(address, amount) {
-    const beanstalkAdmin = await getBeanstalkAdminControls()
-    await beanstalkAdmin.mintBeans(address, amount)
+async function mintMoons(address, amount) {
+    const moonmageAdmin = await getMoonmageAdminControls()
+    await moonmageAdmin.mintMoons(address, amount)
 }
 
 async function mintEth(address) {
@@ -19,4 +19,4 @@ async function mintEth(address) {
 
 exports.mintEth = mintEth
 exports.mintUsdc = mintUsdc
-exports.mintBeans = mintBeans
+exports.mintMoons = mintMoons

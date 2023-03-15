@@ -1,4 +1,4 @@
-import { BeanstalkSDK, ERC20Token, TestUtils, Token, TokenValue } from "@beanstalk/sdk";
+import { MoonmageSDK, ERC20Token, TestUtils, Token, TokenValue } from "@moonmage/sdk";
 import chalk from "chalk";
 import { table } from "table";
 
@@ -17,21 +17,21 @@ async function main() {
   const { sdk, stop } = await impersonate(account);
   sdk.DEBUG = false;
 
-  // await deposit(sdk.tokens.BEAN, sdk.tokens.BEAN, 2000, account, sdk);
-  await deposit(sdk.tokens.BEAN_CRV3_LP, sdk.tokens.BEAN_CRV3_LP, 1000, account, sdk);
-  // await deposit(sdk.tokens.UNRIPE_BEAN, sdk.tokens.UNRIPE_BEAN, 2000, account, sdk);
-  // await deposit(sdk.tokens.UNRIPE_BEAN_CRV3, sdk.tokens.UNRIPE_BEAN_CRV3, 2000, account, sdk);
+  // await deposit(sdk.tokens.MOON, sdk.tokens.MOON, 2000, account, sdk);
+  await deposit(sdk.tokens.MOON_CRV3_LP, sdk.tokens.MOON_CRV3_LP, 1000, account, sdk);
+  // await deposit(sdk.tokens.UNRIPE_MOON, sdk.tokens.UNRIPE_MOON, 2000, account, sdk);
+  // await deposit(sdk.tokens.UNRIPE_MOON_CRV3, sdk.tokens.UNRIPE_MOON_CRV3, 2000, account, sdk);
 
   await stop();
 }
 
-async function deposit(input: Token, target: Token, _amount: number, account: string, sdk: BeanstalkSDK) {
+async function deposit(input: Token, target: Token, _amount: number, account: string, sdk: MoonmageSDK) {
   console.log(`Depositing ${_amount} ${input.symbol} to ${target.symbol} silo`);
   const amount = input.amount(_amount);
 
   chain[`set${input.symbol}Balance`](account, amount);
 
-  await input.approveBeanstalk(amount);
+  await input.approveMoonmage(amount);
 
   const deposit = await sdk.silo.buildDeposit(target, account);
   deposit.setInputToken(input);

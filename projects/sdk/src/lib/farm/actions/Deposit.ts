@@ -29,16 +29,16 @@ export class Deposit extends StepClass<BasicPreparedResult> {
         });
         if (!_amountInStep) throw new Error("Deposit: Missing _amountInStep");
         return {
-          target: Deposit.sdk.contracts.beanstalk.address,
-          callData: Deposit.sdk.contracts.beanstalk.interface.encodeFunctionData("deposit", [
+          target: Deposit.sdk.contracts.moonmage.address,
+          callData: Deposit.sdk.contracts.moonmage.interface.encodeFunctionData("deposit", [
             this.token.address,
             _amountInStep,
             this.fromMode
           ])
         };
       },
-      decode: (data: string) => Deposit.sdk.contracts.beanstalk.interface.decodeFunctionData("deposit", data),
-      decodeResult: (result: string) => Deposit.sdk.contracts.beanstalk.interface.decodeFunctionResult("deposit", result)
+      decode: (data: string) => Deposit.sdk.contracts.moonmage.interface.decodeFunctionData("deposit", data),
+      decodeResult: (result: string) => Deposit.sdk.contracts.moonmage.interface.decodeFunctionResult("deposit", result)
     };
   }
 }

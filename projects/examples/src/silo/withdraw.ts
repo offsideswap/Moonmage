@@ -1,5 +1,5 @@
-import { BeanstalkSDK, Token, TokenValue } from "@beanstalk/sdk";
-import { Crate } from "@beanstalk/sdk/dist/types/lib/silo";
+import { MoonmageSDK, Token, TokenValue } from "@moonmage/sdk";
+import { Crate } from "@moonmage/sdk/dist/types/lib/silo";
 
 import chalk from "chalk";
 import { account as _account, impersonate } from "../setup";
@@ -9,7 +9,7 @@ main().catch((e) => {
   console.log(e);
 });
 
-let sdk:BeanstalkSDK;
+let sdk:MoonmageSDK;
 
 async function main() {
   const account = process.argv[3] || _account;
@@ -19,10 +19,10 @@ async function main() {
   sdk.DEBUG = false;
 
   const amount = 100
-  await go(sdk.tokens.BEAN, sdk.tokens.BEAN.amount(amount));
-  await go(sdk.tokens.BEAN_CRV3_LP, sdk.tokens.BEAN_CRV3_LP.amount(amount));
-  await go(sdk.tokens.UNRIPE_BEAN, sdk.tokens.UNRIPE_BEAN.amount(amount));
-  await go(sdk.tokens.UNRIPE_BEAN_CRV3, sdk.tokens.UNRIPE_BEAN_CRV3.amount(amount));
+  await go(sdk.tokens.MOON, sdk.tokens.MOON.amount(amount));
+  await go(sdk.tokens.MOON_CRV3_LP, sdk.tokens.MOON_CRV3_LP.amount(amount));
+  await go(sdk.tokens.UNRIPE_MOON, sdk.tokens.UNRIPE_MOON.amount(amount));
+  await go(sdk.tokens.UNRIPE_MOON_CRV3, sdk.tokens.UNRIPE_MOON_CRV3.amount(amount));
   
   await stop();
 }

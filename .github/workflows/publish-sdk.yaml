@@ -24,7 +24,7 @@ jobs:
         if: steps.node-modules-cache.outputs.cache-hit != 'true'
         run: yarn install --immutable
       - name: Publish
-        run: yarn workspace @beanstalk/sdk g:publish
+        run: yarn workspace @moonmage/sdk g:publish
         env:
           YARN_NPM_AUTH_TOKEN: ${{ secrets.YARN_NPM_AUTH_TOKEN }}
           TOKEN_GITHUB: ${{ secrets.TOKEN_GITHUB }}

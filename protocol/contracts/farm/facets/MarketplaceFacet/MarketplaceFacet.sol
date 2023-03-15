@@ -8,7 +8,7 @@ pragma experimental ABIEncoderV2;
 import "./Order.sol";
 
 /**
- * @author Beanjoyer, Malteasy
+ * @author Moonjoyer, Malteasy
  * @title Pod Marketplace v2
  **/
  
@@ -64,35 +64,35 @@ contract MarketplaceFacet is Order {
     // Fill
     function fillPodListing(
         PodListing calldata l,
-        uint256 beanAmount,
+        uint256 moonAmount,
         LibTransfer.From mode
     ) external payable {
-        beanAmount = LibTransfer.transferToken(
-            C.bean(),
+        moonAmount = LibTransfer.transferToken(
+            C.moon(),
             msg.sender,
             l.account,
-            beanAmount,
+            moonAmount,
             mode,
             l.mode
         );
-        _fillListing(l, beanAmount);
+        _fillListing(l, moonAmount);
     }
 
     function fillPodListingV2(
         PodListing calldata l,
-        uint256 beanAmount,
+        uint256 moonAmount,
         bytes calldata pricingFunction,
         LibTransfer.From mode
     ) external payable {
-        beanAmount = LibTransfer.transferToken(
-            C.bean(),
+        moonAmount = LibTransfer.transferToken(
+            C.moon(),
             msg.sender,
             l.account,
-            beanAmount,
+            moonAmount,
             mode,
             l.mode
         );
-        _fillListingV2(l, beanAmount, pricingFunction);
+        _fillListingV2(l, moonAmount, pricingFunction);
     }
 
     // Cancel
@@ -111,25 +111,25 @@ contract MarketplaceFacet is Order {
 
     // Create
     function createPodOrder(
-        uint256 beanAmount,
+        uint256 moonAmount,
         uint24 pricePerPod,
         uint256 maxPlaceInLine,
         uint256 minFillAmount,
         LibTransfer.From mode
     ) external payable returns (bytes32 id) {
-        beanAmount = LibTransfer.receiveToken(C.bean(), beanAmount, msg.sender, mode);
-        return _createPodOrder(beanAmount, pricePerPod, maxPlaceInLine, minFillAmount);
+        moonAmount = LibTransfer.receiveToken(C.moon(), moonAmount, msg.sender, mode);
+        return _createPodOrder(moonAmount, pricePerPod, maxPlaceInLine, minFillAmount);
     }
 
     function createPodOrderV2(
-        uint256 beanAmount,
+        uint256 moonAmount,
         uint256 maxPlaceInLine,
         uint256 minFillAmount,
         bytes calldata pricingFunction,
         LibTransfer.From mode
     ) external payable returns (bytes32 id) {
-        beanAmount = LibTransfer.receiveToken(C.bean(), beanAmount, msg.sender, mode);
-        return _createPodOrderV2(beanAmount, maxPlaceInLine, minFillAmount, pricingFunction);
+        moonAmount = LibTransfer.receiveToken(C.moon(), moonAmount, msg.sender, mode);
+        return _createPodOrderV2(moonAmount, maxPlaceInLine, minFillAmount, pricingFunction);
     }
 
     // Fill

@@ -1,14 +1,14 @@
-import aboutIcon from '~/img/beanstalk/interface/nav/about.svg';
-import beanNFTIcon from '~/img/beanstalk/interface/nav/bean-nft.svg';
-import discordIcon from '~/img/beanstalk/interface/nav/discord.svg';
-import githubIcon from '~/img/beanstalk/interface/nav/github.svg';
-import governanceIcon from '~/img/beanstalk/interface/nav/governance.svg';
-import swapIcon from '~/img/beanstalk/interface/nav/trade.svg';
-import twitterIcon from '~/img/beanstalk/interface/nav/twitter.svg';
-import immunefiIcon from '~/img/beanstalk/interface/nav/immunefi.svg';
-import docsIcon from '~/img/beanstalk/interface/nav/docs.svg';
-import disclosuresIcon from '~/img/beanstalk/interface/nav/disclosures.svg';
-import analyticsIcon from '~/img/beanstalk/interface/nav/analytics.svg';
+import aboutIcon from '~/img/moonmage/interface/nav/about.svg';
+import moonNFTIcon from '~/img/moonmage/interface/nav/moon-nft.svg';
+import discordIcon from '~/img/moonmage/interface/nav/discord.svg';
+import githubIcon from '~/img/moonmage/interface/nav/github.svg';
+import governanceIcon from '~/img/moonmage/interface/nav/governance.svg';
+import swapIcon from '~/img/moonmage/interface/nav/trade.svg';
+import twitterIcon from '~/img/moonmage/interface/nav/twitter.svg';
+import immunefiIcon from '~/img/moonmage/interface/nav/immunefi.svg';
+import docsIcon from '~/img/moonmage/interface/nav/docs.svg';
+import disclosuresIcon from '~/img/moonmage/interface/nav/disclosures.svg';
+import analyticsIcon from '~/img/moonmage/interface/nav/analytics.svg';
 
 export type RouteData = {
   /** Nav item title */
@@ -43,8 +43,8 @@ const ROUTES : { [key in RouteKeys] : RouteData[] } = {
       title: 'Field',
     },
     {
-      path: '/barn',
-      title: 'Barn',
+      path: '/ship',
+      title: 'Ship',
     },
     {
       path: '/balances',
@@ -60,7 +60,7 @@ const ROUTES : { [key in RouteKeys] : RouteData[] } = {
     {
       path: 'nft',
       title: 'BeaNFTs',
-      icon: beanNFTIcon,
+      icon: moonNFTIcon,
       small: true
     },
     {
@@ -83,7 +83,7 @@ const ROUTES : { [key in RouteKeys] : RouteData[] } = {
     },
     {
       path: 'docs',
-      href: 'https://docs.bean.money/almanac',
+      href: 'https://docs.moon.money/almanac',
       title: 'Docs',
       icon: docsIcon,
       small: true
@@ -94,42 +94,42 @@ const ROUTES : { [key in RouteKeys] : RouteData[] } = {
     {
       path: 'about',
       title: 'About',
-      href: 'https://bean.money',
+      href: 'https://moon.money',
       icon: aboutIcon
     },
     {
       path: 'disclosures',
       title: 'Disclosures',
-      href: 'https://docs.bean.money/almanac/disclosures',
+      href: 'https://docs.moon.money/almanac/disclosures',
       icon: disclosuresIcon
     },
     {
       path: 'bugbounty',
       title: 'Bug Bounty',
-      href: 'https://immunefi.com/bounty/beanstalk',
+      href: 'https://immunefi.com/bounty/moonmage',
       icon: immunefiIcon
     },
     {
       path: 'discord',
-      href: 'https://discord.gg/beanstalk',
+      href: 'https://discord.gg/moonmage',
       title: 'Discord',
       icon: discordIcon
     },
     {
       path: 'twitter',
-      href: 'https://twitter.com/beanstalkfarms',
+      href: 'https://twitter.com/moonmagefarms',
       title: 'Twitter',
       icon: twitterIcon
     },
     {
       path: 'github',
-      href: 'https://github.com/beanstalkfarms',
+      href: 'https://github.com/moonmagefarms',
       title: 'GitHub',
       icon: githubIcon
     },
     {
       path: 'analytics',
-      href: 'https://analytics.bean.money',
+      href: 'https://analytics.moon.money',
       title: 'Advanced Analytics',
       icon: analyticsIcon
     },
@@ -152,12 +152,12 @@ const ROUTES : { [key in RouteKeys] : RouteData[] } = {
   // Analytics Menu
   // analytics: [
   //   {
-  //     path: 'analytics/barnraise',
-  //     title: 'Barn Raise Analytics',
+  //     path: 'analytics/shipraise',
+  //     title: 'Ship Raise Analytics',
   //   },
   //   {
-  //     path: 'analytics/bean',
-  //     title: 'Bean Analytics',
+  //     path: 'analytics/moon',
+  //     title: 'Moon Analytics',
   //   },
   //   {
   //     path: 'analytics/silo',

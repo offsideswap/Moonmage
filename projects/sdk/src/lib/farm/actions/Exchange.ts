@@ -96,8 +96,8 @@ export class Exchange extends StepClass implements StepClass<BasicPreparedResult
         });
         if (!minAmountOut) throw new Error("Exhange: missing minAmountOut");
         return {
-          target: Exchange.sdk.contracts.beanstalk.address,
-          callData: Exchange.sdk.contracts.beanstalk.interface.encodeFunctionData("exchange", [
+          target: Exchange.sdk.contracts.moonmage.address,
+          callData: Exchange.sdk.contracts.moonmage.interface.encodeFunctionData("exchange", [
             this.pool,
             this.registry,
             tokenIn.address,
@@ -109,8 +109,8 @@ export class Exchange extends StepClass implements StepClass<BasicPreparedResult
           ])
         };
       },
-      decode: (data: string) => Exchange.sdk.contracts.beanstalk.interface.decodeFunctionData("exchange", data),
-      decodeResult: (result: string) => Exchange.sdk.contracts.beanstalk.interface.decodeFunctionResult("exchange", result)
+      decode: (data: string) => Exchange.sdk.contracts.moonmage.interface.decodeFunctionData("exchange", data),
+      decodeResult: (result: string) => Exchange.sdk.contracts.moonmage.interface.decodeFunctionResult("exchange", result)
     };
   }
 }

@@ -8,15 +8,15 @@ import { useSelector } from 'react-redux';
 import { useSigner } from '~/hooks/ledger/useSigner';
 import SunriseCountdown from '~/components/Sun/SunriseCountdown';
 import useToggle from '~/hooks/display/useToggle';
-import { useBeanstalkContract } from '~/hooks/ledger/useContract';
+import { useMoonmageContract } from '~/hooks/ledger/useContract';
 import TransactionToast from '~/components/Common/TxnToast';
 import { StyledDialogContent, StyledDialogTitle } from '~/components/Common/Dialog';
-import { BeanstalkPalette, IconSize } from '~/components/App/muiTheme';
-import sunIcon from '~/img/beanstalk/sun/sun-icon.svg';
+import { MoonmagePalette, IconSize } from '~/components/App/muiTheme';
+import sunIcon from '~/img/moonmage/sun/sun-icon.svg';
 import { ZERO_BN } from '~/constants';
 import { displayBN } from '~/util';
 import TokenIcon from '~/components/Common/TokenIcon';
-import { BEAN } from '~/constants/tokens';
+import { MOON } from '~/constants/tokens';
 import { AppState } from '~/state';
 import Row from '~/components/Common/Row';
 
@@ -29,13 +29,13 @@ function getSunriseReward(now: DateTime) {
 const SunriseButton : FC<{}> = () => {
   /// Ledger
   const { data: signer }  = useSigner();
-  const beanstalk         = useBeanstalkContract(signer);
+  const moonmage         = useMoonmageContract(signer);
 
   /// State
   const [open, show, hide]  = useToggle();
   const [now, setNow]       = useState(DateTime.now());
   const [reward, setReward] = useState(ZERO_BN);
-  const awaiting = useSelector<AppState, AppState['_beanstalk']['sun']['sunrise']['awaiting']>((state) => state._beanstalk.sun.sunrise.awaiting);
+  const awaiting = useSelector<AppState, AppState['_moonmage']['sun']['sunrise']['awaiting']>((state) => state._moonmage.sun.sunrise.awaiting);
 
   useEffect(() => {
     if (awaiting) {
@@ -56,7 +56,7 @@ const SunriseButton : FC<{}> = () => {
       loading: 'Calling Sunrise...',
       success: 'The Sun has risen.',
     });
-    beanstalk.sunrise()
+    moonmage.sunrise()
       .then((txn) => {
         txToast.confirming(txn);
         return txn.wait();
@@ -68,7 +68,7 @@ const SunriseButton : FC<{}> = () => {
       .catch((err) => {
         console.error(txToast.error(err.error || err));
       });
-  }, [beanstalk]);
+  }, [moonmage]);
 
   return (
     <>
@@ -104,12 +104,12 @@ const SunriseButton : FC<{}> = () => {
                           </Row>
                         )}
                         <Row justifyContent="center">
-                          <Typography variant="body1">Reward for calling <Box display="inline" sx={{ backgroundColor: BeanstalkPalette.lightYellow, borderRadius: 0.4, px: 0.4 }}><strong><Link color="text.primary" underline="none" href="https://docs.bean.money/almanac/protocol/glossary#sunrise" target="_blank" rel="noreferrer">sunrise()</Link></strong></Box>: <TokenIcon token={BEAN[1]} />&nbsp;{displayBN(reward)}</Typography>
+                          <Typography variant="body1">Reward for calling <Box display="inline" sx={{ backgroundColor: MoonmagePalette.lightYellow, borderRadius: 0.4, px: 0.4 }}><strong><Link color="text.primary" underline="none" href="https://docs.moon.money/almanac/protocol/glossary#sunrise" target="_blank" rel="noreferrer">sunrise()</Link></strong></Box>: <TokenIcon token={MOON[1]} />&nbsp;{displayBN(reward)}</Typography>
                         </Row>
                       </Stack>
                     </Stack>
                     <Divider />
-                    <Typography sx={{ mx: 0 }} textAlign="center" variant="body1" color={BeanstalkPalette.washedRed}>Calling this function from the app is strongly discouraged because there is a high likelihood that your transaction will get front-run by bots.</Typography>
+                    <Typography sx={{ mx: 0 }} textAlign="center" variant="body1" color={MoonmagePalette.washedRed}>Calling this function from the app is strongly discouraged because there is a high likelihood that your transaction will get front-run by bots.</Typography>
                     <LoadingButton
                       type="submit"
                       variant="contained"
@@ -117,11 +117,11 @@ const SunriseButton : FC<{}> = () => {
                       loading={formikProps.isSubmitting}
                       disabled={disabled}
                       sx={{
-                        backgroundColor: BeanstalkPalette.washedRed,
+                        backgroundColor: MoonmagePalette.washedRed,
                         height: { xs: '60px', md: '45px' },
-                        color:  BeanstalkPalette.white,
+                        color:  MoonmagePalette.white,
                         '&:hover': {
-                          backgroundColor: `${BeanstalkPalette.washedRed} !important`,
+                          backgroundColor: `${MoonmagePalette.washedRed} !important`,
                           opacity: 0.9
                         }
                       }}

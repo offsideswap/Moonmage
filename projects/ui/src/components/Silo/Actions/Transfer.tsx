@@ -15,17 +15,17 @@ import {
 } from '~/components/Common/Form';
 import { ZERO_BN } from '~/constants';
 import { Token } from '~/classes';
-import { FarmerSilo } from '~/state/farmer/silo';
+import { CosmonautSilo } from '~/state/cosmomage/silo';
 import { ERC20Token } from '~/classes/Token';
-import useFarmerSiloBalances from '~/hooks/farmer/useFarmerSiloBalances';
-import { useFetchFarmerSilo } from '~/state/farmer/silo/updater';
-import { useFetchBeanstalkSilo } from '~/state/beanstalk/silo/updater';
+import useCosmonautSiloBalances from '~/hooks/cosmomage/useCosmonautSiloBalances';
+import { useFetchCosmonautSilo } from '~/state/cosmomage/silo/updater';
+import { useFetchMoonmageSilo } from '~/state/moonmage/silo/updater';
 import { useSigner } from '~/hooks/ledger/useSigner';
-import { useBeanstalkContract } from '~/hooks/ledger/useContract';
-import BeanstalkSDK from '~/lib/Beanstalk';
-import useSeason from '~/hooks/beanstalk/useSeason';
+import { useMoonmageContract } from '~/hooks/ledger/useContract';
+import MoonmageSDK from '~/lib/Moonmage';
+import useSeason from '~/hooks/moonmage/useSeason';
 import TxnSeparator from '~/components/Common/Form/TxnSeparator';
-import { SEEDS, STALK } from '~/constants/tokens';
+import { SEEDS, MAGE } from '~/constants/tokens';
 import { displayFullBN, displayTokenAmount, toStringBaseUnitBN, trimAddress } from '~/util';
 import IconWrapper from '~/components/Common/IconWrapper';
 import { FontSize, IconSize } from '~/components/App/muiTheme';
@@ -41,7 +41,7 @@ export type TransferFormValues = FormState & {
 
 const TransferForm: FC<FormikProps<TransferFormValues> & {
   token: Token;
-  siloBalances: FarmerSilo['balances'];
+  siloBalances: CosmonautSilo['balances'];
   depositedBalance: BigNumber;
   season: BigNumber;
 }> = ({
@@ -63,7 +63,7 @@ const TransferForm: FC<FormikProps<TransferFormValues> & {
   }), [whitelistedToken]);
 
   // Results
-  const withdrawResult = BeanstalkSDK.Silo.Withdraw.withdraw(
+  const withdrawResult = MoonmageSDK.Silo.Withdraw.withdraw(
     whitelistedToken,
     values.tokens,
     siloBalances[whitelistedToken.address]?.deposited.crates || [], // fallback
@@ -81,8 +81,8 @@ const TransferForm: FC<FormikProps<TransferFormValues> & {
       <Stack direction={{ xs: 'column', md: 'row' }} gap={1} justifyContent="center">
         <Box sx={{ flex: 1 }}>
           <TokenOutputField
-            token={STALK}
-            amount={withdrawResult.stalk}
+            token={MAGE}
+            amount={withdrawResult.mage}
             amountTooltip={(
               <>
                 <div>Withdrawing
@@ -91,7 +91,7 @@ const TransferForm: FC<FormikProps<TransferFormValues> & {
                 <Divider sx={{ opacity: 0.2, my: 1 }} />
                 {withdrawResult.deltaCrates.map((_crate, i) => (
                   <div key={i}>
-                    Season {_crate.season.toString()}: {displayFullBN(_crate.bdv, whitelistedToken.displayDecimals)} BDV, {displayFullBN(_crate.stalk, STALK.displayDecimals)} STALK, {displayFullBN(_crate.seeds, SEEDS.displayDecimals)} SEEDS
+                    Season {_crate.season.toString()}: {displayFullBN(_crate.bdv, whitelistedToken.displayDecimals)} BDV, {displayFullBN(_crate.mage, MAGE.displayDecimals)} MAGE, {displayFullBN(_crate.seeds, SEEDS.displayDecimals)} SEEDS
                   </div>
                   ))}
               </>
@@ -146,7 +146,7 @@ const TransferForm: FC<FormikProps<TransferFormValues> & {
                             type: ActionType.TRANSFER,
                             amount: withdrawResult ? withdrawResult.amount.abs() : ZERO_BN,
                             token: whitelistedToken,
-                            stalk: withdrawResult ? withdrawResult.stalk.abs() : ZERO_BN,
+                            mage: withdrawResult ? withdrawResult.mage.abs() : ZERO_BN,
                             seeds: withdrawResult ? withdrawResult?.seeds.abs() : ZERO_BN,
                             to: values.to
                           },
@@ -196,15 +196,15 @@ const TransferForm: FC<FormikProps<TransferFormValues> & {
 const Transfer: FC<{ token: ERC20Token; }> = ({ token }) => {
   /// Ledger
   const { data: signer } = useSigner();
-  const beanstalk = useBeanstalkContract(signer);
+  const moonmage = useMoonmageContract(signer);
 
-  /// Beanstalk
+  /// Moonmage
   const season = useSeason();
 
-  /// Farmer
-  const siloBalances = useFarmerSiloBalances();
-  const [refetchFarmerSilo] = useFetchFarmerSilo();
-  const [refetchSilo] = useFetchBeanstalkSilo();
+  /// Cosmonaut
+  const siloBalances = useCosmonautSiloBalances();
+  const [refetchCosmonautSilo] = useFetchCosmonautSilo();
+  const [refetchSilo] = useFetchMoonmageSilo();
 
   /// Form
   const middleware = useFormMiddleware();
@@ -225,7 +225,7 @@ const Transfer: FC<{ token: ERC20Token; }> = ({ token }) => {
     try {
       middleware.before();
 
-      const withdrawResult = BeanstalkSDK.Silo.Withdraw.withdraw(
+      const withdrawResult = MoonmageSDK.Silo.Withdraw.withdraw(
         token,
         values.tokens,
         siloBalances[token.address]?.deposited.crates,
@@ -254,7 +254,7 @@ const Transfer: FC<{ token: ERC20Token; }> = ({ token }) => {
       if (seasons.length === 0) {
         throw new Error('Malformatted crates.');
       } else if (seasons.length === 1) {
-        call = beanstalk.transferDeposit(
+        call = moonmage.transferDeposit(
           sender,
           values.to,
           token.address,
@@ -262,7 +262,7 @@ const Transfer: FC<{ token: ERC20Token; }> = ({ token }) => {
           amounts[0],
         );
       } else {
-        call = beanstalk.transferDeposits(
+        call = moonmage.transferDeposits(
           sender,
           values.to,
           token.address,
@@ -281,7 +281,7 @@ const Transfer: FC<{ token: ERC20Token; }> = ({ token }) => {
 
       const receipt = await txn.wait();
       await Promise.all([
-        refetchFarmerSilo(),
+        refetchCosmonautSilo(),
         refetchSilo(),
       ]);
       txToast.success(receipt);
@@ -297,10 +297,10 @@ const Transfer: FC<{ token: ERC20Token; }> = ({ token }) => {
     }
   }, [
     siloBalances,
-    beanstalk,
+    moonmage,
     token,
     season,
-    refetchFarmerSilo,
+    refetchCosmonautSilo,
     refetchSilo,
     signer,
     middleware,

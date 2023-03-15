@@ -1,34 +1,34 @@
 import { defaultAbiCoder } from 'ethers/lib/utils';
 
 export enum ConvertKind {
-  BEANS_TO_CURVE_LP   = 0,
-  CURVE_LP_TO_BEANS   = 1,
-  UNRIPE_BEANS_TO_LP  = 2,
-  UNRIPE_LP_TO_BEANS  = 3,
+  MOONS_TO_CURVE_LP   = 0,
+  CURVE_LP_TO_MOONS   = 1,
+  UNRIPE_MOONS_TO_LP  = 2,
+  UNRIPE_LP_TO_MOONS  = 3,
 }
 
 export class ConvertEncoder {
-  static curveLPToBeans = (amountLP: string, minBeans: string, pool: string) =>
+  static curveLPToMoons = (amountLP: string, minMoons: string, pool: string) =>
     defaultAbiCoder.encode(
       ['uint256', 'uint256', 'uint256', 'address'],
-      [ConvertKind.CURVE_LP_TO_BEANS, amountLP, minBeans, pool]
+      [ConvertKind.CURVE_LP_TO_MOONS, amountLP, minMoons, pool]
     );
 
-  static beansToCurveLP = (amountBeans: string, minLP: string, pool: string) =>
+  static moonsToCurveLP = (amountMoons: string, minLP: string, pool: string) =>
     defaultAbiCoder.encode(
       ['uint256', 'uint256', 'uint256', 'address'],
-      [ConvertKind.BEANS_TO_CURVE_LP, amountBeans, minLP, pool]
+      [ConvertKind.MOONS_TO_CURVE_LP, amountMoons, minLP, pool]
     );
 
-  static unripeLPToBeans = (amountLP: string, minBeans: string) =>
+  static unripeLPToMoons = (amountLP: string, minMoons: string) =>
     defaultAbiCoder.encode(
       ['uint256', 'uint256', 'uint256'],
-      [ConvertKind.UNRIPE_LP_TO_BEANS, amountLP, minBeans]
+      [ConvertKind.UNRIPE_LP_TO_MOONS, amountLP, minMoons]
     );
 
-  static unripeBeansToLP = (amountBeans: string, minLP: string) =>
+  static unripeMoonsToLP = (amountMoons: string, minLP: string) =>
     defaultAbiCoder.encode(
       ['uint256', 'uint256', 'uint256'],
-      [ConvertKind.UNRIPE_BEANS_TO_LP, amountBeans, minLP]
+      [ConvertKind.UNRIPE_MOONS_TO_LP, amountMoons, minLP]
     );
 }

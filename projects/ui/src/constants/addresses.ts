@@ -1,22 +1,22 @@
 import { SupportedChainId } from './chains';
 
 // ----------------------------------------
-// Beanstalk Contracts
+// Moonmage Contracts
 // ----------------------------------------
 
-export const BEANSTALK_ADDRESSES = {
+export const MOONMAGE_ADDRESSES = {
   [SupportedChainId.MAINNET]: '0xC1E088fC1323b20BCBee9bd1B9fC9546db5624C5'.toLowerCase(),
 };
 
-export const BEANSTALK_PRICE_ADDRESSES = {
+export const MOONMAGE_PRICE_ADDRESSES = {
   [SupportedChainId.MAINNET]: '0xF2C2b7eabcB353bF6f2128a7f8e1e32Eeb112530'.toLowerCase(),
 };
 
-export const BEANSTALK_FERTILIZER_ADDRESSES = {
+export const MOONMAGE_FERTILIZER_ADDRESSES = {
   [SupportedChainId.MAINNET]: '0x402c84De2Ce49aF88f5e2eF3710ff89bFED36cB6'.toLowerCase(),
 };
 
-export const BARNRAISE_CUSTODIAN_ADDRESSES = {
+export const SHIPRAISE_CUSTODIAN_ADDRESSES = {
   [SupportedChainId.MAINNET]: '0xa9bA2C40b263843C04d344727b954A545c81D043'.toLowerCase(),
 };
 
@@ -24,32 +24,32 @@ export const BARNRAISE_CUSTODIAN_ADDRESSES = {
 // BeaNFT Contracts
 // ----------------------------------------
 
-export const BEANFT_GENESIS_ADDRESSES = {
+export const MOONFT_GENESIS_ADDRESSES = {
   [SupportedChainId.MAINNET]: '0xa755A670Aaf1FeCeF2bea56115E65e03F7722A79'.toLowerCase(),
 };
 
-export const BEANFT_WINTER_ADDRESSES = {
+export const MOONFT_WINTER_ADDRESSES = {
   [SupportedChainId.MAINNET]: '0x459895483556daD32526eFa461F75E33E458d9E9'.toLowerCase(),
 };
 
 // ----------------------------------------
-// Bean & Unripe Bean Tokens
+// Moon & Unripe Moon Tokens
 // ----------------------------------------
 
-export const BEAN_ADDRESSES = {
+export const MOON_ADDRESSES = {
   [SupportedChainId.MAINNET]: '0xBEA0000029AD1c77D3d5D23Ba2D8893dB9d1Efab'.toLowerCase(),
 };
 
-export const UNRIPE_BEAN_ADDRESSES = {
+export const UNRIPE_MOON_ADDRESSES = {
   // --------------------------------------------------
-  // "Unripe Bean": Unripe vesting asset for the Bean token, Localhost
+  // "Unripe Moon": Unripe vesting asset for the Moon token, Localhost
   // -------------------------------------------------
   [SupportedChainId.MAINNET]: '0x1BEA0050E63e05FBb5D8BA2f10cf5800B6224449'.toLowerCase(),
 };
 
-export const UNRIPE_BEAN_CRV3_ADDRESSES = {
+export const UNRIPE_MOON_CRV3_ADDRESSES = {
   // --------------------------------------------------
-  // "Unripe BEAN:CRV3 LP": Unripe vesting asset for the BEAN:CRV3 LP token, Localhost
+  // "Unripe MOON:CRV3 LP": Unripe vesting asset for the MOON:CRV3 LP token, Localhost
   // -------------------------------------------------
   [SupportedChainId.MAINNET]: '0x1BEA3CcD22F4EBd3d37d731BA31Eeca95713716D'.toLowerCase(),
 };
@@ -79,19 +79,19 @@ export const LUSD_ADDRESSES = {
 };
 
 // ----------------------------------------
-// Curve Pools: BEAN
+// Curve Pools: MOON
 // ----------------------------------------
 
-export const BEAN_CRV3_ADDRESSES = {
+export const MOON_CRV3_ADDRESSES = {
   // --------------------------------------------------
-  // "Curve.fi Factory USD Metapool: Bean (BEAN3CRV-f)"
+  // "Curve.fi Factory USD Metapool: Moon (MOON3CRV-f)"
   // [Implements: ERC20 & Metapool]
   // --------------------------------------------------
-  // coins[0] = 0xBEA0003eA948Db32082Fc6F4EC0729D258a0444c (BEAN)
+  // coins[0] = 0xBEA0003eA948Db32082Fc6F4EC0729D258a0444c (MOON)
   // coins[1] = 0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490 (3CRV)
   //
-  // 1. Creates a BEAN:3CRV Metapool contract.
-  // 2. Issues BEAN3CRV-f, the pool's LP token. The pool address and
+  // 1. Creates a MOON:3CRV Metapool contract.
+  // 2. Issues MOON3CRV-f, the pool's LP token. The pool address and
   //    the LP token address are identical. Note that this is NOT the
   //    case for 3pool itself on Mainnet:
   //    - 3CRV (the 3pool LP Token) = 0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490

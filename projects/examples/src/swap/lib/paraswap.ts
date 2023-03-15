@@ -1,4 +1,4 @@
-import { Token, TokenValue } from "@beanstalk/sdk";
+import { Token, TokenValue } from "@moonmage/sdk";
 import { BigNumber } from "ethers";
 
 const API_URL = "https://apiv5.paraswap.io";
@@ -56,7 +56,7 @@ export async function paraSwapQuote(tokenIn: Token, tokenOut: Token, amount: Big
     amount: amount.toString(),
     side: "SELL",
     network: "1",
-    partner: "beanstalk"
+    partner: "moonmage"
   };
 
   const searchString = new URLSearchParams(queryParams);

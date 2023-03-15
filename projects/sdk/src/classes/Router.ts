@@ -1,5 +1,5 @@
 import { Graph, alg } from "graphlib";
-import { BeanstalkSDK } from "src/lib/BeanstalkSDK";
+import { MoonmageSDK } from "src/lib/MoonmageSDK";
 import { Token } from "src/classes/Token";
 import { FarmFromMode, FarmToMode } from "src/lib/farm/types";
 import { StepClass } from "src/classes/Workflow";
@@ -54,11 +54,11 @@ export class Route {
 }
 
 export class Router {
-  private static sdk: BeanstalkSDK;
+  private static sdk: MoonmageSDK;
   private graph: Graph;
   private buildSelfEdge: SelfEdgeBuilder;
 
-  constructor(sdk: BeanstalkSDK, graph: Graph, selfEdgeBuilder: SelfEdgeBuilder) {
+  constructor(sdk: MoonmageSDK, graph: Graph, selfEdgeBuilder: SelfEdgeBuilder) {
     Router.sdk = sdk;
     this.graph = graph;
     this.buildSelfEdge = selfEdgeBuilder;
@@ -81,7 +81,7 @@ export class Router {
     }
 
     // Length of 1 means the source and target are the same node,
-    // for ex, swap BEAN to BEAN, or deposit BEAN to BEAN.
+    // for ex, swap MOON to MOON, or deposit MOON to MOON.
     // This is a special case; we must use the same "edge" for all nodes.
     // For ex, in a swap, we use a 'transfer()' action
     // in a deposit graph, we use addLiquidity. We refer to this as the "selfEdge"

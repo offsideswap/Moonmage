@@ -1,4 +1,4 @@
-import { DataSource, Token, TokenValue } from "@beanstalk/sdk";
+import { DataSource, Token, TokenValue } from "@moonmage/sdk";
 import chalk from "chalk";
 import { table } from "table";
 
@@ -17,25 +17,25 @@ async function main() {
 }
 
 async function showSummary(account: string) {
-  const price = await sdk.bean.getPrice();
-  console.log(`${chalk.bold.whiteBright("BEAN price:")} ${chalk.greenBright(price.toHuman())}`);
+  const price = await sdk.moon.getPrice();
+  console.log(`${chalk.bold.whiteBright("MOON price:")} ${chalk.greenBright(price.toHuman())}`);
   const total = await getUSDTotalDeposits(account, price);
-  const stalk = (await sdk.silo.getStalk(account)).toHuman();
+  const mage = (await sdk.silo.getMage(account)).toHuman();
   const seeds = (await sdk.silo.getSeeds(account)).toHuman();
-  const earnedBeans = (await sdk.silo.getEarnedBeans(account)).toHuman();
-  const earnedStalk = (await sdk.silo.getEarnedStalk(account)).toHuman();
+  const earnedMoons = (await sdk.silo.getEarnedMoons(account)).toHuman();
+  const earnedMage = (await sdk.silo.getEarnedMage(account)).toHuman();
   const plantableSeeds = (await sdk.silo.getPlantableSeeds(account)).toHuman();
-  const grownStalk = (await sdk.silo.getGrownStalk(account)).toHuman();
-  const revStalk = "not-implemented"; //(await sdk.silo.getRevitalizedStalk(account)).toHuman();
+  const grownMage = (await sdk.silo.getGrownMage(account)).toHuman();
+  const revMage = "not-implemented"; //(await sdk.silo.getRevitalizedMage(account)).toHuman();
   const revSeeds = "not-implemented"; //(await sdk.silo.getRevitalizedSeeds(account)).toHuman();
 
   const earned = [
     ["Current Balances", "", "", "", "", ""],
-    ["Total Deposits", "", "Stalk", "", "Seeds", ""],
-    [total.toHuman(), "", stalk, "", seeds, ""],
+    ["Total Deposits", "", "Mage", "", "Seeds", ""],
+    [total.toHuman(), "", mage, "", seeds, ""],
     ["Earnings", "", "", "", "", ""],
-    ["Earned Beans", "Earned Stalk", "Plantable Seeds", "Grown Stalk", "Revitalized Stalk", "Revitalized Seeds"],
-    [earnedBeans, earnedStalk, plantableSeeds, grownStalk, revStalk, revSeeds]
+    ["Earned Moons", "Earned Mage", "Plantable Seeds", "Grown Mage", "Revitalized Mage", "Revitalized Seeds"],
+    [earnedMoons, earnedMage, plantableSeeds, grownMage, revMage, revSeeds]
   ];
 
   console.log(
@@ -87,12 +87,12 @@ async function getUSDTotalDeposits(_account: string, price: TokenValue) {
   let total = TokenValue.ZERO;
 
   // get LP supply and liquididyt
-  const supply = await sdk.tokens.BEAN_CRV3_LP.getTotalSupply();
+  const supply = await sdk.tokens.MOON_CRV3_LP.getTotalSupply();
   let liquidity;
-  const { ps } = await sdk.contracts.beanstalkPrice.price();
+  const { ps } = await sdk.contracts.moonmagePrice.price();
   for (const item of ps) {
-    if (item.pool.toLowerCase() === sdk.contracts.curve.pools.beanCrv3.address.toLowerCase()) {
-      liquidity = TokenValue.fromBlockchain(item.liquidity, sdk.tokens.BEAN.decimals);
+    if (item.pool.toLowerCase() === sdk.contracts.curve.pools.moonCrv3.address.toLowerCase()) {
+      liquidity = TokenValue.fromBlockchain(item.liquidity, sdk.tokens.MOON.decimals);
       continue;
     }
   }
@@ -101,12 +101,12 @@ async function getUSDTotalDeposits(_account: string, price: TokenValue) {
     let amountToAdd;
     // Handle unrip tokens
     if (token.isUnripe) {
-      const { chopRate } = await sdk.bean.getChopRate(token);
-      if (token.symbol === "urBEAN") {
+      const { chopRate } = await sdk.moon.getChopRate(token);
+      if (token.symbol === "urMOON") {
         amountToAdd = balance.deposited.amount.mul(chopRate).mul(price);
         // console.log(`${token.symbol}: Adding ${amountToAdd.toHuman()} USD`);
         continue;
-      } else if (token.symbol === "urBEAN3CRV") {
+      } else if (token.symbol === "urMOON3CRV") {
         const choppedLPAmount = balance.deposited.amount.mul(chopRate);
         amountToAdd = choppedLPAmount.div(supply).mul(liquidity);
         // console.log(`${token.symbol}: Adding ${amountToAdd.toHuman()} USD`);
@@ -116,10 +116,10 @@ async function getUSDTotalDeposits(_account: string, price: TokenValue) {
     }
     // handle normal tokens
     else {
-      if (token.symbol === "BEAN") {
+      if (token.symbol === "MOON") {
         amountToAdd = balance.deposited.bdv.mul(price);
         // console.log(`${token.symbol}: Adding ${amountToAdd.toHuman()} USD`);
-      } else if (token.symbol === "BEAN3CRV") {
+      } else if (token.symbol === "MOON3CRV") {
         amountToAdd = balance.deposited.amount.div(supply).mul(liquidity);
         // console.log(`${token.symbol}: Adding ${amountToAdd.toHuman()} USD`);
       } else {

@@ -1,4 +1,4 @@
-import { BeanstalkSDK } from "src/lib/BeanstalkSDK";
+import { MoonmageSDK } from "src/lib/MoonmageSDK";
 import { Token } from "src/classes/Token";
 import { FarmFromMode, FarmToMode } from "src/lib/farm/types";
 import { Router, RouteStep } from "src/classes/Router";
@@ -7,10 +7,10 @@ import { getSwapGraph } from "./graph";
 import { StepClass } from "src/classes/Workflow";
 
 export class Swap {
-  private static sdk: BeanstalkSDK;
+  private static sdk: MoonmageSDK;
   router: Router;
 
-  constructor(sdk: BeanstalkSDK) {
+  constructor(sdk: MoonmageSDK) {
     Swap.sdk = sdk;
     const graph = getSwapGraph(sdk);
     const selfEdgeBuilder = (symbol: string): RouteStep => {
@@ -34,11 +34,11 @@ export class Swap {
     const workflow = Swap.sdk.farm.create(`Swap ${tokenIn.symbol}->${tokenOut.symbol}`);
 
     // Handle Farm Modes
-    // For a single step swap (ex, ETH > WETH, or BEAN > BEAN), use the passed modes, if available
+    // For a single step swap (ex, ETH > WETH, or MOON > MOON), use the passed modes, if available
     if (route.length === 1) {
       workflow.add(route.getStep(0).build(account, _from || FarmFromMode.EXTERNAL, _to || FarmToMode.EXTERNAL));
     }
-    // for a multi step swap (ex, ETH -> WETH -> USDT -> BEAN), we want the user's choices for
+    // for a multi step swap (ex, ETH -> WETH -> USDT -> MOON), we want the user's choices for
     // FarmFromMode and FarmToMode, if supplied, to only apply to the first and last legs
     // of the swap, keeping the intermediate trades as INTERNAL.
     else {

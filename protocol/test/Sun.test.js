@@ -1,7 +1,7 @@
 const { expect } = require('chai')
 const { deploy } = require('../scripts/deploy.js')
 const { takeSnapshot, revertToSnapshot } = require("./utils/snapshot")
-const { to6, toStalk } = require('./utils/helpers.js');
+const { to6, toMage } = require('./utils/helpers.js');
 const { USDC, UNRIPE_LP } = require('./utils/constants.js');
 
 let user, user2, owner;
@@ -14,7 +14,7 @@ describe('Sun', function () {
     user2Address = user2.address;
     const contracts = await deploy("Test", false, true)
     ownerAddress = contracts.account;
-    this.diamond = contracts.beanstalkDiamond;
+    this.diamond = contracts.moonmageDiamond;
     this.season = await ethers.getContractAt('MockSeasonFacet', this.diamond.address)
     this.fertilizer = await ethers.getContractAt('MockFertilizerFacet', this.diamond.address)
     this.silo = await ethers.getContractAt('MockSiloFacet', this.diamond.address)
@@ -69,8 +69,8 @@ describe('Sun', function () {
     await expect(this.result).to.emit(this.season, 'Soil').withArgs(3, '0');
     await expect(this.result).to.emit(this.season, 'Reward').withArgs(3, '0', '100', '0');
 
-    expect(await this.silo.totalStalk()).to.be.equal('1000000');
-    expect(await this.silo.totalEarnedBeans()).to.be.equal('100');
+    expect(await this.silo.totalMage()).to.be.equal('1000000');
+    expect(await this.silo.totalEarnedMoons()).to.be.equal('100');
   })
 
   it("some harvestable", async function () {
@@ -81,8 +81,8 @@ describe('Sun', function () {
 
     expect(await this.field.totalHarvestable()).to.be.equal('100');
 
-    expect(await this.silo.totalStalk()).to.be.equal('1000000');
-    expect(await this.silo.totalEarnedBeans()).to.be.equal('100');
+    expect(await this.silo.totalMage()).to.be.equal('1000000');
+    expect(await this.silo.totalEarnedMoons()).to.be.equal('100');
   })
 
   it("all harvestable", async function () {
@@ -93,8 +93,8 @@ describe('Sun', function () {
 
     expect(await this.field.totalHarvestable()).to.be.equal('50');
 
-    expect(await this.silo.totalStalk()).to.be.equal('1000000');
-    expect(await this.silo.totalEarnedBeans()).to.be.equal('100');
+    expect(await this.silo.totalMage()).to.be.equal('1000000');
+    expect(await this.silo.totalEarnedMoons()).to.be.equal('100');
   })
 
   it("all harvestable and all fertilizable", async function () {
@@ -105,16 +105,16 @@ describe('Sun', function () {
     await expect(this.result).to.emit(this.season, 'Reward').withArgs(3, to6('50'), to6('100'), to6('50'));
 
     expect(await this.fertilizer.isFertilizing()).to.be.equal(false);
-    expect(await this.fertilizer.totalFertilizedBeans()).to.be.equal(to6('50'));
+    expect(await this.fertilizer.totalFertilizedMoons()).to.be.equal(to6('50'));
     expect(await this.fertilizer.getActiveFertilizer()).to.be.equal(to6('0'));
     expect(await this.fertilizer.getFirst()).to.be.equal(0)
     expect(await this.fertilizer.getLast()).to.be.equal(0)
-    expect(await this.fertilizer.beansPerFertilizer()).to.be.equal(to6('2.5'))
+    expect(await this.fertilizer.moonsPerFertilizer()).to.be.equal(to6('2.5'))
 
     expect(await this.field.totalHarvestable()).to.be.equal(to6('50'));
 
-    expect(await this.silo.totalStalk()).to.be.equal(toStalk('100'));
-    expect(await this.silo.totalEarnedBeans()).to.be.equal(to6('100'));
+    expect(await this.silo.totalMage()).to.be.equal(toMage('100'));
+    expect(await this.silo.totalEarnedMoons()).to.be.equal(to6('100'));
   })
 
   it("all harvestable, some fertilizable", async function () {
@@ -125,16 +125,16 @@ describe('Sun', function () {
     await expect(this.result).to.emit(this.season, 'Reward').withArgs(3, '50', '84', '66');
 
     expect(await this.fertilizer.isFertilizing()).to.be.equal(true);
-    expect(await this.fertilizer.totalFertilizedBeans()).to.be.equal('66');
+    expect(await this.fertilizer.totalFertilizedMoons()).to.be.equal('66');
     expect(await this.fertilizer.getActiveFertilizer()).to.be.equal('1');
     expect(await this.fertilizer.getFirst()).to.be.equal(to6('6'))
     expect(await this.fertilizer.getLast()).to.be.equal(to6('6'))
-    expect(await this.fertilizer.beansPerFertilizer()).to.be.equal(66)
+    expect(await this.fertilizer.moonsPerFertilizer()).to.be.equal(66)
 
     expect(await this.field.totalHarvestable()).to.be.equal('50');
 
-    expect(await this.silo.totalStalk()).to.be.equal('840000');
-    expect(await this.silo.totalEarnedBeans()).to.be.equal('84');
+    expect(await this.silo.totalMage()).to.be.equal('840000');
+    expect(await this.silo.totalEarnedMoons()).to.be.equal('84');
   })
 
   it("some harvestable, some fertilizable", async function () {
@@ -145,16 +145,16 @@ describe('Sun', function () {
     await expect(this.result).to.emit(this.season, 'Reward').withArgs(3, '50', '50', '50');
 
     expect(await this.fertilizer.isFertilizing()).to.be.equal(true);
-    expect(await this.fertilizer.totalFertilizedBeans()).to.be.equal('50');
+    expect(await this.fertilizer.totalFertilizedMoons()).to.be.equal('50');
     expect(await this.fertilizer.getActiveFertilizer()).to.be.equal('1');
     expect(await this.fertilizer.getFirst()).to.be.equal(to6('6'))
     expect(await this.fertilizer.getLast()).to.be.equal(to6('6'))
-    expect(await this.fertilizer.beansPerFertilizer()).to.be.equal(50)
+    expect(await this.fertilizer.moonsPerFertilizer()).to.be.equal(50)
 
     expect(await this.field.totalHarvestable()).to.be.equal('50');
 
-    expect(await this.silo.totalStalk()).to.be.equal('500000');
-    expect(await this.silo.totalEarnedBeans()).to.be.equal('50');
+    expect(await this.silo.totalMage()).to.be.equal('500000');
+    expect(await this.silo.totalEarnedMoons()).to.be.equal('50');
   })
 
   it("1 all and 1 some fertilizable", async function () {
@@ -165,15 +165,15 @@ describe('Sun', function () {
     this.result = await this.season.sunSunrise(to6('480'), 8);
 
     expect(await this.fertilizer.isFertilizing()).to.be.equal(true);
-    expect(await this.fertilizer.totalFertilizedBeans()).to.be.equal(to6('200'));
+    expect(await this.fertilizer.totalFertilizedMoons()).to.be.equal(to6('200'));
     expect(await this.fertilizer.getActiveFertilizer()).to.be.equal('40');
     expect(await this.fertilizer.getFirst()).to.be.equal(to6('6'))
     expect(await this.fertilizer.getLast()).to.be.equal(to6('6'))
-    expect(await this.fertilizer.beansPerFertilizer()).to.be.equal(to6('3'))
+    expect(await this.fertilizer.moonsPerFertilizer()).to.be.equal(to6('3'))
 
     expect(await this.field.totalHarvestable()).to.be.equal(to6('200'));
 
-    expect(await this.silo.totalStalk()).to.be.equal(toStalk('200'));
-    expect(await this.silo.totalEarnedBeans()).to.be.equal(to6('200'));
+    expect(await this.silo.totalMage()).to.be.equal(toMage('200'));
+    expect(await this.silo.totalEarnedMoons()).to.be.equal(to6('200'));
   })
 })

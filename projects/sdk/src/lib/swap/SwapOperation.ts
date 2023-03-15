@@ -2,7 +2,7 @@ import { ContractTransaction, ethers, BigNumber } from "ethers";
 import { Workflow } from "src/classes/Workflow";
 import { TokenValue } from "src/TokenValue";
 import { Token } from "src/classes/Token";
-import { BeanstalkSDK } from "src/lib/BeanstalkSDK";
+import { MoonmageSDK } from "src/lib/MoonmageSDK";
 import { Route } from "src/classes/Router";
 
 type PathSegment = {
@@ -11,10 +11,10 @@ type PathSegment = {
 };
 
 export class SwapOperation {
-  private static sdk: BeanstalkSDK;
+  private static sdk: MoonmageSDK;
 
   constructor(
-    sdk: BeanstalkSDK,
+    sdk: MoonmageSDK,
     readonly tokenIn: Token,
     readonly tokenOut: Token,
     private readonly workflow: Workflow,
@@ -39,8 +39,8 @@ export class SwapOperation {
   // TODO: Convert to TokenValue
   /**
    * Estimate what the operation would output given this amountIn is the input.
-   * For ex, if we are trading ETH -> BEAN, and you want to spend exactly 5 ETH, estimate()
-   * would tell how much BEAN you'd receive for 5 ETH
+   * For ex, if we are trading ETH -> MOON, and you want to spend exactly 5 ETH, estimate()
+   * would tell how much MOON you'd receive for 5 ETH
    * @param amountIn Amount to send to workflow as input for estimation
    * @returns Promise of BigNumber
    */
@@ -58,8 +58,8 @@ export class SwapOperation {
 
   /**
    * Estimate the min amount to input to the workflow to receive the desiredAmountOut output
-   * For ex, if we are trading ETH -> Bean, and I want exactly 500 BEAN, estimateReversed()
-   * tell me how much ETH will result in 500 BEAN
+   * For ex, if we are trading ETH -> Moon, and I want exactly 500 MOON, estimateReversed()
+   * tell me how much ETH will result in 500 MOON
    * @param desiredAmountOut The end amount you want the workflow to output
    * @returns Promise of BigNumber
    */

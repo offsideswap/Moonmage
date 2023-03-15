@@ -34,8 +34,8 @@ export class TransferToken extends StepClass<BasicPreparedResult> {
           toMode: this._toMode
         });
         return {
-          target: TransferToken.sdk.contracts.beanstalk.address,
-          callData: TransferToken.sdk.contracts.beanstalk.interface.encodeFunctionData("transferToken", [
+          target: TransferToken.sdk.contracts.moonmage.address,
+          callData: TransferToken.sdk.contracts.moonmage.interface.encodeFunctionData("transferToken", [
             this._tokenIn, //
             this._recipient, //
             _amountInStep, // ignore minAmountOut since there is no slippage on transfer
@@ -44,8 +44,8 @@ export class TransferToken extends StepClass<BasicPreparedResult> {
           ])
         };
       },
-      decode: (data: string) => TransferToken.sdk.contracts.beanstalk.interface.decodeFunctionData("transferToken", data),
-      decodeResult: (result: string) => TransferToken.sdk.contracts.beanstalk.interface.decodeFunctionResult("transferToken", result)
+      decode: (data: string) => TransferToken.sdk.contracts.moonmage.interface.decodeFunctionData("transferToken", data),
+      decodeResult: (result: string) => TransferToken.sdk.contracts.moonmage.interface.decodeFunctionResult("transferToken", result)
     };
   }
 }

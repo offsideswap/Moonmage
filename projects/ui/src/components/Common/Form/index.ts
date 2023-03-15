@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
-import { BeanstalkToken, ERC20Token, NativeToken } from '~/classes/Token';
+import { MoonmageToken, ERC20Token, NativeToken } from '~/classes/Token';
 import { QuoteHandlerResult } from '~/hooks/ledger/useQuote';
-import { FarmToMode } from '~/lib/Beanstalk/Farm';
+import { FarmToMode } from '~/lib/Moonmage/Farm';
 import { BalanceFrom } from './BalanceFromRow';
 
 /**
@@ -71,18 +71,18 @@ export type SlippageSettingsFragment = {
   slippage: number;
 }
 export type PlotSettingsFragment = {
-  /** Let the Farmer select the exact range from which their
+  /** Let the Cosmonaut select the exact range from which their
    * Pods are being transferred, sold, etc. */
   showRangeSelect: boolean;
 }
 
-export type ClaimableBeanAssetFragment = {
+export type ClaimableMoonAssetFragment = {
   /**
-   * claimable bean token (BEAN, PODS, or SPROUTS)
+   * claimable moon token (MOON, PODS, or SPROUTS)
    */
-  token: BeanstalkToken | ERC20Token;
+  token: MoonmageToken | ERC20Token;
   /**
-   * amount to claim from (claimable beans | harvestable pods | rinsable sprouts)
+   * amount to claim from (claimable moons | harvestable pods | rinsable sprouts)
    */
   amount: BigNumber;
 };
@@ -90,11 +90,11 @@ export type ClaimableBeanAssetFragment = {
 /**
  *
  */
-export type ClaimableBeanAssetFormState = {
+export type ClaimableMoonAssetFormState = {
   /** */
-  maxBeansClaimable: BigNumber;
+  maxMoonsClaimable: BigNumber;
   /** */
-  beansClaiming: { [k: string]: ClaimableBeanAssetFragment };
+  moonsClaiming: { [k: string]: ClaimableMoonAssetFragment };
 };
 
 /**
@@ -120,7 +120,7 @@ export type FarmToModeFragment = {
 
 export type FarmWithClaimFormState = BalanceFromFragment &
   FarmToModeFragment &
-  ClaimableBeanAssetFormState;
+  ClaimableMoonAssetFormState;
 
 // ----------------------------------------------------------------------
 

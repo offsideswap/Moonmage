@@ -1,4 +1,4 @@
-import { BeanstalkSDK } from "src/lib/BeanstalkSDK";
+import { MoonmageSDK } from "src/lib/MoonmageSDK";
 import { EventType, reduceEvent, sortEvents } from "./utils";
 import { Blocks } from "src/constants/blocks";
 import { ChainId } from "src/constants";
@@ -6,47 +6,47 @@ import flattenDeep from "lodash.flattendeep";
 import { Event } from "ethers";
 
 export class EventManager {
-  private readonly sdk: BeanstalkSDK;
+  private readonly sdk: MoonmageSDK;
 
   private readonly filters: {
     [key in EventType]: Function[];
   };
 
-  constructor(sdk: BeanstalkSDK) {
+  constructor(sdk: MoonmageSDK) {
     this.sdk = sdk;
   }
 
   async getSiloEvents(_account: string, _token?: string, _fromBlock?: number, _toBlock?: number) {
-    const fromBlockOrGenesis = _fromBlock || Blocks[ChainId.MAINNET].BEANSTALK_GENESIS_BLOCK;
+    const fromBlockOrGenesis = _fromBlock || Blocks[ChainId.MAINNET].MOONMAGE_GENESIS_BLOCK;
     const toBlock = _toBlock || "latest";
     return Promise.all([
-      this.sdk.contracts.beanstalk.queryFilter(
-        this.sdk.contracts.beanstalk.filters.AddDeposit(_account, _token),
+      this.sdk.contracts.moonmage.queryFilter(
+        this.sdk.contracts.moonmage.filters.AddDeposit(_account, _token),
         fromBlockOrGenesis,
         toBlock
       ),
-      this.sdk.contracts.beanstalk.queryFilter(
-        this.sdk.contracts.beanstalk.filters.AddWithdrawal(_account, _token),
+      this.sdk.contracts.moonmage.queryFilter(
+        this.sdk.contracts.moonmage.filters.AddWithdrawal(_account, _token),
         fromBlockOrGenesis,
         toBlock
       ),
-      this.sdk.contracts.beanstalk.queryFilter(
-        this.sdk.contracts.beanstalk.filters.RemoveWithdrawal(_account, _token),
+      this.sdk.contracts.moonmage.queryFilter(
+        this.sdk.contracts.moonmage.filters.RemoveWithdrawal(_account, _token),
         fromBlockOrGenesis,
         toBlock
       ),
-      this.sdk.contracts.beanstalk.queryFilter(
-        this.sdk.contracts.beanstalk.filters.RemoveWithdrawals(_account, _token),
+      this.sdk.contracts.moonmage.queryFilter(
+        this.sdk.contracts.moonmage.filters.RemoveWithdrawals(_account, _token),
         fromBlockOrGenesis,
         toBlock
       ),
-      this.sdk.contracts.beanstalk.queryFilter(
-        this.sdk.contracts.beanstalk.filters.RemoveDeposit(_account, _token),
+      this.sdk.contracts.moonmage.queryFilter(
+        this.sdk.contracts.moonmage.filters.RemoveDeposit(_account, _token),
         fromBlockOrGenesis,
         toBlock
       ),
-      this.sdk.contracts.beanstalk.queryFilter(
-        this.sdk.contracts.beanstalk.filters.RemoveDeposits(_account, _token),
+      this.sdk.contracts.moonmage.queryFilter(
+        this.sdk.contracts.moonmage.filters.RemoveDeposits(_account, _token),
         fromBlockOrGenesis,
         toBlock
       )
@@ -72,7 +72,7 @@ export class EventManager {
   }
 
   async getRawEventsByType(eventType: EventType, _account: string, _fromBlock?: number, _toBlock?: number): Promise<Event[][]> {
-    const fromBlockOrGenesis = _fromBlock || Blocks[ChainId.MAINNET].BEANSTALK_GENESIS_BLOCK;
+    const fromBlockOrGenesis = _fromBlock || Blocks[ChainId.MAINNET].MOONMAGE_GENESIS_BLOCK;
     const fromBlockOrBIP10 = _fromBlock || Blocks[ChainId.MAINNET].BIP10_COMMITTED_BLOCK;
     const fromBlockOrFertLaunch = _fromBlock || Blocks[ChainId.MAINNET].FERTILIZER_LAUNCH_BLOCK;
     const toBlock = _toBlock || "latest";
@@ -80,82 +80,82 @@ export class EventManager {
     switch (eventType) {
       case EventType.SILO:
         return Promise.all([
-          this.sdk.contracts.beanstalk.queryFilter(this.sdk.contracts.beanstalk.filters.AddDeposit(_account), fromBlockOrGenesis, toBlock),
-          this.sdk.contracts.beanstalk.queryFilter(
-            this.sdk.contracts.beanstalk.filters.AddWithdrawal(_account),
+          this.sdk.contracts.moonmage.queryFilter(this.sdk.contracts.moonmage.filters.AddDeposit(_account), fromBlockOrGenesis, toBlock),
+          this.sdk.contracts.moonmage.queryFilter(
+            this.sdk.contracts.moonmage.filters.AddWithdrawal(_account),
             fromBlockOrGenesis,
             toBlock
           ),
-          this.sdk.contracts.beanstalk.queryFilter(
-            this.sdk.contracts.beanstalk.filters.RemoveWithdrawal(_account),
+          this.sdk.contracts.moonmage.queryFilter(
+            this.sdk.contracts.moonmage.filters.RemoveWithdrawal(_account),
             fromBlockOrGenesis,
             toBlock
           ),
-          this.sdk.contracts.beanstalk.queryFilter(
-            this.sdk.contracts.beanstalk.filters.RemoveWithdrawals(_account),
+          this.sdk.contracts.moonmage.queryFilter(
+            this.sdk.contracts.moonmage.filters.RemoveWithdrawals(_account),
             fromBlockOrGenesis,
             toBlock
           ),
-          this.sdk.contracts.beanstalk.queryFilter(
-            this.sdk.contracts.beanstalk.filters.RemoveDeposit(_account),
+          this.sdk.contracts.moonmage.queryFilter(
+            this.sdk.contracts.moonmage.filters.RemoveDeposit(_account),
             fromBlockOrGenesis,
             toBlock
           ),
-          this.sdk.contracts.beanstalk.queryFilter(
-            this.sdk.contracts.beanstalk.filters.RemoveDeposits(_account),
+          this.sdk.contracts.moonmage.queryFilter(
+            this.sdk.contracts.moonmage.filters.RemoveDeposits(_account),
             fromBlockOrGenesis,
             toBlock
           )
         ]);
       case EventType.FIELD:
         return Promise.all([
-          this.sdk.contracts.beanstalk.queryFilter(
-            this.sdk.contracts.beanstalk.filters["Sow(address,uint256,uint256,uint256)"](_account),
+          this.sdk.contracts.moonmage.queryFilter(
+            this.sdk.contracts.moonmage.filters["Sow(address,uint256,uint256,uint256)"](_account),
             fromBlockOrGenesis,
             toBlock
           ),
-          this.sdk.contracts.beanstalk.queryFilter(this.sdk.contracts.beanstalk.filters.Harvest(_account), fromBlockOrGenesis, toBlock),
-          this.sdk.contracts.beanstalk.queryFilter(
-            this.sdk.contracts.beanstalk.filters.PlotTransfer(_account, null), // from
+          this.sdk.contracts.moonmage.queryFilter(this.sdk.contracts.moonmage.filters.Harvest(_account), fromBlockOrGenesis, toBlock),
+          this.sdk.contracts.moonmage.queryFilter(
+            this.sdk.contracts.moonmage.filters.PlotTransfer(_account, null), // from
             fromBlockOrGenesis,
             toBlock
           ),
-          this.sdk.contracts.beanstalk.queryFilter(
-            this.sdk.contracts.beanstalk.filters.PlotTransfer(null, _account), // to
+          this.sdk.contracts.moonmage.queryFilter(
+            this.sdk.contracts.moonmage.filters.PlotTransfer(null, _account), // to
             fromBlockOrGenesis,
             toBlock
           )
         ]);
       case EventType.MARKET:
         return Promise.all([
-          this.sdk.contracts.beanstalk.queryFilter(
-            this.sdk.contracts.beanstalk.filters.PodListingCreated(_account),
+          this.sdk.contracts.moonmage.queryFilter(
+            this.sdk.contracts.moonmage.filters.PodListingCreated(_account),
             fromBlockOrBIP10,
             toBlock
           ),
-          this.sdk.contracts.beanstalk.queryFilter(
-            this.sdk.contracts.beanstalk.filters["PodListingCancelled(address,uint256)"](_account),
+          this.sdk.contracts.moonmage.queryFilter(
+            this.sdk.contracts.moonmage.filters["PodListingCancelled(address,uint256)"](_account),
             fromBlockOrBIP10,
             toBlock
           ),
           // this account had a listing filled
-          this.sdk.contracts.beanstalk.queryFilter(
-            this.sdk.contracts.beanstalk.filters.PodListingFilled(null, _account), // to
+          this.sdk.contracts.moonmage.queryFilter(
+            this.sdk.contracts.moonmage.filters.PodListingFilled(null, _account), // to
             fromBlockOrBIP10,
             toBlock
           ),
-          this.sdk.contracts.beanstalk.queryFilter(
-            this.sdk.contracts.beanstalk.filters.PodOrderCreated(_account),
+          this.sdk.contracts.moonmage.queryFilter(
+            this.sdk.contracts.moonmage.filters.PodOrderCreated(_account),
             fromBlockOrBIP10,
             toBlock
           ),
-          this.sdk.contracts.beanstalk.queryFilter(
-            this.sdk.contracts.beanstalk.filters.PodOrderCancelled(_account),
+          this.sdk.contracts.moonmage.queryFilter(
+            this.sdk.contracts.moonmage.filters.PodOrderCancelled(_account),
             fromBlockOrBIP10,
             toBlock
           ),
-          this.sdk.contracts.beanstalk.queryFilter(
-            this.sdk.contracts.beanstalk.filters.PodOrderFilled(null, _account), // to
+          this.sdk.contracts.moonmage.queryFilter(
+            this.sdk.contracts.moonmage.filters.PodOrderFilled(null, _account), // to
             fromBlockOrBIP10,
             toBlock
           )

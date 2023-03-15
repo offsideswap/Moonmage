@@ -13,7 +13,7 @@ type GraphProps = {
   width: number;
   harvestableIndex: BigNumber;
   height: number;
-  farmerPlots: PlotMap<BigNumber>;
+  cosmomagePlots: PlotMap<BigNumber>;
   podLineSize: BigNumber;
 }
 
@@ -56,7 +56,7 @@ const PodLineChart: FC<GraphProps> = withTooltip(({
   width,
   harvestableIndex,
   height,
-  farmerPlots,
+  cosmomagePlots,
   podLineSize
 }) => {
   // scales
@@ -81,7 +81,7 @@ const PodLineChart: FC<GraphProps> = withTooltip(({
         fill="#9e8773"
         rx={10}
       />
-      {Object.keys(farmerPlots).map((key) => (
+      {Object.keys(cosmomagePlots).map((key) => (
         <Tooltip
           key={key}
           title={(
@@ -92,7 +92,7 @@ const PodLineChart: FC<GraphProps> = withTooltip(({
               </Row>
               <Row gap={1} justifyContent="space-between">
                 <Typography>Num Pods:</Typography>
-                <Typography>{displayBN(new BigNumber(farmerPlots[key]))}</Typography>
+                <Typography>{displayBN(new BigNumber(cosmomagePlots[key]))}</Typography>
               </Row>
             </Stack>
           )}
@@ -110,7 +110,7 @@ const PodLineChart: FC<GraphProps> = withTooltip(({
 
 const SimplePodLineChart: FC<{
   harvestableIndex: BigNumber;
-  farmerPlots: PlotMap<BigNumber>;
+  cosmomagePlots: PlotMap<BigNumber>;
   podLineSize: BigNumber;
 }> = (props) => (
   <ParentSize debounceTime={10}>
@@ -119,7 +119,7 @@ const SimplePodLineChart: FC<{
         harvestableIndex={props.harvestableIndex}
         width={visWidth}
         height={50}
-        farmerPlots={props.farmerPlots}
+        cosmomagePlots={props.cosmomagePlots}
         podLineSize={props.podLineSize}
       />
     )}

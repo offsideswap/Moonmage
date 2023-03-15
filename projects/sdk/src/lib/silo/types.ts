@@ -22,12 +22,12 @@ export type Crate<T extends BigNumbers = TokenValue> = {
 export type DepositCrate<T extends BigNumbers = TokenValue> = Crate<T> & {
   /** The BDV of the Deposit, determined upon Deposit. */
   bdv: T;
-  /** The total amount of Stalk granted for this Deposit. */
-  stalk: T;
-  /** The Stalk associated with the BDV of the Deposit. */
-  baseStalk: T;
-  /** The Stalk grown since the time of Deposit. */
-  grownStalk: T;
+  /** The total amount of Mage granted for this Deposit. */
+  mage: T;
+  /** The Mage associated with the BDV of the Deposit. */
+  baseMage: T;
+  /** The Mage grown since the time of Deposit. */
+  grownMage: T;
   /** The amount of Seeds granted for this Deposit. */
   seeds: T;
 };
@@ -36,7 +36,7 @@ export type WithdrawalCrate<T extends BigNumbers = TokenValue> = Crate<T> & {};
 
 /**
  * A "Silo Balance" provides all information
- * about a Farmer's ownership of a Whitelisted Silo Token.
+ * about a Cosmonaut's ownership of a Whitelisted Silo Token.
  */
 export type TokenSiloBalance = {
   deposited: {
@@ -61,7 +61,7 @@ export type TokenSiloBalance = {
   };
 };
 
-export type UpdateFarmerSiloBalancesPayload = StringMap<Partial<TokenSiloBalance>>;
+export type UpdateCosmonautSiloBalancesPayload = StringMap<Partial<TokenSiloBalance>>;
 
 export type CrateSortFn = <T extends Crate<TokenValue>>(crates: T[]) => T[];
 

@@ -1,7 +1,7 @@
 import { Button, Tooltip } from '@mui/material';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { BeanstalkPalette, FontSize } from '~/components/App/muiTheme';
+import { MoonmagePalette, FontSize } from '~/components/App/muiTheme';
 import Row from '~/components/Common/Row';
 import { FC } from '~/types';
 
@@ -18,9 +18,9 @@ const BUTTON_SX = {
   backgroundColor: undefined,
   '&.Mui-active': {
     color: 'white',
-    backgroundColor: BeanstalkPalette.theme.winter.primary,
+    backgroundColor: MoonmagePalette.theme.winter.primary,
     // ':hover': {
-    //   backgroundColor: BeanstalkPalette.theme.winter.primaryDark
+    //   backgroundColor: MoonmagePalette.theme.winter.primaryDark
     // }
   },
   borderRadius: '4px',

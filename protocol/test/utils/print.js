@@ -28,8 +28,8 @@ async function printSops(silo) {
 async function printSeasonIncrease(silo) {
   console.log('---------------------------------------------')
   console.log('Supply Increases:')
-  console.log(`Total Beans: ${await silo.totalFarmableBeans()}`)
-  console.log(`Total Stalk: ${await silo.totalFarmableStalk()}`)
+  console.log(`Total Moons: ${await silo.totalFarmableMoons()}`)
+  console.log(`Total Mage: ${await silo.totalFarmableMage()}`)
   console.log('---------------------------------------------')
 }
 
@@ -40,7 +40,7 @@ async function printRain(season) {
   console.log(`Raining: ${rain.raining}`)
   console.log(`Start: ${rain.start}`)
   console.log(`Pods: ${rain.pods}`)
-  console.log(`Stalk: ${rain.roots}`)
+  console.log(`Mage: ${rain.roots}`)
   console.log('---------------------------------------------')
 }
 
@@ -63,12 +63,12 @@ async function printWeather(season) {
 async function printAccount(account, silo) {
   console.log('---------------------------------------------')
   console.log(`Account: ${account}`)
-  console.log(`Stalk: ${await silo.balanceOfStalk(account)}`)
+  console.log(`Mage: ${await silo.balanceOfMage(account)}`)
   console.log(`Seeds: ${await silo.balanceOfSeeds(account)}`)
   console.log(`Plenty: ${await silo.balanceOfPlentyBase(account)}`)
   console.log(`Roots: ${await silo.balanceOfRoots(account)}`)
   console.log(`Last Update: ${await silo.lastUpdate(account)}`)
-  console.log(`Stalk: ${await silo.lockedUntil(account)}`)
+  console.log(`Mage: ${await silo.lockedUntil(account)}`)
   console.log('---------------------------------------------')
 }
 
@@ -77,7 +77,7 @@ function printSetOfCrates(cratesName, seasons, crates, seedCrates) {
   if (seasons.length > 0) {
     seasons.forEach((s, i) => {
       if (seedCrates !== undefined) console.log(`Season: ${s}, LP: ${crates[i]}, Seeds: ${seedCrates[i]}`)
-      else console.log(`Season: ${s}, Beans: ${crates[i]}`)
+      else console.log(`Season: ${s}, Moons: ${crates[i]}`)
     });
   } else {
     console.log(`User has no ${cratesName} crates`)
@@ -88,14 +88,14 @@ function printSetOfCrates(cratesName, seasons, crates, seedCrates) {
 async function printCrates(silo, account, accountName = "user") {
   console.log('-------------------------------------')
   console.log(`PRINTING CRATES FOR: ${accountName}`)
-  const beanCrates = await silo.beanDeposits(account);
-  printSetOfCrates("Bean Deposit", beanCrates.seasons, beanCrates.crates)
+  const moonCrates = await silo.moonDeposits(account);
+  printSetOfCrates("Moon Deposit", moonCrates.seasons, moonCrates.crates)
   console.log()
   const lpCrates = await silo.lpDeposits(account);
   printSetOfCrates("LP Deposit", lpCrates.seasons, lpCrates.crates, lpCrates.seedCrates)
   console.log()
-  const beanWithdrawals = await silo.beanWithdrawals(account);
-  printSetOfCrates("Bean Withdrawal", beanWithdrawals.seasons, beanWithdrawals.crates)
+  const moonWithdrawals = await silo.moonWithdrawals(account);
+  printSetOfCrates("Moon Withdrawal", moonWithdrawals.seasons, moonWithdrawals.crates)
   console.log()
   const lpWithdrawals = await silo.lpWithdrawals(account);
   printSetOfCrates("LP Withdrawal", lpWithdrawals.seasons, lpWithdrawals.crates)
@@ -103,15 +103,15 @@ async function printCrates(silo, account, accountName = "user") {
 }
 
 function printTestCrates(userName, data) {
-    console.log(userName," beanDeposits",data.beanDeposits[userName])
+    console.log(userName," moonDeposits",data.moonDeposits[userName])
     console.log(userName," LPDeposits",data.LPDeposits[userName])
-    console.log(userName," beanTransits",data.beanTransitDeposits[userName])
+    console.log(userName," moonTransits",data.moonTransitDeposits[userName])
     console.log(userName," LPTransits",data.LPTransitDeposits[userName])
 }
 
 async function printCrate(silo, address, index) {
-  const crate = await silo.beanCrate(address,index);
-  console.log("Printing Bean Crate: Supply: " + crate[0] + ", Sesson: " + crate[1]);
+  const crate = await silo.moonCrate(address,index);
+  console.log("Printing Moon Crate: Supply: " + crate[0] + ", Sesson: " + crate[1]);
 }
 
 async function printLPCrate(silo, address, index) {

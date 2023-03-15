@@ -47,11 +47,11 @@ describe("TestUtils", () => {
     const bal = await WETH.getBalance(account);
     expect(bal.toHuman()).toBe("30000");
   });
-  it("Hack BEAN balance", async () => {
-    const BEAN = sdk.tokens.BEAN;
-    await utils.setBEANBalance(account, BEAN.amount(30000));
+  it("Hack MOON balance", async () => {
+    const MOON = sdk.tokens.MOON;
+    await utils.setMOONBalance(account, MOON.amount(30000));
     await pause(DELAY);
-    const bal = await BEAN.getBalance(account);
+    const bal = await MOON.getBalance(account);
     expect(bal.toHuman()).toBe("30000");
   });
   it("Hack ROOT balance", async () => {

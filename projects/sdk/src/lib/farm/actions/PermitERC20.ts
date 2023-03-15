@@ -40,8 +40,8 @@ export class PermitERC20 extends StepClass<BasicPreparedResult> {
         }
 
         return {
-          target: PermitERC20.sdk.contracts.beanstalk.address,
-          callData: PermitERC20.sdk.contracts.beanstalk.interface.encodeFunctionData("permitERC20", [
+          target: PermitERC20.sdk.contracts.moonmage.address,
+          callData: PermitERC20.sdk.contracts.moonmage.interface.encodeFunctionData("permitERC20", [
             permit.typedData.domain.verifyingContract, // token address
             permit.owner, // owner
             permit.typedData.message.spender, // spender
@@ -53,8 +53,8 @@ export class PermitERC20 extends StepClass<BasicPreparedResult> {
           ])
         };
       },
-      decode: (data: string) => PermitERC20.sdk.contracts.beanstalk.interface.decodeFunctionData("permitERC20", data),
-      decodeResult: (result: string) => PermitERC20.sdk.contracts.beanstalk.interface.decodeFunctionResult("permitERC20", result)
+      decode: (data: string) => PermitERC20.sdk.contracts.moonmage.interface.decodeFunctionData("permitERC20", data),
+      decodeResult: (result: string) => PermitERC20.sdk.contracts.moonmage.interface.decodeFunctionResult("permitERC20", result)
     };
   }
 }

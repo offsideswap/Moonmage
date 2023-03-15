@@ -4,13 +4,13 @@ import { atomWithReset } from 'jotai/utils';
 import { useEffect, useMemo } from 'react';
 
 import { PlotFragment } from '~/components/Common/Form';
-import { PodListing, PodOrder } from '~/state/farmer/market';
+import { PodListing, PodOrder } from '~/state/cosmomage/market';
 import Token from '~/classes/Token';
 import { ZERO_BN } from '~/constants';
-import { BEAN, ETH, WETH } from '~/constants/tokens';
+import { MOON, ETH, WETH } from '~/constants/tokens';
 import usePreferredToken, {
   PreferredToken,
-} from '~/hooks/farmer/usePreferredToken';
+} from '~/hooks/cosmomage/usePreferredToken';
 // ---------- TYPES ----------
 type PartialOpenState = 0 | 1 | 2;
 
@@ -73,7 +73,7 @@ export const placeInLineAtom = atomWithReset<MayBN>(null);
 // whether a fixed or dynamic pricing function is being used for the active form
 export const pricingFunctionAtom = atom<PricingFn>(PricingFn.FIXED);
 
-// price in beans per pod
+// price in moons per pod
 export const pricePerPodAtom = atom<BigNumber | null>(ZERO_BN);
 
 // the price of the active form
@@ -221,7 +221,7 @@ export const listingPodsAmountAtom = atom((get) => {
 
 const PREFERRED_TOKENS: PreferredToken[] = [
   {
-    token: BEAN,
+    token: MOON,
     minimum: new BigNumber(1), // $1
   },
   {

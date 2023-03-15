@@ -1,8 +1,8 @@
 import { Grid, Typography } from '@mui/material';
 import React from 'react';
-import { BeanstalkPalette } from '~/components/App/muiTheme';
+import { MoonmagePalette } from '~/components/App/muiTheme';
 import { ZERO_BN } from '~/constants';
-import { PriceBucket } from '~/hooks/beanstalk/useOrderbook';
+import { PriceBucket } from '~/hooks/moonmage/useOrderbook';
 import { displayBN } from '~/util';
 
 const OrderBookRow: React.FC<{
@@ -28,12 +28,12 @@ const OrderBookRow: React.FC<{
     </Grid>
     <Grid item container xs={5.25}>
       <Grid item xs={6}>
-        <Typography variant="caption" sx={{ color: BeanstalkPalette.theme.winter.orderGreen }}>
-          {displayBN(bucket.depth.bean || ZERO_BN)}
+        <Typography variant="caption" sx={{ color: MoonmagePalette.theme.winter.orderGreen }}>
+          {displayBN(bucket.depth.moon || ZERO_BN)}
         </Typography>
       </Grid>
       <Grid item xs={6} alignItems="flex-end" textAlign="right">
-        <Typography variant="caption" sx={{ color: BeanstalkPalette.theme.winter.orderGreen }}>
+        <Typography variant="caption" sx={{ color: MoonmagePalette.theme.winter.orderGreen }}>
           {displayBN(
             isMinMax ? bucket.placeInLine.buy.max : bucket.placeInLine.buy.avg
           )}
@@ -42,14 +42,14 @@ const OrderBookRow: React.FC<{
     </Grid>
     <Grid item container xs={5.25}>
       <Grid item xs={6}>
-        <Typography variant="caption" sx={{ color: BeanstalkPalette.theme.winter.listingRed }}>
+        <Typography variant="caption" sx={{ color: MoonmagePalette.theme.winter.listingRed }}>
           {displayBN(
             isMinMax ? bucket.placeInLine.sell.min : bucket.placeInLine.sell.avg
           )}
         </Typography>
       </Grid>
       <Grid item xs={6} alignItems="flex-end" textAlign="right">
-        <Typography variant="caption" sx={{ color: BeanstalkPalette.theme.winter.listingRed }}>
+        <Typography variant="caption" sx={{ color: MoonmagePalette.theme.winter.listingRed }}>
           {displayBN(bucket.depth.pods)}
         </Typography>
       </Grid>

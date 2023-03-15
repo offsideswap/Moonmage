@@ -54,7 +54,7 @@ contract FundraiserFacet is ReentrancyGuard {
         s.fundraisers[id].remaining = remaining - amount; // Note: SafeMath is redundant here.
         emit FundFundraiser(msg.sender, id, amount);
         if (s.fundraisers[id].remaining == 0) completeFundraiser(id);
-        C.bean().burn(amount);
+        C.moon().burn(amount);
 
         return LibDibbler.sowNoSoil(amount, msg.sender);
     }
@@ -84,7 +84,7 @@ contract FundraiserFacet is ReentrancyGuard {
         s.fundraisers[id].payee = payee;
         s.fundraisers[id].start = block.timestamp;
         s.fundraiserIndex = id + 1;
-        C.bean().mint(address(this), amount);
+        C.moon().mint(address(this), amount);
         emit CreateFundraiser(id, payee, token, amount);
     }
 

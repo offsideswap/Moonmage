@@ -2,20 +2,20 @@ import { Contract, ContractInterface, ethers } from 'ethers';
 import { useCallback, useMemo } from 'react';
 import { useProvider, useContract as useWagmiContract } from 'wagmi';
 
-import BEANSTALK_ABI from '@beanstalk/protocol/abi/Beanstalk.json';
-import BEANSTALK_PRICE_ABI from '~/constants/abi/Beanstalk/BeanstalkPrice.json';
-import BEANSTALK_FERTILIZER_ABI from '~/constants/abi/Beanstalk/BeanstalkFertilizer.json';
+import MOONMAGE_ABI from '@moonmage/protocol/abi/Moonmage.json';
+import MOONMAGE_PRICE_ABI from '~/constants/abi/Moonmage/MoonmagePrice.json';
+import MOONMAGE_FERTILIZER_ABI from '~/constants/abi/Moonmage/MoonmageFertilizer.json';
 import ERC20_ABI from '~/constants/abi/ERC20.json';
-import BEANFT_GENESIS_ABI from '~/constants/abi/BeaNFT/BeaNFTGenesis.json';
-import BEANFT_WINTER_ABI from '~/constants/abi/BeaNFT/BeaNFTWinter.json';
+import MOONFT_GENESIS_ABI from '~/constants/abi/BeaNFT/BeaNFTGenesis.json';
+import MOONFT_WINTER_ABI from '~/constants/abi/BeaNFT/BeaNFTWinter.json';
 import AGGREGATOR_V3_ABI from '~/constants/abi/Chainlink/AggregatorV3.json';
 import useChainConstant from '../chain/useChainConstant';
 import { SupportedChainId } from '~/constants/chains';
 import {
-  BEANFT_GENESIS_ADDRESSES, BEANFT_WINTER_ADDRESSES,
-  BEANSTALK_ADDRESSES,
-  BEANSTALK_FERTILIZER_ADDRESSES,
-  BEANSTALK_PRICE_ADDRESSES,
+  MOONFT_GENESIS_ADDRESSES, MOONFT_WINTER_ADDRESSES,
+  MOONMAGE_ADDRESSES,
+  MOONMAGE_FERTILIZER_ADDRESSES,
+  MOONMAGE_PRICE_ADDRESSES,
 } from '~/constants/addresses';
 import { ChainConstant } from '~/constants';
 import { getChainConstant } from '~/util/Chain';
@@ -23,9 +23,9 @@ import { useSigner } from '~/hooks/ledger/useSigner';
 import {
   BeaNFTGenesis,
   BeaNFTWinter,
-  BeanstalkFertilizer,
-  Beanstalk,
-  BeanstalkPrice,
+  MoonmageFertilizer,
+  Moonmage,
+  MoonmagePrice,
   ERC20,
   AggregatorV3
 } from '~/generated/index';
@@ -114,21 +114,21 @@ export function useContract<T extends Contract = Contract>(
 
 // --------------------------------------------------
 
-const BEANSTALK_PRICE_ABIS = {
-  [SupportedChainId.MAINNET]: BEANSTALK_PRICE_ABI,
+const MOONMAGE_PRICE_ABIS = {
+  [SupportedChainId.MAINNET]: MOONMAGE_PRICE_ABI,
 };
 
-export function useBeanstalkPriceContract() {
-  return useContractReadOnly<BeanstalkPrice>(
-    BEANSTALK_PRICE_ADDRESSES,
-    BEANSTALK_PRICE_ABIS,
+export function useMoonmagePriceContract() {
+  return useContractReadOnly<MoonmagePrice>(
+    MOONMAGE_PRICE_ADDRESSES,
+    MOONMAGE_PRICE_ABIS,
   );
 }
 
-export function useBeanstalkFertilizerContract() {
-  return useContract<BeanstalkFertilizer>(
-    BEANSTALK_FERTILIZER_ADDRESSES,
-    BEANSTALK_FERTILIZER_ABI,
+export function useMoonmageFertilizerContract() {
+  return useContract<MoonmageFertilizer>(
+    MOONMAGE_FERTILIZER_ADDRESSES,
+    MOONMAGE_FERTILIZER_ABI,
     true
   );
 }
@@ -148,41 +148,41 @@ export function useERC20Contract(addressOrAddressMap: AddressOrAddressMap) {
 // --------------------------------------------------
 
 export function useFertilizerContract(signer?: ethers.Signer | null) {
-  const fertAddress = useChainConstant(BEANSTALK_FERTILIZER_ADDRESSES);
+  const fertAddress = useChainConstant(MOONMAGE_FERTILIZER_ADDRESSES);
   const provider = useProvider();
   return useWagmiContract({
     address: fertAddress,
-    abi: BEANSTALK_FERTILIZER_ABI,
+    abi: MOONMAGE_FERTILIZER_ABI,
     signerOrProvider: signer || provider,
-  }) as BeanstalkFertilizer;
+  }) as MoonmageFertilizer;
 }
 
-export function useBeanstalkContract(signer?: ethers.Signer | null) {
-  const address   = useChainConstant(BEANSTALK_ADDRESSES);
+export function useMoonmageContract(signer?: ethers.Signer | null) {
+  const address   = useChainConstant(MOONMAGE_ADDRESSES);
   const provider  = useProvider();
   return useWagmiContract({
     address,
-    abi: BEANSTALK_ABI,
+    abi: MOONMAGE_ABI,
     signerOrProvider: signer || provider,
-  }) as Beanstalk;
+  }) as Moonmage;
 }
 
 export function useGenesisNFTContract(signer?: ethers.Signer | null) {
-  const address = useChainConstant(BEANFT_GENESIS_ADDRESSES);
+  const address = useChainConstant(MOONFT_GENESIS_ADDRESSES);
   const provider = useProvider();
   return useWagmiContract({
     address,
-    abi: BEANFT_GENESIS_ABI,
+    abi: MOONFT_GENESIS_ABI,
     signerOrProvider: signer || provider,
   }) as BeaNFTGenesis;
 }
 
 export function useWinterNFTContract(signer?: ethers.Signer | null) {
-  const address = useChainConstant(BEANFT_WINTER_ADDRESSES);
+  const address = useChainConstant(MOONFT_WINTER_ADDRESSES);
   const provider = useProvider();
   return useWagmiContract({
     address,
-    abi: BEANFT_WINTER_ABI,
+    abi: MOONFT_WINTER_ABI,
     signerOrProvider: signer || provider,
   }) as BeaNFTWinter;
 }

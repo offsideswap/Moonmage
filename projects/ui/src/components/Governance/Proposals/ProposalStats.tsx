@@ -9,17 +9,17 @@ import Row from '~/components/Common/Row';
 import StatHorizontal from '~/components/Common/StatHorizontal';
 
 import { FC } from '~/types';
-import useProposalBlockData from '~/hooks/beanstalk/useProposalBlockData';
+import useProposalBlockData from '~/hooks/moonmage/useProposalBlockData';
 
 const ProposalStats: FC<{
   proposal: Proposal;
   quorum?: ReturnType<typeof useProposalBlockData>;
-  totalStalk?: BigNumber;
+  totalMage?: BigNumber;
   differenceInTime?: number;
   showLink?: boolean;
 }> = ({
   proposal,
-  totalStalk,
+  totalMage,
   quorum,
   differenceInTime,
   showLink = false,
@@ -38,8 +38,8 @@ const ProposalStats: FC<{
           {proposal.state === 'active' 
               ? 'Active'
               : proposal.state === 'closed'
-              ? (quorum?.data.stalkForQuorum && quorum?.data.score)
-                ? quorum?.data.score.gt(quorum.data.stalkForQuorum)
+              ? (quorum?.data.mageForQuorum && quorum?.data.score)
+                ? quorum?.data.score.gt(quorum.data.mageForQuorum)
                   ? 'Closed'
                   : 'Closed'
                   // ? 'Passed'
@@ -65,21 +65,21 @@ const ProposalStats: FC<{
       )}
     </Row>
     {/* if there is time remaining... */}
-    {(differenceInTime && differenceInTime > 0 && totalStalk) && (
+    {(differenceInTime && differenceInTime > 0 && totalMage) && (
       <Row gap={0.5}>
         <Tooltip
           title={
             <Stack gap={0.5}>
-              <StatHorizontal label="Stalk voted For">
+              <StatHorizontal label="Mage voted For">
                 {displayFullBN(new BigNumber(proposal.scores[0]) || ZERO_BN, 2, 2)}
               </StatHorizontal>
-              {quorum?.data.stalkForQuorum && (
-                <StatHorizontal label="Stalk for Quorum">
-                  ~{displayFullBN(quorum?.data.stalkForQuorum, 2, 2)}
+              {quorum?.data.mageForQuorum && (
+                <StatHorizontal label="Mage for Quorum">
+                  ~{displayFullBN(quorum?.data.mageForQuorum, 2, 2)}
                 </StatHorizontal>
               )}
-              <StatHorizontal label="Eligible Stalk">
-                ~{displayFullBN(totalStalk, 2, 2)}
+              <StatHorizontal label="Eligible Mage">
+                ~{displayFullBN(totalMage, 2, 2)}
               </StatHorizontal>
               <StatHorizontal label="Snapshot Block">
                 {proposal.snapshot}
@@ -88,7 +88,7 @@ const ProposalStats: FC<{
           }
         >
           <Typography textAlign={{ xs: 'center', md: 'left' }} variant="body1">
-            {((quorum?.data.pctOfQuorum || 0) * 100).toFixed(0)}% of Stalk voted For
+            {((quorum?.data.pctOfQuorum || 0) * 100).toFixed(0)}% of Mage voted For
           </Typography>
         </Tooltip>
       </Row>

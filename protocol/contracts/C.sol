@@ -5,7 +5,7 @@
 pragma solidity =0.7.6;
 pragma experimental ABIEncoderV2;
 
-import "./interfaces/IBean.sol";
+import "./interfaces/IMoon.sol";
 import "./interfaces/ICurve.sol";
 import "./interfaces/IFertilizer.sol";
 import "./interfaces/IProxyAdmin.sol";
@@ -13,7 +13,7 @@ import "./libraries/Decimal.sol";
 
 /**
  * @author Publius
- * @title C holds the contracts for Beanstalk.
+ * @title C holds the contracts for Moonmage.
 **/
 library C {
 
@@ -29,7 +29,7 @@ library C {
 
     // Season
     uint256 private constant CURRENT_SEASON_PERIOD = 3600; // 1 hour
-    uint256 private constant BASE_ADVANCE_INCENTIVE = 25e6; // 25 beans
+    uint256 private constant BASE_ADVANCE_INCENTIVE = 25e6; // 25 moons
     uint256 private constant SOP_PRECISION = 1e24;
 
     // Sun
@@ -48,8 +48,8 @@ library C {
     uint256 private constant DELTA_POD_DEMAND_UPPER_BOUND = 1.05e18; // 105%
 
     // Silo
-    uint256 private constant SEEDS_PER_BEAN = 2;
-    uint256 private constant STALK_PER_BEAN = 10000;
+    uint256 private constant SEEDS_PER_MOON = 2;
+    uint256 private constant MAGE_PER_MOON = 10000;
     uint256 private constant ROOTS_BASE = 1e12;
 
 
@@ -59,11 +59,11 @@ library C {
     uint256 private constant INITIAL_HAIRCUT = 185564685220298701; // SET
 
     // Contracts
-    address private constant BEAN = 0xBEA0000029AD1c77D3d5D23Ba2D8893dB9d1Efab;
-    address private constant CURVE_BEAN_METAPOOL = 0xc9C32cd16Bf7eFB85Ff14e0c8603cc90F6F2eE49;
+    address private constant MOON = 0xBEA0000029AD1c77D3d5D23Ba2D8893dB9d1Efab;
+    address private constant CURVE_MOON_METAPOOL = 0xc9C32cd16Bf7eFB85Ff14e0c8603cc90F6F2eE49;
     address private constant CURVE_3_POOL = 0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7;
     address private constant THREE_CRV = 0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490;
-    address private constant UNRIPE_BEAN = 0x1BEA0050E63e05FBb5D8BA2f10cf5800B6224449;
+    address private constant UNRIPE_MOON = 0x1BEA0050E63e05FBb5D8BA2f10cf5800B6224449;
     address private constant UNRIPE_LP = 0x1BEA3CcD22F4EBd3d37d731BA31Eeca95713716D;
     address private constant FERTILIZER = 0x402c84De2Ce49aF88f5e2eF3710ff89bFED36cB6;
     address private constant FERTILIZER_ADMIN = 0xfECB01359263C12Aa9eD838F878A596F0064aa6e;
@@ -73,8 +73,8 @@ library C {
     address private constant TRI_CRYPTO_POOL = 0xD51a44d3FaE010294C616388b506AcdA1bfAAE46;
     address private constant CURVE_ZAP = 0xA79828DF1850E8a3A3064576f380D90aECDD3359;
 
-    address private constant UNRIPE_CURVE_BEAN_LUSD_POOL = 0xD652c40fBb3f06d6B58Cb9aa9CFF063eE63d465D;
-    address private constant UNRIPE_CURVE_BEAN_METAPOOL = 0x3a70DfA7d2262988064A2D051dd47521E43c9BdD;
+    address private constant UNRIPE_CURVE_MOON_LUSD_POOL = 0xD652c40fBb3f06d6B58Cb9aa9CFF063eE63d465D;
+    address private constant UNRIPE_CURVE_MOON_METAPOOL = 0x3a70DfA7d2262988064A2D051dd47521E43c9BdD;
 
     /**
      * Getters
@@ -124,12 +124,12 @@ library C {
         return STEADY_SOW_TIME;
     }
 
-    function getSeedsPerBean() internal pure returns (uint256) {
-        return SEEDS_PER_BEAN;
+    function getSeedsPerMoon() internal pure returns (uint256) {
+        return SEEDS_PER_MOON;
     }
 
-    function getStalkPerBean() internal pure returns (uint256) {
-      return STALK_PER_BEAN;
+    function getMagePerMoon() internal pure returns (uint256) {
+      return MAGE_PER_MOON;
     }
 
     function getRootsBase() internal pure returns (uint256) {
@@ -140,40 +140,40 @@ library C {
         return SOP_PRECISION;
     }
 
-    function beanAddress() internal pure returns (address) {
-        return BEAN;
+    function moonAddress() internal pure returns (address) {
+        return MOON;
     }
 
     function curveMetapoolAddress() internal pure returns (address) {
-        return CURVE_BEAN_METAPOOL;
+        return CURVE_MOON_METAPOOL;
     }
 
     function unripeLPPool1() internal pure returns (address) {
-        return UNRIPE_CURVE_BEAN_METAPOOL;
+        return UNRIPE_CURVE_MOON_METAPOOL;
     }
 
     function unripeLPPool2() internal pure returns (address) {
-        return UNRIPE_CURVE_BEAN_LUSD_POOL;
+        return UNRIPE_CURVE_MOON_LUSD_POOL;
     }
 
-    function unripeBeanAddress() internal pure returns (address) {
-        return UNRIPE_BEAN;
+    function unripeMoonAddress() internal pure returns (address) {
+        return UNRIPE_MOON;
     }
 
     function unripeLPAddress() internal pure returns (address) {
         return UNRIPE_LP;
     }
 
-    function unripeBean() internal pure returns (IERC20) {
-        return IERC20(UNRIPE_BEAN);
+    function unripeMoon() internal pure returns (IERC20) {
+        return IERC20(UNRIPE_MOON);
     }
 
     function unripeLP() internal pure returns (IERC20) {
         return IERC20(UNRIPE_LP);
     }
 
-    function bean() internal pure returns (IBean) {
-        return IBean(BEAN);
+    function moon() internal pure returns (IMoon) {
+        return IMoon(MOON);
     }
 
     function usdc() internal pure returns (IERC20) {
@@ -181,7 +181,7 @@ library C {
     }
 
     function curveMetapool() internal pure returns (ICurvePool) {
-        return ICurvePool(CURVE_BEAN_METAPOOL);
+        return ICurvePool(CURVE_MOON_METAPOOL);
     }
 
     function curve3Pool() internal pure returns (I3Curve) {

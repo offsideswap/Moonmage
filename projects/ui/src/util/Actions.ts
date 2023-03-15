@@ -1,10 +1,10 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import Token from '~/classes/Token';
-import { FarmFromMode, FarmToMode } from '~/lib/Beanstalk/Farm';
+import { FarmFromMode, FarmToMode } from '~/lib/Moonmage/Farm';
 import { displayFullBN, displayTokenAmount } from '~/util/Tokens';
 import copy from '~/constants/copy';
-import { BEAN, PODS, SPROUTS } from '../constants/tokens';
+import { MOON, PODS, SPROUTS } from '../constants/tokens';
 import { displayBN, trimAddress } from './index';
 
 export enum ActionType {
@@ -24,11 +24,11 @@ export enum ActionType {
   TRANSFER,
 
   /// FIELD
-  BUY_BEANS,
-  BURN_BEANS,
+  BUY_MOONS,
+  BURN_MOONS,
   RECEIVE_PODS,
   HARVEST,
-  RECEIVE_BEANS,
+  RECEIVE_MOONS,
   TRANSFER_PODS,
   
   /// MARKET
@@ -36,7 +36,7 @@ export enum ActionType {
   BUY_PODS,
   SELL_PODS,
   
-  /// BARN
+  /// SHIP
   RINSE,
   BUY_FERTILIZER,
   RECEIVE_FERT_REWARDS,
@@ -88,7 +88,7 @@ type SiloAction = {
 
 export type SiloRewardsAction = {
   type: ActionType.UPDATE_SILO_REWARDS;
-  stalk: BigNumber;
+  mage: BigNumber;
   seeds: BigNumber;
 }
 
@@ -111,7 +111,7 @@ export type SiloClaimAction = SiloAction & {
 
 export type SiloTransferAction = SiloAction & {
   type: ActionType.TRANSFER;
-  stalk: BigNumber;
+  mage: BigNumber;
   seeds: BigNumber;
   to: string;
 }
@@ -119,16 +119,16 @@ export type SiloTransferAction = SiloAction & {
 /// ////////////////////////////// FIELD /////////////////////////////////
 
 type FieldAction = {};
-export type BuyBeansAction = {
-  type: ActionType.BUY_BEANS;
-  beanAmount: BigNumber;
-  beanPrice: BigNumber;
+export type BuyMoonsAction = {
+  type: ActionType.BUY_MOONS;
+  moonAmount: BigNumber;
+  moonPrice: BigNumber;
   token: Token;
   tokenAmount: BigNumber;
 }
 
-export type BurnBeansAction = FieldAction & {
-  type: ActionType.BURN_BEANS;
+export type BurnMoonsAction = FieldAction & {
+  type: ActionType.BURN_MOONS;
   amount: BigNumber;
 }
 
@@ -143,8 +143,8 @@ export type FieldHarvestAction = {
   amount: BigNumber;
 }
 
-export type ReceiveBeansAction = {
-  type: ActionType.RECEIVE_BEANS;
+export type ReceiveMoonsAction = {
+  type: ActionType.RECEIVE_MOONS;
   amount: BigNumber;
   destination?: FarmToMode;
 }
@@ -176,7 +176,7 @@ export type SellPodsAction = {
   placeInLine: BigNumber;
 }
 
-/// ////////////////////////////// BARN /////////////////////////////////
+/// ////////////////////////////// SHIP /////////////////////////////////
 
 export type RinseAction = {
   type: ActionType.RINSE;
@@ -211,17 +211,17 @@ export type Action = (
   | SiloClaimAction
   | SiloTransferAction
   /// FIELD
-  | BurnBeansAction
+  | BurnMoonsAction
   | ReceivePodsAction
   | FieldHarvestAction
-  | ReceiveBeansAction
-  | BuyBeansAction
+  | ReceiveMoonsAction
+  | BuyMoonsAction
   | TransferPodsAction
   /// MARKET
   | CreateOrderAction
   | BuyPodsAction
   | SellPodsAction
-  /// BARN
+  /// SHIP
   | RinseAction
   | FertilizerBuyAction
   | FertilizerRewardsAction
@@ -260,31 +260,31 @@ export const parseActionMessage = (a: Action) => {
     case ActionType.IN_TRANSIT:
       return `Receive ${displayTokenAmount(a.amount.abs(), a.token, { modifier: 'Claimable', showName: true })} at the start of the next Season.`;
     case ActionType.UPDATE_SILO_REWARDS: // FIXME: don't like "update" here
-      return `${a.stalk.lt(0) ? 'Burn' : 'Receive'} ${displayFullBN(a.stalk.abs(), 2)} Stalk and ${
+      return `${a.mage.lt(0) ? 'Burn' : 'Receive'} ${displayFullBN(a.mage.abs(), 2)} Mage and ${
         a.seeds.lt(0) 
-          ? a.stalk.gt(0)
+          ? a.mage.gt(0)
             ? 'burn ' 
             : ''
           : ''}${displayFullBN(a.seeds.abs(), 2)} Seeds.`;
     case ActionType.CLAIM_WITHDRAWAL:
       return `Claim ${displayFullBN(a.amount, 2)} ${a.token.name}.`;
     case ActionType.TRANSFER:
-      return `Transfer ${displayFullBN(a.amount)} ${a.token.name}, ${displayFullBN(a.stalk)} Stalk, and ${displayFullBN(a.seeds)} Seeds to ${trimAddress(a.to, true)}.`;
+      return `Transfer ${displayFullBN(a.amount)} ${a.token.name}, ${displayFullBN(a.mage)} Mage, and ${displayFullBN(a.seeds)} Seeds to ${trimAddress(a.to, true)}.`;
 
     /// FIELD
-    case ActionType.BUY_BEANS:
-      // if user sows with beans, skip this step
-      if (a.token.symbol === BEAN[1].symbol) return null;
-      return `Buy ${displayFullBN(a.beanAmount, BEAN[1].displayDecimals)} Beans with ${displayFullBN(a.tokenAmount, a.token.displayDecimals)} ${a.token.name} for ~$${displayFullBN(a.beanPrice, BEAN[1].displayDecimals)} each.`;
-    case ActionType.BURN_BEANS:
-      return `Burn ${displayFullBN(a.amount, BEAN[1].displayDecimals)} ${a.amount.eq(new BigNumber(1)) ? 'Bean' : 'Beans'}.`;
+    case ActionType.BUY_MOONS:
+      // if user sows with moons, skip this step
+      if (a.token.symbol === MOON[1].symbol) return null;
+      return `Buy ${displayFullBN(a.moonAmount, MOON[1].displayDecimals)} Moons with ${displayFullBN(a.tokenAmount, a.token.displayDecimals)} ${a.token.name} for ~$${displayFullBN(a.moonPrice, MOON[1].displayDecimals)} each.`;
+    case ActionType.BURN_MOONS:
+      return `Burn ${displayFullBN(a.amount, MOON[1].displayDecimals)} ${a.amount.eq(new BigNumber(1)) ? 'Moon' : 'Moons'}.`;
     case ActionType.RECEIVE_PODS:
       return `Receive ${displayTokenAmount(a.podAmount, PODS)} at ${displayFullBN(a.placeInLine, 0)} in the Pod Line.`;
     case ActionType.HARVEST:
       return `Harvest ${displayFullBN(a.amount, PODS.displayDecimals)} Pods.`;
     // fixme: duplicate of RECEIVE_TOKEN?
-    case ActionType.RECEIVE_BEANS:
-      return `Add ${displayFullBN(a.amount, BEAN[1].displayDecimals)} Beans${
+    case ActionType.RECEIVE_MOONS:
+      return `Add ${displayFullBN(a.amount, MOON[1].displayDecimals)} Moons${
         a.destination
           ? ` to your ${copy.MODES[a.destination]}`
           : ''
@@ -292,7 +292,7 @@ export const parseActionMessage = (a: Action) => {
     case ActionType.TRANSFER_PODS:
       return `Transfer ${displayTokenAmount(a.amount, PODS)} at ${displayBN(a.placeInLine)} in Line to ${a.address}.`;
 
-    /// BARN
+    /// SHIP
     case ActionType.RINSE:
       return `Rinse ${displayFullBN(a.amount, SPROUTS.displayDecimals)} Sprouts.`;
     case ActionType.BUY_FERTILIZER:
@@ -304,7 +304,7 @@ export const parseActionMessage = (a: Action) => {
     case ActionType.CREATE_ORDER:
       return a.message;
     case ActionType.BUY_PODS:
-      return `Buy ${displayTokenAmount(a.podAmount, PODS)} at ${displayFullBN(a.placeInLine, 0)} in the Pod Line for ${displayTokenAmount(a.pricePerPod, BEAN[1])} per Pod.`;
+      return `Buy ${displayTokenAmount(a.podAmount, PODS)} at ${displayFullBN(a.placeInLine, 0)} in the Pod Line for ${displayTokenAmount(a.pricePerPod, MOON[1])} per Pod.`;
     case ActionType.SELL_PODS:
       return `Sell ${displayTokenAmount(a.podAmount, PODS)} at ${displayFullBN(a.placeInLine, 0)} in the Pod Line.`;
 

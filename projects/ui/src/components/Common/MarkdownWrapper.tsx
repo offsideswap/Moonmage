@@ -1,6 +1,6 @@
 import React from 'react';
 import MuiMarkdown from 'mui-markdown'; // peer dep: prism-react-renderer
-import { BeanstalkPalette, FontSize, FontWeight } from '~/components/App/muiTheme';
+import { MoonmagePalette, FontSize, FontWeight } from '~/components/App/muiTheme';
 import { FC } from '~/types';
 
 const MarkdownWrapper: FC<{}> = ({ children }) => (
@@ -104,7 +104,7 @@ const MarkdownWrapper: FC<{}> = ({ children }) => (
       code: {
         props: {
           style: {
-            backgroundColor: BeanstalkPalette.lightestGrey,
+            backgroundColor: MoonmagePalette.lightestGrey,
             borderRadius: 3,
             margin: 1,
             padding: 0.75,
@@ -127,7 +127,7 @@ const MarkdownWrapper: FC<{}> = ({ children }) => (
         props: {
           style: {
             wordBreak: 'break-word',
-            color: BeanstalkPalette.theme.winter.primary,
+            color: MoonmagePalette.theme.winter.primary,
           }
         }
       },

@@ -156,10 +156,10 @@ export class Polynomial {
 
   // FIXME: later we may move these into `market/pods`.
 
-  public getAmountListing(placeInLine: BigNumber, amountBeans: BigNumber) {
+  public getAmountListing(placeInLine: BigNumber, amountMoons: BigNumber) {
     const pieceIndex = Polynomial.findIndex(this.breakpoints, placeInLine, this.breakpoints.length);
     const pricePerPod = this.evaluate(placeInLine.sub(this.breakpoints[pieceIndex]), pieceIndex);
-    return amountBeans.mul(1000000).div(pricePerPod);
+    return amountMoons.mul(1000000).div(pricePerPod);
   }
 
   public getAmountOrder(placeInLine: BigNumber, amountPodsFromOrder: BigNumber) {

@@ -5,7 +5,7 @@ import { ethers } from 'ethers';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useConnect } from 'wagmi';
 import BigNumber from 'bignumber.js';
-import { SwapOperation } from '@beanstalk/sdk';
+import { SwapOperation } from '@moonmage/sdk';
 import {
   FormApprovingState, FormTokenState,
   SettingInput,
@@ -20,21 +20,21 @@ import { TokenSelectMode } from '~/components/Common/Form/TokenSelectDialog';
 import TokenInputField from '~/components/Common/Form/TokenInputField';
 import FarmModeField from '~/components/Common/Form/FarmModeField';
 import Token, { ERC20Token, NativeToken } from '~/classes/Token';
-import { Beanstalk } from '~/generated/index';
+import { Moonmage } from '~/generated/index';
 import { ZERO_BN } from '~/constants';
-import { BEAN, CRV3, DAI, ETH, USDC, USDT, WETH } from '~/constants/tokens';
-import { useBeanstalkContract } from '~/hooks/ledger/useContract';
-import useFarmerBalances from '~/hooks/farmer/useFarmerBalances';
+import { MOON, CRV3, DAI, ETH, USDC, USDT, WETH } from '~/constants/tokens';
+import { useMoonmageContract } from '~/hooks/ledger/useContract';
+import useCosmonautBalances from '~/hooks/cosmomage/useCosmonautBalances';
 import useTokenMap from '~/hooks/chain/useTokenMap';
 import { useSigner } from '~/hooks/ledger/useSigner';
-import { FarmFromMode, FarmToMode } from '~/lib/Beanstalk/Farm';
+import { FarmFromMode, FarmToMode } from '~/lib/Moonmage/Farm';
 import useGetChainToken from '~/hooks/chain/useGetChainToken';
 import useQuote, { QuoteHandler } from '~/hooks/ledger/useQuote';
 import useAccount from '~/hooks/ledger/useAccount';
 import { toStringBaseUnitBN, toTokenUnitsBN, MinBN } from '~/util';
 import { IconSize } from '~/components/App/muiTheme';
 import TransactionToast from '~/components/Common/TxnToast';
-import { useFetchFarmerBalances } from '~/state/farmer/balances/updater';
+import { useFetchCosmonautBalances } from '~/state/cosmomage/balances/updater';
 import useChainConstant from '~/hooks/chain/useChainConstant';
 import { optimizeFromMode } from '~/util/Farm';
 import copy from '~/constants/copy';
@@ -73,8 +73,8 @@ const QUOTE_SETTINGS = {
 const Quoting = <CircularProgress variant="indeterminate" size="small" sx={{ width: 14, height: 14 }} />;
 
 const SwapForm: FC<FormikProps<SwapFormValues> & {
-  balances: ReturnType<typeof useFarmerBalances>;
-  beanstalk: Beanstalk;
+  balances: ReturnType<typeof useCosmonautBalances>;
+  moonmage: Moonmage;
   handleQuote: DirectionalQuoteHandler;
   tokenList: (ERC20Token | NativeToken)[];
   defaultValues: SwapFormValues;
@@ -84,7 +84,7 @@ const SwapForm: FC<FormikProps<SwapFormValues> & {
   handleQuote,
   isSubmitting,
   balances,
-  beanstalk,
+  moonmage,
   tokenList,
   defaultValues,
   submitForm
@@ -549,7 +549,7 @@ const SwapForm: FC<FormikProps<SwapFormValues> & {
             || isSubmitting
             || isQuoting
           }
-          contract={beanstalk}
+          contract={moonmage}
           tokens={
             shouldApprove
               ? values.tokensIn
@@ -571,7 +571,7 @@ const SwapForm: FC<FormikProps<SwapFormValues> & {
 // ---------------------------------------------------
 
 const SUPPORTED_TOKENS = [
-  BEAN,
+  MOON,
   ETH,
   WETH,
   CRV3,
@@ -584,23 +584,23 @@ const SUPPORTED_TOKENS = [
  * SWAP
  * Implementation notes
  * 
- * BEAN + ETH
+ * MOON + ETH
  * ---------------
- * BEAN   -> ETH      exchange_underlying(BEAN, USDT) => exchange(USDT, WETH) => unwrapEth
- * BEAN   -> WETH     exchange_underlying(BEAN, USDT) => exchange(USDT, WETH)
- * ETH    -> BEAN     wrapEth => exchange(WETH, USDT) => exchange_underlying(USDT, BEAN)
- * WETH   -> BEAN     exchange(WETH, USDT) => exchange_underlying(USDT, BEAN)
+ * MOON   -> ETH      exchange_underlying(MOON, USDT) => exchange(USDT, WETH) => unwrapEth
+ * MOON   -> WETH     exchange_underlying(MOON, USDT) => exchange(USDT, WETH)
+ * ETH    -> MOON     wrapEth => exchange(WETH, USDT) => exchange_underlying(USDT, MOON)
+ * WETH   -> MOON     exchange(WETH, USDT) => exchange_underlying(USDT, MOON)
  * 
- * BEAN + Stables
+ * MOON + Stables
  * ---------------------
- * BEAN   -> DAI      exchange_underlying(BEAN, DAI, BEAN_METAPOOL)
- * BEAN   -> USDT     exchange_underlying(BEAN, USDT, BEAN_METAPOOL)
- * BEAN   -> USDC     exchange_underlying(BEAN, USDC, BEAN_METAPOOL)
- * BEAN   -> 3CRV     exchange(BEAN, 3CRV, BEAN_METAPOOL)
- * DAI    -> BEAN     exchange_underlying(DAI,  BEAN, BEAN_METAPOOL)
- * USDT   -> BEAN     exchange_underlying(BEAN, USDT, BEAN_METAPOOL)
- * USDC   -> BEAN     exchange_underlying(BEAN, USDC, BEAN_METAPOOL)
- * 3CRV   -> BEAN     exchange(3CRV, BEAN, BEAN_METAPOOL)
+ * MOON   -> DAI      exchange_underlying(MOON, DAI, MOON_METAPOOL)
+ * MOON   -> USDT     exchange_underlying(MOON, USDT, MOON_METAPOOL)
+ * MOON   -> USDC     exchange_underlying(MOON, USDC, MOON_METAPOOL)
+ * MOON   -> 3CRV     exchange(MOON, 3CRV, MOON_METAPOOL)
+ * DAI    -> MOON     exchange_underlying(DAI,  MOON, MOON_METAPOOL)
+ * USDT   -> MOON     exchange_underlying(MOON, USDT, MOON_METAPOOL)
+ * USDC   -> MOON     exchange_underlying(MOON, USDC, MOON_METAPOOL)
+ * 3CRV   -> MOON     exchange(3CRV, MOON, MOON_METAPOOL)
  * 
  * Internal <-> External
  * ---------------------
@@ -616,7 +616,7 @@ const SUPPORTED_TOKENS = [
 const Swap: FC<{}> = () => {
   /// Ledger
   const { data: signer } = useSigner();
-  const beanstalk = useBeanstalkContract(signer);
+  const moonmage = useMoonmageContract(signer);
   const account = useAccount();
   const sdk = useSdk();
 
@@ -629,15 +629,15 @@ const Swap: FC<{}> = () => {
   /// Tokens
   const getChainToken = useGetChainToken();
   const Eth           = getChainToken(ETH);
-  const Bean          = getChainToken(BEAN);
+  const Moon          = getChainToken(MOON);
   
   /// Token List
   const tokenMap      = useTokenMap<ERC20Token | NativeToken>(SUPPORTED_TOKENS);
   const tokenList     = useMemo(() => Object.values(tokenMap), [tokenMap]);
 
-  /// Farmer
-  const farmerBalances = useFarmerBalances();
-  const [refetchFarmerBalances] = useFetchFarmerBalances();
+  /// Cosmonaut
+  const cosmomageBalances = useCosmonautBalances();
+  const [refetchCosmonautBalances] = useFetchCosmonautBalances();
 
   /// Form
   const middleware = useFormMiddleware();
@@ -650,7 +650,7 @@ const Swap: FC<{}> = () => {
       ],
       modeIn: FarmFromMode.EXTERNAL,
       tokenOut: {
-        token: Bean,
+        token: Moon,
         amount: undefined
       },
       modeOut: FarmToMode.EXTERNAL,
@@ -659,12 +659,12 @@ const Swap: FC<{}> = () => {
       },
       swapOperation: sdk.swap.buildSwap(
         sdk.tokens.ETH,
-        sdk.tokens.BEAN,
+        sdk.tokens.MOON,
         account!,
         FarmFromMode.EXTERNAL,
         FarmToMode.EXTERNAL
       )
-    }), [Bean, Eth, account, sdk.swap, sdk.tokens]);
+    }), [Moon, Eth, account, sdk.swap, sdk.tokens]);
 
   /// Handlers
   const handleQuote = useCallback<DirectionalQuoteHandler>(
@@ -719,7 +719,7 @@ const Swap: FC<{}> = () => {
 
         const receipt = await txn.wait();
         await Promise.all([
-          refetchFarmerBalances()
+          refetchCosmonautBalances()
         ]);
         txToast.success(receipt);
         // formActions.resetForm();
@@ -741,7 +741,7 @@ const Swap: FC<{}> = () => {
         formActions.setSubmitting(false);
       }
     },
-    [account, refetchFarmerBalances, middleware]
+    [account, refetchCosmonautBalances, middleware]
   );
 
   return (
@@ -756,8 +756,8 @@ const Swap: FC<{}> = () => {
             <SettingInput name="settings.slippage" label="Slippage Tolerance" endAdornment="%" />
           </TxnSettings>
           <SwapForm
-            balances={farmerBalances}
-            beanstalk={beanstalk}
+            balances={cosmomageBalances}
+            moonmage={moonmage}
             tokenList={tokenList}
             defaultValues={initialValues}
             handleQuote={handleQuote}

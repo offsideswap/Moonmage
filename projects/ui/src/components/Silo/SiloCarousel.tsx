@@ -2,35 +2,35 @@ import React from 'react';
 import { Stack, styled, Typography } from '@mui/material';
 import { ERC20Token } from '~/classes/Token';
 import {
-  BEAN,
-  BEAN_CRV3_LP,
-  UNRIPE_BEAN,
-  UNRIPE_BEAN_CRV3,
+  MOON,
+  MOON_CRV3_LP,
+  UNRIPE_MOON,
+  UNRIPE_MOON_CRV3,
 } from '~/constants/tokens';
-import earnBeansImg from '~/img/beanstalk/silo/edu/earnBeansImg.png';
-import depositBeanImg from '~/img/beanstalk/silo/edu/depositBeanImg.svg';
-import depositBean3crvImg from '~/img/beanstalk/silo/edu/depositBean3crvImg.svg';
-import depositUrBean3crvImg from '~/img/beanstalk/silo/edu/depositUrBean3crvImg.svg';
-import depositUrBeanImg from '~/img/beanstalk/silo/edu/depositUrBeanImg.svg';
-import earnStalkAndSeedsImg from '~/img/beanstalk/silo/edu/earnStalkAndSeedsImg.svg';
-import { BeanstalkPalette } from '~/components/App/muiTheme';
+import earnMoonsImg from '~/img/moonmage/silo/edu/earnMoonsImg.png';
+import depositMoonImg from '~/img/moonmage/silo/edu/depositMoonImg.svg';
+import depositMoon3crvImg from '~/img/moonmage/silo/edu/depositMoon3crvImg.svg';
+import depositUrMoon3crvImg from '~/img/moonmage/silo/edu/depositUrMoon3crvImg.svg';
+import depositUrMoonImg from '~/img/moonmage/silo/edu/depositUrMoonImg.svg';
+import earnMageAndSeedsImg from '~/img/moonmage/silo/edu/earnMageAndSeedsImg.svg';
+import { MoonmagePalette } from '~/components/App/muiTheme';
 import Carousel from '~/components/Common/Carousel/Carousel';
 import EmbeddedCard from '~/components/Common/EmbeddedCard';
 
 import { FC } from '~/types';
 
 const depositCardContentByToken = {
-  [BEAN[1].address]: {
-    img: depositBeanImg,
+  [MOON[1].address]: {
+    img: depositMoonImg,
   },
-  [BEAN_CRV3_LP[1].address]: {
-    img: depositBean3crvImg,
+  [MOON_CRV3_LP[1].address]: {
+    img: depositMoon3crvImg,
   },
-  [UNRIPE_BEAN[1].address]: {
-    img: depositUrBeanImg,
+  [UNRIPE_MOON[1].address]: {
+    img: depositUrMoonImg,
   },
-  [UNRIPE_BEAN_CRV3[1].address]: {
-    img: depositUrBean3crvImg,
+  [UNRIPE_MOON_CRV3[1].address]: {
+    img: depositUrMoon3crvImg,
   },
 };
 
@@ -39,41 +39,41 @@ const useCardContentWithToken = (token: ERC20Token) => [
     title: `Deposit ${token.name}`,
     texts: [
       `Use the form to Deposit ${token.symbol} into the Silo.`,
-      `Beanstalk allows you to use ${
+      `Moonmage allows you to use ${
         token.isUnripe ? token.symbol : 
-          token.symbol === 'BEAN' 
-            ? 'BEAN or ETH'
-            : 'BEAN, ETH, 3CRV, DAI, USDC, or USDT'
+          token.symbol === 'MOON' 
+            ? 'MOON or ETH'
+            : 'MOON, ETH, 3CRV, DAI, USDC, or USDT'
       } from your wallet or Farm balance to Deposit ${token.symbol} into the Silo.${
         token.isUnripe ? '' : ` If you aren't using ${token.symbol}, the UI will swap${
           token.isLP ? ', add liquidity, and Deposit the LP token' : ' and Deposit'
         } for you in one transaction.`
       }`
     ],
-    imageSrc: depositCardContentByToken[token.address]?.img || depositBeanImg,
+    imageSrc: depositCardContentByToken[token.address]?.img || depositMoonImg,
   },
   {
-    title: 'Receive Stalk and Seeds for your Deposit',
+    title: 'Receive Mage and Seeds for your Deposit',
     texts: [
-      'Stalk entitles holders to participate in Beanstalk governance and earn a portion of Bean mints.',
-      'Seeds yield 1/10000 new Stalk every Season.',
+      'Mage entitles holders to participate in Moonmage governance and earn a portion of Moon mints.',
+      'Seeds yield 1/10000 new Mage every Season.',
     ],
-    imageSrc: earnStalkAndSeedsImg,
+    imageSrc: earnMageAndSeedsImg,
   },
   {
-    title: 'Earn Beans',
+    title: 'Earn Moons',
     texts: [
-      'Every Season that Beans are minted, receive a share of the new Beans based on your percentage ownership of Stalk.',
+      'Every Season that Moons are minted, receive a share of the new Moons based on your percentage ownership of Mage.',
       'You can claim your Silo Rewards on the main Silo page.',
     ],
-    imageSrc: earnBeansImg, // Made this one a PNG because it contains 4 BeaNFTs which are too big when base64 encoded in an SVG.
+    imageSrc: earnMoonsImg, // Made this one a PNG because it contains 4 BeaNFTs which are too big when base64 encoded in an SVG.
   },
 ];
 
 const ImageWrapper = styled(Stack)(({ theme }) => ({
   justifyContent: 'flex-end',
   alignItems: 'center',
-  background: BeanstalkPalette.blue,
+  background: MoonmagePalette.blue,
   width: '100%',
   height: '300px',
   [theme.breakpoints.down('md')]: { height: '250px !important' },
@@ -82,7 +82,7 @@ const ImageWrapper = styled(Stack)(({ theme }) => ({
 const InfoContent = styled(Stack)(({ theme }) => ({
   width: '100%',
   padding: '20px',
-  background: BeanstalkPalette.white,
+  background: MoonmagePalette.white,
   [theme.breakpoints.up('md')]: {
     // borderLeft: `${theme.palette.} 1px solid`,
     borderLeft: '1px solid white',

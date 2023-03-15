@@ -6,8 +6,8 @@ import SiloActions from '~/components/Silo/Actions';
 import PageHeaderSecondary from '~/components/Common/PageHeaderSecondary';
 import TokenIcon from '~/components/Common/TokenIcon';
 import { ERC20Token } from '~/classes/Token';
-import usePools from '~/hooks/beanstalk/usePools';
-import useWhitelist from '~/hooks/beanstalk/useWhitelist';
+import usePools from '~/hooks/moonmage/usePools';
+import useWhitelist from '~/hooks/moonmage/useWhitelist';
 import { AppState } from '~/state';
 import GuideButton from '~/components/Common/Guide/GuideButton';
 import {
@@ -41,8 +41,8 @@ const TokenPage: FC<{}> = () => {
   address = address?.toLowerCase();
 
   // State
-  const farmerSilo = useSelector<AppState, AppState['_farmer']['silo']>(
-    (state) => state._farmer.silo
+  const cosmomageSilo = useSelector<AppState, AppState['_cosmomage']['silo']>(
+    (state) => state._cosmomage.silo
   );
 
   // Ensure this address is a whitelisted token
@@ -52,7 +52,7 @@ const TokenPage: FC<{}> = () => {
 
   // Load this Token from the whitelist
   const whitelistedToken = whitelist[address];
-  const siloBalance = farmerSilo.balances[whitelistedToken.address];
+  const siloBalance = cosmomageSilo.balances[whitelistedToken.address];
 
   // Most Silo Tokens will have a corresponding Pool.
   // If one is available, show a PoolCard with state info.
@@ -83,7 +83,7 @@ const TokenPage: FC<{}> = () => {
           hideBackButton
           control={
             <GuideButton
-              title="The Farmers' Almanac: Silo Guides"
+              title="The Cosmonauts' Almanac: Silo Guides"
               guides={guides}
             />
           }

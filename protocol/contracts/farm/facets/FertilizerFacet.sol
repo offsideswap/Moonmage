@@ -13,7 +13,7 @@ import {LibDiamond} from "../../libraries/LibDiamond.sol";
 
 /**
  * @author Publius
- * @title Handles Sprouting Beans from Sprout Tokens
+ * @title Handles Sprouting Moons from Sprout Tokens
  **/
 
 contract FertilizerFacet {
@@ -33,8 +33,8 @@ contract FertilizerFacet {
         external
         payable
     {
-        uint256 amount = C.fertilizer().beanstalkUpdate(msg.sender, ids, s.bpf);
-        LibTransfer.sendToken(C.bean(), amount, msg.sender, mode);
+        uint256 amount = C.fertilizer().moonmageUpdate(msg.sender, ids, s.bpf);
+        LibTransfer.sendToken(C.moon(), amount, msg.sender, mode);
     }
 
     function mintFertilizer(
@@ -55,7 +55,7 @@ contract FertilizerFacet {
             amount,
             minLP
         );
-        C.fertilizer().beanstalkMint(msg.sender, uint256(id), amount, s.bpf);
+        C.fertilizer().moonmageMint(msg.sender, uint256(id), amount, s.bpf);
     }
 
     function addFertilizerOwner(
@@ -75,22 +75,22 @@ contract FertilizerFacet {
     function payFertilizer(address account, uint256 amount) external payable {
         require(msg.sender == C.fertilizerAddress());
         LibTransfer.sendToken(
-            C.bean(),
+            C.moon(),
             amount,
             account,
             LibTransfer.To.INTERNAL
         );
     }
 
-    function totalFertilizedBeans() external view returns (uint256 beans) {
+    function totalFertilizedMoons() external view returns (uint256 moons) {
         return s.fertilizedIndex;
     }
 
-    function totalUnfertilizedBeans() external view returns (uint256 beans) {
+    function totalUnfertilizedMoons() external view returns (uint256 moons) {
         return s.unfertilizedIndex - s.fertilizedIndex;
     }
 
-    function totalFertilizerBeans() external view returns (uint256 beans) {
+    function totalFertilizerMoons() external view returns (uint256 moons) {
         return s.unfertilizedIndex;
     }
 
@@ -118,7 +118,7 @@ contract FertilizerFacet {
         return s.season.fertilizing;
     }
 
-    function beansPerFertilizer() external view returns (uint128 bpf) {
+    function moonsPerFertilizer() external view returns (uint128 bpf) {
         return s.bpf;
     }
 
@@ -141,7 +141,7 @@ contract FertilizerFacet {
     function balanceOfUnfertilized(address account, uint256[] memory ids)
         external
         view
-        returns (uint256 beans)
+        returns (uint256 moons)
     {
         return C.fertilizer().balanceOfUnfertilized(account, ids);
     }
@@ -149,7 +149,7 @@ contract FertilizerFacet {
     function balanceOfFertilized(address account, uint256[] memory ids)
         external
         view
-        returns (uint256 beans)
+        returns (uint256 moons)
     {
         return C.fertilizer().balanceOfFertilized(account, ids);
     }

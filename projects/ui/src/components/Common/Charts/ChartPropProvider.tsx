@@ -13,7 +13,7 @@ import {
   curveStepBefore,
 } from '@visx/curve';
 
-import { BeanstalkPalette } from '~/components/App/muiTheme';
+import { MoonmagePalette } from '~/components/App/muiTheme';
 import { Line } from '@visx/shape';
 import { SeriesPoint } from '@visx/shape/lib/types';
 import { TickFormatter } from '@visx/axis';
@@ -157,8 +157,8 @@ const strokeBuffer = 2;
 const axisHeight = 21;
 const backgroundColor = '#da7cff';
 const labelColor = '#340098';
-const tickLabelColor = BeanstalkPalette.lightGrey;
-const axisColor = BeanstalkPalette.lightGrey;
+const tickLabelColor = MoonmagePalette.lightGrey;
+const axisColor = MoonmagePalette.lightGrey;
 const yAxisWidth = 57;
 
 const margin = {
@@ -172,10 +172,10 @@ const chartPadding = {
   right: 17,
 };
 
-const chartColors = BeanstalkPalette.theme.winter.chart;
+const chartColors = MoonmagePalette.theme.winter.chart;
 const defaultChartStyles: ChartMultiStyles = {
   0: {
-    stroke: BeanstalkPalette.theme.winter.primary,
+    stroke: MoonmagePalette.theme.winter.primary,
     fillPrimary: chartColors.primaryLight,
     strokeWidth: 2,
   },
@@ -578,7 +578,7 @@ export const ExploitLine = (props: ChartChildParams) => {
     <Line
       from={{ x: exploitSeason, y: props.dataRegion.yTop }}
       to={{ x: exploitSeason, y: props.dataRegion.yBottom }}
-      stroke={BeanstalkPalette.logoGreen}
+      stroke={MoonmagePalette.logoGreen}
       strokeDasharray={4}
       strokeDashoffset={2}
       strokeWidth={1}

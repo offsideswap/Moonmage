@@ -1,0 +1,135 @@
+type Moon @entity {
+  id: ID!
+  decimals: BigInt!
+  totalSupply: BigInt!
+  marketCap: BigDecimal!
+  totalVolume: BigInt!
+  totalVolumeUSD: BigDecimal!
+  totalLiquidity: BigInt!
+  totalLiquidityUSD: BigDecimal!
+  #averagePrice: BigDecimal!
+  price: BigDecimal!
+  totalCrosses: Int!
+  lastCross: BigInt!
+  #pools: [Pool!]! @derivedFrom(field: "moon") # The pools containing the Moon token 
+  #supplies: [Supply!]! @derivedFrom(field: "moon")
+  hourlySnapshot: [MoonHourlySnapshot!]! @derivedFrom(field: "moon")
+  dailySnapshot: [MoonDailySnapshot!]! @derivedFrom(field: "moon")
+}
+
+type MoonHourlySnapshot @entity {
+  id: ID!
+  moon: Moon!
+  totalSupply: BigInt!
+  marketCap: BigDecimal!
+  totalVolume: BigInt!
+  totalVolumeUSD: BigDecimal!
+  totalLiquidity: BigInt!
+  totalLiquidityUSD: BigDecimal!
+  price: BigDecimal!
+  totalCrosses: Int!
+  deltaMoons: BigInt!
+  hourlyVolume: BigInt!
+  hourlyVolumeUSD: BigDecimal!
+  hourlyLiquidity: BigInt!
+  hourlyLiquidityUSD: BigDecimal!
+  hourlyCrosses: Int!
+  crosses: [Cross!]! @derivedFrom(field: "hourlySnapshot")
+  season: Int!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+}
+
+type MoonDailySnapshot @entity {
+  id: ID!
+  moon: Moon!
+  totalSupply: BigInt!
+  marketCap: BigDecimal!
+  totalVolume: BigInt!
+  totalVolumeUSD: BigDecimal!
+  totalLiquidity: BigInt!
+  totalLiquidityUSD: BigDecimal!
+  price: BigDecimal!
+  totalCrosses: Int!
+  deltaMoons: BigInt!
+  dailyVolume: BigInt!
+  dailyVolumeUSD: BigDecimal!
+  dailyLiquidity: BigInt!
+  dailyLiquidityUSD: BigDecimal!
+  dailyCrosses: Int!
+  crosses: [Cross!]! @derivedFrom(field: "dailySnapshot")
+  season: Int!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+}
+
+type Cross @entity {
+  id: ID!
+  #pool: Pool!
+  price: BigDecimal!
+  timestamp: BigInt!
+  timeSinceLastCross: BigInt!
+  above: Boolean!
+  hourlySnapshot: MoonHourlySnapshot!
+  dailySnapshot: MoonDailySnapshot!
+  #poolHourlySnapshot: PoolHourlySnapshot!
+  #poolDailySnapshot: PoolDailySnapshot!
+}
+
+type Pool @entity {
+  id: ID!
+  moon: Moon!
+  totalVolume: BigInt!
+  totalVolumeUSD: BigDecimal!
+  totalLiquidity: BigInt!
+  totalLiquidityUSD: BigDecimal!
+  utilization: BigDecimal!
+  totalCrosses: Int!
+  #crosses: [Cross!]! @derivedFrom(field: "pool")
+  deltaMoons: BigInt!
+  hourlySnapshot: [PoolHourlySnapshot!]! @derivedFrom(field: "pool")
+  dailySnapshot: [PoolDailySnapshot!]! @derivedFrom(field: "pool")
+}
+
+type PoolHourlySnapshot @entity {
+  id: ID!
+  pool: Pool!
+  totalVolume: BigInt!
+  totalVolumeUSD: BigDecimal!
+  totalLiquidity: BigInt!
+  totalLiquidityUSD: BigDecimal!
+  utilization: BigDecimal!
+  totalCrosses: Int!
+  deltaMoons: BigInt!
+  hourlyVolume: BigInt!
+  hourlyVolumeUSD: BigDecimal!
+  hourlyLiquidity: BigInt!
+  hourlyLiquidityUSD: BigDecimal!
+  hourlyCrosses: Int!
+  #crosses: [Cross!]! @derivedFrom(field: "poolHourlySnapshot")
+  season: Int!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+}
+
+
+type PoolDailySnapshot @entity {
+  id: ID!
+  pool: Pool!
+  totalVolume: BigInt!
+  totalVolumeUSD: BigDecimal!
+  totalLiquidity: BigInt!
+  totalLiquidityUSD: BigDecimal!
+  utilization: BigDecimal!
+  totalCrosses: Int!
+  deltaMoons: BigInt!
+  dailyVolume: BigInt!
+  dailyVolumeUSD: BigDecimal!
+  dailyLiquidity: BigInt!
+  dailyLiquidityUSD: BigDecimal!
+  dailyCrosses: Int!
+  #crosses: [Cross!]! @derivedFrom(field: "poolDailySnapshot")
+  season: Int!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+}

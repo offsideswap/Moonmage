@@ -3,7 +3,7 @@ import { Box, Button, Card, Grid, Stack, Tooltip, Typography } from '@mui/materi
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import { Link as RouterLink } from 'react-router-dom';
 import TokenIcon from '~/components/Common/TokenIcon';
-import { BEAN } from '~/constants/tokens';
+import { MOON } from '~/constants/tokens';
 import useSetting from '~/hooks/app/useSetting';
 import Row from '~/components/Common/Row';
 import WhitelistBadge from '~/components/Market/Wells/WhitelistBadge';
@@ -86,11 +86,11 @@ const Wells : React.FC = () => {
               <Grid item md={3.75} xs={7}>
                 <Row gap={1}>
                   <Row gap={0.1}>
-                    <TokenIcon token={BEAN[1]} />
-                    <TokenIcon token={BEAN[1]} />
+                    <TokenIcon token={MOON[1]} />
+                    <TokenIcon token={MOON[1]} />
                   </Row>
                   <Typography color="black" display="inline">
-                    BEAN/ETH
+                    MOON/ETH
                   </Typography>
                   <WhitelistBadge isWhitelisted />
                 </Row>

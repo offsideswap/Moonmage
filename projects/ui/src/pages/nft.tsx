@@ -6,7 +6,7 @@ import useTabs from '~/hooks/display/useTabs';
 import { getAccount } from '~/util/Account';
 import { ADDRESS_COLLECTION, ClaimStatus, loadNFTs, Nft } from '~/util/BeaNFTs';
 import NFTDialog from '~/components/NFT/NFTDialog';
-import { BEANFT_GENESIS_ADDRESSES, BEANFT_WINTER_ADDRESSES } from '~/constants';
+import { MOONFT_GENESIS_ADDRESSES, MOONFT_WINTER_ADDRESSES } from '~/constants';
 import NFTGrid from '~/components/NFT/NFTGrid';
 import { useGenesisNFTContract, useWinterNFTContract } from '~/hooks/ledger/useContract';
 import TransactionToast from '~/components/Common/TxnToast';
@@ -14,7 +14,7 @@ import useAccount from '../hooks/ledger/useAccount';
 import AuthEmptyState from '~/components/Common/ZeroState/AuthEmptyState';
 import PageHeader from '~/components/Common/PageHeader';
 import GuideButton from '~/components/Common/Guide/GuideButton';
-import { HOW_TO_MINT_BEANFTS } from '~/util/Guides';
+import { HOW_TO_MINT_MOONFTS } from '~/util/Guides';
 import Row from '~/components/Common/Row';
 import { FC } from '~/types';
 
@@ -223,8 +223,8 @@ const NFTPage: FC<{}> = () => {
         const genNFTs = data.genesis;
         const winNFTs = data.winter;
 
-        parseMints(genNFTs, BEANFT_GENESIS_ADDRESSES[1], setGenesisNFTs);
-        parseMints(winNFTs, BEANFT_WINTER_ADDRESSES[1], setWinterNFTs);
+        parseMints(genNFTs, MOONFT_GENESIS_ADDRESSES[1], setGenesisNFTs);
+        parseMints(winNFTs, MOONFT_WINTER_ADDRESSES[1], setWinterNFTs);
       });
     }
   }, [account, parseMints]);
@@ -240,12 +240,12 @@ const NFTPage: FC<{}> = () => {
         <PageHeader
           title="BeaNFTs"
           description="View and mint your BeaNFTs"
-          href="https://docs.bean.money/almanac/ecosystem/beanfts"
+          href="https://docs.moon.money/almanac/ecosystem/moonfts"
           control={
             <GuideButton
-              title="The Farmers' Almanac: BeaNFT Guides"
+              title="The Cosmonauts' Almanac: BeaNFT Guides"
               guides={[
-                HOW_TO_MINT_BEANFTS,
+                HOW_TO_MINT_MOONFTS,
               ]}
             />
           }

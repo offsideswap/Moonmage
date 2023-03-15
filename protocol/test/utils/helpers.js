@@ -18,11 +18,11 @@ async function getEthSpentOnGas(result) {
   return receipt.effectiveGasPrice.mul(receipt.cumulativeGasUsed);
 }
 
-function toBean(amount) {
+function toMoon(amount) {
   return ethers.utils.parseUnits(amount,6);
 }
 
-function toStalk(amount) {
+function toMage(amount) {
   return ethers.utils.parseUnits(amount,10);
 }
 
@@ -38,8 +38,8 @@ function to6(amount) {
   return ethers.utils.parseUnits(amount,6);
 }
 
-exports.toBean = toBean
-exports.toStalk = toStalk
+exports.toMoon = toMoon
+exports.toMage = toMage
 exports.toEther = toEther
 exports.to18 = to18
 exports.to6 = to6

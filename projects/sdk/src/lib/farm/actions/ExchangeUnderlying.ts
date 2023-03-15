@@ -41,8 +41,8 @@ export class ExchangeUnderlying extends StepClass<BasicPreparedResult> {
     const amountOut = await CurveMetaPool__factory.connect(this.pool, ExchangeUnderlying.sdk.provider).callStatic[
       "get_dy_underlying(int128,int128,uint256)"
     ](
-      i, // i = USDT = coins[3] ([0=BEAN, 1=CRV3] => [0=BEAN, 1=DAI, 2=USDC, 3=USDT])
-      j, // j = BEAN = coins[0]
+      i, // i = USDT = coins[3] ([0=MOON, 1=CRV3] => [0=MOON, 1=DAI, 2=USDC, 3=USDT])
+      j, // j = MOON = coins[0]
       _amountInStep,
       { gasLimit: 10000000 }
     );
@@ -77,8 +77,8 @@ export class ExchangeUnderlying extends StepClass<BasicPreparedResult> {
         });
         if (!minAmountOut) throw new Error("ExchangeUnderlying: Missing minAmountOut");
         return {
-          target: ExchangeUnderlying.sdk.contracts.beanstalk.address,
-          callData: ExchangeUnderlying.sdk.contracts.beanstalk.interface.encodeFunctionData("exchangeUnderlying", [
+          target: ExchangeUnderlying.sdk.contracts.moonmage.address,
+          callData: ExchangeUnderlying.sdk.contracts.moonmage.interface.encodeFunctionData("exchangeUnderlying", [
             this.pool,
             tokenIn.address,
             tokenOut.address,
@@ -89,9 +89,9 @@ export class ExchangeUnderlying extends StepClass<BasicPreparedResult> {
           ])
         };
       },
-      decode: (data: string) => ExchangeUnderlying.sdk.contracts.beanstalk.interface.decodeFunctionData("exchangeUnderlying", data),
+      decode: (data: string) => ExchangeUnderlying.sdk.contracts.moonmage.interface.decodeFunctionData("exchangeUnderlying", data),
       decodeResult: (result: string) =>
-        ExchangeUnderlying.sdk.contracts.beanstalk.interface.decodeFunctionResult("exchangeUnderlying", result)
+        ExchangeUnderlying.sdk.contracts.moonmage.interface.decodeFunctionResult("exchangeUnderlying", result)
     };
   }
 }

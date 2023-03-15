@@ -21,7 +21,7 @@ export type PodListing = {
   id: string;
 
   /**
-   * The address of the Farmer that owns the Listing.
+   * The address of the Cosmonaut that owns the Listing.
    * @decimals 0
    */
   account: string;
@@ -48,7 +48,7 @@ export type PodListing = {
   start: BigNumber;
 
   /**
-   * Price per Pod, in Beans.
+   * Price per Pod, in Moons.
    * @decimals 6
    */
   pricePerPod: BigNumber;
@@ -60,7 +60,7 @@ export type PodListing = {
   maxHarvestableIndex: BigNumber;
 
   /**
-   * Where Beans are sent when the listing is filled.
+   * Where Moons are sent when the listing is filled.
    */
   mode: FarmToMode;
 
@@ -115,13 +115,13 @@ export type PodOrder = {
   /**
    * The id of the Pod Order.
    *
-   * Computed by hashing the Farmer’s address and the previous block’s hash. In the case of a collisions,
-   * Beanstalk will hash the ID until there is no collision.
+   * Computed by hashing the Cosmonaut’s address and the previous block’s hash. In the case of a collisions,
+   * Moonmage will hash the ID until there is no collision.
    */
   id: string;
 
   /**
-   * The price per Pod, in Beans.
+   * The price per Pod, in Moons.
    */
   pricePerPod: BigNumber;
 
@@ -163,7 +163,7 @@ export type PodOrder = {
   status: MarketStatus;
 };
 
-export type FarmerMarket = {
+export type CosmomageStation = {
   listings: {
     [plotIndex: string]: PodListing;
   };

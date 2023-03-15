@@ -5,10 +5,10 @@ import { Outlet, useParams } from 'react-router-dom';
 import { PodOrderType, podsOrderTypeAtom } from '../info/atom-context';
 import Soon from '~/components/Common/ZeroState/Soon';
 import CreateOrder from '~/components/Market/PodsV2/Actions/Buy/CreateOrder';
-import usePodListing from '~/hooks/beanstalk/usePodListing';
+import usePodListing from '~/hooks/moonmage/usePodListing';
 import StatHorizontal from '~/components/Common/StatHorizontal';
 import { displayBN, displayFullBN } from '~/util';
-import { BEAN, PODS } from '~/constants/tokens';
+import { MOON, PODS } from '~/constants/tokens';
 import Row from '~/components/Common/Row';
 import TokenIcon from '~/components/Common/TokenIcon';
 
@@ -29,7 +29,7 @@ const BuyPods: React.FC<{}> = () => {
           </StatHorizontal>
           <StatHorizontal label="Price per Pod">
             <Row gap={0.25}>
-              <TokenIcon token={BEAN[1]} />{' '}
+              <TokenIcon token={MOON[1]} />{' '}
               {displayFullBN(listing.pricePerPod, 4, 2)}
             </Row>
           </StatHorizontal>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Chip } from '@mui/material';
-import { BeanstalkPalette, FontSize, FontWeight } from '~/components/App/muiTheme';
+import { MoonmagePalette, FontSize, FontWeight } from '~/components/App/muiTheme';
 
 const WhitelistBadge: React.FC<{ isWhitelisted: boolean }> = ({ isWhitelisted }) => (
   <>
@@ -9,8 +9,8 @@ const WhitelistBadge: React.FC<{ isWhitelisted: boolean }> = ({ isWhitelisted })
         label="Whitelisted in Silo"
         size="small"
         sx={{
-          backgroundColor: BeanstalkPalette.lightGreen,
-          color: BeanstalkPalette.logoGreen,
+          backgroundColor: MoonmagePalette.lightGreen,
+          color: MoonmagePalette.logoGreen,
           fontSize: FontSize.sm, // 16px
           fontWeight: FontWeight.semiBold,
           py: 0.5,
@@ -22,8 +22,8 @@ const WhitelistBadge: React.FC<{ isWhitelisted: boolean }> = ({ isWhitelisted })
         label="Not Whitelisted"
         size="small"
         sx={{
-          backgroundColor: BeanstalkPalette.washedRed,
-          color: BeanstalkPalette.trueRed,
+          backgroundColor: MoonmagePalette.washedRed,
+          color: MoonmagePalette.trueRed,
           fontSize: FontSize.sm, // 16px
           fontWeight: FontWeight.semiBold,
           py: 0.5,

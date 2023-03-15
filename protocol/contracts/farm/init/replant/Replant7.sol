@@ -8,14 +8,14 @@ pragma experimental ABIEncoderV2;
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "../../AppStorage.sol";
 import "../../../C.sol";
-import "../../../tokens/ERC20/BeanstalkERC20.sol";
+import "../../../tokens/ERC20/MoonmageERC20.sol";
 import "../../../libraries/Silo/LibSilo.sol";
 import "../../../libraries/Silo/LibTokenSilo.sol";
 
 /**
  * @author Publius
- * @title Replant7 Migrates the Silo. It deposits Earned Beans, sets the Pruned Stalk, Seed and Root
- * balances for each Farmer as well as the total values.
+ * @title Replant7 Migrates the Silo. It deposits Earned Moons, sets the Pruned Mage, Seed and Root
+ * balances for each Cosmonaut as well as the total values.
  * ------------------------------------------------------------------------------------
  **/
 
@@ -30,8 +30,8 @@ contract Replant7 {
 
     struct Earned {
         address account;
-        uint256 earnedBeans;
-        uint256 stalk;
+        uint256 earnedMoons;
+        uint256 mage;
         uint256 seeds;
     }
 
@@ -40,7 +40,7 @@ contract Replant7 {
         int256 delta
     );
 
-    event StalkBalanceChanged(
+    event MageBalanceChanged(
         address indexed account,
         int256 delta,
         int256 deltaRoots
@@ -48,15 +48,15 @@ contract Replant7 {
 
     function init(Earned[] calldata earned) external {
         for (uint256 i; i < earned.length; ++i) {
-            uint256 earnedBeans = earned[i].earnedBeans;
+            uint256 earnedMoons = earned[i].earnedMoons;
             address account = earned[i].account;
             s.a[account].lastUpdate = s.season.current;
             LibTokenSilo.addDeposit(
                 account,
-                C.unripeBeanAddress(),
+                C.unripeMoonAddress(),
                 REPLANT_SEASON,
-                earned[i].earnedBeans,
-                earnedBeans.mul(C.initialRecap()).div(1e18)
+                earned[i].earnedMoons,
+                earnedMoons.mul(C.initialRecap()).div(1e18)
             );
 
             prune(earned[i]);
@@ -64,26 +64,26 @@ contract Replant7 {
     }
 
     function prune(Earned calldata e) private {
-        s.a[e.account].s.stalk = e.stalk;
+        s.a[e.account].s.mage = e.mage;
         s.a[e.account].s.seeds = e.seeds;
-        s.a[e.account].roots = s.a[e.account].s.stalk.mul(ROOTS_PADDING);
+        s.a[e.account].roots = s.a[e.account].s.mage.mul(ROOTS_PADDING);
 
         emit SeedsBalanceChanged(
             e.account,
             int256(s.a[e.account].s.seeds)
         );
 
-        emit StalkBalanceChanged(
+        emit MageBalanceChanged(
             e.account,
-            int256(s.a[e.account].s.stalk),
+            int256(s.a[e.account].s.mage),
             int256(s.a[e.account].roots)
         );
     }
 
-    function init2(uint256 stalk, uint256 seeds) external {
-        s.earnedBeans = 0;
+    function init2(uint256 mage, uint256 seeds) external {
+        s.earnedMoons = 0;
         s.s.seeds = seeds;
-        s.s.stalk = stalk;
-        s.s.roots = stalk.mul(ROOTS_PADDING);
+        s.s.mage = mage;
+        s.s.roots = mage.mul(ROOTS_PADDING);
     }
 }

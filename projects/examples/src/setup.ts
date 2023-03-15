@@ -1,11 +1,11 @@
-import { BeanstalkSDK, DataSource, TestUtils } from "@beanstalk/sdk";
-import { Provider } from "@beanstalk/sdk/dist/types/lib/BeanstalkSDK";
+import { MoonmageSDK, DataSource, TestUtils } from "@moonmage/sdk";
+import { Provider } from "@moonmage/sdk/dist/types/lib/MoonmageSDK";
 import { ethers } from "ethers";
 
 export const provider = new ethers.providers.StaticJsonRpcProvider("http://127.0.0.1:8545");
 export const { signer, account } = TestUtils.setupConnection(provider);
 
-export const sdk = new BeanstalkSDK({
+export const sdk = new MoonmageSDK({
   provider,
   source: DataSource.LEDGER,
   DEBUG: true
@@ -16,7 +16,7 @@ export const impersonate = async (account) => {
 
   const provider = ethers.getDefaultProvider("http://127.0.0.1:8545") as Provider;
   const signer = await provider.getSigner(account);
-  const sdk = new BeanstalkSDK({
+  const sdk = new MoonmageSDK({
     signer,
     source: DataSource.LEDGER,
     DEBUG: true

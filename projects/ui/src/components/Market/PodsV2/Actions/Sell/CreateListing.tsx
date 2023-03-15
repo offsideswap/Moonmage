@@ -15,12 +15,12 @@ import FarmModeField from '~/components/Common/Form/FarmModeField';
 import TransactionToast from '~/components/Common/TxnToast';
 import PlotInputField from '~/components/Common/Form/PlotInputField';
 import TxnAccordion from '~/components/Common/TxnAccordion';
-import { useBeanstalkContract } from '~/hooks/ledger/useContract';
+import { useMoonmageContract } from '~/hooks/ledger/useContract';
 import useGetChainToken from '~/hooks/chain/useGetChainToken';
 import { useSigner } from '~/hooks/ledger/useSigner';
-import useFarmerListingsLedger from '~/hooks/farmer/useFarmerListingsLedger';
-import useFarmerPlots from '~/hooks/farmer/useFarmerPlots';
-import useHarvestableIndex from '~/hooks/beanstalk/useHarvestableIndex';
+import useCosmonautListingsLedger from '~/hooks/cosmomage/useCosmonautListingsLedger';
+import useCosmonautPlots from '~/hooks/cosmomage/useCosmonautPlots';
+import useHarvestableIndex from '~/hooks/moonmage/useHarvestableIndex';
 import { ActionType } from '~/util/Actions';
 import {
   PlotMap,
@@ -29,14 +29,14 @@ import {
   displayBN,
   displayFullBN
 } from '~/util';
-import { FarmToMode } from '~/lib/Beanstalk/Farm';
+import { FarmToMode } from '~/lib/Moonmage/Farm';
 
-import { BEAN, PODS } from '~/constants/tokens';
+import { MOON, PODS } from '~/constants/tokens';
 import { ONE_BN, ZERO_BN, POD_MARKET_TOOLTIPS } from '~/constants';
 import FieldWrapper from '~/components/Common/Form/FieldWrapper';
 import { FC } from '~/types';
 import useFormMiddleware from '~/hooks/ledger/useFormMiddleware';
-import { useFetchFarmerMarketItems } from '~/hooks/farmer/market/useFarmerMarket2';
+import { useFetchCosmomageStationItems } from '~/hooks/cosmomage/market/useCosmomageStation2';
 
 export type CreateListingFormValues = {
   plot:        PlotFragment
@@ -50,7 +50,7 @@ const PricePerPodInputProps = {
   inputProps: { step: '0.01' },
   endAdornment: (
     <TokenAdornment
-      token={BEAN[1]}
+      token={MOON[1]}
       size="small"
     />
   )
@@ -89,7 +89,7 @@ const CreateListingV2Form: FC<
   const plot = values.plot;
 
   /// Data
-  const existingListings = useFarmerListingsLedger();
+  const existingListings = useCosmonautListingsLedger();
 
   /// Derived
   const placeInLine = useMemo(
@@ -99,7 +99,7 @@ const CreateListingV2Form: FC<
 
   /// Calculations
   const alreadyListed = plot?.index
-    ? existingListings[toStringBaseUnitBN(plot.index, BEAN[1].decimals)]
+    ? existingListings[toStringBaseUnitBN(plot.index, MOON[1].decimals)]
     : false;
   const isSubmittable = (
     !REQUIRED_KEYS.some((k) => values[k] === null)
@@ -139,8 +139,8 @@ const CreateListingV2Form: FC<
             </FieldWrapper>
             <FarmModeField
               name="destination"
-              circDesc="When Pods are sold, send Beans to your wallet."
-              farmDesc="When Pods are sold, send Beans to your internal Beanstalk balance."
+              circDesc="When Pods are sold, send Moons to your wallet."
+              farmDesc="When Pods are sold, send Moons to your internal Moonmage balance."
               label="Send proceeds to"
             />
             {isSubmittable && (
@@ -150,7 +150,7 @@ const CreateListingV2Form: FC<
                     actions={[
                       {
                         type: ActionType.BASE,
-                        message: `List ${displayTokenAmount(plot.amount || ZERO_BN, PODS)} at ${displayFullBN(values.pricePerPod || ZERO_BN)} Beans per Pod from your Plot at ${displayBN(placeInLine)} in the Pod Line.`
+                        message: `List ${displayTokenAmount(plot.amount || ZERO_BN, PODS)} at ${displayFullBN(values.pricePerPod || ZERO_BN)} Moons per Pod from your Plot at ${displayBN(placeInLine)} in the Pod Line.`
                       },
                       {
                         type: ActionType.BASE,
@@ -191,14 +191,14 @@ const CreateListingV2: FC<{}> = () => {
 
   /// Ledger
   const { data: signer } = useSigner();
-  const beanstalk = useBeanstalkContract(signer);
+  const moonmage = useMoonmageContract(signer);
 
-  /// Beanstalk
+  /// Moonmage
   const harvestableIndex = useHarvestableIndex();
 
-  /// Farmer
-  const plots            = useFarmerPlots();
-  const { fetch: refetchFarmerMarketItems } = useFetchFarmerMarketItems();
+  /// Cosmonaut
+  const plots            = useCosmonautPlots();
+  const { fetch: refetchCosmomageStationItems } = useFetchCosmomageStationItems();
 
   /// Form
   const middleware = useFormMiddleware();
@@ -219,7 +219,7 @@ const CreateListingV2: FC<{}> = () => {
 
   // eslint-disable-next-line unused-imports/no-unused-vars
   const onSubmit = useCallback(async (values: CreateListingFormValues, formActions: FormikHelpers<CreateListingFormValues>) => {
-    const Bean = getChainToken(BEAN);
+    const Moon = getChainToken(MOON);
     let txToast;
     try {
       middleware.before();
@@ -243,20 +243,20 @@ const CreateListingV2: FC<{}> = () => {
       /// expiresAt is relative (ie 0 = front of pod line)
       /// add harvestableIndex to make it absolute
       const maxHarvestableIndex = expiresAt.plus(harvestableIndex);
-      const txn = await beanstalk.createPodListing(
-        toStringBaseUnitBN(index,       Bean.decimals),   // absolute plot index
-        toStringBaseUnitBN(start,       Bean.decimals),   // relative start index
-        toStringBaseUnitBN(amount,      Bean.decimals),   // relative amount
-        toStringBaseUnitBN(pricePerPod, Bean.decimals),   // price per pod
-        toStringBaseUnitBN(maxHarvestableIndex, Bean.decimals), // absolute index of expiry
-        toStringBaseUnitBN(new BigNumber(1), Bean.decimals), // minFillAmount is measured in Beans
+      const txn = await moonmage.createPodListing(
+        toStringBaseUnitBN(index,       Moon.decimals),   // absolute plot index
+        toStringBaseUnitBN(start,       Moon.decimals),   // relative start index
+        toStringBaseUnitBN(amount,      Moon.decimals),   // relative amount
+        toStringBaseUnitBN(pricePerPod, Moon.decimals),   // price per pod
+        toStringBaseUnitBN(maxHarvestableIndex, Moon.decimals), // absolute index of expiry
+        toStringBaseUnitBN(new BigNumber(1), Moon.decimals), // minFillAmount is measured in Moons
         destination,
       );
       txToast.confirming(txn);
 
       const receipt = await txn.wait();
       await Promise.all([
-        refetchFarmerMarketItems(),
+        refetchCosmomageStationItems(),
       ]);
 
       txToast.success(receipt);
@@ -270,7 +270,7 @@ const CreateListingV2: FC<{}> = () => {
       }
       console.error(err);
     }
-  }, [middleware, plots, harvestableIndex, beanstalk, refetchFarmerMarketItems, getChainToken]);
+  }, [middleware, plots, harvestableIndex, moonmage, refetchCosmomageStationItems, getChainToken]);
 
   return (
     <Formik<CreateListingFormValues>

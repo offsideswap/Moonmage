@@ -2,7 +2,7 @@ const { expect } = require('chai')
 const { deploy } = require('../scripts/deploy.js')
 const { parseJson } = require('./utils/helpers.js')
 const { MAX_UINT32 } = require('./utils/constants.js')
-const { BEAN } = require('./utils/constants')
+const { MOON } = require('./utils/constants')
 
 // Set the test data
 const [columns, tests] = parseJson('./coverage_data/weather.json')
@@ -17,10 +17,10 @@ describe('Complex Weather', function () {
     user2Address = user2.address
     const contracts = await deploy("Test", false, true)
     ownerAddress = contracts.account
-    this.diamond = contracts.beanstalkDiamond
+    this.diamond = contracts.moonmageDiamond
     this.season = await ethers.getContractAt('MockSeasonFacet', this.diamond.address)
     this.field = await ethers.getContractAt('MockFieldFacet', this.diamond.address)
-    this.bean = await ethers.getContractAt('MockToken', BEAN)
+    this.moon = await ethers.getContractAt('MockToken', MOON)
 
   });
 
@@ -31,22 +31,22 @@ describe('Complex Weather', function () {
         this.testData = {}
         columns.forEach((key, i) => this.testData[key] = tests[v][i])
         await this.season.setYieldE(this.testData.startingWeather)
-        this.bean.connect(user).burn(await this.bean.balanceOf(userAddress))
+        this.moon.connect(user).burn(await this.moon.balanceOf(userAddress))
         this.dsoil = this.testData.lastSoil
         this.startSoil = this.testData.startingSoil
         this.endSoil = this.testData.endingSoil
         this.price = this.testData.priceAvg
         this.pods = this.testData.unharvestablePods
-        await this.bean.mint(userAddress, this.testData.totalOutstandingBeans)
+        await this.moon.mint(userAddress, this.testData.totalOutstandingMoons)
         await this.season.setLastSowTimeE(this.testData.lastSowTime)
         await this.season.setNextSowTimeE(this.testData.nextSowTime)
-        this.result = await this.season.stepWeatherWithParams(this.pods, this.dsoil, this.startSoil, this.endSoil, this.price, this.testData.wasRaining, this.testData.rainStalk)
+        this.result = await this.season.stepWeatherWithParams(this.pods, this.dsoil, this.startSoil, this.endSoil, this.price, this.testData.wasRaining, this.testData.rainMage)
       })
       it('Checks New Weather', async function () {
         expect(await this.season.yield()).to.eq(this.testData.newWeather)
       })
       it('Emits The Correct Case Weather', async function () {
-        if (this.testData.totalOutstandingBeans !== 0) await expect(this.result).to.emit(this.season, 'WeatherChange').withArgs(await this.season.season(), this.testData.Code, this.testData.newWeather-this.testData.startingWeather)
+        if (this.testData.totalOutstandingMoons !== 0) await expect(this.result).to.emit(this.season, 'WeatherChange').withArgs(await this.season.season(), this.testData.Code, this.testData.newWeather-this.testData.startingWeather)
       })
     })
   })
@@ -55,7 +55,7 @@ describe('Complex Weather', function () {
     before(async function () {
       await this.season.setLastDSoilE('100000');
       await this.season.setStartSoilE('10000');
-      await this.bean.mint(userAddress, '1000000000')
+      await this.moon.mint(userAddress, '1000000000')
       await this.field.incrementTotalPodsE('100000000000');
     })
 

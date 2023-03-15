@@ -9,8 +9,8 @@ import StatHorizontal from '~/components/Common/StatHorizontal';
 import { displayBN, displayFullBN } from '~/util';
 import Row from '~/components/Common/Row';
 import TokenIcon from '~/components/Common/TokenIcon';
-import { BEAN, PODS } from '~/constants/tokens';
-import usePodOrder from '~/hooks/beanstalk/usePodOrder';
+import { MOON, PODS } from '~/constants/tokens';
+import usePodOrder from '~/hooks/moonmage/usePodOrder';
 
 const SellPods: React.FC<{}> = () => {
   const orderType = useAtomValue(podsOrderTypeAtom);
@@ -32,7 +32,7 @@ const SellPods: React.FC<{}> = () => {
             </StatHorizontal>
             <StatHorizontal label="Price per Pod">
               <Row gap={0.25}>
-                <TokenIcon token={BEAN[1]} />{' '}
+                <TokenIcon token={MOON[1]} />{' '}
                 {displayFullBN(order.pricePerPod, 4, 2)}
               </Row>
             </StatHorizontal>

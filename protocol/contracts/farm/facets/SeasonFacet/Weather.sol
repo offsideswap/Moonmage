@@ -6,7 +6,7 @@ pragma solidity =0.7.6;
 pragma experimental ABIEncoderV2;
 
 import "../../../libraries/Decimal.sol";
-import "../../../libraries/Curve/LibBeanMetaCurve.sol";
+import "../../../libraries/Curve/LibMoonMetaCurve.sol";
 import "./Sun.sol";
 
 /**
@@ -51,8 +51,8 @@ contract Weather is Sun {
 
     function stepWeather(int256 deltaB) internal returns (uint256 caseId) {
         uint256 endSoil = s.f.soil;
-        uint256 beanSupply = C.bean().totalSupply();
-        if (beanSupply == 0) {
+        uint256 moonSupply = C.moon().totalSupply();
+        if (moonSupply == 0) {
             s.w.yield = 1;
             return 8; // Reasonably low
         }
@@ -60,7 +60,7 @@ contract Weather is Sun {
         // Calculate Pod Rate
         Decimal.D256 memory podRate = Decimal.ratio(
             s.f.pods.sub(s.f.harvestable),
-            beanSupply
+            moonSupply
         );
 
         // Calculate Delta Soil Demand
@@ -159,17 +159,17 @@ contract Weather is Sun {
     }
 
     function sop() private {
-        int256 newBeans = LibBeanMetaCurve.getDeltaB();
-        if (newBeans <= 0) return;
-        uint256 sopBeans = uint256(newBeans);
+        int256 newMoons = LibMoonMetaCurve.getDeltaB();
+        if (newMoons <= 0) return;
+        uint256 sopMoons = uint256(newMoons);
 
         uint256 newHarvestable;
         if (s.f.harvestable < s.r.pods) {
             newHarvestable = s.r.pods - s.f.harvestable;
             s.f.harvestable = s.f.harvestable.add(newHarvestable);
-            C.bean().mint(address(this), newHarvestable.add(sopBeans));
-        } else C.bean().mint(address(this), sopBeans);
-        uint256 amountOut = C.curveMetapool().exchange(0, 1, sopBeans, 0);
+            C.moon().mint(address(this), newHarvestable.add(sopMoons));
+        } else C.moon().mint(address(this), sopMoons);
+        uint256 amountOut = C.curveMetapool().exchange(0, 1, sopMoons, 0);
         rewardSop(amountOut);
         emit SeasonOfPlenty(s.season.current, amountOut, newHarvestable);
     }

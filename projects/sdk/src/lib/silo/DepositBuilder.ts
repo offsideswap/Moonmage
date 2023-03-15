@@ -1,16 +1,16 @@
 import { Router, RouteStep } from "src/classes/Router";
 import { Token } from "src/classes/Token/Token";
 import { StepClass } from "src/classes/Workflow";
-import { BeanstalkSDK } from "src/lib/BeanstalkSDK";
+import { MoonmageSDK } from "src/lib/MoonmageSDK";
 import { FarmFromMode, FarmToMode } from "src/lib/farm";
 import { getDepositGraph } from "./depositGraph";
 import { DepositOperation } from "./DepositOperation";
 
 export class DepositBuilder {
-  static sdk: BeanstalkSDK;
+  static sdk: MoonmageSDK;
   private router: Router;
 
-  constructor(sdk: BeanstalkSDK) {
+  constructor(sdk: MoonmageSDK) {
     DepositBuilder.sdk = sdk;
     const graph = getDepositGraph(sdk);
     const selfEdgeBuilder = (symbol: string): RouteStep => {

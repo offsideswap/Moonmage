@@ -13,14 +13,14 @@ import { Link as RouterLink } from 'react-router-dom';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import { useSelector } from 'react-redux';
 import {
-  BEAN,
+  MOON,
   SEEDS,
-  STALK,
-  UNRIPE_BEAN,
-  UNRIPE_BEAN_CRV3,
+  MAGE,
+  UNRIPE_MOON,
+  UNRIPE_MOON_CRV3,
 } from '~/constants/tokens';
-import useWhitelist from '~/hooks/beanstalk/useWhitelist';
-import { BeanstalkPalette, IconSize } from '../App/muiTheme';
+import useWhitelist from '~/hooks/moonmage/useWhitelist';
+import { MoonmagePalette, IconSize } from '../App/muiTheme';
 import Fiat from '~/components/Common/Fiat';
 
 import Row from '../Common/Row';
@@ -28,9 +28,9 @@ import { displayFullBN, displayTokenAmount } from '~/util';
 import TokenIcon from '../Common/TokenIcon';
 import { AppState } from '~/state';
 import { ONE_BN, ZERO_BN } from '~/constants';
-import useFarmerStalkByToken from '~/hooks/farmer/useFarmerStalkByToken';
+import useCosmonautMageByToken from '~/hooks/cosmomage/useCosmonautMageByToken';
 import useGetChainToken from '~/hooks/chain/useGetChainToken';
-import useUnripeUnderlyingMap from '~/hooks/beanstalk/useUnripeUnderlying';
+import useUnripeUnderlyingMap from '~/hooks/moonmage/useUnripeUnderlying';
 import Stat from '../Common/Stat';
 
 const ARROW_CONTAINER_WIDTH = 20;
@@ -50,23 +50,23 @@ const SiloBalances: React.FC<{}> = () => {
   const whitelist = useWhitelist();
   const getChainToken = useGetChainToken();
 
-  const Bean = getChainToken(BEAN);
-  const urBean = getChainToken(UNRIPE_BEAN);
-  const urBeanCrv3 = getChainToken(UNRIPE_BEAN_CRV3);
+  const Moon = getChainToken(MOON);
+  const urMoon = getChainToken(UNRIPE_MOON);
+  const urMoonCrv3 = getChainToken(UNRIPE_MOON_CRV3);
   const unripeUnderlyingTokens = useUnripeUnderlyingMap();
 
   // State
   const balances = useSelector<
     AppState,
-    AppState['_farmer']['silo']['balances']
-  >((state) => state._farmer.silo.balances);
-  const unripeTokens = useSelector<AppState, AppState['_bean']['unripe']>(
-    (state) => state._bean.unripe
+    AppState['_cosmomage']['silo']['balances']
+  >((state) => state._cosmomage.silo.balances);
+  const unripeTokens = useSelector<AppState, AppState['_moon']['unripe']>(
+    (state) => state._moon.unripe
   );
 
-  const farmerSilo = useSelector<AppState, AppState['_farmer']['silo']>((state) => state._farmer.silo);
+  const cosmomageSilo = useSelector<AppState, AppState['_cosmomage']['silo']>((state) => state._cosmomage.silo);
 
-  const stalkByToken = useFarmerStalkByToken();
+  const mageByToken = useCosmonautMageByToken();
 
   const tokens = useMemo(() => Object.entries(whitelist), [whitelist]);
 
@@ -111,7 +111,7 @@ const SiloBalances: React.FC<{}> = () => {
             display={{ xs: 'none', md: 'block' }}
             textAlign="right"
           >
-            <Typography color="text.secondary">Stalk</Typography>
+            <Typography color="text.secondary">Mage</Typography>
           </Grid>
           <Grid
             item
@@ -127,7 +127,7 @@ const SiloBalances: React.FC<{}> = () => {
       <Stack px={1} py={1} spacing={1}>
         {tokens.map(([address, token]) => {
           const deposits = balances[address]?.deposited;
-          const isUnripe = token === urBean || token === urBeanCrv3;
+          const isUnripe = token === urMoon || token === urMoonCrv3;
 
           return (
             <Box key={`${token.address}-${token.chainId}`}>
@@ -144,7 +144,7 @@ const SiloBalances: React.FC<{}> = () => {
                   py: 1,
                   borderWidth: 0.5,
                   borderColor: 'divider',
-                  background: BeanstalkPalette.white, 
+                  background: MoonmagePalette.white, 
                   '&:hover': {
                     borderColor: 'unset',
                   }
@@ -176,7 +176,7 @@ const SiloBalances: React.FC<{}> = () => {
                     textAlign="left"
                   >
                     <Typography color="text.primary">
-                      {token === Bean ? (
+                      {token === Moon ? (
                         <Tooltip
                           title={
                             <>
@@ -184,16 +184,16 @@ const SiloBalances: React.FC<{}> = () => {
                                 deposits?.amount || ZERO_BN,
                                 token.displayDecimals
                               )}{' '}
-                              Deposited BEAN
+                              Deposited MOON
                               <br />
                               +&nbsp;
                               <Typography display="inline" color="primary">
                                 {displayFullBN(
-                                  farmerSilo.beans.earned || ZERO_BN,
+                                  cosmomageSilo.moons.earned || ZERO_BN,
                                   token.displayDecimals
                                 )}
                               </Typography>{' '}
-                              Earned BEAN
+                              Earned MOON
                               <br />
                               <Divider
                                 sx={{
@@ -205,12 +205,12 @@ const SiloBalances: React.FC<{}> = () => {
                               />
                               ={' '}
                               {displayFullBN(
-                                farmerSilo.beans.earned.plus(
+                                cosmomageSilo.moons.earned.plus(
                                   deposits?.amount || ZERO_BN
                                 ),
                                 token.displayDecimals
                               )}{' '}
-                              BEAN
+                              MOON
                               <br />
                             </>
                           }
@@ -220,11 +220,11 @@ const SiloBalances: React.FC<{}> = () => {
                               deposits?.amount || ZERO_BN,
                               token.displayDecimals
                             )}
-                            {farmerSilo.beans.earned.gt(0) ? (
+                            {cosmomageSilo.moons.earned.gt(0) ? (
                               <Typography component="span" color="primary.main">
                                 {' + '}
                                 {displayFullBN(
-                                  farmerSilo.beans.earned,
+                                  cosmomageSilo.moons.earned,
                                   token.displayDecimals
                                 )}
                               </Typography>
@@ -310,7 +310,7 @@ const SiloBalances: React.FC<{}> = () => {
                                           }
                                           .{' '}
                                           <Link
-                                            href="https://docs.bean.money/almanac/farm/barn#chopping"
+                                            href="https://docs.moon.money/almanac/farm/ship#chopping"
                                             target="_blank"
                                             rel="noreferrer"
                                             underline="hover"
@@ -371,7 +371,7 @@ const SiloBalances: React.FC<{}> = () => {
                             {isUnripe ? (
                               <Typography
                                 display="inline"
-                                color={BeanstalkPalette.washedRed}
+                                color={MoonmagePalette.washedRed}
                               >
                                 *
                               </Typography>
@@ -391,7 +391,7 @@ const SiloBalances: React.FC<{}> = () => {
                     </Box>
                   </Grid>
                   {/**
-                   * Cell: Stalk
+                   * Cell: Mage
                    */}
                   <Grid
                     item
@@ -400,21 +400,21 @@ const SiloBalances: React.FC<{}> = () => {
                     textAlign="right"
                   >
                     <Row justifyContent="flex-end" gap={0.2}>
-                      <TokenIcon token={STALK} css={{ marginBottom: '2px' }} />
+                      <TokenIcon token={MAGE} css={{ marginBottom: '2px' }} />
                       <Typography color="text.primary" component="span">
-                        {token === Bean ? (
+                        {token === Moon ? (
                           displayFullBN(
-                            ((stalkByToken[address]?.base ?? ZERO_BN)
-                            .plus(stalkByToken[address]?.grown ?? ZERO_BN)
-                            .plus((farmerSilo.stalk.earned.gt(ZERO_BN) ? farmerSilo.stalk.earned : ZERO_BN))
-                            .minus(stalkByToken[address]?.unclaimed ?? ZERO_BN)) ?? ZERO_BN,
-                            STALK.displayDecimals)
+                            ((mageByToken[address]?.base ?? ZERO_BN)
+                            .plus(mageByToken[address]?.grown ?? ZERO_BN)
+                            .plus((cosmomageSilo.mage.earned.gt(ZERO_BN) ? cosmomageSilo.mage.earned : ZERO_BN))
+                            .minus(mageByToken[address]?.unclaimed ?? ZERO_BN)) ?? ZERO_BN,
+                            MAGE.displayDecimals)
                         ) : (
                           displayFullBN(
-                            ((stalkByToken[address]?.base ?? ZERO_BN)
-                            .plus(stalkByToken[address]?.grown ?? ZERO_BN)
-                            .minus(stalkByToken[address]?.unclaimed ?? ZERO_BN)) ?? ZERO_BN,
-                            STALK.displayDecimals)
+                            ((mageByToken[address]?.base ?? ZERO_BN)
+                            .plus(mageByToken[address]?.grown ?? ZERO_BN)
+                            .minus(mageByToken[address]?.unclaimed ?? ZERO_BN)) ?? ZERO_BN,
+                            MAGE.displayDecimals)
                         )}                        
                       </Typography>
                     </Row>

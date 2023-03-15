@@ -74,7 +74,7 @@ export class ERC20Token extends Token {
     return this.getContract().approve(spenderContract, amount instanceof TokenValue ? amount.toBigNumber() : amount);
   }
 
-  public approveBeanstalk(amount: TokenValue | BigNumber): Promise<ContractTransaction> {
-    return this.approve(Token.sdk.contracts.beanstalk.address, amount);
+  public approveMoonmage(amount: TokenValue | BigNumber): Promise<ContractTransaction> {
+    return this.approve(Token.sdk.contracts.moonmage.address, amount);
   }
 }

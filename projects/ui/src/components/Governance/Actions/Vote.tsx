@@ -18,7 +18,7 @@ import WalletButton from '~/components/Common/Connection/WalletButton';
 import { SNAPSHOT_LINK, ZERO_BN } from '~/constants';
 import Row from '~/components/Common/Row';
 import { FC } from '~/types';
-import useProposalBlockData from '~/hooks/beanstalk/useProposalBlockData';
+import useProposalBlockData from '~/hooks/moonmage/useProposalBlockData';
 import StatHorizontal from '~/components/Common/StatHorizontal';
 
 type VoteFormValues = {
@@ -39,10 +39,10 @@ const VoteForm: FC<FormikProps<VoteFormValues> & {
 }) => {
   /// State
   const account = useAccount();
-  const farmerSilo = useSelector<AppState, AppState['_farmer']['silo']>((state) => state._farmer.silo);
+  const cosmomageSilo = useSelector<AppState, AppState['_cosmomage']['silo']>((state) => state._cosmomage.silo);
   
   ///  Quorum
-  const { data: { totalStalk, stalkForQuorum, pctStalkForQuorum: quorumPct, votingPower, tag }, loading: loadingQuorum } = quorum;
+  const { data: { totalMage, mageForQuorum, pctMageForQuorum: quorumPct, votingPower, tag }, loading: loadingQuorum } = quorum;
 
   /// Time
   const today = new Date();
@@ -55,7 +55,7 @@ const VoteForm: FC<FormikProps<VoteFormValues> & {
   }, [setFieldValue]);
 
   /// Option isn't selected or the voting period has ended
-  const canVote = farmerSilo.stalk.active.gt(0);
+  const canVote = cosmomageSilo.mage.active.gt(0);
   const alreadyVotedThisChoice = (
     existingChoice !== undefined
     && existingChoice === values.choice
@@ -65,7 +65,7 @@ const VoteForm: FC<FormikProps<VoteFormValues> & {
     values.choice === undefined // no choice selected
     || alreadyVotedThisChoice // already voted for this same choice
     || isClosed // expired
-    || !canVote // no stalk
+    || !canVote // no mage
   );
 
   if (!proposal.choices) return null;
@@ -83,19 +83,19 @@ const VoteForm: FC<FormikProps<VoteFormValues> & {
           * Progress by choice
           */}
         <Stack px={1} pb={1} gap={1.5}>
-          {(votingPower && totalStalk) && (
+          {(votingPower && totalMage) && (
             <StatHorizontal
               label="Voting Power"
               labelTooltip={
                 <div>
-                  <Typography>A snapshot of your active STALK when voting on {tag} began.</Typography>
+                  <Typography>A snapshot of your active MAGE when voting on {tag} began.</Typography>
                 </div>
               }
             >
-              {displayBN(votingPower)} STALK&nbsp;·&nbsp;{displayBN(votingPower.div(totalStalk).multipliedBy(100))}%
+              {displayBN(votingPower)} MAGE&nbsp;·&nbsp;{displayBN(votingPower.div(totalMage).multipliedBy(100))}%
             </StatHorizontal>
           )}
-          {(quorumPct && stalkForQuorum) && (
+          {(quorumPct && mageForQuorum) && (
             <StatHorizontal
               label={(
                 <>
@@ -106,13 +106,13 @@ const VoteForm: FC<FormikProps<VoteFormValues> & {
               )}
               labelTooltip={
                 <Stack gap={0.5}>
-                  {stalkForQuorum && (
-                    <StatHorizontal label="Stalk for Quorum">
-                      ~{displayFullBN(stalkForQuorum, 2, 2)}
+                  {mageForQuorum && (
+                    <StatHorizontal label="Mage for Quorum">
+                      ~{displayFullBN(mageForQuorum, 2, 2)}
                     </StatHorizontal>
                   )}
-                  <StatHorizontal label="Eligible Stalk">
-                    ~{displayFullBN(totalStalk || ZERO_BN, 2, 2)}
+                  <StatHorizontal label="Eligible Mage">
+                    ~{displayFullBN(totalMage || ZERO_BN, 2, 2)}
                   </StatHorizontal>
                   <StatHorizontal label="Snapshot Block">
                     {proposal.snapshot}
@@ -124,7 +124,7 @@ const VoteForm: FC<FormikProps<VoteFormValues> & {
                 <CircularProgress size={16} />
               ) : (
                 <>
-                  ~{displayFullBN(stalkForQuorum, 0)} STALK&nbsp;·&nbsp;{(quorumPct * 100).toFixed(0)}%
+                  ~{displayFullBN(mageForQuorum, 0)} MAGE&nbsp;·&nbsp;{(quorumPct * 100).toFixed(0)}%
                 </>
               )}
             </StatHorizontal>
@@ -142,7 +142,7 @@ const VoteForm: FC<FormikProps<VoteFormValues> & {
                   {choice}
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
-                  {displayFullBN(new BigNumber(proposal.scores[index] || 0), 0, 0)} STALK
+                  {displayFullBN(new BigNumber(proposal.scores[index] || 0), 0, 0)} MAGE
                   <Typography
                     display={proposal.scores_total > 0 ? 'inline' : 'none'}> · {((proposal.scores[index] / proposal.scores_total) * 100).toFixed(2)}%
                   </Typography>
@@ -202,7 +202,7 @@ const VoteForm: FC<FormikProps<VoteFormValues> & {
                         ? `Already Voted: ${proposal.choices[existingChoice - 1]}`
                         : 'Vote'
                     )
-                    : 'Need Stalk to Vote'
+                    : 'Need Mage to Vote'
                   }
                 </LoadingButton>
               </>
@@ -269,7 +269,7 @@ const Vote: FC<{
 
         txToast = new TransactionToast({
           loading: 'Voting on proposal...',
-          success: 'Vote successful. It may take some time for your vote to appear on the Beanstalk UI. Check Snapshot for the latest results.',
+          success: 'Vote successful. It may take some time for your vote to appear on the Moonmage UI. Check Snapshot for the latest results.',
         });
 
         const hub = 'https://hub.snapshot.org';

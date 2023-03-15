@@ -21,11 +21,11 @@ library LibUnripe {
 
     uint256 constant DECIMALS = 1e6;
 
-    function percentBeansRecapped() internal view returns (uint256 percent) {
+    function percentMoonsRecapped() internal view returns (uint256 percent) {
         AppStorage storage s = LibAppStorage.diamondStorage();
         return
-            s.u[C.unripeBeanAddress()].balanceOfUnderlying.mul(DECIMALS).div(
-                C.unripeBean().totalSupply()
+            s.u[C.unripeMoonAddress()].balanceOfUnderlying.mul(DECIMALS).div(
+                C.unripeMoon().totalSupply()
             );
     }
 
@@ -60,7 +60,7 @@ library LibUnripe {
     {
         AppStorage storage s = LibAppStorage.diamondStorage();
         underlying = s.u[unripeToken].balanceOfUnderlying.mul(unripe).div(
-            IBean(unripeToken).totalSupply()
+            IMoon(unripeToken).totalSupply()
         );
     }
 
@@ -70,7 +70,7 @@ library LibUnripe {
         returns (uint256 unripe)
     {
         AppStorage storage s = LibAppStorage.diamondStorage();
-        unripe = IBean(unripeToken).totalSupply().mul(underlying).div(
+        unripe = IMoon(unripeToken).totalSupply().mul(underlying).div(
             s.u[unripeToken].balanceOfUnderlying
         );
     }

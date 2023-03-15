@@ -1,10 +1,10 @@
 const { defaultAbiCoder } = require('@ethersproject/abi');
 
 const ConvertKind = {
-  BEANS_TO_CURVE_LP: 0,
-  CURVE_LP_TO_BEANS: 1,
-  UNRIPE_BEANS_TO_LP: 2,
-  UNRIPE_LP_TO_BEANS: 3,
+  MOONS_TO_CURVE_LP: 0,
+  CURVE_LP_TO_MOONS: 1,
+  UNRIPE_MOONS_TO_LP: 2,
+  UNRIPE_LP_TO_MOONS: 3,
   LAMBDA_LAMBDA: 4
 }
 
@@ -17,39 +17,39 @@ class ConvertEncoder {
   }
 
   /**
-   * Encodes the userData parameter for removing a set amount of LP for beans using Curve Pool
+   * Encodes the userData parameter for removing a set amount of LP for moons using Curve Pool
    * @param lp - the amount of Curve lp to be removed
-   * @param minBeans - min amount of beans to receive
+   * @param minMoons - min amount of moons to receive
    * @param address - the address of the token converting into
    */
-  static convertCurveLPToBeans = (lp, minBeans, address) =>
+  static convertCurveLPToMoons = (lp, minMoons, address) =>
   defaultAbiCoder.encode(
     ['uint256', 'uint256', 'uint256', 'address'],
-    [ConvertKind.CURVE_LP_TO_BEANS, lp, minBeans, address]
+    [ConvertKind.CURVE_LP_TO_MOONS, lp, minMoons, address]
   );
 
   /**
-   * Encodes the userData parameter for removing BEAN/ETH lp, then converting that Bean to LP using Curve Pool
-   * @param beans - amount of beans to convert to Curve LP
+   * Encodes the userData parameter for removing MOON/ETH lp, then converting that Moon to LP using Curve Pool
+   * @param moons - amount of moons to convert to Curve LP
    * @param minLP - min amount of Curve LP to receive
      * @param address - the address of the token converting into
    */
-  static convertBeansToCurveLP = (beans, minLP, address) =>
+  static convertMoonsToCurveLP = (moons, minLP, address) =>
     defaultAbiCoder.encode(
     ['uint256', 'uint256', 'uint256', 'address'],
-    [ConvertKind.BEANS_TO_CURVE_LP, beans, minLP, address]
+    [ConvertKind.MOONS_TO_CURVE_LP, moons, minLP, address]
   );
 
-   static convertUnripeLPToBeans = (lp, minBeans) =>
+   static convertUnripeLPToMoons = (lp, minMoons) =>
    defaultAbiCoder.encode(
      ['uint256', 'uint256', 'uint256'],
-     [ConvertKind.UNRIPE_LP_TO_BEANS, lp, minBeans]
+     [ConvertKind.UNRIPE_LP_TO_MOONS, lp, minMoons]
    );
  
-   static convertUnripeBeansToLP = (beans, minLP) =>
+   static convertUnripeMoonsToLP = (moons, minLP) =>
      defaultAbiCoder.encode(
      ['uint256', 'uint256', 'uint256'],
-     [ConvertKind.UNRIPE_BEANS_TO_LP, beans, minLP]
+     [ConvertKind.UNRIPE_MOONS_TO_LP, moons, minLP]
    );
 
    static convertLambdaToLambda = (amount, token) =>

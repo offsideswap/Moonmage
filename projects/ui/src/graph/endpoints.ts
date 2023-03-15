@@ -9,45 +9,45 @@ export enum SGEnvironments {
 type SGEnvironment = {
   name: string;
   subgraphs: {
-    beanstalk: string;
-    bean: string;
+    moonmage: string;
+    moon: string;
   }
 }
 
 export const SUBGRAPH_ENVIRONMENTS : Record<SGEnvironments, SGEnvironment> = {
   [SGEnvironments.BF_PROD]:       {
-    name: 'Beanstalk Farms / Production',
+    name: 'Moonmage Farms / Production',
     subgraphs: {
-      beanstalk: 'https://graph.node.bean.money/subgraphs/name/beanstalk',
-      bean: 'https://graph.node.bean.money/subgraphs/name/bean'
+      moonmage: 'https://graph.node.moon.money/subgraphs/name/moonmage',
+      moon: 'https://graph.node.moon.money/subgraphs/name/moon'
     },
   },
   [SGEnvironments.BF_DEV]:        {
-    name: 'Beanstalk Farms / Development',
+    name: 'Moonmage Farms / Development',
     subgraphs: {
-      beanstalk: 'https://graph.node.bean.money/subgraphs/name/beanstalk-dev',
-      bean: 'https://graph.node.bean.money/subgraphs/name/bean-dev'
+      moonmage: 'https://graph.node.moon.money/subgraphs/name/moonmage-dev',
+      moon: 'https://graph.node.moon.money/subgraphs/name/moon-dev'
     }
   },
   [SGEnvironments.BF_TEST]:       {
-    name: 'Beanstalk Farms / Test',
+    name: 'Moonmage Farms / Test',
     subgraphs: {
-      beanstalk: 'https://graph.node.bean.money/subgraphs/name/beanstalk-testing',
-      bean: 'https://graph.node.bean.money/subgraphs/name/bean-testing'
+      moonmage: 'https://graph.node.moon.money/subgraphs/name/moonmage-testing',
+      moon: 'https://graph.node.moon.money/subgraphs/name/moon-testing'
     }
   },
   [SGEnvironments.BF_2_0_3]: {
-    name: 'Beanstalk Farms / v2.0.3',
+    name: 'Moonmage Farms / v2.0.3',
     subgraphs: {
-      beanstalk: 'https://graph.node.bean.money/subgraphs/name/beanstalk-2-0-3',
-      bean: 'https://graph.node.bean.money/subgraphs/name/bean', // fixme
+      moonmage: 'https://graph.node.moon.money/subgraphs/name/moonmage-2-0-3',
+      moon: 'https://graph.node.moon.money/subgraphs/name/moon', // fixme
     }
   },
   [SGEnvironments.DNET_2_0_3]: {
     name: 'Decentralized Network / v2.0.3',
     subgraphs: {
-      beanstalk: `https://gateway.thegraph.com/api/${import.meta.env.VITE_THEGRAPH_API_KEY}/subgraphs/id/R9rnzRuiyDybfDsZfoM7eA9w8WuHtZKbroGrgWwDw1d`,
-      bean: 'https://graph.node.bean.money/subgraphs/name/bean', // fixme
+      moonmage: `https://gateway.thegraph.com/api/${import.meta.env.VITE_THEGRAPH_API_KEY}/subgraphs/id/R9rnzRuiyDybfDsZfoM7eA9w8WuHtZKbroGrgWwDw1d`,
+      moon: 'https://graph.node.moon.money/subgraphs/name/moon', // fixme
     }
   },
 };

@@ -1,4 +1,4 @@
-import { DataSource, ERC20Token, Token } from "@beanstalk/sdk";
+import { DataSource, ERC20Token, Token } from "@moonmage/sdk";
 import { sdk } from "../setup";
 
 export const logBalances = async (account: string, inputToken: Token, depositToken: ERC20Token, label: string) => {
@@ -25,7 +25,7 @@ export const logBalances = async (account: string, inputToken: Token, depositTok
     sdk.tokens.ETH.getBalance(sdk.contracts.pipeline.address),
     sdk.tokens.getBalance(depositToken, sdk.contracts.pipeline.address),
     sdk.tokens.getBalance(sdk.tokens.ROOT, sdk.contracts.pipeline.address),
-    sdk.silo.getBalance(sdk.tokens.BEAN, sdk.contracts.pipeline.address, { source: DataSource.LEDGER }),
+    sdk.silo.getBalance(sdk.tokens.MOON, sdk.contracts.pipeline.address, { source: DataSource.LEDGER }),
     // DEPOT
     sdk.tokens.ETH.getBalance(sdk.contracts.depot.address)
   ]);

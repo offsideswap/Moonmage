@@ -8,14 +8,14 @@ import {
 import throttle from 'lodash/throttle';
 import { useTheme } from '@mui/material/styles';
 import { useSelector } from 'react-redux';
-import usePools from '~/hooks/beanstalk/usePools';
+import usePools from '~/hooks/moonmage/usePools';
 import PoolCard from '~/components/Silo/PoolCard';
-import BeanProgressIcon from '~/components/Common/BeanProgressIcon';
-import useSeason from '~/hooks/beanstalk/useSeason';
-import usePrice from '~/hooks/beanstalk/usePrice';
-import { displayBeanPrice, displayBN } from '~/util/Tokens';
+import MoonProgressIcon from '~/components/Common/MoonProgressIcon';
+import useSeason from '~/hooks/moonmage/useSeason';
+import usePrice from '~/hooks/moonmage/usePrice';
+import { displayMoonPrice, displayBN } from '~/util/Tokens';
 import { CURVE_LINK, NEW_BN, ZERO_BN } from '~/constants';
-import { useFetchPools } from '~/state/bean/pools/updater';
+import { useFetchPools } from '~/state/moon/pools/updater';
 import { AppState } from '~/state';
 import FolderMenu from '../FolderMenu';
 
@@ -27,9 +27,9 @@ const PriceButton: FC<ButtonProps> = ({ ...props }) => {
   // Data
   const pools     = usePools();
   const season    = useSeason();
-  const beanPrice = usePrice();
-  const beanPools = useSelector<AppState, AppState['_bean']['pools']>(
-    (state) => state._bean.pools
+  const moonPrice = usePrice();
+  const moonPools = useSelector<AppState, AppState['_moon']['pools']>(
+    (state) => state._moon.pools
   );
   const [_refetchPools] = useFetchPools();
   const refetchPools = useMemo(() => throttle(_refetchPools, 10_000), [_refetchPools]); // max refetch = 10s
@@ -40,15 +40,15 @@ const PriceButton: FC<ButtonProps> = ({ ...props }) => {
   const isTiny   = useMediaQuery('(max-width:350px)');
 
   // Content
-  const isLoading = beanPrice.eq(NEW_BN);
+  const isLoading = moonPrice.eq(NEW_BN);
   const startIcon = isTiny ? undefined : (
-    <BeanProgressIcon size={25} enabled={isLoading} variant="indeterminate" />
+    <MoonProgressIcon size={25} enabled={isLoading} variant="indeterminate" />
   );
   const poolsContent = Object.values(pools).map((pool, index) => (
     <PoolCard
       key={`${pool.address}-${index}`}
       pool={pool}
-      poolState={beanPools[pool.address]}
+      poolState={moonPools[pool.address]}
       ButtonProps={{
         // FIXME: change link when more pools are added
         href: CURVE_LINK,
@@ -64,7 +64,7 @@ const PriceButton: FC<ButtonProps> = ({ ...props }) => {
       onOpen={refetchPools}
       startIcon={startIcon}
       buttonContent={
-        <>${displayBeanPrice(beanPrice.gt(0) ? beanPrice : ZERO_BN, isMobile ? 2 : 4)}</>
+        <>${displayMoonPrice(moonPrice.gt(0) ? moonPrice : ZERO_BN, isMobile ? 2 : 4)}</>
       }
       drawerContent={
         <Stack sx={{ p: 2 }} gap={1}>

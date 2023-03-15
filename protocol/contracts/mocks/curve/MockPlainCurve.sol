@@ -6,12 +6,12 @@ pragma solidity ^0.7.6;
 pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts/math/SafeMath.sol";
-import "../../interfaces/IBean.sol";
+import "../../interfaces/IMoon.sol";
 import "../MockToken.sol";
 
 /**
  * @author Publius, LeoFib
- * @title Mock Bean3Curve Pair/Pool
+ * @title Mock Moon3Curve Pair/Pool
 **/
 
 interface I3Curve {
@@ -182,7 +182,7 @@ contract MockPlainCurve {
         for (uint256 i; i < N_COINS; ++i) {
             uint256 amount = _amounts[i];
             if (amount > 0)
-                IBean(coins[i]).transferFrom(msg.sender, address(this), amount);
+                IMoon(coins[i]).transferFrom(msg.sender, address(this), amount);
         }
 
         total_supply += mint_amount;
@@ -211,7 +211,7 @@ contract MockPlainCurve {
         balances[i] -= (dy + dy_fee * ADMIN_FEE / FEE_DENOMINATOR);
         supply = supply - _burn_amount;
         _balanceOf[msg.sender] -= _burn_amount;
-        IBean(coins[i]).transfer(msg.sender, dy);
+        IMoon(coins[i]).transfer(msg.sender, dy);
 
         return dy;
     }

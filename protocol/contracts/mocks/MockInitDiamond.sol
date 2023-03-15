@@ -5,7 +5,7 @@
 pragma solidity =0.7.6;
 pragma experimental ABIEncoderV2;
 
-import "../interfaces/IBean.sol";
+import "../interfaces/IMoon.sol";
 import "../interfaces/IWETH.sol";
 import "../mocks/MockToken.sol";
 import {AppStorage} from "../farm/AppStorage.sol";
@@ -18,14 +18,14 @@ import "../libraries/Silo/LibWhitelist.sol";
 **/
 contract MockInitDiamond {
 
-    event Incentivization(address indexed account, uint256 beans);
+    event Incentivization(address indexed account, uint256 moons);
 
     AppStorage internal s;
 
     function init() external {
 
-        C.bean().approve(C.curveMetapoolAddress(), type(uint256).max);
-        C.bean().approve(C.curveZapAddress(), type(uint256).max);
+        C.moon().approve(C.curveMetapoolAddress(), type(uint256).max);
+        C.moon().approve(C.curveZapAddress(), type(uint256).max);
         C.usdc().approve(C.curveZapAddress(), type(uint256).max);
 
         s.cases = s.cases = [
@@ -45,7 +45,7 @@ contract MockInitDiamond {
         s.w.lastSowTime = type(uint32).max;
     
         // s.refundStatus = 1;
-        // s.beanRefundAmount = 1;
+        // s.moonRefundAmount = 1;
         // s.ethRefundAmount = 1;
 
         s.season.current = 1;

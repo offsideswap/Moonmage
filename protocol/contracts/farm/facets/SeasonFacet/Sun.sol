@@ -29,15 +29,15 @@ contract Sun is Oracle {
 
     function stepSun(int256 deltaB, uint256 caseId) internal {
         if (deltaB > 0) {
-            uint256 newHarvestable = rewardBeans(uint256(deltaB));
+            uint256 newHarvestable = rewardMoons(uint256(deltaB));
             setSoilAbovePeg(newHarvestable, caseId);
         }
         else setSoil(uint256(-deltaB));
     }
 
-    function rewardBeans(uint256 newSupply) internal returns (uint256 newHarvestable) {
+    function rewardMoons(uint256 newSupply) internal returns (uint256 newHarvestable) {
         uint256 newFertilized;
-        C.bean().mint(address(this), newSupply);
+        C.moon().mint(address(this), newSupply);
         if (s.season.fertilizing) {
             newFertilized = rewardToFertilizer(newSupply);
             newSupply = newSupply.sub(newFertilized);
@@ -54,15 +54,15 @@ contract Sun is Oracle {
         internal
         returns (uint256 newFertilized)
     {
-        // 1/3 of new Beans being minted
+        // 1/3 of new Moons being minted
         uint256 maxNewFertilized = amount.div(C.getFertilizerDenominator());
 
-        // Get the new Beans per Fertilizer and the total new Beans per Fertilizer
+        // Get the new Moons per Fertilizer and the total new Moons per Fertilizer
         uint256 newBpf = maxNewFertilized.div(s.activeFertilizer);
         uint256 oldTotalBpf = s.bpf;
         uint256 newTotalBpf = oldTotalBpf.add(newBpf);
 
-        // Get the end Beans per Fertilizer of the first Fertilizer to run out.
+        // Get the end Moons per Fertilizer of the first Fertilizer to run out.
         uint256 firstEndBpf = s.fFirst;
 
         // If the next fertilizer is going to run out, then step BPF according
@@ -78,14 +78,14 @@ contract Sun is Oracle {
                 require(s.fertilizedIndex == s.unfertilizedIndex, "Paid != owed");
                 return newFertilized;
             }
-            // Calculate new Beans per Fertilizer values
+            // Calculate new Moons per Fertilizer values
             newBpf = maxNewFertilized.sub(newFertilized).div(s.activeFertilizer);
             oldTotalBpf = firstEndBpf;
             newTotalBpf = oldTotalBpf.add(newBpf);
             firstEndBpf = s.fFirst;
         }
 
-        // Distribute the rest of the Fertilized Beans
+        // Distribute the rest of the Fertilized Moons
         s.bpf = uint128(newTotalBpf);
         newFertilized = newFertilized.add(newBpf.mul(s.activeFertilizer));
         s.fertilizedIndex = s.fertilizedIndex.add(newFertilized);
@@ -104,10 +104,10 @@ contract Sun is Oracle {
     }
 
     function rewardToSilo(uint256 amount) internal {
-        s.s.stalk = s.s.stalk.add(amount.mul(C.getStalkPerBean()));
-        s.earnedBeans = s.earnedBeans.add(amount);
-        s.siloBalances[C.beanAddress()].deposited = s
-            .siloBalances[C.beanAddress()]
+        s.s.mage = s.s.mage.add(amount.mul(C.getMagePerMoon()));
+        s.earnedMoons = s.earnedMoons.add(amount);
+        s.siloBalances[C.moonAddress()].deposited = s
+            .siloBalances[C.moonAddress()]
             .deposited
             .add(amount);
     }

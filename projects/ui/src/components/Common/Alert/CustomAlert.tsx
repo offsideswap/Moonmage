@@ -1,16 +1,16 @@
 import { Alert, AlertProps, lighten } from '@mui/material';
 import React from 'react';
-import { BeanstalkPalette } from '~/components/App/muiTheme';
+import { MoonmagePalette } from '~/components/App/muiTheme';
 
 export type SidelineAlertProps = {
   hide?: boolean;
 } & Omit<AlertProps, 'icon' | 'variant' | 'severity'>;
 
 const accentColorMap = {
-  success: BeanstalkPalette.lightGreen,
-  info: BeanstalkPalette.lightBlue,
-  warning: BeanstalkPalette.lightYellow,
-  error: lighten(BeanstalkPalette.trueRed, 0.75),
+  success: MoonmagePalette.lightGreen,
+  info: MoonmagePalette.lightBlue,
+  warning: MoonmagePalette.lightYellow,
+  error: lighten(MoonmagePalette.trueRed, 0.75),
 };
 
 const CustomAlert: React.FC<SidelineAlertProps> = ({ hide, ...props }) => {

@@ -5,7 +5,7 @@ import { Form, Formik, FormikHelpers, FormikProps } from 'formik';
 import { useSelector } from 'react-redux';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { Token } from '~/classes';
-import { SEEDS, STALK } from '~/constants/tokens';
+import { SEEDS, MAGE } from '~/constants/tokens';
 import StyledAccordionSummary from '~/components/Common/Accordion/AccordionSummary';
 import {
   FormState,
@@ -16,10 +16,10 @@ import {
   TxnSeparator,
   SmartSubmitButton
 } from '~/components/Common/Form';
-import BeanstalkSDK from '~/lib/Beanstalk';
-import useSeason from '~/hooks/beanstalk/useSeason';
-import { FarmerSilo } from '~/state/farmer/silo';
-import { useBeanstalkContract } from '~/hooks/ledger/useContract';
+import MoonmageSDK from '~/lib/Moonmage';
+import useSeason from '~/hooks/moonmage/useSeason';
+import { CosmonautSilo } from '~/state/cosmomage/silo';
+import { useMoonmageContract } from '~/hooks/ledger/useContract';
 import { displayFullBN, toStringBaseUnitBN } from '~/util';
 import TransactionToast from '~/components/Common/TxnToast';
 import { useSigner } from '~/hooks/ledger/useSigner';
@@ -27,11 +27,11 @@ import { ERC20Token } from '~/classes/Token';
 import { AppState } from '~/state';
 import { ActionType } from '~/util/Actions';
 import { ZERO_BN } from '~/constants';
-import { useFetchFarmerSilo } from '~/state/farmer/silo/updater';
-import { useFetchBeanstalkSilo } from '~/state/beanstalk/silo/updater';
+import { useFetchCosmonautSilo } from '~/state/cosmomage/silo/updater';
+import { useFetchMoonmageSilo } from '~/state/moonmage/silo/updater';
 import IconWrapper from '../../Common/IconWrapper';
 import { IconSize } from '../../App/muiTheme';
-import useFarmerSilo from '~/hooks/farmer/useFarmerSilo';
+import useCosmonautSilo from '~/hooks/cosmomage/useCosmonautSilo';
 import { FC } from '~/types';
 import useFormMiddleware from '~/hooks/ledger/useFormMiddleware';
 
@@ -42,7 +42,7 @@ type WithdrawFormValues = FormState;
 const WithdrawForm : FC<
   FormikProps<WithdrawFormValues> & {
     token: Token;
-    siloBalances: FarmerSilo['balances'];
+    siloBalances: CosmonautSilo['balances'];
     depositedBalance: BigNumber;
     withdrawSeasons: BigNumber;
     season: BigNumber;
@@ -91,7 +91,7 @@ const WithdrawForm : FC<
   // }, [onClose, submitForm]);
 
   // Results
-  const withdrawResult = BeanstalkSDK.Silo.Withdraw.withdraw(
+  const withdrawResult = MoonmageSDK.Silo.Withdraw.withdraw(
     whitelistedToken,
     values.tokens,
     siloBalances[whitelistedToken.address]?.deposited.crates || [], // fallback
@@ -107,15 +107,15 @@ const WithdrawForm : FC<
       <Stack direction={{ xs: 'column', md: 'row' }} gap={1} justifyContent="center">
         <Box sx={{ flex: 1 }}>
           <TokenOutputField
-            token={STALK}
-            amount={withdrawResult.stalk}
+            token={MAGE}
+            amount={withdrawResult.mage}
             amountTooltip={(
               <>
                 <div>Withdrawing from {withdrawResult.deltaCrates.length} Deposit{withdrawResult.deltaCrates.length === 1 ? '' : 's'}:</div>
                 <Divider sx={{ opacity: 0.2, my: 1 }} />
                 {withdrawResult.deltaCrates.map((_crate, i) => (
                   <div key={i}>
-                    Season {_crate.season.toString()}: {displayFullBN(_crate.bdv, whitelistedToken.displayDecimals)} BDV, {displayFullBN(_crate.stalk, STALK.displayDecimals)} STALK, {displayFullBN(_crate.seeds, SEEDS.displayDecimals)} SEEDS
+                    Season {_crate.season.toString()}: {displayFullBN(_crate.bdv, whitelistedToken.displayDecimals)} BDV, {displayFullBN(_crate.mage, MAGE.displayDecimals)} MAGE, {displayFullBN(_crate.seeds, SEEDS.displayDecimals)} SEEDS
                   </div>
                 ))}
               </>
@@ -147,7 +147,7 @@ const WithdrawForm : FC<
           <Stack direction="column" gap={1}>
             <Box>
               <Typography variant="body2">
-                You will forfeit .0001% ownership of Beanstalk. Withdrawing will burn your Grown Stalk & Seeds associated with your initial Deposit. 
+                You will forfeit .0001% ownership of Moonmage. Withdrawing will burn your Grown Mage & Seeds associated with your initial Deposit. 
               </Typography>
             </Box>
             {tokenOutputs}
@@ -203,7 +203,7 @@ const WithdrawForm : FC<
                       },
                       {
                         type: ActionType.UPDATE_SILO_REWARDS,
-                        stalk: withdrawResult.stalk,
+                        mage: withdrawResult.mage,
                         seeds: withdrawResult.seeds,
                       },
                       {
@@ -241,17 +241,17 @@ const WithdrawForm : FC<
 const Withdraw : FC<{ token: ERC20Token; }> = ({ token }) => {
   /// Ledger
   const { data: signer } = useSigner();
-  const beanstalk = useBeanstalkContract(signer);
+  const moonmage = useMoonmageContract(signer);
   
-  /// Beanstalk
+  /// Moonmage
   const season = useSeason();
-  const withdrawSeasons = useSelector<AppState, BigNumber>((state) => state._beanstalk.silo.withdrawSeasons);
+  const withdrawSeasons = useSelector<AppState, BigNumber>((state) => state._moonmage.silo.withdrawSeasons);
 
-  /// Farmer
-  const farmerSilo          = useFarmerSilo();
-  const siloBalances        = farmerSilo.balances;
-  const [refetchFarmerSilo] = useFetchFarmerSilo();
-  const [refetchSilo]       = useFetchBeanstalkSilo();
+  /// Cosmonaut
+  const cosmomageSilo          = useCosmonautSilo();
+  const siloBalances        = cosmomageSilo.balances;
+  const [refetchCosmonautSilo] = useFetchCosmonautSilo();
+  const [refetchSilo]       = useFetchMoonmageSilo();
   
   /// Form
   const middleware = useFormMiddleware();
@@ -271,7 +271,7 @@ const Withdraw : FC<{ token: ERC20Token; }> = ({ token }) => {
     try {
       middleware.before();
 
-      const withdrawResult = BeanstalkSDK.Silo.Withdraw.withdraw(
+      const withdrawResult = MoonmageSDK.Silo.Withdraw.withdraw(
         token,
         values.tokens,
         siloBalances[token.address]?.deposited.crates,
@@ -298,14 +298,14 @@ const Withdraw : FC<{ token: ERC20Token; }> = ({ token }) => {
         throw new Error('Malformatted crates.');
       } else if (seasons.length === 1) {
           console.debug('[silo/withdraw] strategy: withdrawDeposit');
-          call = beanstalk.withdrawDeposit(
+          call = moonmage.withdrawDeposit(
             token.address,
             seasons[0],
             amounts[0],
           );
       } else {
         console.debug('[silo/withdraw] strategy: withdrawDeposits');
-        call = beanstalk.withdrawDeposits(
+        call = moonmage.withdrawDeposits(
           token.address,
           seasons,
           amounts,
@@ -322,7 +322,7 @@ const Withdraw : FC<{ token: ERC20Token; }> = ({ token }) => {
 
       const receipt = await txn.wait();
       await Promise.all([
-        refetchFarmerSilo(),
+        refetchCosmonautSilo(),
         refetchSilo(),
       ]);
       txToast.success(receipt);
@@ -338,11 +338,11 @@ const Withdraw : FC<{ token: ERC20Token; }> = ({ token }) => {
     }
   }, [
     siloBalances,
-    farmerSilo.beans.earned,
-    beanstalk,
+    cosmomageSilo.moons.earned,
+    moonmage,
     token,
     season,
-    refetchFarmerSilo,
+    refetchCosmonautSilo,
     refetchSilo,
     middleware,
   ]);

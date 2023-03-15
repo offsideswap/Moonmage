@@ -1,11 +1,11 @@
 const { upgradeWithNewFacets, deploy } = require('../scripts/diamond.js');
-const { BEAN, BEANSTALK, BCM, USDC, BEAN_3_CURVE, ZERO_ADDRESS, CURVE_ZAP, TEST_GNOSIS } = require('../test/utils/constants.js');
+const { MOON, MOONMAGE, BCM, USDC, MOON_3_CURVE, ZERO_ADDRESS, CURVE_ZAP, TEST_GNOSIS } = require('../test/utils/constants.js');
 const { to6 } = require('../test/utils/helpers.js');
 const fs = require("fs");
 
 async function replant10(account, mock, verbose) {
   console.log('-----------------------------------')
-  console.log('Replant10: Replant Beanstalk\n')
+  console.log('Replant10: Replant Moonmage\n')
 
   const Fertilizer = await ethers.getContractFactory("Fertilizer", account);
   const fertilizer = await Fertilizer.deploy();
@@ -13,7 +13,7 @@ async function replant10(account, mock, verbose) {
   console.log(`Fertilzer deployed to : ${fertilizer.address}`);
 
   const diamondCutParams = await upgradeWithNewFacets({
-    diamondAddress: BEANSTALK,
+    diamondAddress: MOONMAGE,
     facetNames:
       [
         'BDVFacet',
@@ -41,7 +41,7 @@ async function replant10(account, mock, verbose) {
 
   const deployingSelectors = diamondCutParams.diamondCut.map((d) => d[2]).flat()
 
-  const loupe = await ethers.getContractAt('DiamondLoupeFacet', BEANSTALK)
+  const loupe = await ethers.getContractAt('DiamondLoupeFacet', MOONMAGE)
   const deployedSelectors = await loupe.facets()
   selectorsToRemove = deployedSelectors
     .filter((d) => d.facetAddress !== '0xDFeFF7592915bea8D040499E961E332BD453C249' &&
@@ -58,9 +58,9 @@ async function replant10(account, mock, verbose) {
     ])
   }
 
-  const diamondCutFacet = await ethers.getContractAt("DiamondCutFacet", BEANSTALK)
-  const pauseFacet = await ethers.getContractAt("PauseFacet", BEANSTALK)
-  const fertilizerFacet = await ethers.getContractAt("FertilizerFacet", BEANSTALK)
+  const diamondCutFacet = await ethers.getContractAt("DiamondCutFacet", MOONMAGE)
+  const pauseFacet = await ethers.getContractAt("PauseFacet", MOONMAGE)
+  const fertilizerFacet = await ethers.getContractAt("FertilizerFacet", MOONMAGE)
 
   console.log("Preparing Transactions for BCM submission...")
 
@@ -69,14 +69,14 @@ async function replant10(account, mock, verbose) {
   const usdcBalance = await usdc.balanceOf(BCM)
   const amount = ethers.BigNumber.from(usdcBalance).div(ethers.BigNumber.from('1000000'))
 
-  let minLPOut = await curveZap.callStatic.calc_token_amount(BEAN_3_CURVE, [usdcBalance.mul(to6('0.866616')).div(to6('1')), '0', usdcBalance, '0'], true) // set
+  let minLPOut = await curveZap.callStatic.calc_token_amount(MOON_3_CURVE, [usdcBalance.mul(to6('0.866616')).div(to6('1')), '0', usdcBalance, '0'], true) // set
   minLPOut = minLPOut.mul(to6('.99')).div(to6('1'))
 
   const diamondCut = diamondCutFacet.interface.encodeFunctionData('diamondCut', 
     Object.values(diamondCutParams)
   )
 
-  const approvalParams = [BEANSTALK, `${ethers.constants.MaxUint256}`]
+  const approvalParams = [MOONMAGE, `${ethers.constants.MaxUint256}`]
   const approval = usdc.interface.encodeFunctionData('approve', approvalParams)
 
   const addFertilizerParams = ['0', `${amount}`, `${minLPOut}`]
@@ -99,23 +99,23 @@ async function replant10(account, mock, verbose) {
 
     const bcm = await ethers.getSigner(BCM)
 
-    console.log("Upgrading Beanstalk...")
-    await bcm.sendTransaction({ to: BEANSTALK, value: '0', data: diamondCut })
+    console.log("Upgrading Moonmage...")
+    await bcm.sendTransaction({ to: MOONMAGE, value: '0', data: diamondCut })
 
-    console.log("Approving USDC to Beanstalk...")
+    console.log("Approving USDC to Moonmage...")
     await bcm.sendTransaction({ to: USDC, value: '0', data: approval })
 
     console.log("Adding Fertilizer...")
-    await bcm.sendTransaction({ to: BEANSTALK, value: '0', data: addFertilizer })
+    await bcm.sendTransaction({ to: MOONMAGE, value: '0', data: addFertilizer })
 
-    console.log("Unpausing Beanstalk...")
+    console.log("Unpausing Moonmage...")
     unpause = await pauseFacet.connect(bcm).unpause()
 
-    console.log("Beanstalk successfully upgraded...")
+    console.log("Moonmage successfully upgraded...")
   } else {
-    await fs.writeFileSync(`./replant/gnosis/diamondCut.json`, JSON.stringify({ to: BEANSTALK, parameters: Object.values(diamondCutParams), data: diamondCut }, null, 4));
+    await fs.writeFileSync(`./replant/gnosis/diamondCut.json`, JSON.stringify({ to: MOONMAGE, parameters: Object.values(diamondCutParams), data: diamondCut }, null, 4));
     await fs.writeFileSync(`./replant/gnosis/approval.json`, JSON.stringify({ to: USDC, parameters: approvalParams, data: approval }, null, 4));
-    await fs.writeFileSync(`./replant/gnosis/addFertilizer.json`, JSON.stringify({ to: BEANSTALK, parameters: addFertilizerParams, data: addFertilizer }, null, 4));
+    await fs.writeFileSync(`./replant/gnosis/addFertilizer.json`, JSON.stringify({ to: MOONMAGE, parameters: addFertilizerParams, data: addFertilizer }, null, 4));
     console.log("BCM Transactions ready for submission")
   }
   console.log('-----------------------------------')

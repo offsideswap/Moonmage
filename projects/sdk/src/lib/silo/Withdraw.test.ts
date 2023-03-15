@@ -11,14 +11,14 @@ jest.setTimeout(30000);
 
 describe("Silo Withdrawl", function () {
   const withdraw = new Withdraw(sdk);
-  const token = sdk.tokens.BEAN;
+  const token = sdk.tokens.MOON;
 
   beforeAll(async () => {
     await utils.resetFork();
 
     // make a deposit
-    await token.approveBeanstalk(TokenValue.MAX_UINT256);
-    await utils.setBEANBalance(account, token.amount(1000));
+    await token.approveMoonmage(TokenValue.MAX_UINT256);
+    await utils.setMOONBalance(account, token.amount(1000));
     const deposit = sdk.silo.buildDeposit(token, account);
     deposit.setInputToken(token);
     const tx1 = await deposit.execute(token.amount(500), 0.1);
@@ -68,13 +68,13 @@ describe("Silo Withdrawl", function () {
     expect(calc1.crates[2].amount.toHuman()).toEqual("300"); // takes 300 from c3
     expect(calc1.crates[2].season.toString()).toEqual("700"); // confirm this is c3
     expect(calc1.seeds.toHuman()).toEqual("2000");
-    expect(calc1.stalk.toHuman()).toEqual("2842");
+    expect(calc1.mage.toHuman()).toEqual("2842");
 
     const calc2 = withdraw.calculateWithdraw(token, token.amount(120), crates, currentSeason);
     expect(calc2.crates.length).toEqual(1);
     expect(calc2.crates[0].amount.toHuman()).toEqual("120"); // takes full amount from c1
     expect(calc1.crates[0].season.toString()).toEqual("900"); // confirm this is c3
     expect(calc2.seeds.toHuman()).toEqual("240");
-    expect(calc2.stalk.toHuman()).toEqual("338.4");
+    expect(calc2.mage.toHuman()).toEqual("338.4");
   });
 });

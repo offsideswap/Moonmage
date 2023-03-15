@@ -1,4 +1,4 @@
-import { BeanstalkSDK, ERC20Token, FarmFromMode, Token, Clipboard, FarmToMode, TokenValue, Workflow } from "@beanstalk/sdk";
+import { MoonmageSDK, ERC20Token, FarmFromMode, Token, Clipboard, FarmToMode, TokenValue, Workflow } from "@moonmage/sdk";
 import chalk from "chalk";
 import { BigNumber } from "ethers";
 
@@ -20,14 +20,14 @@ async function main() {
   // sdk.DEBUG = false;
 
   const fromToken = sdk.tokens.USDC;
-  const toToken = sdk.tokens.BEAN;
+  const toToken = sdk.tokens.MOON;
   const amount = 3000;
   await swap(sdk, fromToken, toToken, amount);
 
   await stop();
 }
 
-async function swap(sdk: BeanstalkSDK, fromToken: Token, toToken: Token, _amount: number) {
+async function swap(sdk: MoonmageSDK, fromToken: Token, toToken: Token, _amount: number) {
   const amount = fromToken.amount(_amount);
   const farm = sdk.farm.create("Swap With Paraswap");
   const pipe = sdk.farm.createAdvancedPipe();
@@ -35,8 +35,8 @@ async function swap(sdk: BeanstalkSDK, fromToken: Token, toToken: Token, _amount
   let priceRoute: PriceRoute;
   let destAmount;
 
-  // Approval for Beanstalk contract to transfer "fromToken" from user to Pipeline
-  await fromToken.approveBeanstalk(TokenValue.MAX_UINT256).then((r) => r.wait());
+  // Approval for Moonmage contract to transfer "fromToken" from user to Pipeline
+  await fromToken.approveMoonmage(TokenValue.MAX_UINT256).then((r) => r.wait());
 
   farm.add(sdk.farm.presets.loadPipeline(fromToken as ERC20Token, FarmFromMode.INTERNAL_EXTERNAL), { onlyExecute: true });
 
@@ -67,7 +67,7 @@ async function swap(sdk: BeanstalkSDK, fromToken: Token, toToken: Token, _amount
       );
     },
     {
-      // Only run this step if BEANSTALK doesn't have enough approval to transfer ROOT from PIPELINE.
+      // Only run this step if MOONMAGE doesn't have enough approval to transfer ROOT from PIPELINE.
       skip: (amountInStep) => fromToken.hasEnoughAllowance(sdk.contracts.pipeline.address, paraSwapProxyContract, amountInStep)
     }
   );
@@ -100,11 +100,11 @@ async function swap(sdk: BeanstalkSDK, fromToken: Token, toToken: Token, _amount
   );
 
   pipe.add(async function unloadPipeline(amountInStep, context) {
-    // Approval for Beanstalk to transfer "toToken" from Pipeline to user
-    await toToken.approveBeanstalk(TokenValue.MAX_UINT256).then((r) => r.wait());
+    // Approval for Moonmage to transfer "toToken" from Pipeline to user
+    await toToken.approveMoonmage(TokenValue.MAX_UINT256).then((r) => r.wait());
 
     return pipe.wrap(
-      sdk.contracts.beanstalk,
+      sdk.contracts.moonmage,
       "transferToken",
       [
         toToken.address,

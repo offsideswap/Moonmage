@@ -14,22 +14,22 @@ pragma experimental ABIEncoderV2;
 
 contract MockAdminFacet is Sun {
 
-    function mintBeans(address to, uint256 amount) external {
-        C.bean().mint(to, amount);
+    function mintMoons(address to, uint256 amount) external {
+        C.moon().mint(to, amount);
     }
 
     function ripen(uint256 amount) external {
-        C.bean().mint(address(this), amount);
+        C.moon().mint(address(this), amount);
         rewardToHarvestable(amount);
     }
 
     function fertilize(uint256 amount) external {
-        C.bean().mint(address(this), amount);
+        C.moon().mint(address(this), amount);
         rewardToFertilizer(amount);
     }
 
     function rewardSilo(uint256 amount) external {
-        C.bean().mint(address(this), amount);
+        C.moon().mint(address(this), amount);
         rewardToSilo(amount);
     }
 
@@ -42,14 +42,14 @@ contract MockAdminFacet is Sun {
     function rewardSunrise(uint256 amount) public {
         updateStart();
         s.season.current += 1;
-        C.bean().mint(address(this), amount);
-        rewardBeans(amount);
+        C.moon().mint(address(this), amount);
+        rewardMoons(amount);
     }
 
     function fertilizerSunrise(uint256 amount) public {
         updateStart();
         s.season.current += 1;
-        C.bean().mint(address(this), amount);
+        C.moon().mint(address(this), amount);
         rewardToFertilizer(amount*3);
     }
 

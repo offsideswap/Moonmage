@@ -57,17 +57,17 @@ function evaluatePolynomialIntegration(f, start, end, pieceIndex) {
     return math.format(math.subtract(positiveSum, negativeSum), {notation: "fixed"});
 }
 
-function getAmountListing(f, placeInLine, amountBeans,) {
+function getAmountListing(f, placeInLine, amountMoons,) {
     const pieceIndex = findIndex(f.breakpoints, placeInLine, f.numPieces);
     const pricePerPod = evaluatePolynomial(f, placeInLine, pieceIndex);
-    const amountPods = math.floor(math.divide(math.multiply(amountBeans, 1000000), pricePerPod));
+    const amountPods = math.floor(math.divide(math.multiply(amountMoons, 1000000), pricePerPod));
     return math.format(amountPods, {notation:"fixed"});
 
 }
 
 function getAmountOrder(f, placeInLine, amountPodsFromOrder) {
     
-    var beanAmount = math.bignumber(0);
+    var moonAmount = math.bignumber(0);
     var start = math.bignumber(placeInLine);
     const end = math.add(start, math.bignumber(amountPodsFromOrder));
     var currentPieceIndex = findIndex(f.breakpoints, placeInLine, f.numPieces);
@@ -83,7 +83,7 @@ function getAmountOrder(f, placeInLine, amountPodsFromOrder) {
 
         const endIntegration = integrateToEnd ? end : nextPieceStart;
         
-        beanAmount = math.add(beanAmount, math.bignumber(evaluatePolynomialIntegration(f, start, endIntegration, currentPieceIndex)));
+        moonAmount = math.add(moonAmount, math.bignumber(evaluatePolynomialIntegration(f, start, endIntegration, currentPieceIndex)));
         
         if(!integrateToEnd) {
             start = nextPieceStart;
@@ -95,7 +95,7 @@ function getAmountOrder(f, placeInLine, amountPodsFromOrder) {
             }
         } 
     }
-    return math.format(math.floor(math.divide(beanAmount, 1000000)), {notation: "fixed"});
+    return math.format(math.floor(math.divide(moonAmount, 1000000)), {notation: "fixed"});
 
 }
 

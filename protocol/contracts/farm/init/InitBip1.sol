@@ -7,11 +7,11 @@ pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import {AppStorage} from "../AppStorage.sol";
-import {IBean} from "../../interfaces/IBean.sol";
+import {IMoon} from "../../interfaces/IMoon.sol";
 
 /**
  * @author Publius
- * @title InitBip1 runs the code for BIP-1. It mints Beans to the budget contracts.
+ * @title InitBip1 runs the code for BIP-1. It mints Moons to the budget contracts.
 **/
 contract InitBip1 {
 
@@ -21,7 +21,7 @@ contract InitBip1 {
     address private constant marketingBudget = address(0xAA420e97534aB55637957e868b658193b112A551 );
 
     function init() external {
-        IBean(s.c.bean).mint(marketingBudget, 80_000_000_000); // 80,000 Beans
-        IBean(s.c.bean).mint(developmentBudget, 120_000_000_000); // 120,000 Beans
+        IMoon(s.c.moon).mint(marketingBudget, 80_000_000_000); // 80,000 Moons
+        IMoon(s.c.moon).mint(developmentBudget, 120_000_000_000); // 120,000 Moons
     }
 }

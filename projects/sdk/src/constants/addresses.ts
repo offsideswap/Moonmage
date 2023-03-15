@@ -1,16 +1,16 @@
 import { Address } from "src/classes/Address";
 export const addresses = {
   // ----------------------------------------
-  // Beanstalk Core Contracts
+  // Moonmage Core Contracts
   // ----------------------------------------
-  BEANSTALK: Address.make("0xC1E088fC1323b20BCBee9bd1B9fC9546db5624C5"),
-  BEANSTALK_FERTILIZER: Address.make("0x402c84De2Ce49aF88f5e2eF3710ff89bFED36cB6"),
-  BARNRAISE_CUSTODIAN: Address.make("0xa9bA2C40b263843C04d344727b954A545c81D043"),
+  MOONMAGE: Address.make("0xC1E088fC1323b20BCBee9bd1B9fC9546db5624C5"),
+  MOONMAGE_FERTILIZER: Address.make("0x402c84De2Ce49aF88f5e2eF3710ff89bFED36cB6"),
+  SHIPRAISE_CUSTODIAN: Address.make("0xa9bA2C40b263843C04d344727b954A545c81D043"),
 
   // ----------------------------------------
   // Ecosystem Contracts
   // ----------------------------------------
-  BEANSTALK_PRICE: Address.make("0xF2C2b7eabcB353bF6f2128a7f8e1e32Eeb112530"),
+  MOONMAGE_PRICE: Address.make("0xF2C2b7eabcB353bF6f2128a7f8e1e32Eeb112530"),
   MATH: Address.make("0x16a903b66403d3de69db50e6d1ad0b07490b740a"),
   DEPOT: Address.make("0xDEb0f000082fD56C10f449d4f8497682494da84D"),
   PIPELINE: Address.make("0xb1bE0000bFdcDDc92A8290202830C4Ef689dCeaa"),
@@ -19,32 +19,32 @@ export const addresses = {
   // ----------------------------------------
   // BeaNFT Contracts
   // ----------------------------------------
-  BEANFT_GENESIS: Address.make("0xa755A670Aaf1FeCeF2bea56115E65e03F7722A79"),
-  BEANFT_WINTER_ADDRESSES: Address.make("0x459895483556daD32526eFa461F75E33E458d9E9"),
+  MOONFT_GENESIS: Address.make("0xa755A670Aaf1FeCeF2bea56115E65e03F7722A79"),
+  MOONFT_WINTER_ADDRESSES: Address.make("0x459895483556daD32526eFa461F75E33E458d9E9"),
 
   // ----------------------------------------
-  // Bean & Unripe Bean Tokens
+  // Moon & Unripe Moon Tokens
   // ----------------------------------------
-  BEAN: Address.make("0xBEA0000029AD1c77D3d5D23Ba2D8893dB9d1Efab"),
-  UNRIPE_BEAN:
-    // "Unripe Bean": Unripe vesting asset for the Bean token, Localhost
+  MOON: Address.make("0xBEA0000029AD1c77D3d5D23Ba2D8893dB9d1Efab"),
+  UNRIPE_MOON:
+    // "Unripe Moon": Unripe vesting asset for the Moon token, Localhost
     Address.make("0x1BEA0050E63e05FBb5D8BA2f10cf5800B6224449"),
-  UNRIPE_BEAN_CRV3:
-    // "Unripe BEAN:CRV3 LP": Unripe vesting asset for the BEAN:CRV3 LP token, Localhost
+  UNRIPE_MOON_CRV3:
+    // "Unripe MOON:CRV3 LP": Unripe vesting asset for the MOON:CRV3 LP token, Localhost
     Address.make("0x1BEA3CcD22F4EBd3d37d731BA31Eeca95713716D"),
 
   // ----------------------------------------
-  // Bean Pool LP Tokens
+  // Moon Pool LP Tokens
   // ----------------------------------------
-  BEAN_CRV3:
-    // "Curve.fi Factory USD Metapool: Bean (BEAN3CRV-f)"
+  MOON_CRV3:
+    // "Curve.fi Factory USD Metapool: Moon (MOON3CRV-f)"
     // [Implements: ERC20 & Metapool]
     // --------------------------------------------------
-    // coins[0] = 0xBEA0003eA948Db32082Fc6F4EC0729D258a0444c (BEAN)
+    // coins[0] = 0xBEA0003eA948Db32082Fc6F4EC0729D258a0444c (MOON)
     // coins[1] = 0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490 (3CRV)
     //
-    // 1. Creates a BEAN:3CRV Metapool contract.
-    // 2. Issues BEAN3CRV-f, the pool's LP token. The pool address and
+    // 1. Creates a MOON:3CRV Metapool contract.
+    // 2. Issues MOON3CRV-f, the pool's LP token. The pool address and
     //    the LP token address are identical. Note that this is NOT the
     //    case for 3pool itself on Mainnet:
     //    - 3CRV (the 3pool LP Token) = 0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490
@@ -99,9 +99,9 @@ export const addresses = {
   // zap
   CURVE_ZAP: Address.make("0xA79828DF1850E8a3A3064576f380D90aECDD3359"),
 
-  // BEAN_ETH_UNIV2_LP !! Deprecated
-  BEAN_ETH_UNIV2_LP: Address.make("0x87898263B6C5BABe34b4ec53F22d98430b91e371"),
+  // MOON_ETH_UNIV2_LP !! Deprecated
+  MOON_ETH_UNIV2_LP: Address.make("0x87898263B6C5BABe34b4ec53F22d98430b91e371"),
 
-  // BEAN_LUSD_LP !! Deprecated
-  BEAN_LUSD_LP: Address.make("0xD652c40fBb3f06d6B58Cb9aa9CFF063eE63d465D")
+  // MOON_LUSD_LP !! Deprecated
+  MOON_LUSD_LP: Address.make("0xD652c40fBb3f06d6B58Cb9aa9CFF063eE63d465D")
 };

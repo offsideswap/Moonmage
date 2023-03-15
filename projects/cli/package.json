@@ -1,22 +1,22 @@
 {
-  "name": "@beanstalk/cli",
+  "name": "@moonmage/cli",
   "version": "0.0.9",
-  "description": "Beanstalk protocol development cli tool",
+  "description": "Moonmage protocol development cli tool",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/BeanstalkFarms/Beanstalk-SDK.git",
+    "url": "https://github.com/MoonmageFarms/Moonmage-SDK.git",
     "directory": "projects/cli"
   },
   "packageManager": "yarn@3.2.3",
   "type": "module",
   "bin": {
-    "bean": "build/cli.js"
+    "moon": "build/cli.js"
   },
   "scripts": {
     "cli:publish": "yarn cli:build && yarn npm publish --access public",
     "cli:build": "rimraf build && tsc && chmod u+x build/cli.js",
-    "g:bean": "yarn ts-node-esm src/cli.ts"
+    "g:moon": "yarn ts-node-esm src/cli.ts"
   },
   "devDependencies": {
     "@types/command-line-args": "^5",
@@ -27,7 +27,7 @@
     "typescript": "4.9.3"
   },
   "dependencies": {
-    "@beanstalk/sdk": "workspace:*",
+    "@moonmage/sdk": "workspace:*",
     "chalk": "5.1.2",
     "command-line-args": "5.2.1",
     "command-line-usage": "6.1.3",

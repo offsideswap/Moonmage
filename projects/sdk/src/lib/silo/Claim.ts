@@ -1,13 +1,13 @@
 import { ContractTransaction } from "ethers";
 import { Token } from "src/classes/Token";
-import { BeanstalkSDK, DataSource } from "../BeanstalkSDK";
+import { MoonmageSDK, DataSource } from "../MoonmageSDK";
 import { FarmToMode } from "../farm";
 import { TokenSiloBalance } from "src/lib/silo/types";
 
 export class Claim {
-  static sdk: BeanstalkSDK;
+  static sdk: MoonmageSDK;
 
-  constructor(sdk: BeanstalkSDK) {
+  constructor(sdk: MoonmageSDK) {
     Claim.sdk = sdk;
   }
 
@@ -38,8 +38,8 @@ export class Claim {
     });
 
     return seasons.length === 1
-      ? Claim.sdk.contracts.beanstalk.claimWithdrawal(token.address, seasons[0], toMode)
-      : Claim.sdk.contracts.beanstalk.claimWithdrawals(token.address, seasons, toMode);
+      ? Claim.sdk.contracts.moonmage.claimWithdrawal(token.address, seasons[0], toMode)
+      : Claim.sdk.contracts.moonmage.claimWithdrawals(token.address, seasons, toMode);
   }
 
   validate(token: Token) {

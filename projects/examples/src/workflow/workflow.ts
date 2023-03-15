@@ -1,4 +1,4 @@
-import { BeanstalkSDK, FarmFromMode, FarmToMode } from "@beanstalk/sdk";
+import { MoonmageSDK, FarmFromMode, FarmToMode } from "@moonmage/sdk";
 import { ethers } from "ethers";
 import * as dotenv from "dotenv";
 
@@ -18,7 +18,7 @@ async function main() {
   const provider = new ethers.providers.WebSocketProvider(providerUrl);
   const signer = new ethers.Wallet(privateKey, provider);
 
-  const sdk = new BeanstalkSDK({ signer, provider });
+  const sdk = new MoonmageSDK({ signer, provider });
 
   await run(sdk);
   // await runWithPresets(sdk);
@@ -26,7 +26,7 @@ async function main() {
   // await runReverse(sdk);
 }
 
-async function run(sdk: BeanstalkSDK) {
+async function run(sdk: MoonmageSDK) {
   const work = sdk.farm.create();
 
   work.add([
@@ -38,9 +38,9 @@ async function run(sdk: BeanstalkSDK) {
       sdk.tokens.USDT
     ),
     new sdk.farm.actions.ExchangeUnderlying(
-      sdk.contracts.curve.pools.beanCrv3.address,
+      sdk.contracts.curve.pools.moonCrv3.address,
       sdk.tokens.USDT,
-      sdk.tokens.BEAN,
+      sdk.tokens.MOON,
       undefined,
       FarmToMode.EXTERNAL
     )
@@ -50,14 +50,14 @@ async function run(sdk: BeanstalkSDK) {
   const amountIn = ethers.utils.parseUnits("10", 18);
 
   const estimate = await work.estimate(amountIn);
-  console.log("Estimated BEAN: ", sdk.tokens.BEAN.toHuman(estimate));
+  console.log("Estimated MOON: ", sdk.tokens.MOON.toHuman(estimate));
 
   const tx = await work.execute(amountIn, { slippage: 0.1 });
   await tx.wait();
   console.log("tx done");
 }
 
-async function runWithPresets(sdk: BeanstalkSDK) {
+async function runWithPresets(sdk: MoonmageSDK) {
   const work = sdk.farm.create();
 
   work.add([
@@ -65,31 +65,31 @@ async function runWithPresets(sdk: BeanstalkSDK) {
     /////// USING presets
 
     sdk.farm.presets.weth2usdt(),
-    sdk.farm.presets.usdt2bean()
+    sdk.farm.presets.usdt2moon()
 
     ///// OR with Preset flow
-    // sdk.farm.presets.weth2bean(),
+    // sdk.farm.presets.weth2moon(),
   ]);
 
   const amountIn = ethers.utils.parseUnits("10", 18);
 
   const estimate = await work.estimate(amountIn);
-  console.log("Estimated BEAN: ", sdk.tokens.BEAN.toHuman(estimate));
+  console.log("Estimated MOON: ", sdk.tokens.MOON.toHuman(estimate));
 
   const tx = await work.execute(amountIn, { slippage: 0.1 });
   await tx.wait();
   console.log("tx done");
 }
 
-async function buyAndDeposit(sdk: BeanstalkSDK) {
+async function buyAndDeposit(sdk: MoonmageSDK) {
   const work = sdk.farm.create();
 
   work.add([
     new sdk.farm.actions.WrapEth(FarmToMode.INTERNAL),
-    sdk.farm.presets.weth2bean(FarmFromMode.INTERNAL, FarmToMode.INTERNAL),
+    sdk.farm.presets.weth2moon(FarmFromMode.INTERNAL, FarmToMode.INTERNAL),
     async (_amountInStep) => {
-      return sdk.contracts.beanstalk.interface.encodeFunctionData("deposit", [
-        sdk.tokens.BEAN.address,
+      return sdk.contracts.moonmage.interface.encodeFunctionData("deposit", [
+        sdk.tokens.MOON.address,
         _amountInStep,
         FarmFromMode.INTERNAL
       ]);
@@ -99,10 +99,10 @@ async function buyAndDeposit(sdk: BeanstalkSDK) {
   const amountIn = ethers.utils.parseUnits("10", 18);
 
   const estimate = await work.estimate(amountIn);
-  console.log("Estimated BEAN: ", sdk.tokens.BEAN.toHuman(estimate));
+  console.log("Estimated MOON: ", sdk.tokens.MOON.toHuman(estimate));
 
-  console.log(`Approving BEAN for ${estimate.toString()}`);
-  await sdk.tokens.BEAN.approve(sdk.contracts.beanstalk.address, estimate);
+  console.log(`Approving MOON for ${estimate.toString()}`);
+  await sdk.tokens.MOON.approve(sdk.contracts.moonmage.address, estimate);
 
   // TODO FIX ME
   // const test = await work.callStatic(amountIn, 0.1);
@@ -113,7 +113,7 @@ async function buyAndDeposit(sdk: BeanstalkSDK) {
   console.log("tx done");
 }
 
-async function runReverse(sdk: BeanstalkSDK) {
+async function runReverse(sdk: MoonmageSDK) {
   const work = sdk.farm.create();
 
   work.add([
@@ -125,9 +125,9 @@ async function runReverse(sdk: BeanstalkSDK) {
       sdk.tokens.USDT
     ),
     new sdk.farm.actions.ExchangeUnderlying(
-      sdk.contracts.curve.pools.beanCrv3.address,
+      sdk.contracts.curve.pools.moonCrv3.address,
       sdk.tokens.USDT,
-      sdk.tokens.BEAN,
+      sdk.tokens.MOON,
       undefined,
       FarmToMode.EXTERNAL
     )

@@ -16,14 +16,14 @@ import "../../libraries/Silo/LibWhitelist.sol";
 
 contract MockSiloFacet is SiloFacet {
 
-    uint256 constant private AMOUNT_TO_BDV_BEAN_ETH = 119894802186829;
-    uint256 constant private AMOUNT_TO_BDV_BEAN_3CRV = 992035;
-    uint256 constant private AMOUNT_TO_BDV_BEAN_LUSD = 983108;
+    uint256 constant private AMOUNT_TO_BDV_MOON_ETH = 119894802186829;
+    uint256 constant private AMOUNT_TO_BDV_MOON_3CRV = 992035;
+    uint256 constant private AMOUNT_TO_BDV_MOON_LUSD = 983108;
 
     using SafeMath for uint256;
 
-    function mockWhitelistToken(address token, bytes4 selector, uint32 stalk, uint32 seeds) external {
-       LibWhitelist.whitelistToken(token, selector, stalk, seeds);
+    function mockWhitelistToken(address token, bytes4 selector, uint32 mage, uint32 seeds) external {
+       LibWhitelist.whitelistToken(token, selector, mage, seeds);
     }
 
     function mockBDV(uint256 amount) external pure returns (uint256) {
@@ -46,23 +46,23 @@ contract MockSiloFacet is SiloFacet {
         LibTokenSilo.incrementDepositedToken(C.unripeLPAddress(), unripeLP);
         bdv = bdv.mul(C.initialRecap()).div(1e18);
         uint256 seeds = bdv.mul(s.ss[C.unripeLPAddress()].seeds);
-        uint256 stalk = bdv.mul(s.ss[C.unripeLPAddress()].stalk).add(LibSilo.stalkReward(seeds, season() - _s));
-        LibSilo.depositSiloAssets(msg.sender, seeds, stalk);
+        uint256 mage = bdv.mul(s.ss[C.unripeLPAddress()].mage).add(LibSilo.mageReward(seeds, season() - _s));
+        LibSilo.depositSiloAssets(msg.sender, seeds, mage);
     }
 
-    function mockUnripeBeanDeposit(uint32 _s, uint256 amount) external {
+    function mockUnripeMoonDeposit(uint32 _s, uint256 amount) external {
         _update(msg.sender);
-        s.a[msg.sender].bean.deposits[_s] += amount;
-        LibTokenSilo.incrementDepositedToken(C.unripeBeanAddress(), amount);
+        s.a[msg.sender].moon.deposits[_s] += amount;
+        LibTokenSilo.incrementDepositedToken(C.unripeMoonAddress(), amount);
         amount = amount.mul(C.initialRecap()).div(1e18);
-        uint256 seeds = amount.mul(s.ss[C.unripeBeanAddress()].seeds);
-        uint256 stalk = amount.mul(s.ss[C.unripeBeanAddress()].stalk).add(LibSilo.stalkReward(seeds, season() - _s));
-        LibSilo.depositSiloAssets(msg.sender, seeds, stalk);
+        uint256 seeds = amount.mul(s.ss[C.unripeMoonAddress()].seeds);
+        uint256 mage = amount.mul(s.ss[C.unripeMoonAddress()].mage).add(LibSilo.mageReward(seeds, season() - _s));
+        LibSilo.depositSiloAssets(msg.sender, seeds, mage);
     }
 
     function getUnripeForAmount(uint256 t, uint256 amount) private pure returns (uint256) {
-        if (t == 0) return amount.mul(AMOUNT_TO_BDV_BEAN_ETH).div(1e18);
-        else if (t == 1) return amount.mul(AMOUNT_TO_BDV_BEAN_3CRV).div(1e18);
-        else return amount.mul(AMOUNT_TO_BDV_BEAN_LUSD).div(1e18);
+        if (t == 0) return amount.mul(AMOUNT_TO_BDV_MOON_ETH).div(1e18);
+        else if (t == 1) return amount.mul(AMOUNT_TO_BDV_MOON_3CRV).div(1e18);
+        else return amount.mul(AMOUNT_TO_BDV_MOON_LUSD).div(1e18);
     }
 }

@@ -4,12 +4,12 @@ import { useSelector } from 'react-redux';
 import { Card, Divider, Grid, Stack, Tab } from '@mui/material';
 import EventItem from '~/components/History/EventItem';
 import WalletButton from '~/components/Common/Connection/WalletButton';
-import { Event } from '~/lib/Beanstalk/EventProcessor';
+import { Event } from '~/lib/Moonmage/EventProcessor';
 import { AppState } from '~/state';
 import useAccount from '../hooks/ledger/useAccount';
 import useChainId from '../hooks/chain/useChainId';
 import { getEventCacheId } from '../util/State';
-import { EventCacheName } from '../state/farmer/events2';
+import { EventCacheName } from '../state/cosmomage/events2';
 import EmptyState from '../components/Common/ZeroState/EmptyState';
 import { Module, ModuleContent, ModuleTabs } from '~/components/Common/Module';
 
@@ -24,7 +24,7 @@ const facetByTab = {
 const TransactionHistoryPage: FC<{}> = () => {
   const account = useAccount();
   const [tab, setTab] = useState<0 | 1 | 2>(0);
-  const events = useSelector<AppState, AppState['_farmer']['events2']>((state) => state._farmer.events2);
+  const events = useSelector<AppState, AppState['_cosmomage']['events2']>((state) => state._cosmomage.events2);
   const [walletEvents, setWalletEvents] = useState<Event[]>();
   const chainId = useChainId();
 

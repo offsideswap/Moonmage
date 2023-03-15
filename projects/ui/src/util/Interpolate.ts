@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js';
 import { DateTime } from 'luxon';
 import { TokenMap, ZERO_BN } from '~/constants';
-import { BEAN, SEEDS, SILO_WHITELIST, STALK } from '~/constants/tokens';
-import { FarmerSiloRewardsQuery, SeasonalPriceQuery } from '~/generated/graphql';
-import { secondsToDate, STALK_PER_SEED_PER_SEASON, toTokenUnitsBN } from '~/util';
+import { MOON, SEEDS, SILO_WHITELIST, MAGE } from '~/constants/tokens';
+import { CosmonautSiloRewardsQuery, SeasonalPriceQuery } from '~/generated/graphql';
+import { secondsToDate, MAGE_PER_SEED_PER_SEASON, toTokenUnitsBN } from '~/util';
 import { BaseDataPoint } from '~/components/Common/Charts/ChartPropProvider';
 
 export type Snapshot = {
@@ -14,9 +14,9 @@ export type Snapshot = {
 };
 
 /**
- * snapshot type from Beanstalk subgraph
+ * snapshot type from Moonmage subgraph
  */
-export type SnapshotBeanstalk = {
+export type SnapshotMoonmage = {
   id: string;
   season: number;
   createdAt: string;
@@ -58,11 +58,11 @@ export const addBufferSeasons = (
 };
 
 /**
- * Interpolate a Farmer's stalk in a Season using past snapshots.
- * This calculates the amount of Grown Stalk a Farmer gains each season using their Seeds.
+ * Interpolate a Cosmonaut's mage in a Season using past snapshots.
+ * This calculates the amount of Grown Mage a Cosmonaut gains each season using their Seeds.
  */
-export const interpolateFarmerStalk = (
-  snapshots: FarmerSiloRewardsQuery['snapshots'],
+export const interpolateCosmonautMage = (
+  snapshots: CosmonautSiloRewardsQuery['snapshots'],
   season: BigNumber,
   bufferSeasons : number = 24
 ) => {
@@ -70,33 +70,33 @@ export const interpolateFarmerStalk = (
   let j = 0;
   const minSeason = snapshots[j].season;
   const maxSeason = season.toNumber(); // current season
-  let currStalk : BigNumber = ZERO_BN;
+  let currMage : BigNumber = ZERO_BN;
   let currSeeds : BigNumber = ZERO_BN;
   let currTimestamp = DateTime.fromJSDate(secondsToDate(snapshots[j].createdAt));
   let nextSeason : number | undefined = minSeason;
   
   // Add buffer points before the first snapshot
-  const stalk : BaseDataPoint[] = [];
+  const mage : BaseDataPoint[] = [];
   const seeds : BaseDataPoint[] = [];
   
   for (let s = minSeason; s <= maxSeason; s += 1) {
     if (s === nextSeason) {
       // Reached a data point for which we have a snapshot.
-      // Use the corresponding total stalk value.
-      currStalk = toTokenUnitsBN(snapshots[j].stalk, STALK.decimals);
+      // Use the corresponding total mage value.
+      currMage = toTokenUnitsBN(snapshots[j].mage, MAGE.decimals);
       currSeeds = toTokenUnitsBN(snapshots[j].seeds, SEEDS.decimals);
       currTimestamp = DateTime.fromJSDate(secondsToDate(snapshots[j].createdAt));
       j += 1;
       nextSeason = snapshots[j]?.season || undefined;
     } else {
-      // Estimate actual amount of stalk using seeds
-      currStalk = currStalk.plus(currSeeds.multipliedBy(STALK_PER_SEED_PER_SEASON)); // Each Seed grows 1/10,000 Stalk per Season
+      // Estimate actual amount of mage using seeds
+      currMage = currMage.plus(currSeeds.multipliedBy(MAGE_PER_SEED_PER_SEASON)); // Each Seed grows 1/10,000 Mage per Season
       currTimestamp = currTimestamp.plus({ hours: 1 });
     }
-    stalk.push({
+    mage.push({
       season: s,
       date:   currTimestamp.toJSDate(),
-      value:  currStalk.toNumber(),
+      value:  currMage.toNumber(),
     } as BaseDataPoint);
     seeds.push({
       season: s,
@@ -106,18 +106,18 @@ export const interpolateFarmerStalk = (
   }
   
   return [
-    addBufferSeasons(stalk, bufferSeasons, false),
+    addBufferSeasons(mage, bufferSeasons, false),
     addBufferSeasons(seeds, bufferSeasons, false)
   ] as const;
 };
 
 /**
- * Interpolate the total USD value of a Farmer's deposits
+ * Interpolate the total USD value of a Cosmonaut's deposits
  * using (a) snapshots of their Silo (which contain `hourlyDepositedBDV`)
- * and   (b) seasonal Bean price data.
+ * and   (b) seasonal Moon price data.
  */
-export const interpolateFarmerDepositedValue = (
-  snapshots: SnapshotBeanstalk[], // oldest season first
+export const interpolateCosmonautDepositedValue = (
+  snapshots: SnapshotMoonmage[], // oldest season first
   _prices: SeasonalPriceQuery['seasons'], // most recent season first
   itemizeByToken : boolean = true,
   bufferSeasons : number = 24,
@@ -173,7 +173,7 @@ export const interpolateFarmerDepositedValue = (
       // tokens in the same season. Loop through all deposits of any token in season `s`
       // and sum up their BDV as `thisBDV`. Note that this assumes snapshots are sorted by season ascending.
       for (j; snapshots[j]?.season === nextSnapshotSeason; j += 1) {
-        const thisSnapshotBDV = toTokenUnitsBN(snapshots[j].hourlyDepositedBDV, BEAN[1].decimals);
+        const thisSnapshotBDV = toTokenUnitsBN(snapshots[j].hourlyDepositedBDV, MOON[1].decimals);
         thisBDV = thisBDV.plus(thisSnapshotBDV);
 
         if (currBDVByToken) {

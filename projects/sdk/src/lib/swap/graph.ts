@@ -1,8 +1,8 @@
 import { Graph } from "graphlib";
-import { BeanstalkSDK } from "src/lib/BeanstalkSDK";
+import { MoonmageSDK } from "src/lib/MoonmageSDK";
 import { FarmFromMode, FarmToMode } from "src/lib/farm";
 
-export const getSwapGraph = (sdk: BeanstalkSDK): Graph => {
+export const getSwapGraph = (sdk: MoonmageSDK): Graph => {
   const graph: Graph = new Graph({
     multigraph: true,
     directed: true,
@@ -13,7 +13,7 @@ export const getSwapGraph = (sdk: BeanstalkSDK): Graph => {
 
   graph.setNode("ETH", { token: sdk.tokens.ETH });
   graph.setNode("WETH", { token: sdk.tokens.WETH });
-  graph.setNode("BEAN", { token: sdk.tokens.BEAN });
+  graph.setNode("MOON", { token: sdk.tokens.MOON });
   graph.setNode("USDT", { token: sdk.tokens.USDT });
   graph.setNode("USDC", { token: sdk.tokens.USDC });
   graph.setNode("DAI", { token: sdk.tokens.DAI });
@@ -44,71 +44,71 @@ export const getSwapGraph = (sdk: BeanstalkSDK): Graph => {
     to: "WETH"
   });
 
-  // USDT<>BEAN
-  graph.setEdge("USDT", "BEAN", {
-    build: (_: string, from: FarmFromMode, to: FarmToMode) => sdk.farm.presets.usdt2bean(from, to),
+  // USDT<>MOON
+  graph.setEdge("USDT", "MOON", {
+    build: (_: string, from: FarmFromMode, to: FarmToMode) => sdk.farm.presets.usdt2moon(from, to),
     from: "USDT",
-    to: "BEAN"
+    to: "MOON"
   });
-  graph.setEdge("BEAN", "USDT", {
-    build: (_: string, from: FarmFromMode, to: FarmToMode) => sdk.farm.presets.bean2usdt(from, to),
-    from: "BEAN",
+  graph.setEdge("MOON", "USDT", {
+    build: (_: string, from: FarmFromMode, to: FarmToMode) => sdk.farm.presets.moon2usdt(from, to),
+    from: "MOON",
     to: "USDT"
   });
 
-  // USDC<>BEAN
-  graph.setEdge("USDC", "BEAN", {
+  // USDC<>MOON
+  graph.setEdge("USDC", "MOON", {
     build: (_: string, from: FarmFromMode, to: FarmToMode) =>
-      new sdk.farm.actions.ExchangeUnderlying(sdk.contracts.curve.pools.beanCrv3.address, sdk.tokens.USDC, sdk.tokens.BEAN, from, to),
+      new sdk.farm.actions.ExchangeUnderlying(sdk.contracts.curve.pools.moonCrv3.address, sdk.tokens.USDC, sdk.tokens.MOON, from, to),
     from: "USDC",
-    to: "BEAN"
+    to: "MOON"
   });
-  graph.setEdge("BEAN", "USDC", {
+  graph.setEdge("MOON", "USDC", {
     build: (_: string, from: FarmFromMode, to: FarmToMode) =>
-      new sdk.farm.actions.ExchangeUnderlying(sdk.contracts.curve.pools.beanCrv3.address, sdk.tokens.BEAN, sdk.tokens.USDC, from, to),
-    from: "BEAN",
+      new sdk.farm.actions.ExchangeUnderlying(sdk.contracts.curve.pools.moonCrv3.address, sdk.tokens.MOON, sdk.tokens.USDC, from, to),
+    from: "MOON",
     to: "USDC"
   });
 
-  // DAI<>BEAN
-  graph.setEdge("DAI", "BEAN", {
+  // DAI<>MOON
+  graph.setEdge("DAI", "MOON", {
     build: (_: string, from: FarmFromMode, to: FarmToMode) =>
-      new sdk.farm.actions.ExchangeUnderlying(sdk.contracts.curve.pools.beanCrv3.address, sdk.tokens.DAI, sdk.tokens.BEAN, from, to),
+      new sdk.farm.actions.ExchangeUnderlying(sdk.contracts.curve.pools.moonCrv3.address, sdk.tokens.DAI, sdk.tokens.MOON, from, to),
     from: "DAI",
-    to: "BEAN"
+    to: "MOON"
   });
-  graph.setEdge("BEAN", "DAI", {
+  graph.setEdge("MOON", "DAI", {
     build: (_: string, from: FarmFromMode, to: FarmToMode) =>
-      new sdk.farm.actions.ExchangeUnderlying(sdk.contracts.curve.pools.beanCrv3.address, sdk.tokens.BEAN, sdk.tokens.DAI, from, to),
-    from: "BEAN",
+      new sdk.farm.actions.ExchangeUnderlying(sdk.contracts.curve.pools.moonCrv3.address, sdk.tokens.MOON, sdk.tokens.DAI, from, to),
+    from: "MOON",
     to: "DAI"
   });
 
-  // CRV3<>BEAN
-  graph.setEdge("3CRV", "BEAN", {
+  // CRV3<>MOON
+  graph.setEdge("3CRV", "MOON", {
     build: (_: string, from: FarmFromMode, to: FarmToMode) =>
       new sdk.farm.actions.Exchange(
-        sdk.contracts.curve.pools.beanCrv3.address,
+        sdk.contracts.curve.pools.moonCrv3.address,
         sdk.contracts.curve.registries.metaFactory.address,
         sdk.tokens.CRV3,
-        sdk.tokens.BEAN,
+        sdk.tokens.MOON,
         from,
         to
       ),
     from: "3CRV",
-    to: "BEAN"
+    to: "MOON"
   });
-  graph.setEdge("BEAN", "3CRV", {
+  graph.setEdge("MOON", "3CRV", {
     build: (_: string, from: FarmFromMode, to: FarmToMode) =>
       new sdk.farm.actions.Exchange(
-        sdk.contracts.curve.pools.beanCrv3.address,
+        sdk.contracts.curve.pools.moonCrv3.address,
         sdk.contracts.curve.registries.metaFactory.address,
-        sdk.tokens.BEAN,
+        sdk.tokens.MOON,
         sdk.tokens.CRV3,
         from,
         to
       ),
-    from: "BEAN",
+    from: "MOON",
     to: "3CRV"
   });
 

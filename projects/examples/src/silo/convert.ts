@@ -1,4 +1,4 @@
-import { BeanstalkSDK, Token, TokenValue } from "@beanstalk/sdk";
+import { MoonmageSDK, Token, TokenValue } from "@moonmage/sdk";
 
 import chalk from "chalk";
 import { account as _account, impersonate } from "../setup";
@@ -8,7 +8,7 @@ main().catch((e) => {
   console.log(e);
 });
 
-let sdk:BeanstalkSDK;
+let sdk:MoonmageSDK;
 
 async function main() {
   const account = process.argv[3] || _account;
@@ -18,8 +18,8 @@ async function main() {
   sdk.DEBUG = false;
 
   
-  const fromToken = sdk.tokens.BEAN
-  const toToken = sdk.tokens.UNRIPE_BEAN
+  const fromToken = sdk.tokens.MOON
+  const toToken = sdk.tokens.UNRIPE_MOON
   const amount = fromToken.amount(2500)
 
   let tx = await sdk.silo.convert(fromToken, toToken, amount)

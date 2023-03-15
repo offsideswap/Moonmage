@@ -11,17 +11,17 @@ import {IDiamondCut} from "../../interfaces/IDiamondCut.sol";
 import {IDiamondLoupe} from "../../interfaces/IDiamondLoupe.sol";
 import {LibDiamond} from "../../libraries/LibDiamond.sol";
 import "../../C.sol";
-import "../../interfaces/IBean.sol";
+import "../../interfaces/IMoon.sol";
 import "../../interfaces/IWETH.sol";
 import "../../mocks/MockToken.sol";
 
 /**
  * @author Publius
- * @title Init Diamond initializes the Beanstalk Diamond.
+ * @title Init Diamond initializes the Moonmage Diamond.
 **/
 contract InitDiamond {
 
-    event Incentivization(address indexed account, uint256 beans);
+    event Incentivization(address indexed account, uint256 moons);
 
     AppStorage internal s;
 
@@ -34,8 +34,8 @@ contract InitDiamond {
         ds.supportedInterfaces[type(IDiamondCut).interfaceId] = true;
         ds.supportedInterfaces[type(IDiamondLoupe).interfaceId] = true;
 
-        C.bean().approve(C.curveMetapoolAddress(), type(uint256).max);
-        C.bean().approve(C.curveZapAddress(), type(uint256).max);
+        C.moon().approve(C.curveMetapoolAddress(), type(uint256).max);
+        C.moon().approve(C.curveZapAddress(), type(uint256).max);
         C.usdc().approve(C.curveZapAddress(), type(uint256).max);
 
         s.cases = s.cases = [
@@ -63,7 +63,7 @@ contract InitDiamond {
         s.w.lastSowTime = type(uint32).max;
         s.isFarm = 1;
 
-        C.bean().mint(msg.sender, C.getAdvanceIncentive());
+        C.moon().mint(msg.sender, C.getAdvanceIncentive());
         emit Incentivization(msg.sender, C.getAdvanceIncentive());
     }
 

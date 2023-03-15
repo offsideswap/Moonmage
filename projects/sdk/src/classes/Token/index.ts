@@ -1,4 +1,4 @@
 export { Token } from "./Token";
-export { BeanstalkToken } from "./BeanstalkToken";
+export { MoonmageToken } from "./MoonmageToken";
 export { ERC20Token } from "./ERC20Token";
 export { NativeToken } from "./NativeToken";

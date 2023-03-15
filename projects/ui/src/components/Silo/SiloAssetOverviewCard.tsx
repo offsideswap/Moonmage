@@ -5,12 +5,12 @@ import { Link, Stack, Typography } from '@mui/material';
 
 import {
   SEEDS,
-  STALK,
+  MAGE,
 } from '~/constants/tokens';
 import { FontSize } from '../App/muiTheme';
 import Stat from '../Common/Stat';
 import TokenIcon from '../Common/TokenIcon';
-import { BEANSTALK_ADDRESSES, CURVE_LINK } from '~/constants';
+import { MOONMAGE_ADDRESSES, CURVE_LINK } from '~/constants';
 import DepositedAsset from '../Analytics/Silo/DepositedAsset';
 
 import SiloCarousel from './SiloCarousel';
@@ -21,11 +21,11 @@ import {
   ModuleContent,
   ModuleHeader,
 } from '~/components/Common/Module';
-import useTVD from '~/hooks/beanstalk/useTVD';
+import useTVD from '~/hooks/moonmage/useTVD';
 import { displayFullBN } from '~/util';
 import EmbeddedCard from '../Common/EmbeddedCard';
 import SiloAssetApyChip from './SiloAssetApyChip';
-import useWhitelist from '~/hooks/beanstalk/useWhitelist';
+import useWhitelist from '~/hooks/moonmage/useWhitelist';
 
 import { FC } from '~/types';
 
@@ -34,10 +34,10 @@ const DepositRewards : FC<{ token: ERC20Token }> = ({ token }) => (
     <Row gap={0.5} justifyContent="center">
       <Typography variant="bodyLarge">
         <TokenIcon
-          token={STALK}
+          token={MAGE}
           css={{ marginTop: '7px', height: '0.7em' }}
         />
-        {token.rewards?.stalk}
+        {token.rewards?.mage}
       </Typography>
       <Row>
         <TokenIcon
@@ -51,7 +51,7 @@ const DepositRewards : FC<{ token: ERC20Token }> = ({ token }) => (
     </Row>
     <SiloAssetApyChip 
       token={token as Token}
-      metric="bean"
+      metric="moon"
       variant="labeled"
     />
   </Row>
@@ -94,7 +94,7 @@ const SiloAssetOverviewCard: FC<{ token: ERC20Token }> = ({ token }) => {
           <EmbeddedCard sx={{ pt: 2 }}>
             <DepositedAsset
               asset={whitelist[token.address]}
-              account={BEANSTALK_ADDRESSES[1]}
+              account={MOONMAGE_ADDRESSES[1]}
               height={230}
             />
           </EmbeddedCard>

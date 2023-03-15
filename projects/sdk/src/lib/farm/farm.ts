@@ -1,12 +1,12 @@
-import { BeanstalkSDK } from "../BeanstalkSDK";
+import { MoonmageSDK } from "../MoonmageSDK";
 import * as ActionLibrary from "./actions";
 import { LibraryPresets } from "./LibraryPresets";
 import { BasicPreparedResult, RunMode, Step, Workflow } from "src/classes/Workflow";
-import { Beanstalk, Depot } from "src/constants/generated";
+import { Moonmage, Depot } from "src/constants/generated";
 import { TokenValue } from "src/TokenValue";
 import { CallOverrides, ethers } from "ethers";
 import { AdvancedPipeWorkflow } from "src/lib/depot/pipe";
-import { AdvancedFarmCallStruct } from "src/constants/generated/protocol/abi/Beanstalk";
+import { AdvancedFarmCallStruct } from "src/constants/generated/protocol/abi/Moonmage";
 import { Clipboard } from "src/lib/depot";
 
 type FarmPreparedResult = { callData: string };
@@ -14,7 +14,7 @@ type FarmPreparedResult = { callData: string };
 
 /**
  * FarmWorkflow
- * => `beanstalk.farm()`.
+ * => `moonmage.farm()`.
  */
 export class FarmWorkflow<RunData extends { slippage: number } = { slippage: number }> extends Workflow<
   string, // EncodedResult
@@ -22,11 +22,11 @@ export class FarmWorkflow<RunData extends { slippage: number } = { slippage: num
   RunData // RunData
 > {
   public readonly FUNCTION_NAME = "farm";
-  private contract: Beanstalk | Depot;
+  private contract: Moonmage | Depot;
 
-  constructor(sdk: BeanstalkSDK, public name: string = "Farm", using: "beanstalk" | "depot" = "beanstalk") {
+  constructor(sdk: MoonmageSDK, public name: string = "Farm", using: "moonmage" | "depot" = "moonmage") {
     super(sdk, name);
-    this.contract = Workflow.sdk.contracts[using]; // use beanstalk or depot
+    this.contract = Workflow.sdk.contracts[using]; // use moonmage or depot
   }
 
   copy() {
@@ -37,7 +37,7 @@ export class FarmWorkflow<RunData extends { slippage: number } = { slippage: num
 
   prepare() {
     return {
-      target: this.contract.address, // targets Beanstalk if used in a pipeline
+      target: this.contract.address, // targets Moonmage if used in a pipeline
       callData: this.encodeWorkflow() // encodes: farm([ this.encodeSteps() ])
     };
   }
@@ -92,11 +92,11 @@ export class AdvancedFarmWorkflow<RunData extends { slippage: number } = { slipp
   RunData
 > {
   public readonly FUNCTION_NAME = "advancedFarm";
-  private contract: Beanstalk;
+  private contract: Moonmage;
 
-  constructor(protected sdk: BeanstalkSDK, public name: string = "Farm") {
+  constructor(protected sdk: MoonmageSDK, public name: string = "Farm") {
     super(sdk, name);
-    this.contract = Workflow.sdk.contracts.beanstalk; // ?
+    this.contract = Workflow.sdk.contracts.moonmage; // ?
   }
 
   copy() {
@@ -145,17 +145,17 @@ export class AdvancedFarmWorkflow<RunData extends { slippage: number } = { slipp
  *
  */
 export class Farm {
-  static sdk: BeanstalkSDK;
+  static sdk: MoonmageSDK;
   public readonly actions: typeof ActionLibrary;
   public presets: LibraryPresets;
 
-  constructor(sdk: BeanstalkSDK) {
+  constructor(sdk: MoonmageSDK) {
     Farm.sdk = sdk;
     this.actions = ActionLibrary;
     this.presets = new LibraryPresets(Farm.sdk);
   }
 
-  create<T = Record<string, any>>(name?: string, using: "beanstalk" | "depot" = "beanstalk"): FarmWorkflow<{ slippage: number } & T> {
+  create<T = Record<string, any>>(name?: string, using: "moonmage" | "depot" = "moonmage"): FarmWorkflow<{ slippage: number } & T> {
     return new FarmWorkflow(Farm.sdk, name, using);
   }
 

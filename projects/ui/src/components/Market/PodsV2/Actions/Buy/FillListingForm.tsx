@@ -15,23 +15,23 @@ import {
   TxnSettings
 } from '~/components/Common/Form';
 import Token, { ERC20Token, NativeToken } from '~/classes/Token';
-import useFarmerBalances from '~/hooks/farmer/useFarmerBalances';
+import useCosmonautBalances from '~/hooks/cosmomage/useCosmonautBalances';
 import { QuoteHandler } from '~/hooks/ledger/useQuote';
 import useTokenMap from '~/hooks/chain/useTokenMap';
 import useToggle from '~/hooks/display/useToggle';
 import useGetChainToken from '~/hooks/chain/useGetChainToken';
 import { useSigner } from '~/hooks/ledger/useSigner';
-import { useBeanstalkContract } from '~/hooks/ledger/useContract';
-import { Beanstalk } from '~/generated';
-import usePreferredToken, { PreferredToken } from '~/hooks/farmer/usePreferredToken';
-import { useFetchFarmerField } from '~/state/farmer/field/updater';
-import { useFetchFarmerBalances } from '~/state/farmer/balances/updater';
-import Farm, { ChainableFunction, FarmFromMode, FarmToMode } from '~/lib/Beanstalk/Farm';
+import { useMoonmageContract } from '~/hooks/ledger/useContract';
+import { Moonmage } from '~/generated';
+import usePreferredToken, { PreferredToken } from '~/hooks/cosmomage/usePreferredToken';
+import { useFetchCosmonautField } from '~/state/cosmomage/field/updater';
+import { useFetchCosmonautBalances } from '~/state/cosmomage/balances/updater';
+import Farm, { ChainableFunction, FarmFromMode, FarmToMode } from '~/lib/Moonmage/Farm';
 import { displayBN, displayTokenAmount, MinBN, toStringBaseUnitBN, toTokenUnitsBN } from '~/util';
 import { AppState } from '~/state';
-import { BEAN, ETH, PODS, WETH } from '~/constants/tokens';
+import { MOON, ETH, PODS, WETH } from '~/constants/tokens';
 import { ZERO_BN } from '~/constants';
-import { PodListing } from '~/state/farmer/market';
+import { PodListing } from '~/state/cosmomage/market';
 import { optimizeFromMode } from '~/util/Farm';
 import TokenIcon from '~/components/Common/TokenIcon';
 import { IconSize } from '~/components/App/muiTheme';
@@ -48,7 +48,7 @@ const FillListingV2Form : FC<
   FormikProps<FillListingFormValues>
   & {
     podListing: PodListing;
-    contract: Beanstalk;
+    contract: Moonmage;
     handleQuote: QuoteHandler;
     farm: Farm;
   }
@@ -67,24 +67,24 @@ const FillListingV2Form : FC<
 
   /// Chain
   const getChainToken = useGetChainToken();
-  const Bean          = getChainToken(BEAN);
+  const Moon          = getChainToken(MOON);
   const Eth           = getChainToken<NativeToken>(ETH);
   const Weth          = getChainToken<ERC20Token>(WETH);
-  const erc20TokenMap = useTokenMap<ERC20Token | NativeToken>([BEAN, ETH, WETH]);
+  const erc20TokenMap = useTokenMap<ERC20Token | NativeToken>([MOON, ETH, WETH]);
 
-  /// Farmer
-  const balances       = useFarmerBalances();
+  /// Cosmonaut
+  const balances       = useCosmonautBalances();
 
-  /// Beanstalk
-  const beanstalkField = useSelector<AppState, AppState['_beanstalk']['field']>(
-    (state) => state._beanstalk.field
+  /// Moonmage
+  const moonmageField = useSelector<AppState, AppState['_moonmage']['field']>(
+    (state) => state._moonmage.field
   );
 
   /// Derived
   const tokenIn   = values.tokens[0].token;
   const amountIn  = values.tokens[0].amount;
-  const tokenOut  = Bean;
-  const amountOut = (tokenIn === tokenOut) // Beans
+  const tokenOut  = Moon;
+  const amountOut = (tokenIn === tokenOut) // Moons
     ? values.tokens[0].amount
     : values.tokens[0].amountOut;
   const tokenInBalance = balances[tokenIn.address];
@@ -92,7 +92,7 @@ const FillListingV2Form : FC<
   const isReady       = amountIn?.gt(0) && amountOut?.gt(0);
   const isSubmittable = isReady;
   const podsPurchased = amountOut?.div(podListing.pricePerPod) || ZERO_BN;
-  const placeInLine   = podListing.index.minus(beanstalkField.harvestableIndex);
+  const placeInLine   = podListing.index.minus(moonmageField.harvestableIndex);
 
   /// Token select
   const handleSelectTokens = useCallback((_tokens: Set<Token>) => {
@@ -118,23 +118,23 @@ const FillListingV2Form : FC<
   /// max amount that the user can input of `tokenIn`.
   useEffect(() => {
     (async () => {
-      // Maximum BEAN precision is 6 decimals. remainingAmount * pricePerPod may
+      // Maximum MOON precision is 6 decimals. remainingAmount * pricePerPod may
       // have more decimals, so we truncate at 6.
-      const maxBeans = podListing.remainingAmount.times(podListing.pricePerPod).dp(
-        BEAN[1].decimals,
+      const maxMoons = podListing.remainingAmount.times(podListing.pricePerPod).dp(
+        MOON[1].decimals,
         BigNumber.ROUND_DOWN,
       );
-      if (maxBeans.gt(0)) {
-        if (tokenIn === Bean) {
-          /// 1 POD is consumed by 1 BEAN
-          setFieldValue('maxAmountIn', maxBeans);
+      if (maxMoons.gt(0)) {
+        if (tokenIn === Moon) {
+          /// 1 POD is consumed by 1 MOON
+          setFieldValue('maxAmountIn', maxMoons);
         } else if (tokenIn === Eth || tokenIn === Weth) {
-          /// Estimate how many ETH it will take to buy `maxBeans` BEAN.
+          /// Estimate how many ETH it will take to buy `maxMoons` MOON.
           /// TODO: across different forms of `tokenIn`.
           /// This (obviously) only works for Eth and Weth.
           const estimate = await Farm.estimate(
-            farm.buyBeans(),
-            [ethers.BigNumber.from(Bean.stringify(maxBeans))],
+            farm.buyMoons(),
+            [ethers.BigNumber.from(Moon.stringify(maxMoons))],
             false, // forward = false -> run the calc backwards
           );
           setFieldValue(
@@ -151,7 +151,7 @@ const FillListingV2Form : FC<
         setFieldValue('maxAmountIn', ZERO_BN);
       }
     })();
-  }, [Bean, Eth, Weth, farm, podListing.pricePerPod, podListing.remainingAmount, setFieldValue, tokenIn]);
+  }, [Moon, Eth, Weth, farm, podListing.pricePerPod, podListing.remainingAmount, setFieldValue, tokenIn]);
 
   return (
     <Form autoComplete="off">
@@ -168,7 +168,7 @@ const FillListingV2Form : FC<
         <TokenQuoteProvider
           key="tokens.0"
           name="tokens.0"
-          tokenOut={Bean}
+          tokenOut={Moon}
           disabled={!values.maxAmountIn}
           max={MinBN(
             values.maxAmountIn    || ZERO_BN,
@@ -190,7 +190,7 @@ const FillListingV2Form : FC<
               amount={podsPurchased}
               amountTooltip={(
                 <>
-                  {displayTokenAmount(amountOut!, Bean)} / {displayBN(podListing.pricePerPod)} Beans per Pod<br />= {displayTokenAmount(podsPurchased, PODS)}
+                  {displayTokenAmount(amountOut!, Moon)} / {displayBN(podListing.pricePerPod)} Moons per Pod<br />= {displayTokenAmount(podsPurchased, PODS)}
                 </>
               )}
               override={(
@@ -213,7 +213,7 @@ const FillListingV2Form : FC<
                 <AccordionDetails>
                   <TxnPreview
                     actions={[
-                      tokenIn === Bean ? undefined : {
+                      tokenIn === Moon ? undefined : {
                         type: ActionType.SWAP,
                         tokenIn,
                         tokenOut,
@@ -254,7 +254,7 @@ const FillListingV2Form : FC<
 
 const PREFERRED_TOKENS : PreferredToken[] = [
   {
-    token: BEAN,
+    token: MOON,
     minimum: new BigNumber(1),    // $1
   },
   {
@@ -274,22 +274,22 @@ const FillListingForm : FC<{
 }) => {
   /// Tokens
   const getChainToken = useGetChainToken();
-  const Bean          = getChainToken(BEAN);
+  const Moon          = getChainToken(MOON);
   const Eth           = getChainToken(ETH);
   const Weth          = getChainToken(WETH);
 
   /// Ledger
   const { data: signer } = useSigner();
   const provider  = useProvider();
-  const beanstalk = useBeanstalkContract(signer);
+  const moonmage = useMoonmageContract(signer);
 
   /// Farm
   const farm      = useMemo(() => new Farm(provider), [provider]);
 
-  /// Farmer
-  const balances                = useFarmerBalances();
-  const [refetchFarmerField]    = useFetchFarmerField();
-  const [refetchFarmerBalances] = useFetchFarmerBalances();
+  /// Cosmonaut
+  const balances                = useCosmonautBalances();
+  const [refetchCosmonautField]    = useFetchCosmonautField();
+  const [refetchCosmonautBalances] = useFetchCosmonautBalances();
 
   /// Form
   const middleware = useFormMiddleware();
@@ -308,7 +308,7 @@ const FillListingForm : FC<{
   }), [baseToken]);
 
   /// Handlers
-  /// Does not execute for _tokenIn === BEAN
+  /// Does not execute for _tokenIn === MOON
   const handleQuote = useCallback<QuoteHandler>(
     async (_tokenIn, _amountIn, _tokenOut) => {
       const steps : ChainableFunction[] = [];
@@ -316,11 +316,11 @@ const FillListingForm : FC<{
       if (_tokenIn === Eth) {
         steps.push(...[
           farm.wrapEth(FarmToMode.INTERNAL),       // wrap ETH to WETH (internal)
-          ...farm.buyBeans(FarmFromMode.INTERNAL)  // buy Beans using internal WETH (exact)
+          ...farm.buyMoons(FarmFromMode.INTERNAL)  // buy Moons using internal WETH (exact)
         ]);
       } else if (_tokenIn === Weth) {
         steps.push(
-          ...farm.buyBeans(
+          ...farm.buyMoons(
             /// Use INTERNAL, EXTERNAL, or INTERNAL_EXTERNAL to initiate the swap.
             optimizeFromMode(_amountIn, balances[Weth.address]),
           )
@@ -350,32 +350,32 @@ const FillListingForm : FC<{
       middleware.before();
       const formData    = values.tokens[0];
       const tokenIn     = formData.token;
-      const amountBeans = tokenIn === Bean ? formData.amount : formData.amountOut;
+      const amountMoons = tokenIn === Moon ? formData.amount : formData.amountOut;
 
       // Checks
       if (!podListing) throw new Error('No Pod Listing found');
       if (!signer) throw new Error('Connect a wallet');
       if (values.tokens.length > 1) throw new Error('Only one input token supported');
-      if (!formData.amount || !amountBeans || amountBeans.eq(0)) throw new Error('No amount set');
-      if (amountBeans.lt(podListing.minFillAmount)) throw new Error(`This Listing requires a minimum fill amount of ${displayTokenAmount(podListing.minFillAmount, PODS)}`);
+      if (!formData.amount || !amountMoons || amountMoons.eq(0)) throw new Error('No amount set');
+      if (amountMoons.lt(podListing.minFillAmount)) throw new Error(`This Listing requires a minimum fill amount of ${displayTokenAmount(podListing.minFillAmount, PODS)}`);
 
       const data : string[] = [];
-      const amountPods = amountBeans.div(podListing.pricePerPod);
+      const amountPods = amountMoons.div(podListing.pricePerPod);
       let finalFromMode : FarmFromMode;
 
       txToast = new TransactionToast({
-        loading: `Buying ${displayTokenAmount(amountPods, PODS)} for ${displayTokenAmount(amountBeans, Bean)}...`,
+        loading: `Buying ${displayTokenAmount(amountPods, PODS)} for ${displayTokenAmount(amountMoons, Moon)}...`,
         success: 'Fill successful.',
       });
 
-      /// Fill Listing directly from BEAN
-      if (tokenIn === Bean) {
-        // No swap occurs, so we know exactly how many beans are going in.
+      /// Fill Listing directly from MOON
+      if (tokenIn === Moon) {
+        // No swap occurs, so we know exactly how many moons are going in.
         // We can select from INTERNAL, EXTERNAL, INTERNAL_EXTERNAL.
-        finalFromMode = optimizeFromMode(amountBeans, balances[Bean.address]);
+        finalFromMode = optimizeFromMode(amountMoons, balances[Moon.address]);
       }
 
-      /// Swap to BEAN and buy
+      /// Swap to MOON and buy
       else if (tokenIn === Eth || tokenIn === Weth) {
         // Require a quote
         if (!formData.steps || !formData.amountOut) throw new Error(`No quote available for ${formData.token.symbol}`);
@@ -396,18 +396,18 @@ const FillListingForm : FC<{
       console.debug(`[FillListing] using FarmFromMode = ${finalFromMode}`, podListing);
 
       data.push(
-        beanstalk.interface.encodeFunctionData('fillPodListing', [
+        moonmage.interface.encodeFunctionData('fillPodListing', [
           {
             account:  podListing.account,
-            index:    Bean.stringify(podListing.index),
-            start:    Bean.stringify(podListing.start),
-            amount:   Bean.stringify(podListing.amount),
-            pricePerPod: Bean.stringify(podListing.pricePerPod),
-            maxHarvestableIndex: Bean.stringify(podListing.maxHarvestableIndex),
-            minFillAmount: Bean.stringify(podListing.minFillAmount || 0), // minFillAmount for listings is measured in Beans
+            index:    Moon.stringify(podListing.index),
+            start:    Moon.stringify(podListing.start),
+            amount:   Moon.stringify(podListing.amount),
+            pricePerPod: Moon.stringify(podListing.pricePerPod),
+            maxHarvestableIndex: Moon.stringify(podListing.maxHarvestableIndex),
+            minFillAmount: Moon.stringify(podListing.minFillAmount || 0), // minFillAmount for listings is measured in Moons
             mode:     podListing.mode,
           },
-          Bean.stringify(amountBeans),
+          Moon.stringify(amountMoons),
           finalFromMode,
         ])
       );
@@ -421,17 +421,17 @@ const FillListingForm : FC<{
 
       const txn = data.length === 1
         ? await signer.sendTransaction({
-          to: beanstalk.address,
+          to: moonmage.address,
           data: data[0],
           ...overrides
         })
-        : await beanstalk.farm(data, overrides);
+        : await moonmage.farm(data, overrides);
       txToast.confirming(txn);
 
       const receipt = await txn.wait();
       await Promise.all([
-        refetchFarmerField(),     // refresh plots; increment pods
-        refetchFarmerBalances(),  // decrement balance of tokenIn
+        refetchCosmonautField(),     // refresh plots; increment pods
+        refetchCosmonautBalances(),  // decrement balance of tokenIn
         // FIXME: refresh listings
       ]);
       txToast.success(receipt);
@@ -447,7 +447,7 @@ const FillListingForm : FC<{
     } finally {
       formActions.setSubmitting(false);
     }
-  }, [Bean, podListing, signer, Eth, Weth, beanstalk, refetchFarmerField, refetchFarmerBalances, balances, middleware]);
+  }, [Moon, podListing, signer, Eth, Weth, moonmage, refetchCosmonautField, refetchCosmonautBalances, balances, middleware]);
 
   return (
     <Formik<FillListingFormValues>
@@ -463,7 +463,7 @@ const FillListingForm : FC<{
           <FillListingV2Form
             podListing={podListing}
             handleQuote={handleQuote}
-            contract={beanstalk}
+            contract={moonmage}
             farm={farm}
             {...formikProps}
           />

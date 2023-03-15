@@ -1,11 +1,11 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import { Box } from '@mui/material';
-import logo from '~/img/tokens/bean-logo.svg';
+import logo from '~/img/tokens/moon-logo.svg';
 import { Token } from '~/classes';
-import useSiloTokenToFiat from '~/hooks/beanstalk/useSiloTokenToFiat';
+import useSiloTokenToFiat from '~/hooks/moonmage/useSiloTokenToFiat';
 import useSetting from '~/hooks/app/useSetting';
-import usePrice from '~/hooks/beanstalk/usePrice';
+import usePrice from '~/hooks/moonmage/usePrice';
 import { displayBN, displayFullBN } from '~/util';
 import { ZERO_BN } from '~/constants';
 import Row from '~/components/Common/Row';
@@ -50,7 +50,7 @@ const Fiat : FC<{
           <Box
             component="img"
             src={logo}
-            alt="BEAN"
+            alt="MOON"
             sx={{
               height: '1em',
               marginRight: '0.25em',

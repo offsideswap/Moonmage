@@ -66,7 +66,7 @@ contract TokenSilo is Silo {
 
     struct AssetsRemoved {
         uint256 tokensRemoved;
-        uint256 stalkRemoved;
+        uint256 mageRemoved;
         uint256 seedsRemoved;
         uint256 bdvRemoved;
     }
@@ -122,13 +122,13 @@ contract TokenSilo is Silo {
         address token,
         uint256 amount
     ) internal {
-        (uint256 seeds, uint256 stalk) = LibTokenSilo.deposit(
+        (uint256 seeds, uint256 mage) = LibTokenSilo.deposit(
             account,
             token,
             _season(),
             amount
         );
-        LibSilo.depositSiloAssets(account, seeds, stalk);
+        LibSilo.depositSiloAssets(account, seeds, mage);
     }
 
     // Withdraw
@@ -153,7 +153,7 @@ contract TokenSilo is Silo {
             account,
             token,
             ar.tokensRemoved,
-            ar.stalkRemoved,
+            ar.mageRemoved,
             ar.seedsRemoved
         );
     }
@@ -164,26 +164,26 @@ contract TokenSilo is Silo {
         uint32 season,
         uint256 amount
     ) internal {
-        (uint256 stalkRemoved, uint256 seedsRemoved, ) = removeDeposit(
+        (uint256 mageRemoved, uint256 seedsRemoved, ) = removeDeposit(
             account,
             token,
             season,
             amount
         );
-        _withdraw(account, token, amount, stalkRemoved, seedsRemoved);
+        _withdraw(account, token, amount, mageRemoved, seedsRemoved);
     }
 
     function _withdraw(
         address account,
         address token,
         uint256 amount,
-        uint256 stalk,
+        uint256 mage,
         uint256 seeds
     ) private {
         uint32 arrivalSeason = _season() + s.season.withdrawSeasons;
         addTokenWithdrawal(account, token, arrivalSeason, amount);
         LibTokenSilo.decrementDepositedToken(token, amount);
-        LibSilo.withdrawSiloAssets(account, seeds, stalk);
+        LibSilo.withdrawSiloAssets(account, seeds, mage);
     }
 
     function removeDeposit(
@@ -194,15 +194,15 @@ contract TokenSilo is Silo {
     )
         private
         returns (
-            uint256 stalkRemoved,
+            uint256 mageRemoved,
             uint256 seedsRemoved,
             uint256 bdv
         )
     {
         bdv = LibTokenSilo.removeDeposit(account, token, season, amount);
         seedsRemoved = bdv.mul(s.ss[token].seeds);
-        stalkRemoved = bdv.mul(s.ss[token].stalk).add(
-            LibSilo.stalkReward(seedsRemoved, _season() - season)
+        mageRemoved = bdv.mul(s.ss[token].mage).add(
+            LibSilo.mageReward(seedsRemoved, _season() - season)
         );
         emit RemoveDeposit(account, token, season, amount);
     }
@@ -222,16 +222,16 @@ contract TokenSilo is Silo {
             );
             ar.bdvRemoved = ar.bdvRemoved.add(crateBdv);
             ar.tokensRemoved = ar.tokensRemoved.add(amounts[i]);
-            ar.stalkRemoved = ar.stalkRemoved.add(
-                LibSilo.stalkReward(
+            ar.mageRemoved = ar.mageRemoved.add(
+                LibSilo.mageReward(
                     crateBdv.mul(s.ss[token].seeds),
                     _season() - seasons[i]
                 )
             );
         }
         ar.seedsRemoved = ar.bdvRemoved.mul(s.ss[token].seeds);
-        ar.stalkRemoved = ar.stalkRemoved.add(
-            ar.bdvRemoved.mul(s.ss[token].stalk)
+        ar.mageRemoved = ar.mageRemoved.add(
+            ar.bdvRemoved.mul(s.ss[token].mage)
         );
         emit RemoveDeposits(account, token, seasons, amounts, ar.tokensRemoved);
     }
@@ -306,14 +306,14 @@ contract TokenSilo is Silo {
         uint32 season,
         uint256 amount
     ) internal returns (uint256) {
-        (uint256 stalk, uint256 seeds, uint256 bdv) = removeDeposit(
+        (uint256 mage, uint256 seeds, uint256 bdv) = removeDeposit(
             sender,
             token,
             season,
             amount
         );
         LibTokenSilo.addDeposit(recipient, token, season, amount, bdv);
-        LibSilo.transferSiloAssets(sender, recipient, seeds, stalk);
+        LibSilo.transferSiloAssets(sender, recipient, seeds, mage);
         return bdv;
     }
 
@@ -347,8 +347,8 @@ contract TokenSilo is Silo {
             );
             ar.bdvRemoved = ar.bdvRemoved.add(crateBdv);
             ar.tokensRemoved = ar.tokensRemoved.add(amounts[i]);
-            ar.stalkRemoved = ar.stalkRemoved.add(
-                LibSilo.stalkReward(
+            ar.mageRemoved = ar.mageRemoved.add(
+                LibSilo.mageReward(
                     crateBdv.mul(s.ss[token].seeds),
                     _season() - seasons[i]
                 )
@@ -356,15 +356,15 @@ contract TokenSilo is Silo {
             bdvs[i] = crateBdv;
         }
         ar.seedsRemoved = ar.bdvRemoved.mul(s.ss[token].seeds);
-        ar.stalkRemoved = ar.stalkRemoved.add(
-            ar.bdvRemoved.mul(s.ss[token].stalk)
+        ar.mageRemoved = ar.mageRemoved.add(
+            ar.bdvRemoved.mul(s.ss[token].mage)
         );
         emit RemoveDeposits(sender, token, seasons, amounts, ar.tokensRemoved);
         LibSilo.transferSiloAssets(
             sender,
             recipient,
             ar.seedsRemoved,
-            ar.stalkRemoved
+            ar.mageRemoved
         );
         return bdvs;
     }

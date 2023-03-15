@@ -1,5 +1,5 @@
-import { Beanstalk } from "src/constants/generated";
-import { BeanstalkSDK } from "../..";
+import { Moonmage } from "src/constants/generated";
+import { MoonmageSDK } from "../..";
 import { ERC20Token } from "../Token/ERC20Token";
 import { TokenValue } from "../TokenValue";
 
@@ -10,9 +10,9 @@ export type Reserves = [TokenValue, TokenValue];
  */
 export default abstract class Pool {
   /**
-   * Reference to the Beanstalk SDK object
+   * Reference to the Moonmage SDK object
    */
-  static sdk: BeanstalkSDK;
+  static sdk: MoonmageSDK;
   /**
    * The contract address on the chain on which this token lives
    */
@@ -62,7 +62,7 @@ export default abstract class Pool {
    * @param name of the currency
    */
   constructor(
-    sdk: BeanstalkSDK,
+    sdk: MoonmageSDK,
     // chainId: SupportedChainId,
     address: string,
     // dex: Dex,
@@ -109,15 +109,15 @@ export default abstract class Pool {
    * Used to calculate how much of an underlying reserve a given amount of LP tokens owns in an LP pool.
    * Ownership of reserve tokens is proportional to ownership of LP tokens.
    *
-   * @param amount - the amount of LP tokens the farmer owns
+   * @param amount - the amount of LP tokens the cosmomage owns
    * @param reserve - the reserve of an asset in the lp pool
    * @param totalLP - the total lp tokens
-   * @returns the amount of reserve tokens the farmer owns.
+   * @returns the amount of reserve tokens the cosmomage owns.
    */
   static tokenForLP = (amount: TokenValue, reserve: TokenValue, totalLP: TokenValue) => amount.mul(reserve).div(totalLP);
 
   /**
-   * Used to calcuate the # of reserve tokens owned by a farmer for 2 assets in a pool (e.g. Beans + Eth)
+   * Used to calcuate the # of reserve tokens owned by a cosmomage for 2 assets in a pool (e.g. Moons + Eth)
    * Just calls tokenForLP twice.
    */
   static poolForLP = (amount: TokenValue, reserve1: TokenValue, reserve2: TokenValue, totalLP: TokenValue) => {
@@ -128,9 +128,9 @@ export default abstract class Pool {
   };
 
   /**
-   * The opposite of tokenForLP. If a farmer owns/deposits X of reserve asset -> how many LP tokens do they 1 own/get.
+   * The opposite of tokenForLP. If a cosmomage owns/deposits X of reserve asset -> how many LP tokens do they 1 own/get.
    *
-   * @param amount - the amount of the reserve asset the farmer has
+   * @param amount - the amount of the reserve asset the cosmomage has
    * @param reserve - the total amount of the reserve asset
    * @param totalLP - the total amount of the LP token
    * @returns the amount of lp tokens that amount corresponds to.
@@ -138,8 +138,8 @@ export default abstract class Pool {
   static lpForToken = (amount: TokenValue, reserve: TokenValue, totalLP: TokenValue) => amount.mul(totalLP).div(reserve);
 
   /**
-   * The opposite of poolForLP - used to calculate how many LP tokens a farmer gets if they deposit both reserve assets in a 2 asset pool.
-   * e.g. if a farmer deposits amount1 of Beans and amount2 of Eth into an LP pool with reserve1 Beans, reserve2 Eth and totalLP LP tokens, it returns how many LP tokens the farmer gets.
+   * The opposite of poolForLP - used to calculate how many LP tokens a cosmomage gets if they deposit both reserve assets in a 2 asset pool.
+   * e.g. if a cosmomage deposits amount1 of Moons and amount2 of Eth into an LP pool with reserve1 Moons, reserve2 Eth and totalLP LP tokens, it returns how many LP tokens the cosmomage gets.
    */
   static lpForPool = (amount1: TokenValue, reserve1: TokenValue, amount2: TokenValue, reserve2: TokenValue, totalLP: TokenValue) =>
     TokenValue.min(Pool.lpForToken(amount1, reserve1, totalLP), Pool.lpForToken(amount2, reserve2, totalLP));

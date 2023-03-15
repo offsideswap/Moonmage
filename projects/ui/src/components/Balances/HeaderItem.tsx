@@ -7,7 +7,7 @@ import {
 import BigNumber from 'bignumber.js';
 import React from 'react';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import { BeanstalkToken } from '~/classes/Token';
+import { MoonmageToken } from '~/classes/Token';
 import { displayFullBN } from '~/util';
 import Row from '../Common/Row';
 import TokenIcon from '../Common/TokenIcon';
@@ -15,7 +15,7 @@ import { FontSize } from '../App/muiTheme';
 import { ZERO_BN } from '~/constants';
 
 type TokenItemProps = {
-  token: BeanstalkToken;
+  token: MoonmageToken;
   title: string;
   amount: BigNumber;
   tooltip: string;

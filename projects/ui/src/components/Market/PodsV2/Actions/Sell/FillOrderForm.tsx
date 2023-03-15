@@ -12,18 +12,18 @@ import {
   TxnSeparator
 } from '~/components/Common/Form';
 import FarmModeField from '~/components/Common/Form/FarmModeField';
-import useFarmerPlots from '~/hooks/farmer/useFarmerPlots';
-import useHarvestableIndex from '~/hooks/beanstalk/useHarvestableIndex';
-import { useBeanstalkContract } from '~/hooks/ledger/useContract';
+import useCosmonautPlots from '~/hooks/cosmomage/useCosmonautPlots';
+import useHarvestableIndex from '~/hooks/moonmage/useHarvestableIndex';
+import { useMoonmageContract } from '~/hooks/ledger/useContract';
 import useChainConstant from '~/hooks/chain/useChainConstant';
 import { useSigner } from '~/hooks/ledger/useSigner';
 import { PlotMap } from '~/util';
-import { FarmToMode } from '~/lib/Beanstalk/Farm';
-import { BEAN, PODS } from '~/constants/tokens';
+import { FarmToMode } from '~/lib/Moonmage/Farm';
+import { MOON, PODS } from '~/constants/tokens';
 import { ZERO_BN } from '~/constants';
-import { useFetchFarmerField } from '~/state/farmer/field/updater';
-import { useFetchFarmerBalances } from '~/state/farmer/balances/updater';
-import { PodOrder } from '~/state/farmer/market';
+import { useFetchCosmonautField } from '~/state/cosmomage/field/updater';
+import { useFetchCosmonautBalances } from '~/state/cosmomage/balances/updater';
+import { PodOrder } from '~/state/cosmomage/market';
 import { FC } from '~/types';
 import useFormMiddleware from '~/hooks/ledger/useFormMiddleware';
 
@@ -65,7 +65,7 @@ const FillOrderV2Form: FC<
   );
 
   // const placeInLine   = plot.index ? new BigNumber(plot.index).minus(harvestableIndex) : undefined;
-  const beansReceived = plot.amount?.times(podOrder.pricePerPod) || ZERO_BN;
+  const moonsReceived = plot.amount?.times(podOrder.pricePerPod) || ZERO_BN;
   const isReady = (
     numEligiblePlots > 0
     && plot.index
@@ -86,8 +86,8 @@ const FillOrderV2Form: FC<
           <>
             <TxnSeparator mt={0} />
             <TokenOutputField
-              token={BEAN[1]}
-              amount={beansReceived}
+              token={MOON[1]}
+              amount={moonsReceived}
               isLoading={false}
               size="small"
             />
@@ -103,8 +103,8 @@ const FillOrderV2Form: FC<
                         placeInLine: placeInLine !== undefined ? placeInLine : ZERO_BN
                       },
                       {
-                        type: ActionType.RECEIVE_BEANS,
-                        amount: beansReceived,
+                        type: ActionType.RECEIVE_MOONS,
+                        amount: moonsReceived,
                         destination: values.destination,
                       },
                     ]}
@@ -132,19 +132,19 @@ const FillOrderV2Form: FC<
 
 const FillOrderForm: FC<{ podOrder: PodOrder }> = ({ podOrder }) => {
   /// Tokens
-  const Bean = useChainConstant(BEAN);
+  const Moon = useChainConstant(MOON);
 
   /// Ledger
   const { data: signer } = useSigner();
-  const beanstalk = useBeanstalkContract(signer);
+  const moonmage = useMoonmageContract(signer);
 
-  /// Beanstalk
+  /// Moonmage
   const harvestableIndex = useHarvestableIndex();
 
-  /// Farmer
-  const allPlots = useFarmerPlots();
-  const [refetchFarmerField]    = useFetchFarmerField();
-  const [refetchFarmerBalances] = useFetchFarmerBalances();
+  /// Cosmonaut
+  const allPlots = useCosmonautPlots();
+  const [refetchCosmonautField]    = useFetchCosmonautField();
+  const [refetchCosmonautBalances] = useFetchCosmonautBalances();
 
   /// Form
   const middleware = useFormMiddleware();
@@ -186,41 +186,41 @@ const FillOrderForm: FC<{ podOrder: PodOrder }> = ({ podOrder }) => {
         params: [
           {
             account:        podOrder.account,
-            maxPlaceInLine: Bean.stringify(podOrder.maxPlaceInLine),
-            pricePerPod:    Bean.stringify(podOrder.pricePerPod),
+            maxPlaceInLine: Moon.stringify(podOrder.maxPlaceInLine),
+            pricePerPod:    Moon.stringify(podOrder.pricePerPod),
             minFillAmount:  PODS.stringify(podOrder.minFillAmount || 0), // minFillAmount for Orders is measured in Pods
           },
-          Bean.stringify(index),
-          Bean.stringify(start),
-          Bean.stringify(amount),
+          Moon.stringify(index),
+          Moon.stringify(start),
+          Moon.stringify(amount),
           values.destination,
         ]
       });
 
       txToast = new TransactionToast({
         loading: 'Filling Order...',
-        // loading: `Selling ${displayTokenAmount(amount, PODS)} for ${displayTokenAmount(amount.multipliedBy(podOrder.pricePerPod), Bean)}.`,
+        // loading: `Selling ${displayTokenAmount(amount, PODS)} for ${displayTokenAmount(amount.multipliedBy(podOrder.pricePerPod), Moon)}.`,
         success: 'Fill successful.'
       });
 
-      const txn = await beanstalk.fillPodOrder(
+      const txn = await moonmage.fillPodOrder(
         {
           account:        podOrder.account,
-          maxPlaceInLine: Bean.stringify(podOrder.maxPlaceInLine),
-          pricePerPod:    Bean.stringify(podOrder.pricePerPod),
+          maxPlaceInLine: Moon.stringify(podOrder.maxPlaceInLine),
+          pricePerPod:    Moon.stringify(podOrder.pricePerPod),
           minFillAmount:  PODS.stringify(podOrder.minFillAmount || 0), // minFillAmount for Orders is measured in Pods
         },
-        Bean.stringify(index),    // index of plot to sell
-        Bean.stringify(start),    // start index within plot
-        Bean.stringify(amount),   // amount of pods to sell
+        Moon.stringify(index),    // index of plot to sell
+        Moon.stringify(start),    // start index within plot
+        Moon.stringify(amount),   // amount of pods to sell
         values.destination,
       );
       txToast.confirming(txn);
 
       const receipt = await txn.wait();
       await Promise.all([
-        refetchFarmerField(),     // refresh plots; decrement pods
-        refetchFarmerBalances(),  // increment balance of BEAN received
+        refetchCosmonautField(),     // refresh plots; decrement pods
+        refetchCosmonautBalances(),  // increment balance of MOON received
         // FIXME: refresh orders
       ]);
       txToast.success(receipt);
@@ -238,7 +238,7 @@ const FillOrderForm: FC<{ podOrder: PodOrder }> = ({ podOrder }) => {
     } finally {
       formActions.setSubmitting(false);
     }
-  }, [middleware, allPlots, podOrder.account, podOrder.maxPlaceInLine, podOrder.pricePerPod, podOrder.minFillAmount, Bean, beanstalk, refetchFarmerField, refetchFarmerBalances, navigate]);
+  }, [middleware, allPlots, podOrder.account, podOrder.maxPlaceInLine, podOrder.pricePerPod, podOrder.minFillAmount, Moon, moonmage, refetchCosmonautField, refetchCosmonautBalances, navigate]);
 
   return (
     <Formik<FillOrderFormValues>

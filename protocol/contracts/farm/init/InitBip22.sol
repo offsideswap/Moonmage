@@ -10,14 +10,14 @@ import "../../C.sol";
 /**
  * @author Publius
  * @title InitBip22 runs the code for BIP-22. 
- * It mints Beans to the Beanstalk Farms Multi-Sig in accordance with the proposed Q3 budget.
+ * It mints Moons to the Moonmage Farms Multi-Sig in accordance with the proposed Q3 budget.
  **/
 contract InitBip22 {
-    address private constant beanstalkFarms =
+    address private constant moonmageFarms =
         0x21DE18B6A8f78eDe6D16C50A167f6B222DC08DF7;
-    uint256 private constant beanstalkFarmsBudget = 500_000 * 1e6; // 500,000 Beans
+    uint256 private constant moonmageFarmsBudget = 500_000 * 1e6; // 500,000 Moons
 
     function init() external {
-        C.bean().mint(beanstalkFarms, beanstalkFarmsBudget);
+        C.moon().mint(moonmageFarms, moonmageFarmsBudget);
     }
 }

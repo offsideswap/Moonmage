@@ -1,6 +1,6 @@
-# Beanstalk SDK
+# Moonmage SDK
 
-This is a live, wip, design-doc/documentation of the Beanstalk SDK. It should be tweaked to just docs before releasing the SDK
+This is a live, wip, design-doc/documentation of the Moonmage SDK. It should be tweaked to just docs before releasing the SDK
 
 ## Library Exports
 
@@ -8,16 +8,16 @@ The following objects are available for import from the library:
 
 ```javascript
 import {
-  BeanstalkSDK,
+  MoonmageSDK,
   Utils,
 
   // classes & types
   ChainID, // ENUM of chain types
   NativeToken,
   ERC20Token,
-  BeanstalkToken,
+  MoonmageToken,
   Address
-} from "@beanstalk/sdk";
+} from "@moonmage/sdk";
 ```
 
 TODO: add types and root classes (Token, Address, etc..) to export
@@ -27,9 +27,9 @@ TODO: add types and root classes (Token, Address, etc..) to export
 Create an instance
 
 ```javascript
-import { BeanstalkSDK } from "@beanstalk/sdk";
+import { MoonmageSDK } from "@moonmage/sdk";
 
-const sdk = new BeanstalkSDK(options);
+const sdk = new MoonmageSDK(options);
 ```
 
 SDK contructor options:
@@ -58,8 +58,8 @@ const options = {
 
 - `sdk.chainId` - (type [ChainID](./ChainId.md#chainid)) is inferred from `sdk.provider.network.chainId` or defaults to `1`
 - `sdk.addresses` - common [Addresses](#addresses) for contracts and tokens.
-- `sdk.contracts` - all [Contracts](#contracts) used by Beanstalk
-- `sdk.tokens` - all [Tokens](#tokens) used by Beanstalk
+- `sdk.contracts` - all [Contracts](#contracts) used by Moonmage
+- `sdk.tokens` - all [Tokens](#tokens) used by Moonmage
 - `sdk.swap` - all functionality needed to perform [Swaps](#Swap)
 - `sdk.farm` - Handle `farm()` mechanics in a nice way [Farm](#farm)
 - `sdk.balances` - retrieve various [Balances](#balances)
@@ -71,7 +71,7 @@ TODO:
 TBD:
 
 - `sdk.field` - all funtionality needed to interact with the [Field](#field)
-- `sdk.barn` - all funtionality needed to interact with the [Barn](#barn)
+- `sdk.ship` - all funtionality needed to interact with the [Ship](#ship)
 - `sdk.market` - all funtionality needed to interact with the [Market](#market)
 
 ## Addresses
@@ -80,30 +80,30 @@ The `sdk.addresses` object contains accessors to get chain addresses for various
 
 ```javascript
 const addresses: {
-    BEANSTALK: Address;
-    BEANSTALK_PRICE: Address;
-    BEANSTALK_FERTILIZER: Address;
-    BARNRAISE_CUSTODIAN: Address;
-    BEANFT_GENESIS: Address;
-    BEANFT_WINTER_ADDRESSES: Address;
-    BEAN: Address;
-    UNRIPE_BEAN: Address;
-    UNRIPE_BEAN_CRV3: Address;
+    MOONMAGE: Address;
+    MOONMAGE_PRICE: Address;
+    MOONMAGE_FERTILIZER: Address;
+    SHIPRAISE_CUSTODIAN: Address;
+    MOONFT_GENESIS: Address;
+    MOONFT_WINTER_ADDRESSES: Address;
+    MOON: Address;
+    UNRIPE_MOON: Address;
+    UNRIPE_MOON_CRV3: Address;
     WETH: Address;
     DAI: Address;
     USDC: Address;
     USDT: Address;
     CRV3: Address;
     LUSD: Address;
-    BEAN_CRV3: Address;
+    MOON_CRV3: Address;
     POOL3: Address;
     TRICRYPTO2: Address;
     POOL_REGISTRY: Address;
     META_FACTORY: Address;
     CRYPTO_FACTORY: Address;
     CURVE_ZAP: Address;
-    BEAN_ETH_UNIV2_LP: Address;
-    BEAN_LUSD_LP: Address;
+    MOON_ETH_UNIV2_LP: Address;
+    MOON_LUSD_LP: Address;
 }
 ```
 
@@ -112,13 +112,13 @@ Example of getting an address on the currently connected chain.
 **Note** - Address objects are not 'connected' to the SDK (sdk object is not dependency-injected) so they are not aware what the current chainId is. If you do not specify a chainId to the .get() method, you will get the MAINNET address by default, NOT the SDK's currently connected chain.
 
 ```javascript
-const address = sdk.addresses.BEANSTALK.get(); // get MAINNET address
-const address = sdk.addresses.BEANSTALK.get(sdk.chainId); // get address of chain that SDK is connected to
+const address = sdk.addresses.MOONMAGE.get(); // get MAINNET address
+const address = sdk.addresses.MOONMAGE.get(sdk.chainId); // get address of chain that SDK is connected to
 ```
 
 ## Contracts
 
-The `sdk.contracts` object contains references to all contacts used by Beanstalk. The shape of this property is simply how the contracts are organized for ease of use and discoverability.
+The `sdk.contracts` object contains references to all contacts used by Moonmage. The shape of this property is simply how the contracts are organized for ease of use and discoverability.
 
 - contracts are an `etherjs` contracted generated from typechain files using the `Name__factory.connect()` mechanism.
 - contracts are already connected to `sdk.chainId`, ready to run.
@@ -126,19 +126,19 @@ The `sdk.contracts` object contains references to all contacts used by Beanstalk
 Example:
 
 ```javascript
-const balance = await sdk.contracts.beanstalk.balanceOfEarnedBeans(account);
+const balance = await sdk.contracts.moonmage.balanceOfEarnedMoons(account);
 ```
 
 Available contracts:
 
 ```javascript
 sdk.contracts = {
-  beanstalk: Beanstalk,
+  moonmage: Moonmage,
   curve: {
     pools: {
       pool3: Curve3Pool,
       tricrypto2: CurveTriCrypto2Pool,
-      beanCrv3: CurveMetaPool,
+      moonCrv3: CurveMetaPool,
       [k: string]: BaseContract   // allows getting a contract by address
     },
     registries: {
@@ -154,10 +154,10 @@ sdk.contracts = {
 
 ## Tokens
 
-`sdk.tokens` object contains accessors to all supported tokens in Beanstalk. Each token is of type [Token](./Token.md)
+`sdk.tokens` object contains accessors to all supported tokens in Moonmage. Each token is of type [Token](./Token.md)
 
 ```javascript
-await sdk.tokens.BEAN.getBalance(account);
+await sdk.tokens.MOON.getBalance(account);
 ```
 
 ## Swaps
@@ -181,18 +181,18 @@ Estimate how much 'tokenOut' you will receive given an 'amount' of 'tokenIn'.
 
 `const est = operation.estimateReversed(amount)`
 Estimate how much 'tokenIn' you need that will result in an `amount` of 'tokenOut'.
-For ex, if swapping from ETH to BEAN, `estimateReversed(5000)` will tell you how much ETH you need to execute the swap operation with.
+For ex, if swapping from ETH to MOON, `estimateReversed(5000)` will tell you how much ETH you need to execute the swap operation with.
 
 - amount: The amount of "tokenOut" to get an estimate for
 - returns: TokenValue // TODO: link
 
-### Swap ETH to BEAN
+### Swap ETH to MOON
 
 ```javascript
-import { BeanstalkSDK, FarmFromMode, FarmToMode } from "@beanstalk/sdk";
+import { MoonmageSDK, FarmFromMode, FarmToMode } from "@moonmage/sdk";
 
 const tokenIn = sdk.tokens.ETH;
-const tokenOut = sdk.tokens.BEAN;
+const tokenOut = sdk.tokens.MOON;
 const account = await sdk.getAccount();
 const fromMode = FarmFromMode.EXTERNAL;
 const toMode = FarmToMode.INTERNAL;
@@ -201,19 +201,19 @@ const amountIn = tokenIn.fromHuman("3.14");
 const swap = sdk.swap.buildSwap(tokenIn, tokenOut, account, fromMode, toMode);
 const est = await swap.estimate(amountIn);
 
-console.log(`Est $BEAN: ${est.toHuman()}`);
+console.log(`Est $MOON: ${est.toHuman()}`);
 
 const txReceipt = await swap.execute(est, 0.1);
 await txReceipt.wait();
 ```
 
-### Swap ETH to BEAN with reversed estimate
+### Swap ETH to MOON with reversed estimate
 
 ```javascript
-import { BeanstalkSDK, FarmFromMode, FarmToMode } from "@beanstalk/sdk";
+import { MoonmageSDK, FarmFromMode, FarmToMode } from "@moonmage/sdk";
 
 const tokenIn = sdk.tokens.ETH;
-const tokenOut = sdk.tokens.BEAN;
+const tokenOut = sdk.tokens.MOON;
 const account = await sdk.getAccount();
 const fromMode = FarmFromMode.EXTERNAL;
 const toMode = FarmToMode.INTERNAL;
@@ -223,7 +223,7 @@ const desiredAmountOut = tokenOut.fromHuman("5000");
 const swap = sdk.swap.buildSwap(tokenIn, tokenOut, account, fromMode, toMode);
 const est = await swap.estimateReversed(desiredAmountOut);
 
-console.log(`Est $BEAN: ${est.toHuman()}`);
+console.log(`Est $MOON: ${est.toHuman()}`);
 
 const txReceipt = await swap.execute(est, 0.1);
 await txReceipt.wait();
@@ -234,22 +234,22 @@ await txReceipt.wait();
 TODO
 
 ```javascript
-sdk.balances.getStalk();
+sdk.balances.getMage();
 sdk.balances.getSeeds();
 sdk.balances.getPods();
 sdk.balances.getSprouts();
 
 sdk.balances.getAll();
 // {
-//   deposited: { BEAN: 100, BEAN3CRV: 50, urBEAN: 0, urBEAN3CRV: 0, total: 150},
-//   withdrawn: { BEAN: 100, BEAN3CRV: 50, urBEAN: 0, urBEAN3CRV: 0, total: 150},
-//   claimable: { BEAN: 100, BEAN3CRV: 50, urBEAN: 0, urBEAN3CRV: 0, total: 150},
-//   farm: { BEAN: 100, BEAN3CRV: 50, urBEAN: 0, urBEAN3CRV: 0, total: 150},
-//   circulating: { BEAN: 100, BEAN3CRV: 50, urBEAN: 0, urBEAN3CRV: 0, total: 150},
+//   deposited: { MOON: 100, MOON3CRV: 50, urMOON: 0, urMOON3CRV: 0, total: 150},
+//   withdrawn: { MOON: 100, MOON3CRV: 50, urMOON: 0, urMOON3CRV: 0, total: 150},
+//   claimable: { MOON: 100, MOON3CRV: 50, urMOON: 0, urMOON3CRV: 0, total: 150},
+//   farm: { MOON: 100, MOON3CRV: 50, urMOON: 0, urMOON3CRV: 0, total: 150},
+//   circulating: { MOON: 100, MOON3CRV: 50, urMOON: 0, urMOON3CRV: 0, total: 150},
 // }
 
 sdk.balances.getDeposited();
-//  { BEAN: 100, BEAN3CRV: 50, urBEAN: 0, urBEAN3CRV: 0, total: 150}
+//  { MOON: 100, MOON3CRV: 50, urMOON: 0, urMOON3CRV: 0, total: 150}
 sdk.balances.getWithdraw();
 sdk.balances.getClaimable();
 sdk.balances.getFarm();
@@ -274,11 +274,11 @@ TODO
 
 ```javascript
   const workflow =  new sdk.farm.WorkflowBuilder()
-  workflow.addStep(workflow.library.swapETH_TO_BEAN(...))
+  workflow.addStep(workflow.library.swapETH_TO_MOON(...))
 
   // or more manuall
   workflow.addStep(workflow.library.swapWETH_TO_USDT(...))
-  workflow.addStep(workflow.library.swapUSDT_TO_BEAN(...))
+  workflow.addStep(workflow.library.swapUSDT_TO_MOON(...))
 
   // or lowest level
   workflow.addStep(workflow.library.exchange(...))
@@ -322,7 +322,7 @@ sdk.field.harvest();
 sdk.getPlots();
 ```
 
-## Barn
+## Ship
 
 TBD
 

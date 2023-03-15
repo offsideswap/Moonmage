@@ -1,5 +1,5 @@
 import { BaseContract, ContractTransaction, ethers, utils } from "ethers";
-import type { BeanstalkSDK } from "../../lib/BeanstalkSDK";
+import type { MoonmageSDK } from "../../lib/MoonmageSDK";
 import { BigNumber } from "ethers";
 import { TokenValue } from "../TokenValue";
 import { PromiseOrValue } from "src/constants/generated/common";
@@ -9,7 +9,7 @@ import { PromiseOrValue } from "src/constants/generated/common";
  */
 export abstract class Token {
   /** Reference to the SDK */
-  static sdk: BeanstalkSDK;
+  static sdk: MoonmageSDK;
 
   /** The contract address on the chain on which this token lives */
   public readonly address: string;
@@ -44,8 +44,8 @@ export abstract class Token {
   /** Whether or not this is an Unripe token. */
   public readonly isUnripe: boolean;
 
-  /** The Beanstalk STALK/SEED rewards per BDV of this token. */
-  public readonly rewards?: { stalk: TokenValue; seeds: TokenValue };
+  /** The Moonmage MAGE/SEED rewards per BDV of this token. */
+  public readonly rewards?: { mage: TokenValue; seeds: TokenValue };
 
   /**
    * @param chainId the chain ID on which this currency resides
@@ -56,7 +56,7 @@ export abstract class Token {
    * @param metadata.displayName
    */
   constructor(
-    sdk: BeanstalkSDK,
+    sdk: MoonmageSDK,
     address: string | null,
     decimals: number,
     metadata: {
@@ -70,7 +70,7 @@ export abstract class Token {
       isUnripe?: boolean;
     },
     rewards?: {
-      stalk: TokenValue;
+      mage: TokenValue;
       seeds: TokenValue;
     }
   ) {
@@ -89,18 +89,18 @@ export abstract class Token {
     this.logo = metadata.logo;
     this.color = metadata.color;
 
-    /// Beanstalk-specific
+    /// Moonmage-specific
     this.isLP = metadata.isLP || false;
     this.isUnripe = metadata.isUnripe || false;
     this.rewards = rewards;
   }
 
-  /** Get the amount of Stalk rewarded per deposited BDV of this Token. */
-  public getStalk(bdv?: TokenValue): TokenValue {
-    if (!this.rewards?.stalk) return Token.sdk.tokens.STALK.amount(0);
-    if (!bdv) return this.rewards.stalk;
+  /** Get the amount of Mage rewarded per deposited BDV of this Token. */
+  public getMage(bdv?: TokenValue): TokenValue {
+    if (!this.rewards?.mage) return Token.sdk.tokens.MAGE.amount(0);
+    if (!bdv) return this.rewards.mage;
 
-    return this.rewards.stalk.mul(bdv);
+    return this.rewards.mage.mul(bdv);
   }
 
   /** Get the amount of Seeds rewarded per deposited BDV of this Token. */
@@ -141,7 +141,7 @@ export abstract class Token {
   /**
    * Converts from a blockchain amount to a TokenAmount with this token's decimals set
    *
-   * Ex: BEAN.fromHuman("3140000") => TokenValue holding value "3140000" and 6 decimals
+   * Ex: MOON.fromHuman("3140000") => TokenValue holding value "3140000" and 6 decimals
    *
    * @param amount human readable amout, ex: "3.14" ether
    * @returns TokenValue
@@ -153,7 +153,7 @@ export abstract class Token {
   /**
    * Converts from a human amount to a TokenAmount with this token's decimals set
    *
-   * Ex: BEAN.fromHuman("3.14") => TokenValue holding value "3140000" and 6 decimals
+   * Ex: MOON.fromHuman("3.14") => TokenValue holding value "3140000" and 6 decimals
    *
    * @param amount human readable amout, ex: "3.14" ether
    * @returns TokenValue
@@ -167,7 +167,7 @@ export abstract class Token {
    *
    * Converts from a human amount to a TokenAmount with this token's decimals set
    *
-   * Ex: BEAN.fromHuman("3.14") => TokenValue holding value "3140000" and 6 decimals
+   * Ex: MOON.fromHuman("3.14") => TokenValue holding value "3140000" and 6 decimals
    *
    * @param amount human readable amout, ex: "3.14" ether
    * @returns TokenValue
@@ -179,8 +179,8 @@ export abstract class Token {
   /**
    * Converts from a blockchain value to a human readable form
    *
-   * Ex: BEAN.toHuman(BigNumber.from('3140000)) => "3.14"
-   * @param value A BigNumber with a value of this token, for ex: 1000000 would be 1 BEAN
+   * Ex: MOON.toHuman(BigNumber.from('3140000)) => "3.14"
+   * @param value A BigNumber with a value of this token, for ex: 1000000 would be 1 MOON
    * @returns string
    */
   toHuman(value: BigNumber): string {
@@ -196,7 +196,7 @@ export abstract class Token {
     return;
   }
 
-  public approveBeanstalk(amount: TokenValue | BigNumber): Promise<ContractTransaction> {
+  public approveMoonmage(amount: TokenValue | BigNumber): Promise<ContractTransaction> {
     // @ts-ignore
     return;
   }

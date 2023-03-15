@@ -3,92 +3,92 @@
 root=$(pwd)
 
 ######Clone Repositories
-git clone git@github.com:BeanstalkFarms/Beanstalk.git
-git clone git@github.com:BeanstalkFarms/Beanstalk-SDK.git
-git clone git@github.com:BeanstalkFarms/Beanstalk-UI.git
-git clone git@github.com:BeanstalkFarms/Beanstalk-Subgraph.git
-git clone git@github.com:BeanstalkFarms/Bean-Subgraph.git
+git clone git@github.com:MoonmageFarms/Moonmage.git
+git clone git@github.com:MoonmageFarms/Moonmage-SDK.git
+git clone git@github.com:MoonmageFarms/Moonmage-UI.git
+git clone git@github.com:MoonmageFarms/Moonmage-Subgraph.git
+git clone git@github.com:MoonmageFarms/Moon-Subgraph.git
 
-##### Beanstalk
-cd $root/Beanstalk
+##### Moonmage
+cd $root/Moonmage
 git checkout -b monorepo
 cd $root
 
 ###### SDK
-# This folder gets root-leve merged with /Beanstalk
-cd $root/Beanstalk-SDK
+# This folder gets root-leve merged with /Moonmage
+cd $root/Moonmage-SDK
 rm -rf .git
 rm -rf .husky
 mv docs projects/sdk
-echo >> $root/Beanstalk/.gitignore
-echo >> $root/Beanstalk/.gitignore
-echo "# From SDK Monorepo Join:" >> $root/Beanstalk/.gitignore
-cat .gitignore >> $root/Beanstalk/.gitignore
+echo >> $root/Moonmage/.gitignore
+echo >> $root/Moonmage/.gitignore
+echo "# From SDK Monorepo Join:" >> $root/Moonmage/.gitignore
+cat .gitignore >> $root/Moonmage/.gitignore
 rm .gitignore
 rm README.md
-cp -r . $root/Beanstalk
+cp -r . $root/Moonmage
 
-cd $root/Beanstalk
+cd $root/Moonmage
 git add .
 git commit -m "monorepo: merge with sdk"
 
 ###### UI
-cd $root/Beanstalk-UI
+cd $root/Moonmage-UI
 rm -rf .git
 rm -rf .yarn
 rm .yarnrc.yml 
-mkdir $root/Beanstalk/projects/ui
-cp -r . $root/Beanstalk/projects/ui
+mkdir $root/Moonmage/projects/ui
+cp -r . $root/Moonmage/projects/ui
 
-cd $root/Beanstalk
+cd $root/Moonmage
 git add .
 git commit -m "monorepo: add ui"
 
-###### Beanstalk-Subgraph
-cd $root/Beanstalk-Subgraph
+###### Moonmage-Subgraph
+cd $root/Moonmage-Subgraph
 rm -rf .git
 rm package-lock.json
-mkdir $root/Beanstalk/projects/subgraph-beanstalk
-cp -r . $root/Beanstalk/projects/subgraph-beanstalk
-cd $root/Beanstalk
+mkdir $root/Moonmage/projects/subgraph-moonmage
+cp -r . $root/Moonmage/projects/subgraph-moonmage
+cd $root/Moonmage
 git add .
-git commit -m "monorepo: add subgraph-beanstalk"
+git commit -m "monorepo: add subgraph-moonmage"
 
-##### Bean-Subgraph
-cd $root/Bean-Subgraph
+##### Moon-Subgraph
+cd $root/Moon-Subgraph
 rm -rf .git
 rm package-lock.json
-mkdir $root/Beanstalk/projects/subgraph-bean
-cp -r . $root/Beanstalk/projects/subgraph-bean
-cd $root/Beanstalk
+mkdir $root/Moonmage/projects/subgraph-moon
+cp -r . $root/Moonmage/projects/subgraph-moon
+cd $root/Moonmage
 git add .
-git commit -m "monorepo: add subgraph-bean"
+git commit -m "monorepo: add subgraph-moon"
 
 ##### Post Ops
 cd $root
-# rm -rf Beanstalk-SDK
-# rm -rf Beanstalk-UI
-# rm -rf Beanstalk-Subgraph
-# rm -rf Bean-Subgraph
+# rm -rf Moonmage-SDK
+# rm -rf Moonmage-UI
+# rm -rf Moonmage-Subgraph
+# rm -rf Moon-Subgraph
 
 # update package.json files as needed
 node ./mono.js
-cd $root/Beanstalk
+cd $root/Moonmage
 git add .
 git commit -m "monorepo: update projects' package.json"
 
 # Make yarn work
-rm $root/Beanstalk/protocol/yarn.lock
-rm $root/Beanstalk/projects/subgraph-beanstalk/yarn.lock
-rm $root/Beanstalk/projects/subgraph-bean/yarn.lock
-rm $root/Beanstalk/projects/ui/yarn.lock
+rm $root/Moonmage/protocol/yarn.lock
+rm $root/Moonmage/projects/subgraph-moonmage/yarn.lock
+rm $root/Moonmage/projects/subgraph-moon/yarn.lock
+rm $root/Moonmage/projects/ui/yarn.lock
 yarn && git add . && git commit -m "monorepo: update yarn"
  
 # Add monorepo scripts for historic/audit purposes
-mkdir -p $root/Beanstalk/utils/monorepo-creation
-cp $root/go.sh $root/Beanstalk/utils/monorepo-creation
-cp $root/reset.sh $root/Beanstalk/utils/monorepo-creation
-cp $root/mono.js $root/Beanstalk/utils/monorepo-creation
+mkdir -p $root/Moonmage/utils/monorepo-creation
+cp $root/go.sh $root/Moonmage/utils/monorepo-creation
+cp $root/reset.sh $root/Moonmage/utils/monorepo-creation
+cp $root/mono.js $root/Moonmage/utils/monorepo-creation
 git add . && git commit -m "monorepo: add utils"
 
 

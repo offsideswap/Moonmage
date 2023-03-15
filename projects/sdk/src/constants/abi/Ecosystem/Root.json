@@ -132,7 +132,7 @@
         {
           "indexed": false,
           "internalType": "uint256",
-          "name": "stalk",
+          "name": "mage",
           "type": "uint256"
         },
         {
@@ -211,7 +211,7 @@
         {
           "indexed": false,
           "internalType": "uint256",
-          "name": "stalk",
+          "name": "mage",
           "type": "uint256"
         },
         {
@@ -283,7 +283,7 @@
     },
     {
       "inputs": [],
-      "name": "BEANSTALK_ADDRESS",
+      "name": "MOONMAGE_ADDRESS",
       "outputs": [
         {
           "internalType": "address",

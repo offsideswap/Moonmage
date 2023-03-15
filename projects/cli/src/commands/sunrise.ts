@@ -1,9 +1,9 @@
-import { BeanstalkSDK, Token } from "@beanstalk/sdk";
+import { MoonmageSDK, Token } from "@moonmage/sdk";
 import chalk from "chalk";
 
 export const sunrise = async (sdk, chain, { force }) => {
-  const localSeason = await sdk.contracts.beanstalk.season();
-  const seasonTime = await sdk.contracts.beanstalk.seasonTime();
+  const localSeason = await sdk.contracts.moonmage.season();
+  const seasonTime = await sdk.contracts.moonmage.seasonTime();
   const diff = seasonTime - localSeason;
 
   if (force) {
@@ -22,18 +22,18 @@ export const sunrise = async (sdk, chain, { force }) => {
   }
 };
 
-async function callSunrise(sdk: BeanstalkSDK) {
+async function callSunrise(sdk: MoonmageSDK) {
   try {
-    const res = await sdk.contracts.beanstalk.sunrise();
+    const res = await sdk.contracts.moonmage.sunrise();
     await res.wait();
-    const season = await sdk.contracts.beanstalk.season();
+    const season = await sdk.contracts.moonmage.season();
     console.log(`${chalk.bold.greenBright("sunrise()")} called. New season is ${chalk.bold.yellowBright(season)}`);
   } catch (err: any) {
     console.log(`sunrise() call failed: ${err.reason}`);
   }
 }
 
-async function fastForward(sdk: BeanstalkSDK) {
+async function fastForward(sdk: MoonmageSDK) {
   console.log("Fast forwarding time to next season...");
   try {
     const block = await sdk.provider.send("eth_getBlockByNumber", ["latest", false]);
@@ -50,7 +50,7 @@ async function fastForward(sdk: BeanstalkSDK) {
   }
 }
 
-async function forceBlock(sdk: BeanstalkSDK) {
+async function forceBlock(sdk: MoonmageSDK) {
   await sdk.provider.send("evm_increaseTime", [12]);
   await sdk.provider.send("evm_mine", []);
 }

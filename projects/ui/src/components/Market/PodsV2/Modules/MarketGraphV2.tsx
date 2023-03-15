@@ -2,7 +2,7 @@ import { Button, Stack, Typography } from '@mui/material';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import React from 'react';
 import Row from '~/components/Common/Row';
-import useMarketData from '~/hooks/beanstalk/useMarketData';
+import useMarketData from '~/hooks/moonmage/useMarketData';
 import { displayBN } from '~/util';
 import {
   marketBottomTabsAtom,

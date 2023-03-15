@@ -1,4 +1,4 @@
-import { ClaimRewardsAction } from '../lib/Beanstalk/Farm';
+import { ClaimRewardsAction } from '../lib/Moonmage/Farm';
 
 export const hoverMap = {
   [ClaimRewardsAction.MOW]:             [ClaimRewardsAction.MOW],

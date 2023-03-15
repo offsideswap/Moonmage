@@ -7,7 +7,7 @@ pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "../../../libraries/Silo/LibTokenSilo.sol";
-// import "../../../libraries/Silo/LibBeanSilo.sol";
+// import "../../../libraries/Silo/LibMoonSilo.sol";
 import "../../../C.sol";
 
 /**
@@ -16,10 +16,10 @@ import "../../../C.sol";
  * The steps to whip out the exploiter's balances are as follows: 
  * 1. Remove Deposits and emit Remove event
  * 2. Decrement Total Deposited amount
- * 3. Decrement Stalk, Seed, Root balance from totals
- * 4. Reset Stalk, Seed, Root balance
+ * 3. Decrement Mage, Seed, Root balance from totals
+ * 4. Reset Mage, Seed, Root balance
  * 
- * There are two addresses involved in the Beanstalk exploit.
+ * There are two addresses involved in the Moonmage exploit.
  * The address that proposed the BIP and the address that voted and committed the BIP
  * 
  * ------------------------------------------------------------------------------------
@@ -28,9 +28,9 @@ import "../../../C.sol";
  *
  * This address has 1 Silo Deposit to remove:
  * transactionHash: 0xf5a698984485d01e09744e8d7b8ca15cd29aa430a0137349c8c9e19e60c0bb9d
- * name:    BeanDeposit
+ * name:    MoonDeposit
  * season:  6046
- * beans:   212858495697
+ * moons:   212858495697
  * 
  * ------------------------------------------------------------------------------------
  * The address that voted on and committed the BIP is:
@@ -56,11 +56,11 @@ contract Replant1 {
     using SafeMath for uint256;
     AppStorage internal s;
 
-    event BeanRemove(
+    event MoonRemove(
         address indexed account,
         uint32[] crates,
-        uint256[] crateBeans,
-        uint256 beans
+        uint256[] crateMoons,
+        uint256 moons
     );
     event RemoveSeason(
         address indexed account,
@@ -108,26 +108,26 @@ contract Replant1 {
             EXPLOITER_AMOUNT_2
         );
 
-        // LibBeanSilo.removeBeanDeposit(PROPOSER, PROPOSER_SEASON, PROPOSER_AMOUNT);
+        // LibMoonSilo.removeMoonDeposit(PROPOSER, PROPOSER_SEASON, PROPOSER_AMOUNT);
         // uint32[] memory seasons = new uint32[](1);
         // uint256[] memory amounts = new uint256[](1);
         // seasons[0] = PROPOSER_SEASON;
         // amounts[0] = PROPOSER_AMOUNT;
-        // emit BeanRemove(PROPOSER, seasons, amounts, PROPOSER_AMOUNT);
+        // emit MoonRemove(PROPOSER, seasons, amounts, PROPOSER_AMOUNT);
 
         // 2. Decrement Total Deposited for each token
         LibTokenSilo.decrementDepositedToken(EXPLOITER_TOKEN_1, EXPLOITER_AMOUNT_1);
         LibTokenSilo.decrementDepositedToken(EXPLOITER_TOKEN_2, EXPLOITER_AMOUNT_2);
-        // LibBeanSilo.decrementDepositedBeans(PROPOSER_AMOUNT);
+        // LibMoonSilo.decrementDepositedMoons(PROPOSER_AMOUNT);
 
-        // 3. Decrement total Stalk, Seeds, Roots 
-        s.s.stalk = s.s.stalk.sub(s.a[PROPOSER].s.stalk).sub(s.a[EXPLOITER].s.stalk);
+        // 3. Decrement total Mage, Seeds, Roots 
+        s.s.mage = s.s.mage.sub(s.a[PROPOSER].s.mage).sub(s.a[EXPLOITER].s.mage);
         s.s.seeds = s.s.seeds.sub(s.a[PROPOSER].s.seeds).sub(s.a[EXPLOITER].s.seeds);
         s.s.roots = s.s.roots.sub(s.a[PROPOSER].roots).sub(s.a[EXPLOITER].roots);
 
-        // 4. Reset Stalk, Seed, Root balances
-        s.a[PROPOSER].s.stalk = 0;
-        s.a[EXPLOITER].s.stalk = 0;
+        // 4. Reset Mage, Seed, Root balances
+        s.a[PROPOSER].s.mage = 0;
+        s.a[EXPLOITER].s.mage = 0;
 
         s.a[PROPOSER].s.seeds = 0;
         s.a[EXPLOITER].s.seeds = 0;

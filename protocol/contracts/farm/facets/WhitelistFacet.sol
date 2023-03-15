@@ -18,7 +18,7 @@ contract WhitelistFacet {
         address indexed token,
         bytes4 selector,
         uint256 seeds,
-        uint256 stalk
+        uint256 mage
     );
 
     event DewhitelistToken(address indexed token);
@@ -31,14 +31,14 @@ contract WhitelistFacet {
     function whitelistToken(
         address token,
         bytes4 selector,
-        uint32 stalk,
+        uint32 mage,
         uint32 seeds
     ) external payable {
         LibDiamond.enforceIsOwnerOrContract();
         LibWhitelist.whitelistToken(
             token,
             selector,
-            stalk,
+            mage,
             seeds
         );
     }

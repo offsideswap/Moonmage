@@ -1,5 +1,5 @@
 
 
 async function () {
-    return await ethers.getContractAt(beanstalkABI, BEANSTALK);
+    return await ethers.getContractAt(moonmageABI, MOONMAGE);
 }

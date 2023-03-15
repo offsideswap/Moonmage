@@ -25,16 +25,16 @@ export class ClaimWithdrawals extends StepClass<BasicPreparedResult> {
           to: this._to
         });
         return {
-          target: ClaimWithdrawals.sdk.contracts.beanstalk.address,
-          callData: ClaimWithdrawals.sdk.contracts.beanstalk.interface.encodeFunctionData("claimWithdrawals", [
+          target: ClaimWithdrawals.sdk.contracts.moonmage.address,
+          callData: ClaimWithdrawals.sdk.contracts.moonmage.interface.encodeFunctionData("claimWithdrawals", [
             this._tokenIn, //
             this._seasons, //
             this._to
           ])
         };
       },
-      decode: (data: string) => ClaimWithdrawals.sdk.contracts.beanstalk.interface.decodeFunctionData("claimWithdrawals", data),
-      decodeResult: (result: string) => ClaimWithdrawals.sdk.contracts.beanstalk.interface.decodeFunctionResult("claimWithdrawals", result)
+      decode: (data: string) => ClaimWithdrawals.sdk.contracts.moonmage.interface.decodeFunctionData("claimWithdrawals", data),
+      decodeResult: (result: string) => ClaimWithdrawals.sdk.contracts.moonmage.interface.decodeFunctionResult("claimWithdrawals", result)
     };
   }
 }

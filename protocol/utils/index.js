@@ -1,6 +1,6 @@
-const { getBeanstalk, getBean, getBeanMetapool, getUsdc, getBeanstalkAdminControls, getPrice } = require("./contracts.js");
-const { impersonateSigner, impersonateBeanstalkOwner } = require("./signer.js");
-const { mintUsdc, mintBeans, mintEth } = require("./mint.js")
+const { getMoonmage, getMoon, getMoonMetapool, getUsdc, getMoonmageAdminControls, getPrice } = require("./contracts.js");
+const { impersonateSigner, impersonateMoonmageOwner } = require("./signer.js");
+const { mintUsdc, mintMoons, mintEth } = require("./mint.js")
 const { readPrune } = require("./read.js")
 const { packAdvanced, encodeAdvancedData, decodeAdvancedData } = require('./function.js')
 const { toBN } = require('./helpers.js')
@@ -8,15 +8,15 @@ const { signSiloDepositTokenPermit, signSiloDepositTokensPermit, signTokenPermit
 const { strDisplay } = require('./string.js')
 
 exports.toBN = toBN
-exports.getBeanstalk = getBeanstalk
-exports.getBean = getBean
-exports.getBeanMetapool = getBeanMetapool
+exports.getMoonmage = getMoonmage
+exports.getMoon = getMoon
+exports.getMoonMetapool = getMoonMetapool
 exports.getUsdc = getUsdc
-exports.getBeanstalkAdminControls = getBeanstalkAdminControls
+exports.getMoonmageAdminControls = getMoonmageAdminControls
 exports.impersonateSigner = impersonateSigner
-exports.impersonateBeanstalkOwner = impersonateBeanstalkOwner
+exports.impersonateMoonmageOwner = impersonateMoonmageOwner
 exports.mintUsdc = mintUsdc
-exports.mintBeans = mintBeans
+exports.mintMoons = mintMoons
 exports.mintEth = mintEth
 exports.getPrice = getPrice
 exports.readPrune = readPrune

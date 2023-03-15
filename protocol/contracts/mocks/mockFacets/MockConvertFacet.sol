@@ -15,7 +15,7 @@ contract MockConvertFacet is ConvertFacet {
 
     using SafeMath for uint256;
 
-    event MockConvert(uint256 stalkRemoved, uint256 bdvRemoved);
+    event MockConvert(uint256 mageRemoved, uint256 bdvRemoved);
 
     function withdrawForConvertE(
         address token,
@@ -23,16 +23,16 @@ contract MockConvertFacet is ConvertFacet {
         uint256[] memory amounts,
         uint256 maxTokens
     ) external {
-        (uint256 stalkRemoved, uint256 bdvRemoved) = _withdrawTokens(token, seasons, amounts, maxTokens);
-        emit MockConvert(stalkRemoved, bdvRemoved);
+        (uint256 mageRemoved, uint256 bdvRemoved) = _withdrawTokens(token, seasons, amounts, maxTokens);
+        emit MockConvert(mageRemoved, bdvRemoved);
     }
 
     function depositForConvertE(
         address token, 
         uint256 amount, 
         uint256 bdv, 
-        uint256 grownStalk
+        uint256 grownMage
     ) external {
-        _depositTokens(token, amount, bdv, grownStalk);
+        _depositTokens(token, amount, bdv, grownMage);
     }
 }

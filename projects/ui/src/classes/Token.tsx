@@ -57,7 +57,7 @@ export default abstract class Token {
   /**
    * 
    */
-  public readonly rewards?: { stalk: number; seeds: number };
+  public readonly rewards?: { mage: number; seeds: number };
 
   /**
    * 
@@ -90,7 +90,7 @@ export default abstract class Token {
       isUnripe?: boolean;
     },
     rewards?: {
-      stalk: number;
+      mage: number;
       seeds: number;
     }
   ) {
@@ -109,11 +109,11 @@ export default abstract class Token {
     this.rewards = rewards;
   }
 
-  /** Get the amount of Stalk rewarded per deposited BDV of this Token. */
-  public getStalk(bdv?: BigNumber) : BigNumber {
-    if (!this.rewards?.stalk) return ZERO_BN;
-    if (!bdv) return new BigNumber(this.rewards.stalk);
-    return bdv.times(this.rewards.stalk);
+  /** Get the amount of Mage rewarded per deposited BDV of this Token. */
+  public getMage(bdv?: BigNumber) : BigNumber {
+    if (!this.rewards?.mage) return ZERO_BN;
+    if (!bdv) return new BigNumber(this.rewards.mage);
+    return bdv.times(this.rewards.mage);
   }
   
   /** Get the amount of Seeds rewarded per deposited BDV of this Token. */
@@ -205,7 +205,7 @@ export class ERC20Token extends Token {
   }
 }
 
-export class BeanstalkToken extends Token {
+export class MoonmageToken extends Token {
   // eslint-disable-next-line class-methods-use-this
   public getContract() {
     return null;
@@ -228,7 +228,7 @@ export class BeanstalkToken extends Token {
 }
 
 export type AnyToken = (
-  BeanstalkToken
+  MoonmageToken
   | ERC20Token
   | NativeToken
 );

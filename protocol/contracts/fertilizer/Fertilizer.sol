@@ -7,25 +7,25 @@ import "./Internalizer.sol";
 
 /**
  * @author publius
- * @title Barn Raiser 
+ * @title Ship Raiser 
  */
 
 interface IBS {
     function payFertilizer(address account, uint256 amount) external;
-    function beansPerFertilizer() external view returns (uint128);
+    function moonsPerFertilizer() external view returns (uint128);
     function getEndBpf() external view returns (uint128);
     function remainingRecapitalization() external view returns (uint256);
 }
 
 contract Fertilizer is Internalizer {
 
-    event ClaimFertilizer(uint256[] ids, uint256 beans);
+    event ClaimFertilizer(uint256[] ids, uint256 moons);
 
     using SafeERC20Upgradeable for IERC20;
     using SafeMathUpgradeable for uint256;
     using LibSafeMath128 for uint128;
 
-    function beanstalkUpdate(
+    function moonmageUpdate(
         address account,
         uint256[] memory ids,
         uint128 bpf
@@ -33,7 +33,7 @@ contract Fertilizer is Internalizer {
         return __update(account, ids, uint256(bpf));
     }
 
-    function beanstalkMint(address account, uint256 id, uint128 amount, uint128 bpf) external onlyOwner {
+    function moonmageMint(address account, uint256 id, uint128 amount, uint128 bpf) external onlyOwner {
         if (_balances[id][account].amount > 0) {
             uint256[] memory ids = new uint256[](1);
             ids[0] = id;
@@ -56,7 +56,7 @@ contract Fertilizer is Internalizer {
         uint256[] memory, // amounts
         bytes memory // data
     ) internal virtual override {
-        uint256 bpf = uint256(IBS(owner()).beansPerFertilizer());
+        uint256 bpf = uint256(IBS(owner()).moonsPerFertilizer());
         if (from != address(0)) _update(from, ids, bpf);
         _update(to, ids, bpf);
     }
@@ -74,31 +74,31 @@ contract Fertilizer is Internalizer {
         address account,
         uint256[] memory ids,
         uint256 bpf
-    ) internal returns (uint256 beans) {
+    ) internal returns (uint256 moons) {
         for (uint256 i; i < ids.length; ++i) {
             uint256 stopBpf = bpf < ids[i] ? bpf : ids[i];
             uint256 deltaBpf = stopBpf - _balances[ids[i]][account].lastBpf;
             if (deltaBpf > 0) {
-                beans = beans.add(deltaBpf.mul(_balances[ids[i]][account].amount));
+                moons = moons.add(deltaBpf.mul(_balances[ids[i]][account].amount));
                 _balances[ids[i]][account].lastBpf = uint128(stopBpf);
             }
         }
-        emit ClaimFertilizer(ids, beans);
+        emit ClaimFertilizer(ids, moons);
     }
 
-    function balanceOfFertilized(address account, uint256[] memory ids) external view returns (uint256 beans) {
-        uint256 bpf = uint256(IBS(owner()).beansPerFertilizer());
+    function balanceOfFertilized(address account, uint256[] memory ids) external view returns (uint256 moons) {
+        uint256 bpf = uint256(IBS(owner()).moonsPerFertilizer());
         for (uint256 i; i < ids.length; ++i) {
             uint256 stopBpf = bpf < ids[i] ? bpf : ids[i];
             uint256 deltaBpf = stopBpf - _balances[ids[i]][account].lastBpf;
-            beans = beans.add(deltaBpf.mul(_balances[ids[i]][account].amount));
+            moons = moons.add(deltaBpf.mul(_balances[ids[i]][account].amount));
         }
     }
 
-    function balanceOfUnfertilized(address account, uint256[] memory ids) external view returns (uint256 beans) {
-        uint256 bpf = uint256(IBS(owner()).beansPerFertilizer());
+    function balanceOfUnfertilized(address account, uint256[] memory ids) external view returns (uint256 moons) {
+        uint256 bpf = uint256(IBS(owner()).moonsPerFertilizer());
         for (uint256 i; i < ids.length; ++i) {
-            if (ids[i] > bpf) beans = beans.add(ids[i].sub(bpf).mul(_balances[ids[i]][account].amount));
+            if (ids[i] > bpf) moons = moons.add(ids[i].sub(bpf).mul(_balances[ids[i]][account].amount));
         }
     }
 

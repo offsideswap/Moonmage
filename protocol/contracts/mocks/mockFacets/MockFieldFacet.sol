@@ -21,7 +21,7 @@ contract MockFieldFacet is FieldFacet {
     }
 
     function incrementTotalHarvestableE(uint256 amount) external {
-        C.bean().mint(address(this), amount);
+        C.moon().mint(address(this), amount);
         s.f.harvestable = s.f.harvestable.add(amount);
     }
 
